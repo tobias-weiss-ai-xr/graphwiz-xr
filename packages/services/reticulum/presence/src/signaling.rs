@@ -11,7 +11,7 @@ pub struct SignalingMessage {
     pub payload: SignalingPayload,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum SignalingMessageType {
     Offer,
     Answer,
@@ -19,7 +19,7 @@ pub enum SignalingMessageType {
     Hangup,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum SignalingPayload {
     Offer { sdp: String },
     Answer { sdp: String },

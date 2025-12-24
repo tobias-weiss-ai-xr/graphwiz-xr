@@ -53,6 +53,7 @@ anyhow = "1.0"
 futures-util = "0.3"
 config = "0.14"
 sea-orm-migration = "0.12"
+validator = { version = "0.18", features = ["derive"] }
 
 # Logging
 log = "0.4"

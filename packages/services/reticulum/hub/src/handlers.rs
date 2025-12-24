@@ -85,14 +85,14 @@ pub async fn create_room(
     let room_state = RoomState {
         room_id: room_id.clone(),
         name: room.name.clone(),
-        description: room.description,
+        description: room.description.clone(),
         max_players: room.max_players,
         current_players: 0,
-        created_by: room.created_by,
+        created_by: room.created_by.clone(),
         entities: Default::default(),
     };
 
-    let mut rooms = room_manager.rooms.write().await;
+    let mut rooms: tokio::sync::RwLockWriteGuard<'_, std::collections::HashMap<String, crate::room::RoomState>> = room_manager.rooms.write().await;
     rooms.insert(room_id.clone(), room_state);
 
     let response = CreateRoomResponse {

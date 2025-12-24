@@ -43,7 +43,7 @@ impl SpawnEntityRequest {
 }
 
 pub struct RoomManager {
-    rooms: Arc<RwLock<HashMap<String, RoomState>>>,
+    pub rooms: Arc<RwLock<HashMap<String, RoomState>>>,
 }
 
 impl RoomManager {

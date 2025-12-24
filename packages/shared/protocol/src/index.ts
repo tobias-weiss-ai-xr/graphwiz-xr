@@ -6,10 +6,11 @@
  */
 
 // Re-export generated types
-export * from './generated/core.js';
-export * from './generated/networking.js';
+export type { Vector3, Quaternion } from './generated/core.js';
 
 // Re-export utility functions
 export { MessageBuilder } from './builder.js';
 export { MessageParser } from './parser.js';
-export type { Message, PositionUpdate, PresenceEvent } from './types.js';
+
+// Re-export all types from types.ts
+export type * from './types.js';

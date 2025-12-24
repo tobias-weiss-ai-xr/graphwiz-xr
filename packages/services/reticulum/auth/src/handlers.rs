@@ -149,14 +149,9 @@ pub async fn login(
         }
     };
 
-    // Find user by email
-    let user_with_hash = match core_models::Entity::find()
-        .filter(reticulum_core::models::users::Column::Email.eq(&req.email))
-        .filter(reticulum_core::models::users::Column::IsActive.eq(true))
-        .one(&db)
-        .await
-    {
-        Ok(Some(user)) => user,
+    // Find user by email - need Model for password hash
+    let user_record = match core_models::users::UserModel::find_by_email_with_hash(&db, &req.email).await {
+        Ok(Some(record)) => record,
         Ok(None) => {
             return HttpResponse::Unauthorized().json(json!({
                 "error": "auth_error",
@@ -173,19 +168,22 @@ pub async fn login(
     };
 
     // Verify password
-    if verify_password(&req.password, &user_with_hash.password_hash).is_err() {
+    if verify_password(&req.password, &user_record.password_hash).is_err() {
         return HttpResponse::Unauthorized().json(json!({
             "error": "auth_error",
             "message": "Invalid email or password"
         }));
     }
 
+    // Convert to User model (without password hash)
+    let user: core_models::users::User = user_record.into();
+
     // Generate tokens
     let user_info = UserInfo {
-        id: user_with_hash.id,
-        display_name: user_with_hash.display_name.clone(),
-        email: user_with_hash.email.clone(),
-        avatar_url: user_with_hash.avatar_url.clone(),
+        id: user.id,
+        display_name: user.display_name.clone(),
+        email: user.email.clone(),
+        avatar_url: user.avatar_url.clone(),
     };
 
     let access_token = match generate_access_token(&config, &user_info) {
@@ -221,7 +219,7 @@ pub async fn login(
 }
 
 /// Get current user info from JWT token
-pub async fn me(req: HttpRequest) -> HttpResponse {
+pub async fn me(_req: HttpRequest) -> HttpResponse {
     // In a real implementation, this would extract the user from the JWT token
     // that was validated in middleware
     HttpResponse::Ok().json(json!({

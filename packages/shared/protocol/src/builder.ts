@@ -2,7 +2,8 @@
  * Message Builder for GraphWiz-XR protocol
  */
 
-import type { Message, MessageType, PositionUpdate } from './types.js';
+import type { Message, PositionUpdate } from './types.js';
+import { MessageType } from './types.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export class MessageBuilder {
@@ -76,7 +77,12 @@ export class MessageBuilder {
   static createPresenceEvent(presence: {
     clientId: string;
     eventType: number;
-    data: unknown;
+    data: {
+      displayName?: string;
+      avatarUrl?: string;
+      position?: { x: number; y: number; z: number };
+      rotation?: { x: number; y: number; z: number; w: number };
+    };
   }): Message {
     return this.create(MessageType.PRESENCE_UPDATE, presence);
   }

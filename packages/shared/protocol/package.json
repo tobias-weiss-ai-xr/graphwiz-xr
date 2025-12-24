@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts"
+  },
   "scripts": {
     "build": "run-s build:proto build:ts",
     "build:proto": "sh scripts/generate-proto.sh",
@@ -13,10 +17,12 @@
   "dependencies": {
     "@grpc/proto-loader": "^0.7.10",
     "grpc-web": "^1.4.2",
-    "protobufjs": "^7.2.5"
+    "protobufjs": "^7.2.5",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
+    "@types/uuid": "^9.0.7",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.3.3"
   }

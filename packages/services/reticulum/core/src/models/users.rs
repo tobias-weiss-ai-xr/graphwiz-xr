@@ -1,6 +1,7 @@
 //! User model
 
 use sea_orm::entity::prelude::*;
+use sea_orm::ColumnTrait;
 use sea_orm::ActiveValue::Set;
 use serde::{Deserialize, Serialize};
 
@@ -64,6 +65,16 @@ impl UserModel {
             .one(db)
             .await?;
         Ok(result.map(User::from))
+    }
+
+    /// Find user by email and return the full Model with password_hash for authentication
+    pub async fn find_by_email_with_hash(db: &DatabaseConnection, email: &str) -> crate::Result<Option<Model>> {
+        let result = Entity::find()
+            .filter(Column::Email.eq(email))
+            .filter(Column::IsActive.eq(true))
+            .one(db)
+            .await?;
+        Ok(result)
     }
 
     pub async fn create(

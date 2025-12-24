@@ -117,15 +117,15 @@ pub struct MessageParser;
 impl MessageParser {
     /// Parse a message from binary buffer
     pub fn parse(buffer: &[u8]) -> Result<Message> {
-        Message::decode(buffer)
-            .map_err(|e| ProtocolError::DeserializationError(e.to_string()))
+        prost::Message::decode(buffer)
+            .map_err(|e: prost::DecodeError| ProtocolError::DeserializationError(e.to_string()))
     }
 
     /// Serialize a message to binary buffer
     pub fn serialize(message: &Message) -> Result<Vec<u8>> {
         let mut buf = Vec::new();
-        message.encode(&mut buf)
-            .map_err(|e| ProtocolError::SerializationError(e.to_string()))?;
+        prost::Message::encode(message, &mut buf)
+            .map_err(|e: prost::EncodeError| ProtocolError::SerializationError(e.to_string()))?;
         Ok(buf)
     }
 

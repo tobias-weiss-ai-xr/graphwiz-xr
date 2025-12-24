@@ -24,6 +24,7 @@ impl PresenceService {
     pub async fn run(self) -> std::io::Result<()> {
         let host = self.config.server.host.clone();
         let port = self.config.server.port;
+        let workers = self.config.server.workers.unwrap_or(1);
 
         log::info!("Starting presence service on {}:{}", host, port);
 
@@ -35,7 +36,7 @@ impl PresenceService {
                 .configure(configure_routes)
         })
         .bind((host.as_str(), port))?
-        .workers(self.config.server.workers.unwrap_or(1))
+        .workers(workers)
         .run()
         .await
     }

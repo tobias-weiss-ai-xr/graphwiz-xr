@@ -2,6 +2,24 @@
  * Shared TypeScript type definitions for GraphWiz-XR
  */
 
+// Import protocol types
+import type {
+  Message,
+  MessageType,
+  PositionUpdate,
+  VoiceData,
+  EntitySpawn,
+  EntityUpdate,
+  EntityDespawn,
+  ChatMessage,
+  PresenceEvent,
+  ClientHello,
+  ServerHello,
+  WorldState,
+  Vector3,
+  Quaternion,
+} from '@graphwiz/protocol';
+
 // Re-export protocol types
 export type {
   Message,
@@ -18,7 +36,7 @@ export type {
   WorldState,
   Vector3,
   Quaternion,
-} from '@graphwiz/protocol';
+};
 
 /**
  * Room configuration

@@ -42,7 +42,7 @@ pub struct RefreshTokenRequest {
     pub refresh_token: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TokenClaims {
     pub sub: String, // user id
     pub email: String,

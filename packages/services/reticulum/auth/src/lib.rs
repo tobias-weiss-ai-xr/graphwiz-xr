@@ -26,6 +26,7 @@ impl AuthService {
     pub async fn run(self) -> std::io::Result<()> {
         let host = self.config.server.host.clone();
         let port = self.config.server.port;
+        let workers = self.config.server.workers.unwrap_or(1);
 
         log::info!("Starting auth service on {}:{}", host, port);
 
@@ -37,7 +38,7 @@ impl AuthService {
                 .configure(configure_routes)
         })
         .bind((host.as_str(), port))?
-        .workers(self.config.server.workers.unwrap_or(1))
+        .workers(workers)
         .run()
         .await
     }
