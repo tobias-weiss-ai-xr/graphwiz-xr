@@ -1,0 +1,23 @@
+{
+  "name": "@graphwiz/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "run-s build:proto build:ts",
+    "build:proto": "sh scripts/generate-proto.sh",
+    "build:ts": "tsc",
+    "check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@grpc/proto-loader": "^0.7.10",
+    "grpc-web": "^1.4.2",
+    "protobufjs": "^7.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.3.3"
+  }
+}

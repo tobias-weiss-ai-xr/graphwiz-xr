@@ -1,0 +1,17 @@
+[package]
+name = "graphwiz-protocol"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+# Workspace dependencies
+prost.workspace = true
+serde.workspace = true
+uuid.workspace = true
+thiserror.workspace = true
+
+# For protobuf serialization
+bytes = "1.5"
+
+[build-dependencies]
+prost-build.workspace = true

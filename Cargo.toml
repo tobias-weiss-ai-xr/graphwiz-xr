@@ -1,0 +1,57 @@
+[workspace]
+members = [
+    "packages/shared/protocol",
+    "packages/services/*"
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["GraphWiz-XR Contributors"]
+license = "MPL-2.0"
+
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+async-trait = "0.1"
+
+# Web framework
+actix-web = "4.4"
+actix-cors = "0.7"
+
+# Database
+sqlx = { version = "0.7", features = ["postgres", "runtime-tokio", "chrono", "uuid"] }
+sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-tokio"] }
+
+# Serialization
+prost = "0.12"
+prost-build = "0.12"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Authentication
+jsonwebtoken = "9.2"
+argon2 = "0.5"
+
+# Networking & WebTransport
+wtransport = "0.1"
+
+# Monitoring
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utils
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1.0"
+anyhow = "1.0"
+
+[profile.dev]
+debug = true
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

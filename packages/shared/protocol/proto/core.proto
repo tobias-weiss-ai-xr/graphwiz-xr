@@ -1,0 +1,167 @@
+syntax = "proto3";
+
+package graphwiz.core;
+
+// Core message wrapper for all GraphWiz-XR communication
+message Message {
+  string message_id = 1;
+  int64 timestamp = 2;
+  MessageType type = 3;
+  oneof payload {
+    ClientHello client_hello = 10;
+    ServerHello server_hello = 11;
+    PositionUpdate position_update = 20;
+    VoiceData voice_data = 21;
+    EntitySpawn entity_spawn = 30;
+    EntityUpdate entity_update = 31;
+    EntityDespawn entity_despawn = 32;
+    ChatMessage chat_message = 40;
+    PresenceEvent presence_event = 50;
+  }
+}
+
+// Message type enumeration
+enum MessageType {
+  UNKNOWN = 0;
+  // Connection lifecycle
+  CLIENT_HELLO = 1;
+  SERVER_HELLO = 2;
+  // Real-time updates
+  POSITION_UPDATE = 10;
+  VOICE_DATA = 11;
+  // Entity management
+  ENTITY_SPAWN = 20;
+  ENTITY_UPDATE = 21;
+  ENTITY_DESPAWN = 22;
+  // Communication
+  CHAT_MESSAGE = 30;
+  // Presence
+  PRESENCE_JOIN = 40;
+  PRESENCE_LEAVE = 41;
+  PRESENCE_UPDATE = 42;
+}
+
+// Vector3 for positions
+message Vector3 {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
+// Quaternion for rotations
+message Quaternion {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  float w = 4;
+}
+
+// Position updates (high frequency, unreliable OK)
+message PositionUpdate {
+  string entity_id = 1;
+  Vector3 position = 2;
+  Quaternion rotation = 3;
+  uint32 sequence_number = 4;
+}
+
+// Voice data (unstable, high priority)
+message VoiceData {
+  string from_client_id = 1;
+  bytes audio_data = 2;
+  int32 sequence_number = 3;
+  VoiceCodec codec = 4;
+}
+
+enum VoiceCodec {
+  OPUS = 0;
+  PCMU = 1;
+  PCMA = 2;
+}
+
+// Entity management (reliable, ordered)
+message EntitySpawn {
+  string entity_id = 1;
+  string template_id = 2;
+  string owner_id = 3;
+  map<string, string> components = 4;
+}
+
+message EntityUpdate {
+  string entity_id = 1;
+  map<string, google.protobuf.Any> components = 2;
+}
+
+message EntityDespawn {
+  string entity_id = 1;
+}
+
+// Chat (reliable)
+message ChatMessage {
+  string from_client_id = 1;
+  string message = 2;
+  int64 timestamp = 3;
+  ChatMessageType type = 4;
+}
+
+enum ChatMessageType {
+  NORMAL = 0;
+  WHISPER = 1;
+  SHOUT = 2;
+}
+
+// Presence
+message PresenceEvent {
+  string client_id = 1;
+  PresenceEventType event_type = 2;
+  PresenceData data = 3;
+}
+
+enum PresenceEventType {
+  JOIN = 0;
+  LEAVE = 1;
+  UPDATE = 2;
+}
+
+message PresenceData {
+  string display_name = 1;
+  string avatar_url = 2;
+  Vector3 position = 3;
+  Quaternion rotation = 4;
+}
+
+// Connection lifecycle messages
+message ClientHello {
+  string client_id = 1;
+  string display_name = 2;
+  string auth_token = 3;
+  string requested_room = 4;
+}
+
+message ServerHello {
+  string server_version = 1;
+  string assigned_client_id = 2;
+  string room_id = 3;
+  WorldState initial_state = 4;
+}
+
+message WorldState {
+  repeated EntitySnapshot entities = 1;
+  repeated PlayerSnapshot players = 2;
+  int64 last_update = 3;
+}
+
+message EntitySnapshot {
+  string id = 1;
+  string template_id = 2;
+  Vector3 position = 3;
+  Quaternion rotation = 4;
+  map<string, string> components = 5;
+}
+
+message PlayerSnapshot {
+  string client_id = 1;
+  string display_name = 2;
+  string avatar_url = 3;
+  Vector3 position = 4;
+  Quaternion rotation = 5;
+}

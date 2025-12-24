@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package graphwiz.networking;
+
+import "core.proto";
+
+// Real-time room service
+service RoomService {
+  // Bidirectional streaming for real-time updates
+  rpc ConnectToRoom (stream ClientMessage) returns (stream ServerMessage);
+
+  // Unary operations
+  rpc JoinRoom (JoinRequest) returns (JoinResponse);
+  rpc LeaveRoom (LeaveRequest) returns (LeaveResponse);
+
+  // Server streaming for presence
+  rpc WatchPresence (PresenceRequest) returns (stream graphwiz.core.PresenceEvent);
+}
+
+message ClientMessage {
+  oneof payload {
+    graphwiz.core.PositionUpdate position = 1;
+    graphwiz.core.VoiceData voice = 2;
+    graphwiz.core.EntityUpdate entity = 3;
+    graphwiz.core.ChatMessage chat = 4;
+  }
+}
+
+message ServerMessage {
+  oneof payload {
+    graphwiz.core.WorldState world_state = 1;
+    graphwiz.core.PresenceEvent presence = 2;
+    graphwiz.core.EntitySpawn entity_spawn = 3;
+    graphwiz.core.EntityUpdate entity_update = 4;
+    graphwiz.core.EntityDespawn entity_despawn = 5;
+    graphwiz.core.ChatMessage chat = 6;
+  }
+}
+
+message JoinRequest {
+  string room_id = 1;
+  string auth_token = 2;
+  string display_name = 3;
+}
+
+message JoinResponse {
+  bool success = 1;
+  string room_id = 2;
+  string assigned_client_id = 3;
+  graphwiz.core.WorldState initial_state = 4;
+}
+
+message LeaveRequest {
+  string room_id = 1;
+  string client_id = 2;
+}
+
+message LeaveResponse {
+  bool success = 1;
+}
+
+message PresenceRequest {
+  string room_id = 1;
+}
