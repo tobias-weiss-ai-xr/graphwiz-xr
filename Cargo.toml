@@ -1,7 +1,11 @@
 [workspace]
 members = [
     "packages/shared/protocol",
-    "packages/services/*"
+    "packages/services/reticulum/core",
+    "packages/services/reticulum/core/migrations",
+    "packages/services/reticulum/auth",
+    "packages/services/reticulum/hub",
+    "packages/services/reticulum/presence",
 ]
 resolver = "2"
 
@@ -46,6 +50,12 @@ uuid = { version = "1.6", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 thiserror = "1.0"
 anyhow = "1.0"
+futures-util = "0.3"
+config = "0.14"
+sea-orm-migration = "0.12"
+
+# Logging
+log = "0.4"
 
 [profile.dev]
 debug = true

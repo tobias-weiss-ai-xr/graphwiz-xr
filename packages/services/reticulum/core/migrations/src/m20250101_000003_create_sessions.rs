@@ -1,4 +1,5 @@
 use sea_orm_migration::prelude::*;
+use sea_query::{ColumnDef, Index, Table};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -11,14 +12,14 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Sessions::Table)
                     .if_not_exists()
-                    .col(pk_auto(Sessions::Id))
-                    .col(string(Sessions::SessionId))
-                    .col(string(Sessions::UserId))
-                    .col(string(Sessions::RoomId).null())
-                    .col(string(Sessions::ClientId))
-                    .col(timestamp(Sessions::CreatedAt))
-                    .col(timestamp(Sessions::ExpiresAt))
-                    .col(boolean(Sessions::IsActive).default(true))
+                    .col(&mut ColumnDef::new(Sessions::Id).integer().auto_increment().primary_key())
+                    .col(&mut ColumnDef::new(Sessions::SessionId).string())
+                    .col(&mut ColumnDef::new(Sessions::UserId).string())
+                    .col(&mut ColumnDef::new(Sessions::RoomId).string().null())
+                    .col(&mut ColumnDef::new(Sessions::ClientId).string())
+                    .col(&mut ColumnDef::new(Sessions::CreatedAt).timestamp())
+                    .col(&mut ColumnDef::new(Sessions::ExpiresAt).timestamp())
+                    .col(&mut ColumnDef::new(Sessions::IsActive).boolean().default(true))
                     .to_owned(),
             )
             .await?;

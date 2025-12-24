@@ -14,31 +14,32 @@ pub struct RoomState {
     pub max_players: i32,
     pub current_players: i32,
     pub created_by: String,
-    pub entities: HashMap<String, EntityState>,
+    pub entities: HashMap<String, core_models::EntityData>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-pub struct EntityState {
+pub struct SpawnEntityRequest {
     pub entity_id: String,
     pub template_id: String,
-    pub position: Vector3,
-    pub rotation: Quaternion,
+    pub owner_id: String,
+    pub position: core_models::Vector3,
+    pub rotation: core_models::Quaternion,
     pub components: serde_json::Value,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct Vector3 {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-}
-
-#[derive(Clone, Serialize, Deserialize)]
-pub struct Quaternion {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-    pub w: f32,
+impl SpawnEntityRequest {
+    /// Convert to EntityData by adding room_id
+    pub fn to_entity_data(&self, room_id: String) -> core_models::EntityData {
+        core_models::EntityData {
+            entity_id: self.entity_id.clone(),
+            room_id,
+            template_id: self.template_id.clone(),
+            owner_id: self.owner_id.clone(),
+            position: self.position.clone(),
+            rotation: self.rotation.clone(),
+            components: self.components.clone(),
+        }
+    }
 }
 
 pub struct RoomManager {
@@ -106,16 +107,17 @@ impl RoomManager {
     }
 
     /// Spawn an entity in a room
-    pub async fn spawn_entity(&self, room_id: &str, entity: EntityState) -> Result<()> {
+    pub async fn spawn_entity(&self, room_id: &str, request: SpawnEntityRequest) -> Result<()> {
         let mut rooms = self.rooms.write().await;
         if let Some(room) = rooms.get_mut(room_id) {
-            room.entities.insert(entity.entity_id.clone(), entity);
+            let entity_data = request.to_entity_data(room_id.to_string());
+            room.entities.insert(entity_data.entity_id.clone(), entity_data);
         }
         Ok(())
     }
 
     /// Update an entity in a room
-    pub async fn update_entity(&self, room_id: &str, entity_id: &str, entity: EntityState) -> Result<()> {
+    pub async fn update_entity(&self, room_id: &str, entity_id: &str, entity: core_models::EntityData) -> Result<()> {
         let mut rooms = self.rooms.write().await;
         if let Some(room) = rooms.get_mut(room_id) {
             room.entities.insert(entity_id.to_string(), entity);
@@ -133,7 +135,7 @@ impl RoomManager {
     }
 
     /// Get all entities in a room
-    pub async fn get_entities(&self, room_id: &str) -> Result<Vec<EntityState>> {
+    pub async fn get_entities(&self, room_id: &str) -> Result<Vec<core_models::EntityData>> {
         let rooms = self.rooms.read().await;
         if let Some(room) = rooms.get(room_id) {
             Ok(room.entities.values().cloned().collect())
@@ -153,8 +155,8 @@ impl Default for RoomManager {
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_room_manager_creation() {
+    #[tokio::test]
+    async fn test_room_manager_creation() {
         let manager = RoomManager::new();
         assert_eq!(manager.rooms.read().await.len(), 0);
     }

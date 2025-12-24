@@ -2,7 +2,6 @@
 
 use actix_web::{
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
-    error::ErrorInternalServerError,
     Error, HttpResponse,
 };
 use futures_util::future::LocalBoxFuture;

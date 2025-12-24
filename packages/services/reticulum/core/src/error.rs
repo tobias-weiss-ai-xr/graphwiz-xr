@@ -3,7 +3,6 @@
 use actix_web::{error::ResponseError, http::StatusCode, HttpResponse};
 use sea_orm::DbErr;
 use serde::Serialize;
-use std::fmt;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -61,31 +60,31 @@ struct ErrorResponse {
 
 impl ResponseError for Error {
     fn error_response(&self) -> HttpResponse {
-        let (status, error_type, message) = match self {
+        let (status, error_type, message): (StatusCode, &'static str, String) = match self {
             Error::Database(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "database_error",
-                "A database error occurred",
+                "A database error occurred".to_string(),
             ),
-            Error::Auth(msg) => (StatusCode::UNAUTHORIZED, "auth_error", msg),
-            Error::Authorization(msg) => (StatusCode::FORBIDDEN, "authorization_error", msg),
-            Error::Validation(msg) => (StatusCode::BAD_REQUEST, "validation_error", msg),
-            Error::NotFound(msg) => (StatusCode::NOT_FOUND, "not_found", msg),
+            Error::Auth(msg) => (StatusCode::UNAUTHORIZED, "auth_error", msg.clone()),
+            Error::Authorization(msg) => (StatusCode::FORBIDDEN, "authorization_error", msg.clone()),
+            Error::Validation(msg) => (StatusCode::BAD_REQUEST, "validation_error", msg.clone()),
+            Error::NotFound(msg) => (StatusCode::NOT_FOUND, "not_found", msg.clone()),
             Error::Internal(msg) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "internal_error",
-                msg,
+                msg.clone(),
             ),
             Error::Serialization(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "serialization_error",
-                "Failed to serialize data",
+                "Failed to serialize data".to_string(),
             ),
         };
 
         HttpResponse::build(status).json(ErrorResponse {
-            error: error_type.to_string(),
-            message: message.to_string(),
+            error: error_type.to_owned(),
+            message,
             details: None,
         })
     }

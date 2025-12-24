@@ -1,4 +1,5 @@
 use sea_orm_migration::prelude::*;
+use sea_query::{ColumnDef, Index, Table};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -11,15 +12,15 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Users::Table)
                     .if_not_exists()
-                    .col(pk_auto(Users::Id))
-                    .col(string(Users::DisplayName))
-                    .col(string(Users::Email))
-                    .col(string(Users::PasswordHash))
-                    .col(string(Users::AvatarUrl).null())
-                    .col(text(Users::Bio).null())
-                    .col(timestamp(Users::CreatedAt))
-                    .col(timestamp(Users::UpdatedAt))
-                    .col(boolean(Users::IsActive).default(true))
+                    .col(&mut ColumnDef::new(Users::Id).integer().auto_increment().primary_key())
+                    .col(&mut ColumnDef::new(Users::DisplayName).string())
+                    .col(&mut ColumnDef::new(Users::Email).string())
+                    .col(&mut ColumnDef::new(Users::PasswordHash).string())
+                    .col(&mut ColumnDef::new(Users::AvatarUrl).string().null())
+                    .col(&mut ColumnDef::new(Users::Bio).string().null())
+                    .col(&mut ColumnDef::new(Users::CreatedAt).timestamp())
+                    .col(&mut ColumnDef::new(Users::UpdatedAt).timestamp())
+                    .col(&mut ColumnDef::new(Users::IsActive).boolean().default(true))
                     .to_owned(),
             )
             .await?;

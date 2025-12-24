@@ -1,4 +1,5 @@
 use sea_orm_migration::prelude::*;
+use sea_query::{ColumnDef, Index, Table};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -11,16 +12,16 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Entities::Table)
                     .if_not_exists()
-                    .col(pk_auto(Entities::Id))
-                    .col(string(Entities::EntityId))
-                    .col(string(Entities::RoomId))
-                    .col(string(Entities::TemplateId))
-                    .col(string(Entities::OwnerId))
-                    .col(json(Entities::Position))
-                    .col(json(Entities::Rotation))
-                    .col(json(Entities::Components))
-                    .col(timestamp(Entities::CreatedAt))
-                    .col(timestamp(Entities::UpdatedAt))
+                    .col(&mut ColumnDef::new(Entities::Id).integer().auto_increment().primary_key())
+                    .col(&mut ColumnDef::new(Entities::EntityId).string())
+                    .col(&mut ColumnDef::new(Entities::RoomId).string())
+                    .col(&mut ColumnDef::new(Entities::TemplateId).string())
+                    .col(&mut ColumnDef::new(Entities::OwnerId).string())
+                    .col(&mut ColumnDef::new(Entities::Position).string())  // JSON stored as text
+                    .col(&mut ColumnDef::new(Entities::Rotation).string())  // JSON stored as text
+                    .col(&mut ColumnDef::new(Entities::Components).string())  // JSON stored as text
+                    .col(&mut ColumnDef::new(Entities::CreatedAt).timestamp())
+                    .col(&mut ColumnDef::new(Entities::UpdatedAt).timestamp())
                     .to_owned(),
             )
             .await?;

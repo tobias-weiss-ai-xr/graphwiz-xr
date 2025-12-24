@@ -3,16 +3,14 @@
 use reticulum_core::{db, models as core_models, Result};
 use uuid::Uuid;
 
-use crate::room::{EntityState, Quaternion, Vector3};
-
 /// Create a new entity in a room
 pub async fn create_entity(
     db: &reticulum_core::DatabaseConnection,
     room_id: String,
     template_id: String,
     owner_id: String,
-    position: Vector3,
-    rotation: Quaternion,
+    position: core_models::Vector3,
+    rotation: core_models::Quaternion,
     components: serde_json::Value,
 ) -> Result<String> {
     let entity_id = Uuid::new_v4().to_string();
@@ -30,8 +28,8 @@ pub async fn create_entity(
 pub async fn update_entity_transform(
     db: &reticulum_core::DatabaseConnection,
     entity_id: &str,
-    position: Vector3,
-    rotation: Quaternion,
+    position: core_models::Vector3,
+    rotation: core_models::Quaternion,
 ) -> Result<()> {
     // Update in database (implementation would go here)
     Ok(())

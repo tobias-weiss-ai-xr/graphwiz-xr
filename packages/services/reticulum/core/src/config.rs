@@ -41,7 +41,7 @@ pub struct TracingConfig {
 
 impl Config {
     /// Load configuration from file and environment variables
-    pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, config::Error> {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, config::ConfigError> {
         let config = ConfigImpl::builder()
             .add_source(File::from(path.as_ref()))
             .add_source(Environment::with_prefix("RETICULUM").separator("__"))
@@ -51,7 +51,7 @@ impl Config {
     }
 
     /// Load from default locations or use defaults
-    pub fn load_or_default() -> Result<Self, config::Error> {
+    pub fn load_or_default() -> Result<Self, config::ConfigError> {
         let config = ConfigImpl::builder()
             .add_source(File::with_name("config/reticulum").required(false))
             .add_source(Environment::with_prefix("RETICULUM").separator("__"))

@@ -19,16 +19,17 @@ uuid.workspace = true
 chrono.workspace = true
 thiserror.workspace = true
 anyhow.workspace = true
+log.workspace = true
+futures-util.workspace = true
+config.workspace = true
+sea-orm-migration.workspace = true
 
 # Authentication
 jsonwebtoken.workspace = true
 argon2.workspace = true
 
-# Database
-sea-orm-migration = "0.12"
-
-# Config
-config = "0.14"
+# Local dependencies
+reticulum-migrations = { path = "migrations" }
 
 [dev-dependencies]
 # Testing

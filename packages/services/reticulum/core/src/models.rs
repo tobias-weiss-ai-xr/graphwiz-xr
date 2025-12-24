@@ -8,4 +8,4 @@ pub mod entities;
 pub use users::{User, UserModel};
 pub use rooms::{Room, RoomModel};
 pub use sessions::{Session, SessionModel};
-pub use entities::{Entity, EntityModel};
+pub use entities::{EntityData, EntityModel, Vector3, Quaternion};

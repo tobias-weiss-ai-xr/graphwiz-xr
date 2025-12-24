@@ -1,4 +1,5 @@
 use sea_orm_migration::prelude::*;
+use sea_query::{ColumnDef, Index, Table};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -11,16 +12,16 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Rooms::Table)
                     .if_not_exists()
-                    .col(pk_auto(Rooms::Id))
-                    .col(string(Rooms::RoomId))
-                    .col(string(Rooms::Name))
-                    .col(text(Rooms::Description).null())
-                    .col(integer(Rooms::MaxPlayers).default(50))
-                    .col(boolean(Rooms::IsPrivate).default(false))
-                    .col(string(Rooms::CreatedBy))
-                    .col(timestamp(Rooms::CreatedAt))
-                    .col(timestamp(Rooms::UpdatedAt))
-                    .col(boolean(Rooms::IsActive).default(true))
+                    .col(&mut ColumnDef::new(Rooms::Id).integer().auto_increment().primary_key())
+                    .col(&mut ColumnDef::new(Rooms::RoomId).string())
+                    .col(&mut ColumnDef::new(Rooms::Name).string())
+                    .col(&mut ColumnDef::new(Rooms::Description).string().null())
+                    .col(&mut ColumnDef::new(Rooms::MaxPlayers).integer().default(50))
+                    .col(&mut ColumnDef::new(Rooms::IsPrivate).boolean().default(false))
+                    .col(&mut ColumnDef::new(Rooms::CreatedBy).string())
+                    .col(&mut ColumnDef::new(Rooms::CreatedAt).timestamp())
+                    .col(&mut ColumnDef::new(Rooms::UpdatedAt).timestamp())
+                    .col(&mut ColumnDef::new(Rooms::IsActive).boolean().default(true))
                     .to_owned(),
             )
             .await?;
