@@ -1,0 +1,32 @@
+[package]
+name = "reticulum-presence"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+# Core
+reticulum-core = { path = "../core" }
+graphwiz-protocol = { path = "../../shared/protocol" }
+
+# Workspace
+tokio.workspace = true
+actix.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+
+# Async
+async-trait.workspace = true
+futures = "0.3"
+
+# Networking & WebTransport
+wtransport = "0.1"
+
+# Protocol
+prost.workspace = true
+
+[dev-dependencies]
+tokio-test = "0.4"
