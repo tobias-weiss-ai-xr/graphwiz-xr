@@ -17,7 +17,6 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 
 use room::RoomManager;
-use error::SfuResult;
 
 pub use error::SfuError;
 pub use config::SfuConfig;

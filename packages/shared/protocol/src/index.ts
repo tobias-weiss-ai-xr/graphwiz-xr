@@ -14,3 +14,9 @@ export { MessageParser } from './parser.js';
 
 // Re-export all types from types.ts
 export type * from './types.js';
+
+// Re-export enums as values
+export { MessageType, VoiceCodec, ChatMessageType, PresenceEventType } from './types.js';
+
+// Re-export all networking types
+export type * from './generated/networking.js';

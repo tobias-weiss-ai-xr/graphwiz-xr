@@ -4,7 +4,7 @@ use actix_web::{web, Scope};
 use super::handlers;
 
 /// Configure SFU service routes
-pub fn configure_routes(app: web::ServiceConfig) {
+pub fn configure_routes(app: &mut web::ServiceConfig) {
     app.service(
         web::scope("/api/v1")
             .service(health_routes())

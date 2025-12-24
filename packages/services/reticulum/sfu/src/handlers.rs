@@ -2,7 +2,7 @@
 
 use super::{
     config::SfuConfig,
-    error::{SfuError, SfuResult},
+    error::SfuError,
     peer::{IceCandidate, MediaKind, MediaTrack, SfuPeer, SessionDescription},
     room::{RoomManager, RoomStats},
 };
@@ -123,8 +123,8 @@ pub async fn create_room(
 
     match result {
         Ok(room) => HttpResponse::Ok().json(CreateRoomResponse {
-            room_id: room.id,
-            name: room.name,
+            room_id: room.id.clone(),
+            name: room.name.clone(),
         }),
         Err(SfuError::InternalError(e)) if e.contains("already exists") => {
             HttpResponse::BadRequest().json(serde_json::json!({
@@ -173,7 +173,7 @@ pub async fn join_room(
     }
 
     // Create new peer
-    let user_id = req.user_id.clone().unwrap_or_else(|| Uuid::new_v4().to_string());
+    let _user_id = req.user_id.clone().unwrap_or_else(|| Uuid::new_v4().to_string());
     let peer_id = Uuid::new_v4().to_string();
     let peer = Arc::new(SfuPeer::new(
         peer_id.clone(),

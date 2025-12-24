@@ -226,7 +226,8 @@ impl RtpPacket {
             return Err("RTP packet too short".to_string());
         }
 
-        let mut cursor = std::io::Cursor::new(data);
+        let original_len = data.len();
+        let mut cursor = std::io::Cursor::new(data.clone());
 
         // First byte
         let first_byte = cursor.get_u8();
@@ -284,7 +285,7 @@ impl RtpPacket {
             });
         }
 
-        let header_size = data.len() - cursor.remaining();
+        let header_size = original_len - cursor.remaining();
 
         // Payload
         let payload = data.slice(cursor.position() as usize..);

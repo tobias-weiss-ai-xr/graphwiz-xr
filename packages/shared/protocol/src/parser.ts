@@ -74,22 +74,22 @@ export class MessageParser {
   }
 
   private static parsePayload(
-    view: DataView,
-    type: number,
-    offset: number,
-    length: number
+    _view: DataView,
+    _type: number,
+    _offset: number,
+    _length: number
   ): Message['payload'] {
     // Payload parsing implementation based on message type
     // This is a simplified version - full implementation would handle all types
     return {} as Message['payload'];
   }
 
-  private static calculatePayloadSize(payload: Message['payload']): number {
+  private static calculatePayloadSize(_payload: Message['payload']): number {
     // Calculate payload size for serialization
     return 0; // Placeholder
   }
 
-  private static writePayload(view: DataView, offset: number, payload: Message['payload']): void {
+  private static writePayload(_view: DataView, _offset: number, _payload: Message['payload']): void {
     // Write payload data
     // Implementation depends on payload type
   }

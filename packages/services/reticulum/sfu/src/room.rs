@@ -186,7 +186,7 @@ impl SfuRoom {
 
     /// Get room statistics
     pub async fn get_stats(&self) -> RoomStats {
-        let peers = self.peers.read().await();
+        let peers = self.peers.read().await;
         let mut video_track_count = 0;
         let mut audio_track_count = 0;
 
@@ -250,7 +250,7 @@ impl RoomManager {
 
         {
             let mut rooms = self.rooms.write().await;
-            rooms.insert(id, room.clone());
+            rooms.insert(id.clone(), room.clone());
         }
 
         log::info!("Created SFU room {}", id);

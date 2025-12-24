@@ -20,7 +20,7 @@ services:
       POSTGRES_DB: graphwiz
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -70,7 +70,7 @@ services:
       JWT_SECRET: graphwiz_dev_secret_change_in_production
       JWT_EXPIRATION: 86400
     ports:
-      - "8001:8001"
+      - "8011:8001"
     depends_on:
       postgres:
         condition: service_healthy
@@ -94,7 +94,7 @@ services:
       SERVER_PORT: 8002
       SERVER_WORKERS: 2
     ports:
-      - "8002:8002"
+      - "8012:8002"
     depends_on:
       postgres:
         condition: service_healthy
@@ -120,7 +120,7 @@ services:
       SERVER_PORT: 8003
       SERVER_WORKERS: 2
     ports:
-      - "8003:8003"
+      - "8013:8003"
     depends_on:
       postgres:
         condition: service_healthy
@@ -156,7 +156,7 @@ services:
       SFU_RTP_PORT_START: 10000
       SFU_RTP_PORT_END: 20000
     ports:
-      - "8004:8004"
+      - "8014:8004"
       - "10000-10100:10000-10100/udp"  # RTP ports
     depends_on:
       postgres:
@@ -177,12 +177,12 @@ services:
     container_name: graphwiz-hub-client
     restart: unless-stopped
     environment:
-      VITE_API_BASE_URL: http://localhost:8001
-      VITE_HUB_API_URL: http://localhost:8002
-      VITE_PRESENCE_WS_URL: ws://localhost:8003
-      VITE_SFU_URL: http://localhost:8004
+      VITE_API_BASE_URL: http://localhost:8011
+      VITE_HUB_API_URL: http://localhost:8012
+      VITE_PRESENCE_WS_URL: ws://localhost:8013
+      VITE_SFU_URL: http://localhost:8014
     ports:
-      - "5173:5173"
+      - "5175:5173"
     volumes:
       - ../../packages/clients/hub-client:/app:cached
       - /app/node_modules
@@ -198,10 +198,10 @@ services:
     container_name: graphwiz-admin-client
     restart: unless-stopped
     environment:
-      VITE_API_BASE_URL: http://localhost:8001
-      VITE_HUB_API_URL: http://localhost:8002
+      VITE_API_BASE_URL: http://localhost:8011
+      VITE_HUB_API_URL: http://localhost:8012
     ports:
-      - "5174:5173"
+      - "5176:5173"
     volumes:
       - ../../packages/clients/admin-client:/app:cached
       - /app/node_modules
@@ -214,8 +214,8 @@ services:
     container_name: graphwiz-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "8081:80"
+      - "8443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx-ssl:/etc/nginx/ssl:ro

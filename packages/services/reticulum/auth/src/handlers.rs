@@ -237,7 +237,5 @@ pub async fn health() -> HttpResponse {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     // Note: These would typically be integration tests with a test database
 }

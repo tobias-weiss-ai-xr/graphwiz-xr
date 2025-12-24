@@ -3,20 +3,8 @@
  * This will be replaced with actual protobuf-generated code
  */
 
-export interface Message {
-  messageId: string;
-  timestamp: number;
-}
+// Note: Core networking types are now in types.ts
+// This file is kept for compatibility but may be removed in the future
 
-export interface ClientHello {
-  clientId: string;
-  displayName: string;
-  authToken: string;
-  requestedRoom: string;
-}
-
-export interface ServerHello {
-  serverVersion: string;
-  assignedClientId: string;
-  roomId: string;
-}
+// Re-export everything from types.ts to maintain backwards compatibility
+export * from '../types.js';

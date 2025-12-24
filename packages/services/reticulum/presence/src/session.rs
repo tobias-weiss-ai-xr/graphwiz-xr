@@ -131,6 +131,7 @@ impl Default for SessionManager {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use uuid::Uuid;
 
     #[tokio::test]
     async fn test_session_registration() {
