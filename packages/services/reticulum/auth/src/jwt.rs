@@ -5,7 +5,6 @@ use argon2::{
     Argon2,
 };
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use serde::{Deserialize, Serialize};
 
 use crate::models::{TokenClaims, UserInfo};
 use reticulum_core::{Config, Error, Result};

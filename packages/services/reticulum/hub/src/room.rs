@@ -1,6 +1,6 @@
 //! Room state management
 
-use reticulum_core::{db, models as core_models, Result};
+use reticulum_core::{models as core_models, Result};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;

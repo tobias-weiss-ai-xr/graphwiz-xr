@@ -9,9 +9,8 @@ pub mod models;
 pub mod routes;
 
 use actix_web::{web, App, HttpServer};
-use reticulum_core::{Config, Result};
+use reticulum_core::Config;
 
-use config::AuthConfig;
 use routes::configure_routes;
 
 pub struct AuthService {

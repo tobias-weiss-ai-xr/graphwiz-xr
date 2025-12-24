@@ -38,14 +38,14 @@ impl SignalingServer {
     }
 
     /// Handle a WebRTC offer from a client
-    pub async fn handle_offer(&self, room_id: &str, from_client: &str, offer: &str) -> Result<()> {
+    pub async fn handle_offer(&self, room_id: &str, from_client: &str, _offer: &str) -> Result<()> {
         // Broadcast offer to other clients in the room
         log::info!("Received WebRTC offer from {} in room {}", from_client, room_id);
         Ok(())
     }
 
     /// Handle a WebRTC answer from a client
-    pub async fn handle_answer(&self, room_id: &str, from_client: &str, answer: &str) -> Result<()> {
+    pub async fn handle_answer(&self, room_id: &str, from_client: &str, _answer: &str) -> Result<()> {
         // Send answer to the target client
         log::info!("Received WebRTC answer from {} in room {}", from_client, room_id);
         Ok(())
@@ -56,9 +56,9 @@ impl SignalingServer {
         &self,
         room_id: &str,
         from_client: &str,
-        candidate: &str,
-        sdp_mid: &str,
-        sdp_mline_index: u16,
+        _candidate: &str,
+        _sdp_mid: &str,
+        _sdp_mline_index: u16,
     ) -> Result<()> {
         log::info!("Received ICE candidate from {} in room {}", from_client, room_id);
         Ok(())

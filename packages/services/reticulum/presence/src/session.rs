@@ -1,10 +1,9 @@
 //! Session management for WebTransport connections
 
-use reticulum_core::{db, models as core_models, Result};
+use reticulum_core::Result;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use uuid::Uuid;
 
 #[derive(Clone)]
 pub struct ClientSession {

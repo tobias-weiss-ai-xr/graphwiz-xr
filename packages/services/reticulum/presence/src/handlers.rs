@@ -3,7 +3,7 @@
 use actix_web::{web, HttpRequest, HttpResponse};
 use serde::Deserialize;
 
-use crate::session::{ClientSession, SessionManager};
+use crate::session::SessionManager;
 use crate::signaling::SignalingMessage;
 use reticulum_core::Config;
 
@@ -16,9 +16,9 @@ pub struct ConnectRequest {
 
 /// Handle WebTransport connection request
 pub async fn connect(
-    config: web::Data<Config>,
-    session_manager: web::Data<SessionManager>,
-    req: HttpRequest,
+    _config: web::Data<Config>,
+    _session_manager: web::Data<SessionManager>,
+    _req: HttpRequest,
 ) -> HttpResponse {
     // In a real implementation, this would upgrade to WebTransport
     HttpResponse::Ok().json(serde_json::json!({
@@ -52,7 +52,7 @@ pub async fn get_room_clients(
 
 /// Handle WebRTC signaling message
 pub async fn signaling(
-    session_manager: web::Data<SessionManager>,
+    _session_manager: web::Data<SessionManager>,
     msg: web::Json<SignalingMessage>,
 ) -> HttpResponse {
     log::info!("Received signaling message: {:?}", msg.message_type);

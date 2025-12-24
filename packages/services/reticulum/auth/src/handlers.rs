@@ -4,7 +4,7 @@ use actix_web::{web, HttpRequest, HttpResponse};
 use serde_json::json;
 use validator::Validate;
 
-use reticulum_core::{Config, Result};
+use reticulum_core::Config;
 use reticulum_core::{db, models as core_models};
 
 use crate::jwt::{generate_access_token, generate_refresh_token, hash_password, verify_password};

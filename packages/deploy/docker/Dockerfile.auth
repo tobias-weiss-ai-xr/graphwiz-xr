@@ -1,0 +1,55 @@
+# Dockerfile for Reticulum Auth Service
+# Multi-stage build for optimized production image
+
+# Stage 1: Build
+FROM rust:1.75-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache \
+    musl-dev \
+    postgresql-client \
+    pkgconfig \
+    openssl-dev
+
+WORKDIR /build
+
+# Copy Cargo files
+COPY Cargo.toml Cargo.lock ./
+COPY packages/shared/protocol packages/shared/protocol
+COPY packages/services/reticulum/core packages/services/reticulum/core
+COPY packages/services/reticulum/auth packages/services/reticulum/auth
+
+# Build the auth service binary
+RUN cargo build --release -p reticulum-auth
+
+# Stage 2: Runtime
+FROM alpine:3.19
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    ca-certificates \
+    libgcc
+
+# Create non-root user
+RUN addgroup -g 1000 graphwiz && \
+    adduser -D -u 1000 -G graphwiz graphwiz
+
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /build/target/release/reticulum-auth /app/
+
+# Chown binary
+RUN chown -R graphwiz:graphwiz /app
+
+USER graphwiz
+
+# Expose port
+EXPOSE 8001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8001/api/v1/health || exit 1
+
+# Run the service
+CMD ["./reticulum-auth"]

@@ -6,6 +6,7 @@ members = [
     "packages/services/reticulum/auth",
     "packages/services/reticulum/hub",
     "packages/services/reticulum/presence",
+    "packages/services/reticulum/sfu",
 ]
 resolver = "2"
 

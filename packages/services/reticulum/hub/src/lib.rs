@@ -8,7 +8,7 @@ pub mod handlers;
 pub mod routes;
 
 use actix_web::{web, App, HttpServer};
-use reticulum_core::{Config, Result};
+use reticulum_core::Config;
 
 use routes::configure_routes;
 

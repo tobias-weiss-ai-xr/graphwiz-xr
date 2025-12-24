@@ -1,0 +1,68 @@
+# Dockerfile for Hub Client (TypeScript + Vite)
+# Multi-stage build with development target
+
+# Stage 1: Dependencies
+FROM node:20-alpine AS dependencies
+WORKDIR /app
+
+# Copy package files
+COPY packages/clients/hub-client/package.json packages/clients/hub-client/pnpm-lock.yaml ./
+
+# Install pnpm
+RUN npm install -g pnpm@8
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Stage 2: Development
+FROM node:20-alpine AS development
+WORKDIR /app
+
+# Copy pnpm
+COPY --from=dependencies /usr/local/bin/pnpm /usr/local/bin/pnpm
+
+# Copy dependencies
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Copy source code
+COPY packages/clients/hub-client ./
+
+# Expose Vite dev server port
+EXPOSE 5173
+
+# Run development server
+CMD ["pnpm", "dev", "--host"]
+
+# Stage 3: Build
+FROM node:20-alpine AS build
+WORKDIR /app
+
+# Copy pnpm
+COPY --from=dependencies /usr/local/bin/pnpm /usr/local/bin/pnpm
+
+# Copy dependencies
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Copy source code
+COPY packages/clients/hub-client ./
+
+# Build
+RUN pnpm build
+
+# Stage 4: Production
+FROM alpine:3.19 AS production
+
+# Install nginx
+RUN apk add --no-cache nginx
+
+# Copy built files
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy nginx config
+COPY packages/deploy/docker/nginx-client.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Run nginx
+CMD ["nginx", "-g", "daemon off;"]

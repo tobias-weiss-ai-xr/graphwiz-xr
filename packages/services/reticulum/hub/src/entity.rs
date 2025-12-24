@@ -1,23 +1,23 @@
 //! Entity management
 
-use reticulum_core::{db, models as core_models, Result};
+use reticulum_core::{models as core_models, Result};
 use uuid::Uuid;
 
 /// Create a new entity in a room
 pub async fn create_entity(
-    db: &reticulum_core::DatabaseConnection,
-    room_id: String,
-    template_id: String,
-    owner_id: String,
+    _db: &reticulum_core::DatabaseConnection,
+    _room_id: String,
+    _template_id: String,
+    _owner_id: String,
     position: core_models::Vector3,
     rotation: core_models::Quaternion,
-    components: serde_json::Value,
+    _components: serde_json::Value,
 ) -> Result<String> {
     let entity_id = Uuid::new_v4().to_string();
-    let now = chrono::Utc::now().naive_utc();
+    let _now = chrono::Utc::now().naive_utc();
 
-    let position_json = serde_json::to_value(&position).unwrap();
-    let rotation_json = serde_json::to_value(&rotation).unwrap();
+    let _position_json = serde_json::to_value(&position).unwrap();
+    let _rotation_json = serde_json::to_value(&rotation).unwrap();
 
     // Create entity record in database (implementation would go here)
     // For now, just return the ID
@@ -26,17 +26,17 @@ pub async fn create_entity(
 
 /// Update entity position and rotation
 pub async fn update_entity_transform(
-    db: &reticulum_core::DatabaseConnection,
-    entity_id: &str,
-    position: core_models::Vector3,
-    rotation: core_models::Quaternion,
+    _db: &reticulum_core::DatabaseConnection,
+    _entity_id: &str,
+    _position: core_models::Vector3,
+    _rotation: core_models::Quaternion,
 ) -> Result<()> {
     // Update in database (implementation would go here)
     Ok(())
 }
 
 /// Delete an entity
-pub async fn delete_entity(db: &reticulum_core::DatabaseConnection, entity_id: &str) -> Result<()> {
+pub async fn delete_entity(_db: &reticulum_core::DatabaseConnection, _entity_id: &str) -> Result<()> {
     // Delete from database (implementation would go here)
     Ok(())
 }

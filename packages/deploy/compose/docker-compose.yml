@@ -1,0 +1,242 @@
+# GraphWiz-XR Development Docker Compose
+#
+# Usage:
+#   docker-compose up -d          # Start all services
+#   docker-compose logs -f        # View logs
+#   docker-compose down           # Stop all services
+#   docker-compose up --build     # Rebuild and start
+
+version: "3.9"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: graphwiz-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: graphwiz
+      POSTGRES_PASSWORD: graphwiz_dev
+      POSTGRES_DB: graphwiz
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U graphwiz"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - graphwiz-network
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: graphwiz-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - graphwiz-network
+
+  # Reticulum Core Service (Database shared utilities)
+  # Note: This is compiled into other services, not run separately
+
+  # Reticulum Auth Service
+  auth:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/docker/Dockerfile.auth
+    container_name: graphwiz-auth
+    restart: unless-stopped
+    environment:
+      RUST_LOG: debug
+      DATABASE_URL: postgresql://graphwiz:graphwiz_dev@postgres:5432/graphwiz
+      REDIS_URL: redis://redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8001
+      SERVER_WORKERS: 2
+      JWT_SECRET: graphwiz_dev_secret_change_in_production
+      JWT_EXPIRATION: 86400
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - graphwiz-network
+
+  # Reticulum Hub Service (Room/Entity management)
+  hub:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/docker/Dockerfile.hub
+    container_name: graphwiz-hub
+    restart: unless-stopped
+    environment:
+      RUST_LOG: debug
+      DATABASE_URL: postgresql://graphwiz:graphwiz_dev@postgres:5432/graphwiz
+      REDIS_URL: redis://redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8002
+      SERVER_WORKERS: 2
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      auth:
+        condition: service_started
+    networks:
+      - graphwiz-network
+
+  # Reticulum Presence Service (Signaling/WebTransport)
+  presence:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/docker/Dockerfile.presence
+    container_name: graphwiz-presence
+    restart: unless-stopped
+    environment:
+      RUST_LOG: debug
+      DATABASE_URL: postgresql://graphwiz:graphwiz_dev@postgres:5432/graphwiz
+      REDIS_URL: redis://redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8003
+      SERVER_WORKERS: 2
+    ports:
+      - "8003:8003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      auth:
+        condition: service_started
+    networks:
+      - graphwiz-network
+
+  # Reticulum SFU Service (WebRTC Media Forwarding)
+  sfu:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/docker/Dockerfile.sfu
+    container_name: graphwiz-sfu
+    restart: unless-stopped
+    environment:
+      RUST_LOG: debug
+      DATABASE_URL: postgresql://graphwiz:graphwiz_dev@postgres:5432/graphwiz
+      REDIS_URL: redis://redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8004
+      SERVER_WORKERS: 4
+      # SFU Configuration
+      SFU_MAX_ROOMS: 100
+      SFU_MAX_PEERS_PER_ROOM: 50
+      SFU_ENABLE_SIMULCAST: "true"
+      SFU_MAX_VIDEO_BITRATE: 3000000
+      SFU_MIN_VIDEO_BITRATE: 300000
+      SFU_AUDIO_BITRATE: 64000
+      # RTP Port Range
+      SFU_RTP_PORT_START: 10000
+      SFU_RTP_PORT_END: 20000
+    ports:
+      - "8004:8004"
+      - "10000-10100:10000-10100/udp"  # RTP ports
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      presence:
+        condition: service_started
+    networks:
+      - graphwiz-network
+
+  # Hub Client (Dev server with hot reload)
+  hub-client:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/docker/Dockerfile.hub-client
+      target: development
+    container_name: graphwiz-hub-client
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8001
+      VITE_HUB_API_URL: http://localhost:8002
+      VITE_PRESENCE_WS_URL: ws://localhost:8003
+      VITE_SFU_URL: http://localhost:8004
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../../packages/clients/hub-client:/app:cached
+      - /app/node_modules
+    networks:
+      - graphwiz-network
+
+  # Admin Client (Dev server)
+  admin-client:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/docker/Dockerfile.admin-client
+      target: development
+    container_name: graphwiz-admin-client
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8001
+      VITE_HUB_API_URL: http://localhost:8002
+    ports:
+      - "5174:5173"
+    volumes:
+      - ../../packages/clients/admin-client:/app:cached
+      - /app/node_modules
+    networks:
+      - graphwiz-network
+
+  # Nginx Reverse Proxy (Optional - for production-like setup)
+  nginx:
+    image: nginx:alpine
+    container_name: graphwiz-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx-ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - auth
+      - hub
+      - presence
+      - sfu
+      - hub-client
+      - admin-client
+    networks:
+      - graphwiz-network
+    profiles:
+      - with-proxy
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  graphwiz-network:
+    driver: bridge
