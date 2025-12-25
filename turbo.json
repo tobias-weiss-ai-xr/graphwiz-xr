@@ -12,10 +12,16 @@
     },
     "test": {
       "dependsOn": ["build"],
-      "outputs": ["coverage/**"]
+      "outputs": ["coverage/**"],
+      "cache": false
     },
     "test:e2e": {
       "dependsOn": ["build"],
+      "cache": false
+    },
+    "test:unit": {
+      "dependsOn": [],
+      "outputs": ["coverage/**"],
       "cache": false
     },
     "check": {

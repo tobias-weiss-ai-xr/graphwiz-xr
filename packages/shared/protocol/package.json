@@ -11,6 +11,8 @@
     "build": "run-s build:proto build:ts",
     "build:proto": "sh scripts/generate-proto.sh",
     "build:ts": "tsc",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
     "check": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
@@ -25,6 +27,8 @@
     "@types/uuid": "^9.0.7",
     "npm-run-all": "^4.1.5",
     "protobufjs-cli": "^2.0.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "@vitest/coverage-v8": "^1.1.0"
   }
 }
