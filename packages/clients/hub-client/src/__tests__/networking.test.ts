@@ -4,7 +4,6 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { WebTransportClient } from '../networking/WebTransportClient';
-import type { Message } from '@graphwiz/protocol';
 
 // Mock WebTransport API
 const mockWebTransport = {
