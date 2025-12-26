@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #ffffff;
+    --color-text: #111827;
+    --color-border: #e5e7eb;
+  }
+
+  .dark {
+    --color-bg: #111827;
+    --color-text: #f9fafb;
+    --color-border: #374151;
+  }
+}
+
+@layer components {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+}

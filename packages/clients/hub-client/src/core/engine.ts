@@ -5,8 +5,9 @@
  * Manages the ECS world, renderer, and systems.
  */
 
-import { World } from '../ecs/world';
 import { TransformSystem } from '../ecs/systems/transform-system';
+import { World } from '../ecs/world';
+
 import type { EngineConfig } from './config';
 
 export class Engine {

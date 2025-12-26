@@ -296,7 +296,7 @@ export class WebTransportClient {
 
     // Notify specific handlers based on type
     switch (message.type) {
-      case MT.SERVER_HELLO:
+      case MT.SERVER_HELLO: {
         const hello = message.payload as ServerHello;
         this.myClientId = hello.assignedClientId;
         if (hello.initialState) {
@@ -304,6 +304,7 @@ export class WebTransportClient {
         }
         console.log('[WebTransport] Received ServerHello, client ID:', this.myClientId);
         break;
+      }
 
       case MT.PRESENCE_JOIN:
       case MT.PRESENCE_LEAVE:

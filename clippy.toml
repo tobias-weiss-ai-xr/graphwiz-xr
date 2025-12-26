@@ -1,0 +1,50 @@
+# Clippy lint configuration for GraphWiz-XR
+
+# Cognitive complexity threshold
+cognitive-complexity-threshold = 30
+
+# Disallowed methods
+disallowed-methods = []
+
+# Disallowed types
+disallowed-types = []
+
+# Documentation style
+doc-valid-idents = [
+    "GraphQL",
+    "WebXR",
+    "WebRTC",
+    "WebTransport",
+    "JavaScript",
+    "TypeScript",
+    "Rust",
+    "PostgreSQL",
+]
+
+# Enforced import renames
+enforced-import-renames = []
+
+# Literal representation threshold
+literal-representation-threshold = 10
+
+# Maximum function lines
+too-many-lines-threshold = 100
+
+# Type complexity threshold
+type-complexity-threshold = 250
+
+# Single char binding names threshold
+single-char-binding-names-threshold = 4
+
+# Enum variant size threshold
+enum-variant-size-threshold = 200
+
+# Allow expect and unwrap in tests
+allow-expect-in-tests = true
+allow-unwrap-in-tests = true
+
+# Suppress lints from dependencies
+suppress-restriction-lint-in-const = false
+
+# Blacklisted names (variable/function names to avoid)
+blacklisted-names = ["foo", "bar", "baz", "quux"]

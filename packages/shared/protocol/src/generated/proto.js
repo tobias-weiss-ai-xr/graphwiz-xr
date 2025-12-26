@@ -5070,6 +5070,1549 @@ $root.graphwiz = (function() {
             return PlayerSnapshot;
         })();
 
+        core.Room = (function() {
+
+            /**
+             * Properties of a Room.
+             * @memberof graphwiz.core
+             * @interface IRoom
+             * @property {string|null} [id] Room id
+             * @property {string|null} [name] Room name
+             * @property {string|null} [description] Room description
+             * @property {graphwiz.core.IRoomSettings|null} [settings] Room settings
+             * @property {number|Long|null} [createdAt] Room createdAt
+             * @property {number|Long|null} [updatedAt] Room updatedAt
+             * @property {string|null} [creatorId] Room creatorId
+             * @property {number|null} [currentPlayers] Room currentPlayers
+             * @property {Array.<string>|null} [tags] Room tags
+             * @property {Object.<string,string>|null} [metadata] Room metadata
+             */
+
+            /**
+             * Constructs a new Room.
+             * @memberof graphwiz.core
+             * @classdesc Represents a Room.
+             * @implements IRoom
+             * @constructor
+             * @param {graphwiz.core.IRoom=} [properties] Properties to set
+             */
+            function Room(properties) {
+                this.tags = [];
+                this.metadata = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Room id.
+             * @member {string} id
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.id = "";
+
+            /**
+             * Room name.
+             * @member {string} name
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.name = "";
+
+            /**
+             * Room description.
+             * @member {string} description
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.description = "";
+
+            /**
+             * Room settings.
+             * @member {graphwiz.core.IRoomSettings|null|undefined} settings
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.settings = null;
+
+            /**
+             * Room createdAt.
+             * @member {number|Long} createdAt
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.createdAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Room updatedAt.
+             * @member {number|Long} updatedAt
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.updatedAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Room creatorId.
+             * @member {string} creatorId
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.creatorId = "";
+
+            /**
+             * Room currentPlayers.
+             * @member {number} currentPlayers
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.currentPlayers = 0;
+
+            /**
+             * Room tags.
+             * @member {Array.<string>} tags
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.tags = $util.emptyArray;
+
+            /**
+             * Room metadata.
+             * @member {Object.<string,string>} metadata
+             * @memberof graphwiz.core.Room
+             * @instance
+             */
+            Room.prototype.metadata = $util.emptyObject;
+
+            /**
+             * Creates a new Room instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {graphwiz.core.IRoom=} [properties] Properties to set
+             * @returns {graphwiz.core.Room} Room instance
+             */
+            Room.create = function create(properties) {
+                return new Room(properties);
+            };
+
+            /**
+             * Encodes the specified Room message. Does not implicitly {@link graphwiz.core.Room.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {graphwiz.core.IRoom} message Room message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Room.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
+                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.description);
+                if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                    $root.graphwiz.core.RoomSettings.encode(message.settings, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int64(message.createdAt);
+                if (message.updatedAt != null && Object.hasOwnProperty.call(message, "updatedAt"))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int64(message.updatedAt);
+                if (message.creatorId != null && Object.hasOwnProperty.call(message, "creatorId"))
+                    writer.uint32(/* id 7, wireType 2 =*/58).string(message.creatorId);
+                if (message.currentPlayers != null && Object.hasOwnProperty.call(message, "currentPlayers"))
+                    writer.uint32(/* id 8, wireType 0 =*/64).int32(message.currentPlayers);
+                if (message.tags != null && message.tags.length)
+                    for (var i = 0; i < message.tags.length; ++i)
+                        writer.uint32(/* id 9, wireType 2 =*/74).string(message.tags[i]);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 10, wireType 2 =*/82).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Room message, length delimited. Does not implicitly {@link graphwiz.core.Room.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {graphwiz.core.IRoom} message Room message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Room.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a Room message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.core.Room} Room
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Room.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Room(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.name = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.description = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.settings = $root.graphwiz.core.RoomSettings.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.createdAt = reader.int64();
+                            break;
+                        }
+                    case 6: {
+                            message.updatedAt = reader.int64();
+                            break;
+                        }
+                    case 7: {
+                            message.creatorId = reader.string();
+                            break;
+                        }
+                    case 8: {
+                            message.currentPlayers = reader.int32();
+                            break;
+                        }
+                    case 9: {
+                            if (!(message.tags && message.tags.length))
+                                message.tags = [];
+                            message.tags.push(reader.string());
+                            break;
+                        }
+                    case 10: {
+                            if (message.metadata === $util.emptyObject)
+                                message.metadata = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.metadata[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a Room message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.core.Room} Room
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Room.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a Room message.
+             * @function verify
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Room.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
+                        return "name: string expected";
+                if (message.description != null && message.hasOwnProperty("description"))
+                    if (!$util.isString(message.description))
+                        return "description: string expected";
+                if (message.settings != null && message.hasOwnProperty("settings")) {
+                    var error = $root.graphwiz.core.RoomSettings.verify(message.settings);
+                    if (error)
+                        return "settings." + error;
+                }
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    if (!$util.isInteger(message.createdAt) && !(message.createdAt && $util.isInteger(message.createdAt.low) && $util.isInteger(message.createdAt.high)))
+                        return "createdAt: integer|Long expected";
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt"))
+                    if (!$util.isInteger(message.updatedAt) && !(message.updatedAt && $util.isInteger(message.updatedAt.low) && $util.isInteger(message.updatedAt.high)))
+                        return "updatedAt: integer|Long expected";
+                if (message.creatorId != null && message.hasOwnProperty("creatorId"))
+                    if (!$util.isString(message.creatorId))
+                        return "creatorId: string expected";
+                if (message.currentPlayers != null && message.hasOwnProperty("currentPlayers"))
+                    if (!$util.isInteger(message.currentPlayers))
+                        return "currentPlayers: integer expected";
+                if (message.tags != null && message.hasOwnProperty("tags")) {
+                    if (!Array.isArray(message.tags))
+                        return "tags: array expected";
+                    for (var i = 0; i < message.tags.length; ++i)
+                        if (!$util.isString(message.tags[i]))
+                            return "tags: string[] expected";
+                }
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    if (!$util.isObject(message.metadata))
+                        return "metadata: object expected";
+                    var key = Object.keys(message.metadata);
+                    for (var i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.metadata[key[i]]))
+                            return "metadata: string{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a Room message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.core.Room} Room
+             */
+            Room.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.core.Room)
+                    return object;
+                var message = new $root.graphwiz.core.Room();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.name != null)
+                    message.name = String(object.name);
+                if (object.description != null)
+                    message.description = String(object.description);
+                if (object.settings != null) {
+                    if (typeof object.settings !== "object")
+                        throw TypeError(".graphwiz.core.Room.settings: object expected");
+                    message.settings = $root.graphwiz.core.RoomSettings.fromObject(object.settings);
+                }
+                if (object.createdAt != null)
+                    if ($util.Long)
+                        (message.createdAt = $util.Long.fromValue(object.createdAt)).unsigned = false;
+                    else if (typeof object.createdAt === "string")
+                        message.createdAt = parseInt(object.createdAt, 10);
+                    else if (typeof object.createdAt === "number")
+                        message.createdAt = object.createdAt;
+                    else if (typeof object.createdAt === "object")
+                        message.createdAt = new $util.LongBits(object.createdAt.low >>> 0, object.createdAt.high >>> 0).toNumber();
+                if (object.updatedAt != null)
+                    if ($util.Long)
+                        (message.updatedAt = $util.Long.fromValue(object.updatedAt)).unsigned = false;
+                    else if (typeof object.updatedAt === "string")
+                        message.updatedAt = parseInt(object.updatedAt, 10);
+                    else if (typeof object.updatedAt === "number")
+                        message.updatedAt = object.updatedAt;
+                    else if (typeof object.updatedAt === "object")
+                        message.updatedAt = new $util.LongBits(object.updatedAt.low >>> 0, object.updatedAt.high >>> 0).toNumber();
+                if (object.creatorId != null)
+                    message.creatorId = String(object.creatorId);
+                if (object.currentPlayers != null)
+                    message.currentPlayers = object.currentPlayers | 0;
+                if (object.tags) {
+                    if (!Array.isArray(object.tags))
+                        throw TypeError(".graphwiz.core.Room.tags: array expected");
+                    message.tags = [];
+                    for (var i = 0; i < object.tags.length; ++i)
+                        message.tags[i] = String(object.tags[i]);
+                }
+                if (object.metadata) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".graphwiz.core.Room.metadata: object expected");
+                    message.metadata = {};
+                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                        message.metadata[keys[i]] = String(object.metadata[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a Room message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {graphwiz.core.Room} message Room
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Room.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.tags = [];
+                if (options.objects || options.defaults)
+                    object.metadata = {};
+                if (options.defaults) {
+                    object.id = "";
+                    object.name = "";
+                    object.description = "";
+                    object.settings = null;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.createdAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.createdAt = options.longs === String ? "0" : 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.updatedAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.updatedAt = options.longs === String ? "0" : 0;
+                    object.creatorId = "";
+                    object.currentPlayers = 0;
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.name != null && message.hasOwnProperty("name"))
+                    object.name = message.name;
+                if (message.description != null && message.hasOwnProperty("description"))
+                    object.description = message.description;
+                if (message.settings != null && message.hasOwnProperty("settings"))
+                    object.settings = $root.graphwiz.core.RoomSettings.toObject(message.settings, options);
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    if (typeof message.createdAt === "number")
+                        object.createdAt = options.longs === String ? String(message.createdAt) : message.createdAt;
+                    else
+                        object.createdAt = options.longs === String ? $util.Long.prototype.toString.call(message.createdAt) : options.longs === Number ? new $util.LongBits(message.createdAt.low >>> 0, message.createdAt.high >>> 0).toNumber() : message.createdAt;
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt"))
+                    if (typeof message.updatedAt === "number")
+                        object.updatedAt = options.longs === String ? String(message.updatedAt) : message.updatedAt;
+                    else
+                        object.updatedAt = options.longs === String ? $util.Long.prototype.toString.call(message.updatedAt) : options.longs === Number ? new $util.LongBits(message.updatedAt.low >>> 0, message.updatedAt.high >>> 0).toNumber() : message.updatedAt;
+                if (message.creatorId != null && message.hasOwnProperty("creatorId"))
+                    object.creatorId = message.creatorId;
+                if (message.currentPlayers != null && message.hasOwnProperty("currentPlayers"))
+                    object.currentPlayers = message.currentPlayers;
+                if (message.tags && message.tags.length) {
+                    object.tags = [];
+                    for (var j = 0; j < message.tags.length; ++j)
+                        object.tags[j] = message.tags[j];
+                }
+                var keys2;
+                if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
+                    object.metadata = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.metadata[keys2[j]] = message.metadata[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this Room to JSON.
+             * @function toJSON
+             * @memberof graphwiz.core.Room
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Room.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Room
+             * @function getTypeUrl
+             * @memberof graphwiz.core.Room
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Room.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.core.Room";
+            };
+
+            return Room;
+        })();
+
+        core.RoomSettings = (function() {
+
+            /**
+             * Properties of a RoomSettings.
+             * @memberof graphwiz.core
+             * @interface IRoomSettings
+             * @property {number|null} [maxPlayers] RoomSettings maxPlayers
+             * @property {boolean|null} [isPublic] RoomSettings isPublic
+             * @property {boolean|null} [allowVoiceChat] RoomSettings allowVoiceChat
+             * @property {boolean|null} [allowTextChat] RoomSettings allowTextChat
+             * @property {boolean|null} [allowInvites] RoomSettings allowInvites
+             * @property {number|null} [maxSpectators] RoomSettings maxSpectators
+             * @property {boolean|null} [requireApproval] RoomSettings requireApproval
+             */
+
+            /**
+             * Constructs a new RoomSettings.
+             * @memberof graphwiz.core
+             * @classdesc Represents a RoomSettings.
+             * @implements IRoomSettings
+             * @constructor
+             * @param {graphwiz.core.IRoomSettings=} [properties] Properties to set
+             */
+            function RoomSettings(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RoomSettings maxPlayers.
+             * @member {number} maxPlayers
+             * @memberof graphwiz.core.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.maxPlayers = 0;
+
+            /**
+             * RoomSettings isPublic.
+             * @member {boolean} isPublic
+             * @memberof graphwiz.core.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.isPublic = false;
+
+            /**
+             * RoomSettings allowVoiceChat.
+             * @member {boolean} allowVoiceChat
+             * @memberof graphwiz.core.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.allowVoiceChat = false;
+
+            /**
+             * RoomSettings allowTextChat.
+             * @member {boolean} allowTextChat
+             * @memberof graphwiz.core.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.allowTextChat = false;
+
+            /**
+             * RoomSettings allowInvites.
+             * @member {boolean} allowInvites
+             * @memberof graphwiz.core.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.allowInvites = false;
+
+            /**
+             * RoomSettings maxSpectators.
+             * @member {number} maxSpectators
+             * @memberof graphwiz.core.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.maxSpectators = 0;
+
+            /**
+             * RoomSettings requireApproval.
+             * @member {boolean} requireApproval
+             * @memberof graphwiz.core.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.requireApproval = false;
+
+            /**
+             * Creates a new RoomSettings instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {graphwiz.core.IRoomSettings=} [properties] Properties to set
+             * @returns {graphwiz.core.RoomSettings} RoomSettings instance
+             */
+            RoomSettings.create = function create(properties) {
+                return new RoomSettings(properties);
+            };
+
+            /**
+             * Encodes the specified RoomSettings message. Does not implicitly {@link graphwiz.core.RoomSettings.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {graphwiz.core.IRoomSettings} message RoomSettings message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomSettings.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.maxPlayers != null && Object.hasOwnProperty.call(message, "maxPlayers"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.maxPlayers);
+                if (message.isPublic != null && Object.hasOwnProperty.call(message, "isPublic"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.isPublic);
+                if (message.allowVoiceChat != null && Object.hasOwnProperty.call(message, "allowVoiceChat"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.allowVoiceChat);
+                if (message.allowTextChat != null && Object.hasOwnProperty.call(message, "allowTextChat"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.allowTextChat);
+                if (message.allowInvites != null && Object.hasOwnProperty.call(message, "allowInvites"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).bool(message.allowInvites);
+                if (message.maxSpectators != null && Object.hasOwnProperty.call(message, "maxSpectators"))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int32(message.maxSpectators);
+                if (message.requireApproval != null && Object.hasOwnProperty.call(message, "requireApproval"))
+                    writer.uint32(/* id 7, wireType 0 =*/56).bool(message.requireApproval);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RoomSettings message, length delimited. Does not implicitly {@link graphwiz.core.RoomSettings.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {graphwiz.core.IRoomSettings} message RoomSettings message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RoomSettings message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.core.RoomSettings} RoomSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomSettings.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.RoomSettings();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.maxPlayers = reader.int32();
+                            break;
+                        }
+                    case 2: {
+                            message.isPublic = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            message.allowVoiceChat = reader.bool();
+                            break;
+                        }
+                    case 4: {
+                            message.allowTextChat = reader.bool();
+                            break;
+                        }
+                    case 5: {
+                            message.allowInvites = reader.bool();
+                            break;
+                        }
+                    case 6: {
+                            message.maxSpectators = reader.int32();
+                            break;
+                        }
+                    case 7: {
+                            message.requireApproval = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RoomSettings message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.core.RoomSettings} RoomSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomSettings.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RoomSettings message.
+             * @function verify
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RoomSettings.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.maxPlayers != null && message.hasOwnProperty("maxPlayers"))
+                    if (!$util.isInteger(message.maxPlayers))
+                        return "maxPlayers: integer expected";
+                if (message.isPublic != null && message.hasOwnProperty("isPublic"))
+                    if (typeof message.isPublic !== "boolean")
+                        return "isPublic: boolean expected";
+                if (message.allowVoiceChat != null && message.hasOwnProperty("allowVoiceChat"))
+                    if (typeof message.allowVoiceChat !== "boolean")
+                        return "allowVoiceChat: boolean expected";
+                if (message.allowTextChat != null && message.hasOwnProperty("allowTextChat"))
+                    if (typeof message.allowTextChat !== "boolean")
+                        return "allowTextChat: boolean expected";
+                if (message.allowInvites != null && message.hasOwnProperty("allowInvites"))
+                    if (typeof message.allowInvites !== "boolean")
+                        return "allowInvites: boolean expected";
+                if (message.maxSpectators != null && message.hasOwnProperty("maxSpectators"))
+                    if (!$util.isInteger(message.maxSpectators))
+                        return "maxSpectators: integer expected";
+                if (message.requireApproval != null && message.hasOwnProperty("requireApproval"))
+                    if (typeof message.requireApproval !== "boolean")
+                        return "requireApproval: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a RoomSettings message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.core.RoomSettings} RoomSettings
+             */
+            RoomSettings.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.core.RoomSettings)
+                    return object;
+                var message = new $root.graphwiz.core.RoomSettings();
+                if (object.maxPlayers != null)
+                    message.maxPlayers = object.maxPlayers | 0;
+                if (object.isPublic != null)
+                    message.isPublic = Boolean(object.isPublic);
+                if (object.allowVoiceChat != null)
+                    message.allowVoiceChat = Boolean(object.allowVoiceChat);
+                if (object.allowTextChat != null)
+                    message.allowTextChat = Boolean(object.allowTextChat);
+                if (object.allowInvites != null)
+                    message.allowInvites = Boolean(object.allowInvites);
+                if (object.maxSpectators != null)
+                    message.maxSpectators = object.maxSpectators | 0;
+                if (object.requireApproval != null)
+                    message.requireApproval = Boolean(object.requireApproval);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RoomSettings message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {graphwiz.core.RoomSettings} message RoomSettings
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RoomSettings.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.maxPlayers = 0;
+                    object.isPublic = false;
+                    object.allowVoiceChat = false;
+                    object.allowTextChat = false;
+                    object.allowInvites = false;
+                    object.maxSpectators = 0;
+                    object.requireApproval = false;
+                }
+                if (message.maxPlayers != null && message.hasOwnProperty("maxPlayers"))
+                    object.maxPlayers = message.maxPlayers;
+                if (message.isPublic != null && message.hasOwnProperty("isPublic"))
+                    object.isPublic = message.isPublic;
+                if (message.allowVoiceChat != null && message.hasOwnProperty("allowVoiceChat"))
+                    object.allowVoiceChat = message.allowVoiceChat;
+                if (message.allowTextChat != null && message.hasOwnProperty("allowTextChat"))
+                    object.allowTextChat = message.allowTextChat;
+                if (message.allowInvites != null && message.hasOwnProperty("allowInvites"))
+                    object.allowInvites = message.allowInvites;
+                if (message.maxSpectators != null && message.hasOwnProperty("maxSpectators"))
+                    object.maxSpectators = message.maxSpectators;
+                if (message.requireApproval != null && message.hasOwnProperty("requireApproval"))
+                    object.requireApproval = message.requireApproval;
+                return object;
+            };
+
+            /**
+             * Converts this RoomSettings to JSON.
+             * @function toJSON
+             * @memberof graphwiz.core.RoomSettings
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RoomSettings.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RoomSettings
+             * @function getTypeUrl
+             * @memberof graphwiz.core.RoomSettings
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RoomSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.core.RoomSettings";
+            };
+
+            return RoomSettings;
+        })();
+
+        core.User = (function() {
+
+            /**
+             * Properties of a User.
+             * @memberof graphwiz.core
+             * @interface IUser
+             * @property {string|null} [id] User id
+             * @property {string|null} [username] User username
+             * @property {string|null} [displayName] User displayName
+             * @property {string|null} [email] User email
+             * @property {string|null} [avatarUrl] User avatarUrl
+             * @property {number|Long|null} [createdAt] User createdAt
+             * @property {Object.<string,string>|null} [metadata] User metadata
+             */
+
+            /**
+             * Constructs a new User.
+             * @memberof graphwiz.core
+             * @classdesc Represents a User.
+             * @implements IUser
+             * @constructor
+             * @param {graphwiz.core.IUser=} [properties] Properties to set
+             */
+            function User(properties) {
+                this.metadata = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * User id.
+             * @member {string} id
+             * @memberof graphwiz.core.User
+             * @instance
+             */
+            User.prototype.id = "";
+
+            /**
+             * User username.
+             * @member {string} username
+             * @memberof graphwiz.core.User
+             * @instance
+             */
+            User.prototype.username = "";
+
+            /**
+             * User displayName.
+             * @member {string} displayName
+             * @memberof graphwiz.core.User
+             * @instance
+             */
+            User.prototype.displayName = "";
+
+            /**
+             * User email.
+             * @member {string} email
+             * @memberof graphwiz.core.User
+             * @instance
+             */
+            User.prototype.email = "";
+
+            /**
+             * User avatarUrl.
+             * @member {string} avatarUrl
+             * @memberof graphwiz.core.User
+             * @instance
+             */
+            User.prototype.avatarUrl = "";
+
+            /**
+             * User createdAt.
+             * @member {number|Long} createdAt
+             * @memberof graphwiz.core.User
+             * @instance
+             */
+            User.prototype.createdAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * User metadata.
+             * @member {Object.<string,string>} metadata
+             * @memberof graphwiz.core.User
+             * @instance
+             */
+            User.prototype.metadata = $util.emptyObject;
+
+            /**
+             * Creates a new User instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {graphwiz.core.IUser=} [properties] Properties to set
+             * @returns {graphwiz.core.User} User instance
+             */
+            User.create = function create(properties) {
+                return new User(properties);
+            };
+
+            /**
+             * Encodes the specified User message. Does not implicitly {@link graphwiz.core.User.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {graphwiz.core.IUser} message User message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            User.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.username != null && Object.hasOwnProperty.call(message, "username"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.username);
+                if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.displayName);
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.email);
+                if (message.avatarUrl != null && Object.hasOwnProperty.call(message, "avatarUrl"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.avatarUrl);
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int64(message.createdAt);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 7, wireType 2 =*/58).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified User message, length delimited. Does not implicitly {@link graphwiz.core.User.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {graphwiz.core.IUser} message User message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            User.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a User message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.core.User} User
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            User.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.User(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.username = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.displayName = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.email = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.avatarUrl = reader.string();
+                            break;
+                        }
+                    case 6: {
+                            message.createdAt = reader.int64();
+                            break;
+                        }
+                    case 7: {
+                            if (message.metadata === $util.emptyObject)
+                                message.metadata = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.metadata[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a User message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.core.User} User
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            User.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a User message.
+             * @function verify
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            User.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.username != null && message.hasOwnProperty("username"))
+                    if (!$util.isString(message.username))
+                        return "username: string expected";
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    if (!$util.isString(message.displayName))
+                        return "displayName: string expected";
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
+                        return "email: string expected";
+                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
+                    if (!$util.isString(message.avatarUrl))
+                        return "avatarUrl: string expected";
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    if (!$util.isInteger(message.createdAt) && !(message.createdAt && $util.isInteger(message.createdAt.low) && $util.isInteger(message.createdAt.high)))
+                        return "createdAt: integer|Long expected";
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    if (!$util.isObject(message.metadata))
+                        return "metadata: object expected";
+                    var key = Object.keys(message.metadata);
+                    for (var i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.metadata[key[i]]))
+                            return "metadata: string{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a User message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.core.User} User
+             */
+            User.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.core.User)
+                    return object;
+                var message = new $root.graphwiz.core.User();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.username != null)
+                    message.username = String(object.username);
+                if (object.displayName != null)
+                    message.displayName = String(object.displayName);
+                if (object.email != null)
+                    message.email = String(object.email);
+                if (object.avatarUrl != null)
+                    message.avatarUrl = String(object.avatarUrl);
+                if (object.createdAt != null)
+                    if ($util.Long)
+                        (message.createdAt = $util.Long.fromValue(object.createdAt)).unsigned = false;
+                    else if (typeof object.createdAt === "string")
+                        message.createdAt = parseInt(object.createdAt, 10);
+                    else if (typeof object.createdAt === "number")
+                        message.createdAt = object.createdAt;
+                    else if (typeof object.createdAt === "object")
+                        message.createdAt = new $util.LongBits(object.createdAt.low >>> 0, object.createdAt.high >>> 0).toNumber();
+                if (object.metadata) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".graphwiz.core.User.metadata: object expected");
+                    message.metadata = {};
+                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                        message.metadata[keys[i]] = String(object.metadata[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a User message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {graphwiz.core.User} message User
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            User.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.objects || options.defaults)
+                    object.metadata = {};
+                if (options.defaults) {
+                    object.id = "";
+                    object.username = "";
+                    object.displayName = "";
+                    object.email = "";
+                    object.avatarUrl = "";
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.createdAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.createdAt = options.longs === String ? "0" : 0;
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.username != null && message.hasOwnProperty("username"))
+                    object.username = message.username;
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    object.displayName = message.displayName;
+                if (message.email != null && message.hasOwnProperty("email"))
+                    object.email = message.email;
+                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
+                    object.avatarUrl = message.avatarUrl;
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    if (typeof message.createdAt === "number")
+                        object.createdAt = options.longs === String ? String(message.createdAt) : message.createdAt;
+                    else
+                        object.createdAt = options.longs === String ? $util.Long.prototype.toString.call(message.createdAt) : options.longs === Number ? new $util.LongBits(message.createdAt.low >>> 0, message.createdAt.high >>> 0).toNumber() : message.createdAt;
+                var keys2;
+                if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
+                    object.metadata = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.metadata[keys2[j]] = message.metadata[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this User to JSON.
+             * @function toJSON
+             * @memberof graphwiz.core.User
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            User.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for User
+             * @function getTypeUrl
+             * @memberof graphwiz.core.User
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            User.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.core.User";
+            };
+
+            return User;
+        })();
+
+        core.AuthToken = (function() {
+
+            /**
+             * Properties of an AuthToken.
+             * @memberof graphwiz.core
+             * @interface IAuthToken
+             * @property {string|null} [token] AuthToken token
+             * @property {string|null} [userId] AuthToken userId
+             * @property {number|Long|null} [expiresAt] AuthToken expiresAt
+             * @property {Array.<string>|null} [permissions] AuthToken permissions
+             */
+
+            /**
+             * Constructs a new AuthToken.
+             * @memberof graphwiz.core
+             * @classdesc Represents an AuthToken.
+             * @implements IAuthToken
+             * @constructor
+             * @param {graphwiz.core.IAuthToken=} [properties] Properties to set
+             */
+            function AuthToken(properties) {
+                this.permissions = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * AuthToken token.
+             * @member {string} token
+             * @memberof graphwiz.core.AuthToken
+             * @instance
+             */
+            AuthToken.prototype.token = "";
+
+            /**
+             * AuthToken userId.
+             * @member {string} userId
+             * @memberof graphwiz.core.AuthToken
+             * @instance
+             */
+            AuthToken.prototype.userId = "";
+
+            /**
+             * AuthToken expiresAt.
+             * @member {number|Long} expiresAt
+             * @memberof graphwiz.core.AuthToken
+             * @instance
+             */
+            AuthToken.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * AuthToken permissions.
+             * @member {Array.<string>} permissions
+             * @memberof graphwiz.core.AuthToken
+             * @instance
+             */
+            AuthToken.prototype.permissions = $util.emptyArray;
+
+            /**
+             * Creates a new AuthToken instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {graphwiz.core.IAuthToken=} [properties] Properties to set
+             * @returns {graphwiz.core.AuthToken} AuthToken instance
+             */
+            AuthToken.create = function create(properties) {
+                return new AuthToken(properties);
+            };
+
+            /**
+             * Encodes the specified AuthToken message. Does not implicitly {@link graphwiz.core.AuthToken.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {graphwiz.core.IAuthToken} message AuthToken message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AuthToken.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.token != null && Object.hasOwnProperty.call(message, "token"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.token);
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.userId);
+                if (message.expiresAt != null && Object.hasOwnProperty.call(message, "expiresAt"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int64(message.expiresAt);
+                if (message.permissions != null && message.permissions.length)
+                    for (var i = 0; i < message.permissions.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).string(message.permissions[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified AuthToken message, length delimited. Does not implicitly {@link graphwiz.core.AuthToken.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {graphwiz.core.IAuthToken} message AuthToken message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AuthToken.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an AuthToken message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.core.AuthToken} AuthToken
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AuthToken.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.AuthToken();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.token = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.expiresAt = reader.int64();
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.permissions && message.permissions.length))
+                                message.permissions = [];
+                            message.permissions.push(reader.string());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an AuthToken message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.core.AuthToken} AuthToken
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AuthToken.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an AuthToken message.
+             * @function verify
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            AuthToken.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.token != null && message.hasOwnProperty("token"))
+                    if (!$util.isString(message.token))
+                        return "token: string expected";
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                if (message.expiresAt != null && message.hasOwnProperty("expiresAt"))
+                    if (!$util.isInteger(message.expiresAt) && !(message.expiresAt && $util.isInteger(message.expiresAt.low) && $util.isInteger(message.expiresAt.high)))
+                        return "expiresAt: integer|Long expected";
+                if (message.permissions != null && message.hasOwnProperty("permissions")) {
+                    if (!Array.isArray(message.permissions))
+                        return "permissions: array expected";
+                    for (var i = 0; i < message.permissions.length; ++i)
+                        if (!$util.isString(message.permissions[i]))
+                            return "permissions: string[] expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates an AuthToken message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.core.AuthToken} AuthToken
+             */
+            AuthToken.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.core.AuthToken)
+                    return object;
+                var message = new $root.graphwiz.core.AuthToken();
+                if (object.token != null)
+                    message.token = String(object.token);
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                if (object.expiresAt != null)
+                    if ($util.Long)
+                        (message.expiresAt = $util.Long.fromValue(object.expiresAt)).unsigned = false;
+                    else if (typeof object.expiresAt === "string")
+                        message.expiresAt = parseInt(object.expiresAt, 10);
+                    else if (typeof object.expiresAt === "number")
+                        message.expiresAt = object.expiresAt;
+                    else if (typeof object.expiresAt === "object")
+                        message.expiresAt = new $util.LongBits(object.expiresAt.low >>> 0, object.expiresAt.high >>> 0).toNumber();
+                if (object.permissions) {
+                    if (!Array.isArray(object.permissions))
+                        throw TypeError(".graphwiz.core.AuthToken.permissions: array expected");
+                    message.permissions = [];
+                    for (var i = 0; i < object.permissions.length; ++i)
+                        message.permissions[i] = String(object.permissions[i]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an AuthToken message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {graphwiz.core.AuthToken} message AuthToken
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            AuthToken.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.permissions = [];
+                if (options.defaults) {
+                    object.token = "";
+                    object.userId = "";
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.expiresAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.expiresAt = options.longs === String ? "0" : 0;
+                }
+                if (message.token != null && message.hasOwnProperty("token"))
+                    object.token = message.token;
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                if (message.expiresAt != null && message.hasOwnProperty("expiresAt"))
+                    if (typeof message.expiresAt === "number")
+                        object.expiresAt = options.longs === String ? String(message.expiresAt) : message.expiresAt;
+                    else
+                        object.expiresAt = options.longs === String ? $util.Long.prototype.toString.call(message.expiresAt) : options.longs === Number ? new $util.LongBits(message.expiresAt.low >>> 0, message.expiresAt.high >>> 0).toNumber() : message.expiresAt;
+                if (message.permissions && message.permissions.length) {
+                    object.permissions = [];
+                    for (var j = 0; j < message.permissions.length; ++j)
+                        object.permissions[j] = message.permissions[j];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this AuthToken to JSON.
+             * @function toJSON
+             * @memberof graphwiz.core.AuthToken
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            AuthToken.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for AuthToken
+             * @function getTypeUrl
+             * @memberof graphwiz.core.AuthToken
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            AuthToken.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.core.AuthToken";
+            };
+
+            return AuthToken;
+        })();
+
         return core;
     })();
 
@@ -7159,6 +8702,16953 @@ $root.graphwiz = (function() {
         })();
 
         return networking;
+    })();
+
+    graphwiz.room = (function() {
+
+        /**
+         * Namespace room.
+         * @memberof graphwiz
+         * @namespace
+         */
+        var room = {};
+
+        room.RoomService = (function() {
+
+            /**
+             * Constructs a new RoomService service.
+             * @memberof graphwiz.room
+             * @classdesc Represents a RoomService
+             * @extends $protobuf.rpc.Service
+             * @constructor
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             */
+            function RoomService(rpcImpl, requestDelimited, responseDelimited) {
+                $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited);
+            }
+
+            (RoomService.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = RoomService;
+
+            /**
+             * Creates new RoomService service using the specified rpc implementation.
+             * @function create
+             * @memberof graphwiz.room.RoomService
+             * @static
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             * @returns {RoomService} RPC service. Useful where requests and/or responses are streamed.
+             */
+            RoomService.create = function create(rpcImpl, requestDelimited, responseDelimited) {
+                return new this(rpcImpl, requestDelimited, responseDelimited);
+            };
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#createRoom}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef CreateRoomCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.CreateRoomResponse} [response] CreateRoomResponse
+             */
+
+            /**
+             * Calls CreateRoom.
+             * @function createRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.ICreateRoomRequest} request CreateRoomRequest message or plain object
+             * @param {graphwiz.room.RoomService.CreateRoomCallback} callback Node-style callback called with the error, if any, and CreateRoomResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.createRoom = function createRoom(request, callback) {
+                return this.rpcCall(createRoom, $root.graphwiz.room.CreateRoomRequest, $root.graphwiz.room.CreateRoomResponse, request, callback);
+            }, "name", { value: "CreateRoom" });
+
+            /**
+             * Calls CreateRoom.
+             * @function createRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.ICreateRoomRequest} request CreateRoomRequest message or plain object
+             * @returns {Promise<graphwiz.room.CreateRoomResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#getRoom}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef GetRoomCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.GetRoomResponse} [response] GetRoomResponse
+             */
+
+            /**
+             * Calls GetRoom.
+             * @function getRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IGetRoomRequest} request GetRoomRequest message or plain object
+             * @param {graphwiz.room.RoomService.GetRoomCallback} callback Node-style callback called with the error, if any, and GetRoomResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.getRoom = function getRoom(request, callback) {
+                return this.rpcCall(getRoom, $root.graphwiz.room.GetRoomRequest, $root.graphwiz.room.GetRoomResponse, request, callback);
+            }, "name", { value: "GetRoom" });
+
+            /**
+             * Calls GetRoom.
+             * @function getRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IGetRoomRequest} request GetRoomRequest message or plain object
+             * @returns {Promise<graphwiz.room.GetRoomResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#updateRoom}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef UpdateRoomCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.UpdateRoomResponse} [response] UpdateRoomResponse
+             */
+
+            /**
+             * Calls UpdateRoom.
+             * @function updateRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IUpdateRoomRequest} request UpdateRoomRequest message or plain object
+             * @param {graphwiz.room.RoomService.UpdateRoomCallback} callback Node-style callback called with the error, if any, and UpdateRoomResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.updateRoom = function updateRoom(request, callback) {
+                return this.rpcCall(updateRoom, $root.graphwiz.room.UpdateRoomRequest, $root.graphwiz.room.UpdateRoomResponse, request, callback);
+            }, "name", { value: "UpdateRoom" });
+
+            /**
+             * Calls UpdateRoom.
+             * @function updateRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IUpdateRoomRequest} request UpdateRoomRequest message or plain object
+             * @returns {Promise<graphwiz.room.UpdateRoomResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#deleteRoom}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef DeleteRoomCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.DeleteRoomResponse} [response] DeleteRoomResponse
+             */
+
+            /**
+             * Calls DeleteRoom.
+             * @function deleteRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IDeleteRoomRequest} request DeleteRoomRequest message or plain object
+             * @param {graphwiz.room.RoomService.DeleteRoomCallback} callback Node-style callback called with the error, if any, and DeleteRoomResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.deleteRoom = function deleteRoom(request, callback) {
+                return this.rpcCall(deleteRoom, $root.graphwiz.room.DeleteRoomRequest, $root.graphwiz.room.DeleteRoomResponse, request, callback);
+            }, "name", { value: "DeleteRoom" });
+
+            /**
+             * Calls DeleteRoom.
+             * @function deleteRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IDeleteRoomRequest} request DeleteRoomRequest message or plain object
+             * @returns {Promise<graphwiz.room.DeleteRoomResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#listRooms}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef ListRoomsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.ListRoomsResponse} [response] ListRoomsResponse
+             */
+
+            /**
+             * Calls ListRooms.
+             * @function listRooms
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IListRoomsRequest} request ListRoomsRequest message or plain object
+             * @param {graphwiz.room.RoomService.ListRoomsCallback} callback Node-style callback called with the error, if any, and ListRoomsResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.listRooms = function listRooms(request, callback) {
+                return this.rpcCall(listRooms, $root.graphwiz.room.ListRoomsRequest, $root.graphwiz.room.ListRoomsResponse, request, callback);
+            }, "name", { value: "ListRooms" });
+
+            /**
+             * Calls ListRooms.
+             * @function listRooms
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IListRoomsRequest} request ListRoomsRequest message or plain object
+             * @returns {Promise<graphwiz.room.ListRoomsResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#searchRooms}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef SearchRoomsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.SearchRoomsResponse} [response] SearchRoomsResponse
+             */
+
+            /**
+             * Calls SearchRooms.
+             * @function searchRooms
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.ISearchRoomsRequest} request SearchRoomsRequest message or plain object
+             * @param {graphwiz.room.RoomService.SearchRoomsCallback} callback Node-style callback called with the error, if any, and SearchRoomsResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.searchRooms = function searchRooms(request, callback) {
+                return this.rpcCall(searchRooms, $root.graphwiz.room.SearchRoomsRequest, $root.graphwiz.room.SearchRoomsResponse, request, callback);
+            }, "name", { value: "SearchRooms" });
+
+            /**
+             * Calls SearchRooms.
+             * @function searchRooms
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.ISearchRoomsRequest} request SearchRoomsRequest message or plain object
+             * @returns {Promise<graphwiz.room.SearchRoomsResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#joinRoom}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef JoinRoomCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.JoinRoomResponse} [response] JoinRoomResponse
+             */
+
+            /**
+             * Calls JoinRoom.
+             * @function joinRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IJoinRoomRequest} request JoinRoomRequest message or plain object
+             * @param {graphwiz.room.RoomService.JoinRoomCallback} callback Node-style callback called with the error, if any, and JoinRoomResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.joinRoom = function joinRoom(request, callback) {
+                return this.rpcCall(joinRoom, $root.graphwiz.room.JoinRoomRequest, $root.graphwiz.room.JoinRoomResponse, request, callback);
+            }, "name", { value: "JoinRoom" });
+
+            /**
+             * Calls JoinRoom.
+             * @function joinRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IJoinRoomRequest} request JoinRoomRequest message or plain object
+             * @returns {Promise<graphwiz.room.JoinRoomResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#leaveRoom}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef LeaveRoomCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.LeaveRoomResponse} [response] LeaveRoomResponse
+             */
+
+            /**
+             * Calls LeaveRoom.
+             * @function leaveRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.ILeaveRoomRequest} request LeaveRoomRequest message or plain object
+             * @param {graphwiz.room.RoomService.LeaveRoomCallback} callback Node-style callback called with the error, if any, and LeaveRoomResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.leaveRoom = function leaveRoom(request, callback) {
+                return this.rpcCall(leaveRoom, $root.graphwiz.room.LeaveRoomRequest, $root.graphwiz.room.LeaveRoomResponse, request, callback);
+            }, "name", { value: "LeaveRoom" });
+
+            /**
+             * Calls LeaveRoom.
+             * @function leaveRoom
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.ILeaveRoomRequest} request LeaveRoomRequest message or plain object
+             * @returns {Promise<graphwiz.room.LeaveRoomResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#kickUser}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef KickUserCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.KickUserResponse} [response] KickUserResponse
+             */
+
+            /**
+             * Calls KickUser.
+             * @function kickUser
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IKickUserRequest} request KickUserRequest message or plain object
+             * @param {graphwiz.room.RoomService.KickUserCallback} callback Node-style callback called with the error, if any, and KickUserResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.kickUser = function kickUser(request, callback) {
+                return this.rpcCall(kickUser, $root.graphwiz.room.KickUserRequest, $root.graphwiz.room.KickUserResponse, request, callback);
+            }, "name", { value: "KickUser" });
+
+            /**
+             * Calls KickUser.
+             * @function kickUser
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IKickUserRequest} request KickUserRequest message or plain object
+             * @returns {Promise<graphwiz.room.KickUserResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#updateSettings}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef UpdateSettingsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.UpdateSettingsResponse} [response] UpdateSettingsResponse
+             */
+
+            /**
+             * Calls UpdateSettings.
+             * @function updateSettings
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IUpdateSettingsRequest} request UpdateSettingsRequest message or plain object
+             * @param {graphwiz.room.RoomService.UpdateSettingsCallback} callback Node-style callback called with the error, if any, and UpdateSettingsResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.updateSettings = function updateSettings(request, callback) {
+                return this.rpcCall(updateSettings, $root.graphwiz.room.UpdateSettingsRequest, $root.graphwiz.room.UpdateSettingsResponse, request, callback);
+            }, "name", { value: "UpdateSettings" });
+
+            /**
+             * Calls UpdateSettings.
+             * @function updateSettings
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IUpdateSettingsRequest} request UpdateSettingsRequest message or plain object
+             * @returns {Promise<graphwiz.room.UpdateSettingsResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#getPermissions}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef GetPermissionsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.GetPermissionsResponse} [response] GetPermissionsResponse
+             */
+
+            /**
+             * Calls GetPermissions.
+             * @function getPermissions
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IGetPermissionsRequest} request GetPermissionsRequest message or plain object
+             * @param {graphwiz.room.RoomService.GetPermissionsCallback} callback Node-style callback called with the error, if any, and GetPermissionsResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.getPermissions = function getPermissions(request, callback) {
+                return this.rpcCall(getPermissions, $root.graphwiz.room.GetPermissionsRequest, $root.graphwiz.room.GetPermissionsResponse, request, callback);
+            }, "name", { value: "GetPermissions" });
+
+            /**
+             * Calls GetPermissions.
+             * @function getPermissions
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IGetPermissionsRequest} request GetPermissionsRequest message or plain object
+             * @returns {Promise<graphwiz.room.GetPermissionsResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.room.RoomService#updatePermissions}.
+             * @memberof graphwiz.room.RoomService
+             * @typedef UpdatePermissionsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.room.UpdatePermissionsResponse} [response] UpdatePermissionsResponse
+             */
+
+            /**
+             * Calls UpdatePermissions.
+             * @function updatePermissions
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IUpdatePermissionsRequest} request UpdatePermissionsRequest message or plain object
+             * @param {graphwiz.room.RoomService.UpdatePermissionsCallback} callback Node-style callback called with the error, if any, and UpdatePermissionsResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(RoomService.prototype.updatePermissions = function updatePermissions(request, callback) {
+                return this.rpcCall(updatePermissions, $root.graphwiz.room.UpdatePermissionsRequest, $root.graphwiz.room.UpdatePermissionsResponse, request, callback);
+            }, "name", { value: "UpdatePermissions" });
+
+            /**
+             * Calls UpdatePermissions.
+             * @function updatePermissions
+             * @memberof graphwiz.room.RoomService
+             * @instance
+             * @param {graphwiz.room.IUpdatePermissionsRequest} request UpdatePermissionsRequest message or plain object
+             * @returns {Promise<graphwiz.room.UpdatePermissionsResponse>} Promise
+             * @variation 2
+             */
+
+            return RoomService;
+        })();
+
+        room.CreateRoomRequest = (function() {
+
+            /**
+             * Properties of a CreateRoomRequest.
+             * @memberof graphwiz.room
+             * @interface ICreateRoomRequest
+             * @property {string|null} [name] CreateRoomRequest name
+             * @property {string|null} [description] CreateRoomRequest description
+             * @property {graphwiz.room.IRoomSettings|null} [settings] CreateRoomRequest settings
+             * @property {string|null} [creatorId] CreateRoomRequest creatorId
+             */
+
+            /**
+             * Constructs a new CreateRoomRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a CreateRoomRequest.
+             * @implements ICreateRoomRequest
+             * @constructor
+             * @param {graphwiz.room.ICreateRoomRequest=} [properties] Properties to set
+             */
+            function CreateRoomRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * CreateRoomRequest name.
+             * @member {string} name
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @instance
+             */
+            CreateRoomRequest.prototype.name = "";
+
+            /**
+             * CreateRoomRequest description.
+             * @member {string} description
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @instance
+             */
+            CreateRoomRequest.prototype.description = "";
+
+            /**
+             * CreateRoomRequest settings.
+             * @member {graphwiz.room.IRoomSettings|null|undefined} settings
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @instance
+             */
+            CreateRoomRequest.prototype.settings = null;
+
+            /**
+             * CreateRoomRequest creatorId.
+             * @member {string} creatorId
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @instance
+             */
+            CreateRoomRequest.prototype.creatorId = "";
+
+            /**
+             * Creates a new CreateRoomRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {graphwiz.room.ICreateRoomRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.CreateRoomRequest} CreateRoomRequest instance
+             */
+            CreateRoomRequest.create = function create(properties) {
+                return new CreateRoomRequest(properties);
+            };
+
+            /**
+             * Encodes the specified CreateRoomRequest message. Does not implicitly {@link graphwiz.room.CreateRoomRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {graphwiz.room.ICreateRoomRequest} message CreateRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateRoomRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.description);
+                if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                    $root.graphwiz.room.RoomSettings.encode(message.settings, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.creatorId != null && Object.hasOwnProperty.call(message, "creatorId"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.creatorId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified CreateRoomRequest message, length delimited. Does not implicitly {@link graphwiz.room.CreateRoomRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {graphwiz.room.ICreateRoomRequest} message CreateRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateRoomRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a CreateRoomRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.CreateRoomRequest} CreateRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateRoomRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.CreateRoomRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.name = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.description = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.settings = $root.graphwiz.room.RoomSettings.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 4: {
+                            message.creatorId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a CreateRoomRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.CreateRoomRequest} CreateRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateRoomRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a CreateRoomRequest message.
+             * @function verify
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            CreateRoomRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
+                        return "name: string expected";
+                if (message.description != null && message.hasOwnProperty("description"))
+                    if (!$util.isString(message.description))
+                        return "description: string expected";
+                if (message.settings != null && message.hasOwnProperty("settings")) {
+                    var error = $root.graphwiz.room.RoomSettings.verify(message.settings);
+                    if (error)
+                        return "settings." + error;
+                }
+                if (message.creatorId != null && message.hasOwnProperty("creatorId"))
+                    if (!$util.isString(message.creatorId))
+                        return "creatorId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a CreateRoomRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.CreateRoomRequest} CreateRoomRequest
+             */
+            CreateRoomRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.CreateRoomRequest)
+                    return object;
+                var message = new $root.graphwiz.room.CreateRoomRequest();
+                if (object.name != null)
+                    message.name = String(object.name);
+                if (object.description != null)
+                    message.description = String(object.description);
+                if (object.settings != null) {
+                    if (typeof object.settings !== "object")
+                        throw TypeError(".graphwiz.room.CreateRoomRequest.settings: object expected");
+                    message.settings = $root.graphwiz.room.RoomSettings.fromObject(object.settings);
+                }
+                if (object.creatorId != null)
+                    message.creatorId = String(object.creatorId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a CreateRoomRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {graphwiz.room.CreateRoomRequest} message CreateRoomRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            CreateRoomRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.name = "";
+                    object.description = "";
+                    object.settings = null;
+                    object.creatorId = "";
+                }
+                if (message.name != null && message.hasOwnProperty("name"))
+                    object.name = message.name;
+                if (message.description != null && message.hasOwnProperty("description"))
+                    object.description = message.description;
+                if (message.settings != null && message.hasOwnProperty("settings"))
+                    object.settings = $root.graphwiz.room.RoomSettings.toObject(message.settings, options);
+                if (message.creatorId != null && message.hasOwnProperty("creatorId"))
+                    object.creatorId = message.creatorId;
+                return object;
+            };
+
+            /**
+             * Converts this CreateRoomRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            CreateRoomRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for CreateRoomRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.CreateRoomRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            CreateRoomRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.CreateRoomRequest";
+            };
+
+            return CreateRoomRequest;
+        })();
+
+        room.CreateRoomResponse = (function() {
+
+            /**
+             * Properties of a CreateRoomResponse.
+             * @memberof graphwiz.room
+             * @interface ICreateRoomResponse
+             * @property {boolean|null} [success] CreateRoomResponse success
+             * @property {string|null} [roomId] CreateRoomResponse roomId
+             * @property {graphwiz.core.IRoom|null} [room] CreateRoomResponse room
+             */
+
+            /**
+             * Constructs a new CreateRoomResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a CreateRoomResponse.
+             * @implements ICreateRoomResponse
+             * @constructor
+             * @param {graphwiz.room.ICreateRoomResponse=} [properties] Properties to set
+             */
+            function CreateRoomResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * CreateRoomResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @instance
+             */
+            CreateRoomResponse.prototype.success = false;
+
+            /**
+             * CreateRoomResponse roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @instance
+             */
+            CreateRoomResponse.prototype.roomId = "";
+
+            /**
+             * CreateRoomResponse room.
+             * @member {graphwiz.core.IRoom|null|undefined} room
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @instance
+             */
+            CreateRoomResponse.prototype.room = null;
+
+            /**
+             * Creates a new CreateRoomResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {graphwiz.room.ICreateRoomResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.CreateRoomResponse} CreateRoomResponse instance
+             */
+            CreateRoomResponse.create = function create(properties) {
+                return new CreateRoomResponse(properties);
+            };
+
+            /**
+             * Encodes the specified CreateRoomResponse message. Does not implicitly {@link graphwiz.room.CreateRoomResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {graphwiz.room.ICreateRoomResponse} message CreateRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateRoomResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.roomId);
+                if (message.room != null && Object.hasOwnProperty.call(message, "room"))
+                    $root.graphwiz.core.Room.encode(message.room, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified CreateRoomResponse message, length delimited. Does not implicitly {@link graphwiz.room.CreateRoomResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {graphwiz.room.ICreateRoomResponse} message CreateRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateRoomResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a CreateRoomResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.CreateRoomResponse} CreateRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateRoomResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.CreateRoomResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.room = $root.graphwiz.core.Room.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a CreateRoomResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.CreateRoomResponse} CreateRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateRoomResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a CreateRoomResponse message.
+             * @function verify
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            CreateRoomResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.room != null && message.hasOwnProperty("room")) {
+                    var error = $root.graphwiz.core.Room.verify(message.room);
+                    if (error)
+                        return "room." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a CreateRoomResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.CreateRoomResponse} CreateRoomResponse
+             */
+            CreateRoomResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.CreateRoomResponse)
+                    return object;
+                var message = new $root.graphwiz.room.CreateRoomResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.room != null) {
+                    if (typeof object.room !== "object")
+                        throw TypeError(".graphwiz.room.CreateRoomResponse.room: object expected");
+                    message.room = $root.graphwiz.core.Room.fromObject(object.room);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a CreateRoomResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {graphwiz.room.CreateRoomResponse} message CreateRoomResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            CreateRoomResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.roomId = "";
+                    object.room = null;
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.room != null && message.hasOwnProperty("room"))
+                    object.room = $root.graphwiz.core.Room.toObject(message.room, options);
+                return object;
+            };
+
+            /**
+             * Converts this CreateRoomResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            CreateRoomResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for CreateRoomResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.CreateRoomResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            CreateRoomResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.CreateRoomResponse";
+            };
+
+            return CreateRoomResponse;
+        })();
+
+        room.GetRoomRequest = (function() {
+
+            /**
+             * Properties of a GetRoomRequest.
+             * @memberof graphwiz.room
+             * @interface IGetRoomRequest
+             * @property {string|null} [roomId] GetRoomRequest roomId
+             */
+
+            /**
+             * Constructs a new GetRoomRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a GetRoomRequest.
+             * @implements IGetRoomRequest
+             * @constructor
+             * @param {graphwiz.room.IGetRoomRequest=} [properties] Properties to set
+             */
+            function GetRoomRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * GetRoomRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.GetRoomRequest
+             * @instance
+             */
+            GetRoomRequest.prototype.roomId = "";
+
+            /**
+             * Creates a new GetRoomRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {graphwiz.room.IGetRoomRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.GetRoomRequest} GetRoomRequest instance
+             */
+            GetRoomRequest.create = function create(properties) {
+                return new GetRoomRequest(properties);
+            };
+
+            /**
+             * Encodes the specified GetRoomRequest message. Does not implicitly {@link graphwiz.room.GetRoomRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {graphwiz.room.IGetRoomRequest} message GetRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetRoomRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified GetRoomRequest message, length delimited. Does not implicitly {@link graphwiz.room.GetRoomRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {graphwiz.room.IGetRoomRequest} message GetRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetRoomRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a GetRoomRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.GetRoomRequest} GetRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetRoomRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetRoomRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a GetRoomRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.GetRoomRequest} GetRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetRoomRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a GetRoomRequest message.
+             * @function verify
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            GetRoomRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a GetRoomRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.GetRoomRequest} GetRoomRequest
+             */
+            GetRoomRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.GetRoomRequest)
+                    return object;
+                var message = new $root.graphwiz.room.GetRoomRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a GetRoomRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {graphwiz.room.GetRoomRequest} message GetRoomRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            GetRoomRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.roomId = "";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                return object;
+            };
+
+            /**
+             * Converts this GetRoomRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.GetRoomRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            GetRoomRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for GetRoomRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.GetRoomRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            GetRoomRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.GetRoomRequest";
+            };
+
+            return GetRoomRequest;
+        })();
+
+        room.GetRoomResponse = (function() {
+
+            /**
+             * Properties of a GetRoomResponse.
+             * @memberof graphwiz.room
+             * @interface IGetRoomResponse
+             * @property {boolean|null} [success] GetRoomResponse success
+             * @property {graphwiz.core.IRoom|null} [room] GetRoomResponse room
+             */
+
+            /**
+             * Constructs a new GetRoomResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a GetRoomResponse.
+             * @implements IGetRoomResponse
+             * @constructor
+             * @param {graphwiz.room.IGetRoomResponse=} [properties] Properties to set
+             */
+            function GetRoomResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * GetRoomResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.GetRoomResponse
+             * @instance
+             */
+            GetRoomResponse.prototype.success = false;
+
+            /**
+             * GetRoomResponse room.
+             * @member {graphwiz.core.IRoom|null|undefined} room
+             * @memberof graphwiz.room.GetRoomResponse
+             * @instance
+             */
+            GetRoomResponse.prototype.room = null;
+
+            /**
+             * Creates a new GetRoomResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {graphwiz.room.IGetRoomResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.GetRoomResponse} GetRoomResponse instance
+             */
+            GetRoomResponse.create = function create(properties) {
+                return new GetRoomResponse(properties);
+            };
+
+            /**
+             * Encodes the specified GetRoomResponse message. Does not implicitly {@link graphwiz.room.GetRoomResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {graphwiz.room.IGetRoomResponse} message GetRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetRoomResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.room != null && Object.hasOwnProperty.call(message, "room"))
+                    $root.graphwiz.core.Room.encode(message.room, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified GetRoomResponse message, length delimited. Does not implicitly {@link graphwiz.room.GetRoomResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {graphwiz.room.IGetRoomResponse} message GetRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetRoomResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a GetRoomResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.GetRoomResponse} GetRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetRoomResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetRoomResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.room = $root.graphwiz.core.Room.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a GetRoomResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.GetRoomResponse} GetRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetRoomResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a GetRoomResponse message.
+             * @function verify
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            GetRoomResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.room != null && message.hasOwnProperty("room")) {
+                    var error = $root.graphwiz.core.Room.verify(message.room);
+                    if (error)
+                        return "room." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a GetRoomResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.GetRoomResponse} GetRoomResponse
+             */
+            GetRoomResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.GetRoomResponse)
+                    return object;
+                var message = new $root.graphwiz.room.GetRoomResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.room != null) {
+                    if (typeof object.room !== "object")
+                        throw TypeError(".graphwiz.room.GetRoomResponse.room: object expected");
+                    message.room = $root.graphwiz.core.Room.fromObject(object.room);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a GetRoomResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {graphwiz.room.GetRoomResponse} message GetRoomResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            GetRoomResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.room = null;
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.room != null && message.hasOwnProperty("room"))
+                    object.room = $root.graphwiz.core.Room.toObject(message.room, options);
+                return object;
+            };
+
+            /**
+             * Converts this GetRoomResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.GetRoomResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            GetRoomResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for GetRoomResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.GetRoomResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            GetRoomResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.GetRoomResponse";
+            };
+
+            return GetRoomResponse;
+        })();
+
+        room.UpdateRoomRequest = (function() {
+
+            /**
+             * Properties of an UpdateRoomRequest.
+             * @memberof graphwiz.room
+             * @interface IUpdateRoomRequest
+             * @property {string|null} [roomId] UpdateRoomRequest roomId
+             * @property {string|null} [name] UpdateRoomRequest name
+             * @property {string|null} [description] UpdateRoomRequest description
+             * @property {graphwiz.room.IRoomSettings|null} [settings] UpdateRoomRequest settings
+             */
+
+            /**
+             * Constructs a new UpdateRoomRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents an UpdateRoomRequest.
+             * @implements IUpdateRoomRequest
+             * @constructor
+             * @param {graphwiz.room.IUpdateRoomRequest=} [properties] Properties to set
+             */
+            function UpdateRoomRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * UpdateRoomRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @instance
+             */
+            UpdateRoomRequest.prototype.roomId = "";
+
+            /**
+             * UpdateRoomRequest name.
+             * @member {string} name
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @instance
+             */
+            UpdateRoomRequest.prototype.name = "";
+
+            /**
+             * UpdateRoomRequest description.
+             * @member {string} description
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @instance
+             */
+            UpdateRoomRequest.prototype.description = "";
+
+            /**
+             * UpdateRoomRequest settings.
+             * @member {graphwiz.room.IRoomSettings|null|undefined} settings
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @instance
+             */
+            UpdateRoomRequest.prototype.settings = null;
+
+            /**
+             * Creates a new UpdateRoomRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {graphwiz.room.IUpdateRoomRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.UpdateRoomRequest} UpdateRoomRequest instance
+             */
+            UpdateRoomRequest.create = function create(properties) {
+                return new UpdateRoomRequest(properties);
+            };
+
+            /**
+             * Encodes the specified UpdateRoomRequest message. Does not implicitly {@link graphwiz.room.UpdateRoomRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {graphwiz.room.IUpdateRoomRequest} message UpdateRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateRoomRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
+                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.description);
+                if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                    $root.graphwiz.room.RoomSettings.encode(message.settings, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified UpdateRoomRequest message, length delimited. Does not implicitly {@link graphwiz.room.UpdateRoomRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {graphwiz.room.IUpdateRoomRequest} message UpdateRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateRoomRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an UpdateRoomRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.UpdateRoomRequest} UpdateRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateRoomRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateRoomRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.name = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.description = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.settings = $root.graphwiz.room.RoomSettings.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an UpdateRoomRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.UpdateRoomRequest} UpdateRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateRoomRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an UpdateRoomRequest message.
+             * @function verify
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            UpdateRoomRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
+                        return "name: string expected";
+                if (message.description != null && message.hasOwnProperty("description"))
+                    if (!$util.isString(message.description))
+                        return "description: string expected";
+                if (message.settings != null && message.hasOwnProperty("settings")) {
+                    var error = $root.graphwiz.room.RoomSettings.verify(message.settings);
+                    if (error)
+                        return "settings." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates an UpdateRoomRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.UpdateRoomRequest} UpdateRoomRequest
+             */
+            UpdateRoomRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.UpdateRoomRequest)
+                    return object;
+                var message = new $root.graphwiz.room.UpdateRoomRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.name != null)
+                    message.name = String(object.name);
+                if (object.description != null)
+                    message.description = String(object.description);
+                if (object.settings != null) {
+                    if (typeof object.settings !== "object")
+                        throw TypeError(".graphwiz.room.UpdateRoomRequest.settings: object expected");
+                    message.settings = $root.graphwiz.room.RoomSettings.fromObject(object.settings);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an UpdateRoomRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {graphwiz.room.UpdateRoomRequest} message UpdateRoomRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            UpdateRoomRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.name = "";
+                    object.description = "";
+                    object.settings = null;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.name != null && message.hasOwnProperty("name"))
+                    object.name = message.name;
+                if (message.description != null && message.hasOwnProperty("description"))
+                    object.description = message.description;
+                if (message.settings != null && message.hasOwnProperty("settings"))
+                    object.settings = $root.graphwiz.room.RoomSettings.toObject(message.settings, options);
+                return object;
+            };
+
+            /**
+             * Converts this UpdateRoomRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            UpdateRoomRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for UpdateRoomRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.UpdateRoomRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            UpdateRoomRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.UpdateRoomRequest";
+            };
+
+            return UpdateRoomRequest;
+        })();
+
+        room.UpdateRoomResponse = (function() {
+
+            /**
+             * Properties of an UpdateRoomResponse.
+             * @memberof graphwiz.room
+             * @interface IUpdateRoomResponse
+             * @property {boolean|null} [success] UpdateRoomResponse success
+             * @property {graphwiz.core.IRoom|null} [room] UpdateRoomResponse room
+             */
+
+            /**
+             * Constructs a new UpdateRoomResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents an UpdateRoomResponse.
+             * @implements IUpdateRoomResponse
+             * @constructor
+             * @param {graphwiz.room.IUpdateRoomResponse=} [properties] Properties to set
+             */
+            function UpdateRoomResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * UpdateRoomResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @instance
+             */
+            UpdateRoomResponse.prototype.success = false;
+
+            /**
+             * UpdateRoomResponse room.
+             * @member {graphwiz.core.IRoom|null|undefined} room
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @instance
+             */
+            UpdateRoomResponse.prototype.room = null;
+
+            /**
+             * Creates a new UpdateRoomResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {graphwiz.room.IUpdateRoomResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.UpdateRoomResponse} UpdateRoomResponse instance
+             */
+            UpdateRoomResponse.create = function create(properties) {
+                return new UpdateRoomResponse(properties);
+            };
+
+            /**
+             * Encodes the specified UpdateRoomResponse message. Does not implicitly {@link graphwiz.room.UpdateRoomResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {graphwiz.room.IUpdateRoomResponse} message UpdateRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateRoomResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.room != null && Object.hasOwnProperty.call(message, "room"))
+                    $root.graphwiz.core.Room.encode(message.room, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified UpdateRoomResponse message, length delimited. Does not implicitly {@link graphwiz.room.UpdateRoomResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {graphwiz.room.IUpdateRoomResponse} message UpdateRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateRoomResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an UpdateRoomResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.UpdateRoomResponse} UpdateRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateRoomResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateRoomResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.room = $root.graphwiz.core.Room.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an UpdateRoomResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.UpdateRoomResponse} UpdateRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateRoomResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an UpdateRoomResponse message.
+             * @function verify
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            UpdateRoomResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.room != null && message.hasOwnProperty("room")) {
+                    var error = $root.graphwiz.core.Room.verify(message.room);
+                    if (error)
+                        return "room." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates an UpdateRoomResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.UpdateRoomResponse} UpdateRoomResponse
+             */
+            UpdateRoomResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.UpdateRoomResponse)
+                    return object;
+                var message = new $root.graphwiz.room.UpdateRoomResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.room != null) {
+                    if (typeof object.room !== "object")
+                        throw TypeError(".graphwiz.room.UpdateRoomResponse.room: object expected");
+                    message.room = $root.graphwiz.core.Room.fromObject(object.room);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an UpdateRoomResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {graphwiz.room.UpdateRoomResponse} message UpdateRoomResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            UpdateRoomResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.room = null;
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.room != null && message.hasOwnProperty("room"))
+                    object.room = $root.graphwiz.core.Room.toObject(message.room, options);
+                return object;
+            };
+
+            /**
+             * Converts this UpdateRoomResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            UpdateRoomResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for UpdateRoomResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.UpdateRoomResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            UpdateRoomResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.UpdateRoomResponse";
+            };
+
+            return UpdateRoomResponse;
+        })();
+
+        room.DeleteRoomRequest = (function() {
+
+            /**
+             * Properties of a DeleteRoomRequest.
+             * @memberof graphwiz.room
+             * @interface IDeleteRoomRequest
+             * @property {string|null} [roomId] DeleteRoomRequest roomId
+             * @property {string|null} [requesterId] DeleteRoomRequest requesterId
+             */
+
+            /**
+             * Constructs a new DeleteRoomRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a DeleteRoomRequest.
+             * @implements IDeleteRoomRequest
+             * @constructor
+             * @param {graphwiz.room.IDeleteRoomRequest=} [properties] Properties to set
+             */
+            function DeleteRoomRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * DeleteRoomRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @instance
+             */
+            DeleteRoomRequest.prototype.roomId = "";
+
+            /**
+             * DeleteRoomRequest requesterId.
+             * @member {string} requesterId
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @instance
+             */
+            DeleteRoomRequest.prototype.requesterId = "";
+
+            /**
+             * Creates a new DeleteRoomRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {graphwiz.room.IDeleteRoomRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.DeleteRoomRequest} DeleteRoomRequest instance
+             */
+            DeleteRoomRequest.create = function create(properties) {
+                return new DeleteRoomRequest(properties);
+            };
+
+            /**
+             * Encodes the specified DeleteRoomRequest message. Does not implicitly {@link graphwiz.room.DeleteRoomRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {graphwiz.room.IDeleteRoomRequest} message DeleteRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeleteRoomRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.requesterId != null && Object.hasOwnProperty.call(message, "requesterId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.requesterId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified DeleteRoomRequest message, length delimited. Does not implicitly {@link graphwiz.room.DeleteRoomRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {graphwiz.room.IDeleteRoomRequest} message DeleteRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeleteRoomRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a DeleteRoomRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.DeleteRoomRequest} DeleteRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeleteRoomRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.DeleteRoomRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.requesterId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a DeleteRoomRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.DeleteRoomRequest} DeleteRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeleteRoomRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a DeleteRoomRequest message.
+             * @function verify
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            DeleteRoomRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.requesterId != null && message.hasOwnProperty("requesterId"))
+                    if (!$util.isString(message.requesterId))
+                        return "requesterId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a DeleteRoomRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.DeleteRoomRequest} DeleteRoomRequest
+             */
+            DeleteRoomRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.DeleteRoomRequest)
+                    return object;
+                var message = new $root.graphwiz.room.DeleteRoomRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.requesterId != null)
+                    message.requesterId = String(object.requesterId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a DeleteRoomRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {graphwiz.room.DeleteRoomRequest} message DeleteRoomRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            DeleteRoomRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.requesterId = "";
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.requesterId != null && message.hasOwnProperty("requesterId"))
+                    object.requesterId = message.requesterId;
+                return object;
+            };
+
+            /**
+             * Converts this DeleteRoomRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            DeleteRoomRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for DeleteRoomRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.DeleteRoomRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            DeleteRoomRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.DeleteRoomRequest";
+            };
+
+            return DeleteRoomRequest;
+        })();
+
+        room.DeleteRoomResponse = (function() {
+
+            /**
+             * Properties of a DeleteRoomResponse.
+             * @memberof graphwiz.room
+             * @interface IDeleteRoomResponse
+             * @property {boolean|null} [success] DeleteRoomResponse success
+             */
+
+            /**
+             * Constructs a new DeleteRoomResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a DeleteRoomResponse.
+             * @implements IDeleteRoomResponse
+             * @constructor
+             * @param {graphwiz.room.IDeleteRoomResponse=} [properties] Properties to set
+             */
+            function DeleteRoomResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * DeleteRoomResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @instance
+             */
+            DeleteRoomResponse.prototype.success = false;
+
+            /**
+             * Creates a new DeleteRoomResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {graphwiz.room.IDeleteRoomResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.DeleteRoomResponse} DeleteRoomResponse instance
+             */
+            DeleteRoomResponse.create = function create(properties) {
+                return new DeleteRoomResponse(properties);
+            };
+
+            /**
+             * Encodes the specified DeleteRoomResponse message. Does not implicitly {@link graphwiz.room.DeleteRoomResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {graphwiz.room.IDeleteRoomResponse} message DeleteRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeleteRoomResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified DeleteRoomResponse message, length delimited. Does not implicitly {@link graphwiz.room.DeleteRoomResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {graphwiz.room.IDeleteRoomResponse} message DeleteRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeleteRoomResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a DeleteRoomResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.DeleteRoomResponse} DeleteRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeleteRoomResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.DeleteRoomResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a DeleteRoomResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.DeleteRoomResponse} DeleteRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeleteRoomResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a DeleteRoomResponse message.
+             * @function verify
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            DeleteRoomResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a DeleteRoomResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.DeleteRoomResponse} DeleteRoomResponse
+             */
+            DeleteRoomResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.DeleteRoomResponse)
+                    return object;
+                var message = new $root.graphwiz.room.DeleteRoomResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a DeleteRoomResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {graphwiz.room.DeleteRoomResponse} message DeleteRoomResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            DeleteRoomResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.success = false;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                return object;
+            };
+
+            /**
+             * Converts this DeleteRoomResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            DeleteRoomResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for DeleteRoomResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.DeleteRoomResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            DeleteRoomResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.DeleteRoomResponse";
+            };
+
+            return DeleteRoomResponse;
+        })();
+
+        room.ListRoomsRequest = (function() {
+
+            /**
+             * Properties of a ListRoomsRequest.
+             * @memberof graphwiz.room
+             * @interface IListRoomsRequest
+             * @property {number|null} [pageSize] ListRoomsRequest pageSize
+             * @property {string|null} [pageToken] ListRoomsRequest pageToken
+             * @property {graphwiz.room.IRoomFilter|null} [filter] ListRoomsRequest filter
+             */
+
+            /**
+             * Constructs a new ListRoomsRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a ListRoomsRequest.
+             * @implements IListRoomsRequest
+             * @constructor
+             * @param {graphwiz.room.IListRoomsRequest=} [properties] Properties to set
+             */
+            function ListRoomsRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ListRoomsRequest pageSize.
+             * @member {number} pageSize
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @instance
+             */
+            ListRoomsRequest.prototype.pageSize = 0;
+
+            /**
+             * ListRoomsRequest pageToken.
+             * @member {string} pageToken
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @instance
+             */
+            ListRoomsRequest.prototype.pageToken = "";
+
+            /**
+             * ListRoomsRequest filter.
+             * @member {graphwiz.room.IRoomFilter|null|undefined} filter
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @instance
+             */
+            ListRoomsRequest.prototype.filter = null;
+
+            /**
+             * Creates a new ListRoomsRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {graphwiz.room.IListRoomsRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.ListRoomsRequest} ListRoomsRequest instance
+             */
+            ListRoomsRequest.create = function create(properties) {
+                return new ListRoomsRequest(properties);
+            };
+
+            /**
+             * Encodes the specified ListRoomsRequest message. Does not implicitly {@link graphwiz.room.ListRoomsRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {graphwiz.room.IListRoomsRequest} message ListRoomsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ListRoomsRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.pageSize != null && Object.hasOwnProperty.call(message, "pageSize"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.pageSize);
+                if (message.pageToken != null && Object.hasOwnProperty.call(message, "pageToken"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.pageToken);
+                if (message.filter != null && Object.hasOwnProperty.call(message, "filter"))
+                    $root.graphwiz.room.RoomFilter.encode(message.filter, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ListRoomsRequest message, length delimited. Does not implicitly {@link graphwiz.room.ListRoomsRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {graphwiz.room.IListRoomsRequest} message ListRoomsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ListRoomsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ListRoomsRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.ListRoomsRequest} ListRoomsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ListRoomsRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.ListRoomsRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.pageSize = reader.int32();
+                            break;
+                        }
+                    case 2: {
+                            message.pageToken = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.filter = $root.graphwiz.room.RoomFilter.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ListRoomsRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.ListRoomsRequest} ListRoomsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ListRoomsRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ListRoomsRequest message.
+             * @function verify
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ListRoomsRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.pageSize != null && message.hasOwnProperty("pageSize"))
+                    if (!$util.isInteger(message.pageSize))
+                        return "pageSize: integer expected";
+                if (message.pageToken != null && message.hasOwnProperty("pageToken"))
+                    if (!$util.isString(message.pageToken))
+                        return "pageToken: string expected";
+                if (message.filter != null && message.hasOwnProperty("filter")) {
+                    var error = $root.graphwiz.room.RoomFilter.verify(message.filter);
+                    if (error)
+                        return "filter." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a ListRoomsRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.ListRoomsRequest} ListRoomsRequest
+             */
+            ListRoomsRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.ListRoomsRequest)
+                    return object;
+                var message = new $root.graphwiz.room.ListRoomsRequest();
+                if (object.pageSize != null)
+                    message.pageSize = object.pageSize | 0;
+                if (object.pageToken != null)
+                    message.pageToken = String(object.pageToken);
+                if (object.filter != null) {
+                    if (typeof object.filter !== "object")
+                        throw TypeError(".graphwiz.room.ListRoomsRequest.filter: object expected");
+                    message.filter = $root.graphwiz.room.RoomFilter.fromObject(object.filter);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ListRoomsRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {graphwiz.room.ListRoomsRequest} message ListRoomsRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ListRoomsRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.pageSize = 0;
+                    object.pageToken = "";
+                    object.filter = null;
+                }
+                if (message.pageSize != null && message.hasOwnProperty("pageSize"))
+                    object.pageSize = message.pageSize;
+                if (message.pageToken != null && message.hasOwnProperty("pageToken"))
+                    object.pageToken = message.pageToken;
+                if (message.filter != null && message.hasOwnProperty("filter"))
+                    object.filter = $root.graphwiz.room.RoomFilter.toObject(message.filter, options);
+                return object;
+            };
+
+            /**
+             * Converts this ListRoomsRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ListRoomsRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for ListRoomsRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.ListRoomsRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            ListRoomsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.ListRoomsRequest";
+            };
+
+            return ListRoomsRequest;
+        })();
+
+        room.ListRoomsResponse = (function() {
+
+            /**
+             * Properties of a ListRoomsResponse.
+             * @memberof graphwiz.room
+             * @interface IListRoomsResponse
+             * @property {Array.<graphwiz.core.IRoom>|null} [rooms] ListRoomsResponse rooms
+             * @property {string|null} [nextPageToken] ListRoomsResponse nextPageToken
+             * @property {number|null} [totalCount] ListRoomsResponse totalCount
+             */
+
+            /**
+             * Constructs a new ListRoomsResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a ListRoomsResponse.
+             * @implements IListRoomsResponse
+             * @constructor
+             * @param {graphwiz.room.IListRoomsResponse=} [properties] Properties to set
+             */
+            function ListRoomsResponse(properties) {
+                this.rooms = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ListRoomsResponse rooms.
+             * @member {Array.<graphwiz.core.IRoom>} rooms
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @instance
+             */
+            ListRoomsResponse.prototype.rooms = $util.emptyArray;
+
+            /**
+             * ListRoomsResponse nextPageToken.
+             * @member {string} nextPageToken
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @instance
+             */
+            ListRoomsResponse.prototype.nextPageToken = "";
+
+            /**
+             * ListRoomsResponse totalCount.
+             * @member {number} totalCount
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @instance
+             */
+            ListRoomsResponse.prototype.totalCount = 0;
+
+            /**
+             * Creates a new ListRoomsResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {graphwiz.room.IListRoomsResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.ListRoomsResponse} ListRoomsResponse instance
+             */
+            ListRoomsResponse.create = function create(properties) {
+                return new ListRoomsResponse(properties);
+            };
+
+            /**
+             * Encodes the specified ListRoomsResponse message. Does not implicitly {@link graphwiz.room.ListRoomsResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {graphwiz.room.IListRoomsResponse} message ListRoomsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ListRoomsResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.rooms != null && message.rooms.length)
+                    for (var i = 0; i < message.rooms.length; ++i)
+                        $root.graphwiz.core.Room.encode(message.rooms[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.nextPageToken != null && Object.hasOwnProperty.call(message, "nextPageToken"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.nextPageToken);
+                if (message.totalCount != null && Object.hasOwnProperty.call(message, "totalCount"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.totalCount);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ListRoomsResponse message, length delimited. Does not implicitly {@link graphwiz.room.ListRoomsResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {graphwiz.room.IListRoomsResponse} message ListRoomsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ListRoomsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ListRoomsResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.ListRoomsResponse} ListRoomsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ListRoomsResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.ListRoomsResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            if (!(message.rooms && message.rooms.length))
+                                message.rooms = [];
+                            message.rooms.push($root.graphwiz.core.Room.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 2: {
+                            message.nextPageToken = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.totalCount = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ListRoomsResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.ListRoomsResponse} ListRoomsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ListRoomsResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ListRoomsResponse message.
+             * @function verify
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ListRoomsResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.rooms != null && message.hasOwnProperty("rooms")) {
+                    if (!Array.isArray(message.rooms))
+                        return "rooms: array expected";
+                    for (var i = 0; i < message.rooms.length; ++i) {
+                        var error = $root.graphwiz.core.Room.verify(message.rooms[i]);
+                        if (error)
+                            return "rooms." + error;
+                    }
+                }
+                if (message.nextPageToken != null && message.hasOwnProperty("nextPageToken"))
+                    if (!$util.isString(message.nextPageToken))
+                        return "nextPageToken: string expected";
+                if (message.totalCount != null && message.hasOwnProperty("totalCount"))
+                    if (!$util.isInteger(message.totalCount))
+                        return "totalCount: integer expected";
+                return null;
+            };
+
+            /**
+             * Creates a ListRoomsResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.ListRoomsResponse} ListRoomsResponse
+             */
+            ListRoomsResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.ListRoomsResponse)
+                    return object;
+                var message = new $root.graphwiz.room.ListRoomsResponse();
+                if (object.rooms) {
+                    if (!Array.isArray(object.rooms))
+                        throw TypeError(".graphwiz.room.ListRoomsResponse.rooms: array expected");
+                    message.rooms = [];
+                    for (var i = 0; i < object.rooms.length; ++i) {
+                        if (typeof object.rooms[i] !== "object")
+                            throw TypeError(".graphwiz.room.ListRoomsResponse.rooms: object expected");
+                        message.rooms[i] = $root.graphwiz.core.Room.fromObject(object.rooms[i]);
+                    }
+                }
+                if (object.nextPageToken != null)
+                    message.nextPageToken = String(object.nextPageToken);
+                if (object.totalCount != null)
+                    message.totalCount = object.totalCount | 0;
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ListRoomsResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {graphwiz.room.ListRoomsResponse} message ListRoomsResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ListRoomsResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.rooms = [];
+                if (options.defaults) {
+                    object.nextPageToken = "";
+                    object.totalCount = 0;
+                }
+                if (message.rooms && message.rooms.length) {
+                    object.rooms = [];
+                    for (var j = 0; j < message.rooms.length; ++j)
+                        object.rooms[j] = $root.graphwiz.core.Room.toObject(message.rooms[j], options);
+                }
+                if (message.nextPageToken != null && message.hasOwnProperty("nextPageToken"))
+                    object.nextPageToken = message.nextPageToken;
+                if (message.totalCount != null && message.hasOwnProperty("totalCount"))
+                    object.totalCount = message.totalCount;
+                return object;
+            };
+
+            /**
+             * Converts this ListRoomsResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ListRoomsResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for ListRoomsResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.ListRoomsResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            ListRoomsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.ListRoomsResponse";
+            };
+
+            return ListRoomsResponse;
+        })();
+
+        room.SearchRoomsRequest = (function() {
+
+            /**
+             * Properties of a SearchRoomsRequest.
+             * @memberof graphwiz.room
+             * @interface ISearchRoomsRequest
+             * @property {string|null} [query] SearchRoomsRequest query
+             * @property {number|null} [limit] SearchRoomsRequest limit
+             * @property {graphwiz.room.IRoomFilter|null} [filter] SearchRoomsRequest filter
+             */
+
+            /**
+             * Constructs a new SearchRoomsRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a SearchRoomsRequest.
+             * @implements ISearchRoomsRequest
+             * @constructor
+             * @param {graphwiz.room.ISearchRoomsRequest=} [properties] Properties to set
+             */
+            function SearchRoomsRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * SearchRoomsRequest query.
+             * @member {string} query
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @instance
+             */
+            SearchRoomsRequest.prototype.query = "";
+
+            /**
+             * SearchRoomsRequest limit.
+             * @member {number} limit
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @instance
+             */
+            SearchRoomsRequest.prototype.limit = 0;
+
+            /**
+             * SearchRoomsRequest filter.
+             * @member {graphwiz.room.IRoomFilter|null|undefined} filter
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @instance
+             */
+            SearchRoomsRequest.prototype.filter = null;
+
+            /**
+             * Creates a new SearchRoomsRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {graphwiz.room.ISearchRoomsRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.SearchRoomsRequest} SearchRoomsRequest instance
+             */
+            SearchRoomsRequest.create = function create(properties) {
+                return new SearchRoomsRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SearchRoomsRequest message. Does not implicitly {@link graphwiz.room.SearchRoomsRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {graphwiz.room.ISearchRoomsRequest} message SearchRoomsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SearchRoomsRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.query != null && Object.hasOwnProperty.call(message, "query"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.query);
+                if (message.limit != null && Object.hasOwnProperty.call(message, "limit"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.limit);
+                if (message.filter != null && Object.hasOwnProperty.call(message, "filter"))
+                    $root.graphwiz.room.RoomFilter.encode(message.filter, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SearchRoomsRequest message, length delimited. Does not implicitly {@link graphwiz.room.SearchRoomsRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {graphwiz.room.ISearchRoomsRequest} message SearchRoomsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SearchRoomsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a SearchRoomsRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.SearchRoomsRequest} SearchRoomsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SearchRoomsRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.SearchRoomsRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.query = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.limit = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            message.filter = $root.graphwiz.room.RoomFilter.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a SearchRoomsRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.SearchRoomsRequest} SearchRoomsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SearchRoomsRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SearchRoomsRequest message.
+             * @function verify
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SearchRoomsRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.query != null && message.hasOwnProperty("query"))
+                    if (!$util.isString(message.query))
+                        return "query: string expected";
+                if (message.limit != null && message.hasOwnProperty("limit"))
+                    if (!$util.isInteger(message.limit))
+                        return "limit: integer expected";
+                if (message.filter != null && message.hasOwnProperty("filter")) {
+                    var error = $root.graphwiz.room.RoomFilter.verify(message.filter);
+                    if (error)
+                        return "filter." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a SearchRoomsRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.SearchRoomsRequest} SearchRoomsRequest
+             */
+            SearchRoomsRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.SearchRoomsRequest)
+                    return object;
+                var message = new $root.graphwiz.room.SearchRoomsRequest();
+                if (object.query != null)
+                    message.query = String(object.query);
+                if (object.limit != null)
+                    message.limit = object.limit | 0;
+                if (object.filter != null) {
+                    if (typeof object.filter !== "object")
+                        throw TypeError(".graphwiz.room.SearchRoomsRequest.filter: object expected");
+                    message.filter = $root.graphwiz.room.RoomFilter.fromObject(object.filter);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SearchRoomsRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {graphwiz.room.SearchRoomsRequest} message SearchRoomsRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SearchRoomsRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.query = "";
+                    object.limit = 0;
+                    object.filter = null;
+                }
+                if (message.query != null && message.hasOwnProperty("query"))
+                    object.query = message.query;
+                if (message.limit != null && message.hasOwnProperty("limit"))
+                    object.limit = message.limit;
+                if (message.filter != null && message.hasOwnProperty("filter"))
+                    object.filter = $root.graphwiz.room.RoomFilter.toObject(message.filter, options);
+                return object;
+            };
+
+            /**
+             * Converts this SearchRoomsRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SearchRoomsRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for SearchRoomsRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.SearchRoomsRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            SearchRoomsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.SearchRoomsRequest";
+            };
+
+            return SearchRoomsRequest;
+        })();
+
+        room.SearchRoomsResponse = (function() {
+
+            /**
+             * Properties of a SearchRoomsResponse.
+             * @memberof graphwiz.room
+             * @interface ISearchRoomsResponse
+             * @property {Array.<graphwiz.core.IRoom>|null} [rooms] SearchRoomsResponse rooms
+             * @property {number|null} [totalResults] SearchRoomsResponse totalResults
+             */
+
+            /**
+             * Constructs a new SearchRoomsResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a SearchRoomsResponse.
+             * @implements ISearchRoomsResponse
+             * @constructor
+             * @param {graphwiz.room.ISearchRoomsResponse=} [properties] Properties to set
+             */
+            function SearchRoomsResponse(properties) {
+                this.rooms = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * SearchRoomsResponse rooms.
+             * @member {Array.<graphwiz.core.IRoom>} rooms
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @instance
+             */
+            SearchRoomsResponse.prototype.rooms = $util.emptyArray;
+
+            /**
+             * SearchRoomsResponse totalResults.
+             * @member {number} totalResults
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @instance
+             */
+            SearchRoomsResponse.prototype.totalResults = 0;
+
+            /**
+             * Creates a new SearchRoomsResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {graphwiz.room.ISearchRoomsResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.SearchRoomsResponse} SearchRoomsResponse instance
+             */
+            SearchRoomsResponse.create = function create(properties) {
+                return new SearchRoomsResponse(properties);
+            };
+
+            /**
+             * Encodes the specified SearchRoomsResponse message. Does not implicitly {@link graphwiz.room.SearchRoomsResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {graphwiz.room.ISearchRoomsResponse} message SearchRoomsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SearchRoomsResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.rooms != null && message.rooms.length)
+                    for (var i = 0; i < message.rooms.length; ++i)
+                        $root.graphwiz.core.Room.encode(message.rooms[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.totalResults != null && Object.hasOwnProperty.call(message, "totalResults"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.totalResults);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SearchRoomsResponse message, length delimited. Does not implicitly {@link graphwiz.room.SearchRoomsResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {graphwiz.room.ISearchRoomsResponse} message SearchRoomsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SearchRoomsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a SearchRoomsResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.SearchRoomsResponse} SearchRoomsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SearchRoomsResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.SearchRoomsResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            if (!(message.rooms && message.rooms.length))
+                                message.rooms = [];
+                            message.rooms.push($root.graphwiz.core.Room.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 2: {
+                            message.totalResults = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a SearchRoomsResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.SearchRoomsResponse} SearchRoomsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SearchRoomsResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SearchRoomsResponse message.
+             * @function verify
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SearchRoomsResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.rooms != null && message.hasOwnProperty("rooms")) {
+                    if (!Array.isArray(message.rooms))
+                        return "rooms: array expected";
+                    for (var i = 0; i < message.rooms.length; ++i) {
+                        var error = $root.graphwiz.core.Room.verify(message.rooms[i]);
+                        if (error)
+                            return "rooms." + error;
+                    }
+                }
+                if (message.totalResults != null && message.hasOwnProperty("totalResults"))
+                    if (!$util.isInteger(message.totalResults))
+                        return "totalResults: integer expected";
+                return null;
+            };
+
+            /**
+             * Creates a SearchRoomsResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.SearchRoomsResponse} SearchRoomsResponse
+             */
+            SearchRoomsResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.SearchRoomsResponse)
+                    return object;
+                var message = new $root.graphwiz.room.SearchRoomsResponse();
+                if (object.rooms) {
+                    if (!Array.isArray(object.rooms))
+                        throw TypeError(".graphwiz.room.SearchRoomsResponse.rooms: array expected");
+                    message.rooms = [];
+                    for (var i = 0; i < object.rooms.length; ++i) {
+                        if (typeof object.rooms[i] !== "object")
+                            throw TypeError(".graphwiz.room.SearchRoomsResponse.rooms: object expected");
+                        message.rooms[i] = $root.graphwiz.core.Room.fromObject(object.rooms[i]);
+                    }
+                }
+                if (object.totalResults != null)
+                    message.totalResults = object.totalResults | 0;
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SearchRoomsResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {graphwiz.room.SearchRoomsResponse} message SearchRoomsResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SearchRoomsResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.rooms = [];
+                if (options.defaults)
+                    object.totalResults = 0;
+                if (message.rooms && message.rooms.length) {
+                    object.rooms = [];
+                    for (var j = 0; j < message.rooms.length; ++j)
+                        object.rooms[j] = $root.graphwiz.core.Room.toObject(message.rooms[j], options);
+                }
+                if (message.totalResults != null && message.hasOwnProperty("totalResults"))
+                    object.totalResults = message.totalResults;
+                return object;
+            };
+
+            /**
+             * Converts this SearchRoomsResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SearchRoomsResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for SearchRoomsResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.SearchRoomsResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            SearchRoomsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.SearchRoomsResponse";
+            };
+
+            return SearchRoomsResponse;
+        })();
+
+        room.JoinRoomRequest = (function() {
+
+            /**
+             * Properties of a JoinRoomRequest.
+             * @memberof graphwiz.room
+             * @interface IJoinRoomRequest
+             * @property {string|null} [roomId] JoinRoomRequest roomId
+             * @property {string|null} [userId] JoinRoomRequest userId
+             * @property {string|null} [authToken] JoinRoomRequest authToken
+             * @property {string|null} [displayName] JoinRoomRequest displayName
+             */
+
+            /**
+             * Constructs a new JoinRoomRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a JoinRoomRequest.
+             * @implements IJoinRoomRequest
+             * @constructor
+             * @param {graphwiz.room.IJoinRoomRequest=} [properties] Properties to set
+             */
+            function JoinRoomRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * JoinRoomRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @instance
+             */
+            JoinRoomRequest.prototype.roomId = "";
+
+            /**
+             * JoinRoomRequest userId.
+             * @member {string} userId
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @instance
+             */
+            JoinRoomRequest.prototype.userId = "";
+
+            /**
+             * JoinRoomRequest authToken.
+             * @member {string} authToken
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @instance
+             */
+            JoinRoomRequest.prototype.authToken = "";
+
+            /**
+             * JoinRoomRequest displayName.
+             * @member {string} displayName
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @instance
+             */
+            JoinRoomRequest.prototype.displayName = "";
+
+            /**
+             * Creates a new JoinRoomRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {graphwiz.room.IJoinRoomRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.JoinRoomRequest} JoinRoomRequest instance
+             */
+            JoinRoomRequest.create = function create(properties) {
+                return new JoinRoomRequest(properties);
+            };
+
+            /**
+             * Encodes the specified JoinRoomRequest message. Does not implicitly {@link graphwiz.room.JoinRoomRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {graphwiz.room.IJoinRoomRequest} message JoinRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            JoinRoomRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.userId);
+                if (message.authToken != null && Object.hasOwnProperty.call(message, "authToken"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.authToken);
+                if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.displayName);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified JoinRoomRequest message, length delimited. Does not implicitly {@link graphwiz.room.JoinRoomRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {graphwiz.room.IJoinRoomRequest} message JoinRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            JoinRoomRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a JoinRoomRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.JoinRoomRequest} JoinRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            JoinRoomRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.JoinRoomRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.authToken = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.displayName = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a JoinRoomRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.JoinRoomRequest} JoinRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            JoinRoomRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a JoinRoomRequest message.
+             * @function verify
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            JoinRoomRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                if (message.authToken != null && message.hasOwnProperty("authToken"))
+                    if (!$util.isString(message.authToken))
+                        return "authToken: string expected";
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    if (!$util.isString(message.displayName))
+                        return "displayName: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a JoinRoomRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.JoinRoomRequest} JoinRoomRequest
+             */
+            JoinRoomRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.JoinRoomRequest)
+                    return object;
+                var message = new $root.graphwiz.room.JoinRoomRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                if (object.authToken != null)
+                    message.authToken = String(object.authToken);
+                if (object.displayName != null)
+                    message.displayName = String(object.displayName);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a JoinRoomRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {graphwiz.room.JoinRoomRequest} message JoinRoomRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            JoinRoomRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.userId = "";
+                    object.authToken = "";
+                    object.displayName = "";
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                if (message.authToken != null && message.hasOwnProperty("authToken"))
+                    object.authToken = message.authToken;
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    object.displayName = message.displayName;
+                return object;
+            };
+
+            /**
+             * Converts this JoinRoomRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            JoinRoomRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for JoinRoomRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.JoinRoomRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            JoinRoomRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.JoinRoomRequest";
+            };
+
+            return JoinRoomRequest;
+        })();
+
+        room.JoinRoomResponse = (function() {
+
+            /**
+             * Properties of a JoinRoomResponse.
+             * @memberof graphwiz.room
+             * @interface IJoinRoomResponse
+             * @property {boolean|null} [success] JoinRoomResponse success
+             * @property {string|null} [roomId] JoinRoomResponse roomId
+             * @property {graphwiz.core.IRoom|null} [room] JoinRoomResponse room
+             * @property {Array.<graphwiz.core.IPlayerSnapshot>|null} [initialPlayers] JoinRoomResponse initialPlayers
+             */
+
+            /**
+             * Constructs a new JoinRoomResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a JoinRoomResponse.
+             * @implements IJoinRoomResponse
+             * @constructor
+             * @param {graphwiz.room.IJoinRoomResponse=} [properties] Properties to set
+             */
+            function JoinRoomResponse(properties) {
+                this.initialPlayers = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * JoinRoomResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @instance
+             */
+            JoinRoomResponse.prototype.success = false;
+
+            /**
+             * JoinRoomResponse roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @instance
+             */
+            JoinRoomResponse.prototype.roomId = "";
+
+            /**
+             * JoinRoomResponse room.
+             * @member {graphwiz.core.IRoom|null|undefined} room
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @instance
+             */
+            JoinRoomResponse.prototype.room = null;
+
+            /**
+             * JoinRoomResponse initialPlayers.
+             * @member {Array.<graphwiz.core.IPlayerSnapshot>} initialPlayers
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @instance
+             */
+            JoinRoomResponse.prototype.initialPlayers = $util.emptyArray;
+
+            /**
+             * Creates a new JoinRoomResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {graphwiz.room.IJoinRoomResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.JoinRoomResponse} JoinRoomResponse instance
+             */
+            JoinRoomResponse.create = function create(properties) {
+                return new JoinRoomResponse(properties);
+            };
+
+            /**
+             * Encodes the specified JoinRoomResponse message. Does not implicitly {@link graphwiz.room.JoinRoomResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {graphwiz.room.IJoinRoomResponse} message JoinRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            JoinRoomResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.roomId);
+                if (message.room != null && Object.hasOwnProperty.call(message, "room"))
+                    $root.graphwiz.core.Room.encode(message.room, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.initialPlayers != null && message.initialPlayers.length)
+                    for (var i = 0; i < message.initialPlayers.length; ++i)
+                        $root.graphwiz.core.PlayerSnapshot.encode(message.initialPlayers[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified JoinRoomResponse message, length delimited. Does not implicitly {@link graphwiz.room.JoinRoomResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {graphwiz.room.IJoinRoomResponse} message JoinRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            JoinRoomResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a JoinRoomResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.JoinRoomResponse} JoinRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            JoinRoomResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.JoinRoomResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.room = $root.graphwiz.core.Room.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.initialPlayers && message.initialPlayers.length))
+                                message.initialPlayers = [];
+                            message.initialPlayers.push($root.graphwiz.core.PlayerSnapshot.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a JoinRoomResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.JoinRoomResponse} JoinRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            JoinRoomResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a JoinRoomResponse message.
+             * @function verify
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            JoinRoomResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.room != null && message.hasOwnProperty("room")) {
+                    var error = $root.graphwiz.core.Room.verify(message.room);
+                    if (error)
+                        return "room." + error;
+                }
+                if (message.initialPlayers != null && message.hasOwnProperty("initialPlayers")) {
+                    if (!Array.isArray(message.initialPlayers))
+                        return "initialPlayers: array expected";
+                    for (var i = 0; i < message.initialPlayers.length; ++i) {
+                        var error = $root.graphwiz.core.PlayerSnapshot.verify(message.initialPlayers[i]);
+                        if (error)
+                            return "initialPlayers." + error;
+                    }
+                }
+                return null;
+            };
+
+            /**
+             * Creates a JoinRoomResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.JoinRoomResponse} JoinRoomResponse
+             */
+            JoinRoomResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.JoinRoomResponse)
+                    return object;
+                var message = new $root.graphwiz.room.JoinRoomResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.room != null) {
+                    if (typeof object.room !== "object")
+                        throw TypeError(".graphwiz.room.JoinRoomResponse.room: object expected");
+                    message.room = $root.graphwiz.core.Room.fromObject(object.room);
+                }
+                if (object.initialPlayers) {
+                    if (!Array.isArray(object.initialPlayers))
+                        throw TypeError(".graphwiz.room.JoinRoomResponse.initialPlayers: array expected");
+                    message.initialPlayers = [];
+                    for (var i = 0; i < object.initialPlayers.length; ++i) {
+                        if (typeof object.initialPlayers[i] !== "object")
+                            throw TypeError(".graphwiz.room.JoinRoomResponse.initialPlayers: object expected");
+                        message.initialPlayers[i] = $root.graphwiz.core.PlayerSnapshot.fromObject(object.initialPlayers[i]);
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a JoinRoomResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {graphwiz.room.JoinRoomResponse} message JoinRoomResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            JoinRoomResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.initialPlayers = [];
+                if (options.defaults) {
+                    object.success = false;
+                    object.roomId = "";
+                    object.room = null;
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.room != null && message.hasOwnProperty("room"))
+                    object.room = $root.graphwiz.core.Room.toObject(message.room, options);
+                if (message.initialPlayers && message.initialPlayers.length) {
+                    object.initialPlayers = [];
+                    for (var j = 0; j < message.initialPlayers.length; ++j)
+                        object.initialPlayers[j] = $root.graphwiz.core.PlayerSnapshot.toObject(message.initialPlayers[j], options);
+                }
+                return object;
+            };
+
+            /**
+             * Converts this JoinRoomResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            JoinRoomResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for JoinRoomResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.JoinRoomResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            JoinRoomResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.JoinRoomResponse";
+            };
+
+            return JoinRoomResponse;
+        })();
+
+        room.LeaveRoomRequest = (function() {
+
+            /**
+             * Properties of a LeaveRoomRequest.
+             * @memberof graphwiz.room
+             * @interface ILeaveRoomRequest
+             * @property {string|null} [roomId] LeaveRoomRequest roomId
+             * @property {string|null} [userId] LeaveRoomRequest userId
+             */
+
+            /**
+             * Constructs a new LeaveRoomRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a LeaveRoomRequest.
+             * @implements ILeaveRoomRequest
+             * @constructor
+             * @param {graphwiz.room.ILeaveRoomRequest=} [properties] Properties to set
+             */
+            function LeaveRoomRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * LeaveRoomRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @instance
+             */
+            LeaveRoomRequest.prototype.roomId = "";
+
+            /**
+             * LeaveRoomRequest userId.
+             * @member {string} userId
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @instance
+             */
+            LeaveRoomRequest.prototype.userId = "";
+
+            /**
+             * Creates a new LeaveRoomRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {graphwiz.room.ILeaveRoomRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.LeaveRoomRequest} LeaveRoomRequest instance
+             */
+            LeaveRoomRequest.create = function create(properties) {
+                return new LeaveRoomRequest(properties);
+            };
+
+            /**
+             * Encodes the specified LeaveRoomRequest message. Does not implicitly {@link graphwiz.room.LeaveRoomRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {graphwiz.room.ILeaveRoomRequest} message LeaveRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LeaveRoomRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.userId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified LeaveRoomRequest message, length delimited. Does not implicitly {@link graphwiz.room.LeaveRoomRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {graphwiz.room.ILeaveRoomRequest} message LeaveRoomRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LeaveRoomRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a LeaveRoomRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.LeaveRoomRequest} LeaveRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LeaveRoomRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.LeaveRoomRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a LeaveRoomRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.LeaveRoomRequest} LeaveRoomRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LeaveRoomRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a LeaveRoomRequest message.
+             * @function verify
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            LeaveRoomRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a LeaveRoomRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.LeaveRoomRequest} LeaveRoomRequest
+             */
+            LeaveRoomRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.LeaveRoomRequest)
+                    return object;
+                var message = new $root.graphwiz.room.LeaveRoomRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a LeaveRoomRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {graphwiz.room.LeaveRoomRequest} message LeaveRoomRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            LeaveRoomRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.userId = "";
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                return object;
+            };
+
+            /**
+             * Converts this LeaveRoomRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            LeaveRoomRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for LeaveRoomRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.LeaveRoomRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            LeaveRoomRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.LeaveRoomRequest";
+            };
+
+            return LeaveRoomRequest;
+        })();
+
+        room.LeaveRoomResponse = (function() {
+
+            /**
+             * Properties of a LeaveRoomResponse.
+             * @memberof graphwiz.room
+             * @interface ILeaveRoomResponse
+             * @property {boolean|null} [success] LeaveRoomResponse success
+             */
+
+            /**
+             * Constructs a new LeaveRoomResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a LeaveRoomResponse.
+             * @implements ILeaveRoomResponse
+             * @constructor
+             * @param {graphwiz.room.ILeaveRoomResponse=} [properties] Properties to set
+             */
+            function LeaveRoomResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * LeaveRoomResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @instance
+             */
+            LeaveRoomResponse.prototype.success = false;
+
+            /**
+             * Creates a new LeaveRoomResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {graphwiz.room.ILeaveRoomResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.LeaveRoomResponse} LeaveRoomResponse instance
+             */
+            LeaveRoomResponse.create = function create(properties) {
+                return new LeaveRoomResponse(properties);
+            };
+
+            /**
+             * Encodes the specified LeaveRoomResponse message. Does not implicitly {@link graphwiz.room.LeaveRoomResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {graphwiz.room.ILeaveRoomResponse} message LeaveRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LeaveRoomResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified LeaveRoomResponse message, length delimited. Does not implicitly {@link graphwiz.room.LeaveRoomResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {graphwiz.room.ILeaveRoomResponse} message LeaveRoomResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LeaveRoomResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a LeaveRoomResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.LeaveRoomResponse} LeaveRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LeaveRoomResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.LeaveRoomResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a LeaveRoomResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.LeaveRoomResponse} LeaveRoomResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LeaveRoomResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a LeaveRoomResponse message.
+             * @function verify
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            LeaveRoomResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a LeaveRoomResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.LeaveRoomResponse} LeaveRoomResponse
+             */
+            LeaveRoomResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.LeaveRoomResponse)
+                    return object;
+                var message = new $root.graphwiz.room.LeaveRoomResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a LeaveRoomResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {graphwiz.room.LeaveRoomResponse} message LeaveRoomResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            LeaveRoomResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.success = false;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                return object;
+            };
+
+            /**
+             * Converts this LeaveRoomResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            LeaveRoomResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for LeaveRoomResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.LeaveRoomResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            LeaveRoomResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.LeaveRoomResponse";
+            };
+
+            return LeaveRoomResponse;
+        })();
+
+        room.KickUserRequest = (function() {
+
+            /**
+             * Properties of a KickUserRequest.
+             * @memberof graphwiz.room
+             * @interface IKickUserRequest
+             * @property {string|null} [roomId] KickUserRequest roomId
+             * @property {string|null} [requesterId] KickUserRequest requesterId
+             * @property {string|null} [targetUserId] KickUserRequest targetUserId
+             * @property {string|null} [reason] KickUserRequest reason
+             */
+
+            /**
+             * Constructs a new KickUserRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a KickUserRequest.
+             * @implements IKickUserRequest
+             * @constructor
+             * @param {graphwiz.room.IKickUserRequest=} [properties] Properties to set
+             */
+            function KickUserRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * KickUserRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.KickUserRequest
+             * @instance
+             */
+            KickUserRequest.prototype.roomId = "";
+
+            /**
+             * KickUserRequest requesterId.
+             * @member {string} requesterId
+             * @memberof graphwiz.room.KickUserRequest
+             * @instance
+             */
+            KickUserRequest.prototype.requesterId = "";
+
+            /**
+             * KickUserRequest targetUserId.
+             * @member {string} targetUserId
+             * @memberof graphwiz.room.KickUserRequest
+             * @instance
+             */
+            KickUserRequest.prototype.targetUserId = "";
+
+            /**
+             * KickUserRequest reason.
+             * @member {string} reason
+             * @memberof graphwiz.room.KickUserRequest
+             * @instance
+             */
+            KickUserRequest.prototype.reason = "";
+
+            /**
+             * Creates a new KickUserRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {graphwiz.room.IKickUserRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.KickUserRequest} KickUserRequest instance
+             */
+            KickUserRequest.create = function create(properties) {
+                return new KickUserRequest(properties);
+            };
+
+            /**
+             * Encodes the specified KickUserRequest message. Does not implicitly {@link graphwiz.room.KickUserRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {graphwiz.room.IKickUserRequest} message KickUserRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            KickUserRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.requesterId != null && Object.hasOwnProperty.call(message, "requesterId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.requesterId);
+                if (message.targetUserId != null && Object.hasOwnProperty.call(message, "targetUserId"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.targetUserId);
+                if (message.reason != null && Object.hasOwnProperty.call(message, "reason"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.reason);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified KickUserRequest message, length delimited. Does not implicitly {@link graphwiz.room.KickUserRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {graphwiz.room.IKickUserRequest} message KickUserRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            KickUserRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a KickUserRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.KickUserRequest} KickUserRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            KickUserRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.KickUserRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.requesterId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.targetUserId = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.reason = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a KickUserRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.KickUserRequest} KickUserRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            KickUserRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a KickUserRequest message.
+             * @function verify
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            KickUserRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.requesterId != null && message.hasOwnProperty("requesterId"))
+                    if (!$util.isString(message.requesterId))
+                        return "requesterId: string expected";
+                if (message.targetUserId != null && message.hasOwnProperty("targetUserId"))
+                    if (!$util.isString(message.targetUserId))
+                        return "targetUserId: string expected";
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    if (!$util.isString(message.reason))
+                        return "reason: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a KickUserRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.KickUserRequest} KickUserRequest
+             */
+            KickUserRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.KickUserRequest)
+                    return object;
+                var message = new $root.graphwiz.room.KickUserRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.requesterId != null)
+                    message.requesterId = String(object.requesterId);
+                if (object.targetUserId != null)
+                    message.targetUserId = String(object.targetUserId);
+                if (object.reason != null)
+                    message.reason = String(object.reason);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a KickUserRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {graphwiz.room.KickUserRequest} message KickUserRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            KickUserRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.requesterId = "";
+                    object.targetUserId = "";
+                    object.reason = "";
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.requesterId != null && message.hasOwnProperty("requesterId"))
+                    object.requesterId = message.requesterId;
+                if (message.targetUserId != null && message.hasOwnProperty("targetUserId"))
+                    object.targetUserId = message.targetUserId;
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    object.reason = message.reason;
+                return object;
+            };
+
+            /**
+             * Converts this KickUserRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.KickUserRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            KickUserRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for KickUserRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.KickUserRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            KickUserRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.KickUserRequest";
+            };
+
+            return KickUserRequest;
+        })();
+
+        room.KickUserResponse = (function() {
+
+            /**
+             * Properties of a KickUserResponse.
+             * @memberof graphwiz.room
+             * @interface IKickUserResponse
+             * @property {boolean|null} [success] KickUserResponse success
+             */
+
+            /**
+             * Constructs a new KickUserResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a KickUserResponse.
+             * @implements IKickUserResponse
+             * @constructor
+             * @param {graphwiz.room.IKickUserResponse=} [properties] Properties to set
+             */
+            function KickUserResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * KickUserResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.KickUserResponse
+             * @instance
+             */
+            KickUserResponse.prototype.success = false;
+
+            /**
+             * Creates a new KickUserResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {graphwiz.room.IKickUserResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.KickUserResponse} KickUserResponse instance
+             */
+            KickUserResponse.create = function create(properties) {
+                return new KickUserResponse(properties);
+            };
+
+            /**
+             * Encodes the specified KickUserResponse message. Does not implicitly {@link graphwiz.room.KickUserResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {graphwiz.room.IKickUserResponse} message KickUserResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            KickUserResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified KickUserResponse message, length delimited. Does not implicitly {@link graphwiz.room.KickUserResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {graphwiz.room.IKickUserResponse} message KickUserResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            KickUserResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a KickUserResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.KickUserResponse} KickUserResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            KickUserResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.KickUserResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a KickUserResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.KickUserResponse} KickUserResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            KickUserResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a KickUserResponse message.
+             * @function verify
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            KickUserResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a KickUserResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.KickUserResponse} KickUserResponse
+             */
+            KickUserResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.KickUserResponse)
+                    return object;
+                var message = new $root.graphwiz.room.KickUserResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a KickUserResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {graphwiz.room.KickUserResponse} message KickUserResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            KickUserResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.success = false;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                return object;
+            };
+
+            /**
+             * Converts this KickUserResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.KickUserResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            KickUserResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for KickUserResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.KickUserResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            KickUserResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.KickUserResponse";
+            };
+
+            return KickUserResponse;
+        })();
+
+        room.UpdateSettingsRequest = (function() {
+
+            /**
+             * Properties of an UpdateSettingsRequest.
+             * @memberof graphwiz.room
+             * @interface IUpdateSettingsRequest
+             * @property {string|null} [roomId] UpdateSettingsRequest roomId
+             * @property {string|null} [requesterId] UpdateSettingsRequest requesterId
+             * @property {graphwiz.room.IRoomSettings|null} [settings] UpdateSettingsRequest settings
+             */
+
+            /**
+             * Constructs a new UpdateSettingsRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents an UpdateSettingsRequest.
+             * @implements IUpdateSettingsRequest
+             * @constructor
+             * @param {graphwiz.room.IUpdateSettingsRequest=} [properties] Properties to set
+             */
+            function UpdateSettingsRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * UpdateSettingsRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @instance
+             */
+            UpdateSettingsRequest.prototype.roomId = "";
+
+            /**
+             * UpdateSettingsRequest requesterId.
+             * @member {string} requesterId
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @instance
+             */
+            UpdateSettingsRequest.prototype.requesterId = "";
+
+            /**
+             * UpdateSettingsRequest settings.
+             * @member {graphwiz.room.IRoomSettings|null|undefined} settings
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @instance
+             */
+            UpdateSettingsRequest.prototype.settings = null;
+
+            /**
+             * Creates a new UpdateSettingsRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {graphwiz.room.IUpdateSettingsRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.UpdateSettingsRequest} UpdateSettingsRequest instance
+             */
+            UpdateSettingsRequest.create = function create(properties) {
+                return new UpdateSettingsRequest(properties);
+            };
+
+            /**
+             * Encodes the specified UpdateSettingsRequest message. Does not implicitly {@link graphwiz.room.UpdateSettingsRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {graphwiz.room.IUpdateSettingsRequest} message UpdateSettingsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateSettingsRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.requesterId != null && Object.hasOwnProperty.call(message, "requesterId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.requesterId);
+                if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                    $root.graphwiz.room.RoomSettings.encode(message.settings, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified UpdateSettingsRequest message, length delimited. Does not implicitly {@link graphwiz.room.UpdateSettingsRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {graphwiz.room.IUpdateSettingsRequest} message UpdateSettingsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateSettingsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an UpdateSettingsRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.UpdateSettingsRequest} UpdateSettingsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateSettingsRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateSettingsRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.requesterId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.settings = $root.graphwiz.room.RoomSettings.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an UpdateSettingsRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.UpdateSettingsRequest} UpdateSettingsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateSettingsRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an UpdateSettingsRequest message.
+             * @function verify
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            UpdateSettingsRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.requesterId != null && message.hasOwnProperty("requesterId"))
+                    if (!$util.isString(message.requesterId))
+                        return "requesterId: string expected";
+                if (message.settings != null && message.hasOwnProperty("settings")) {
+                    var error = $root.graphwiz.room.RoomSettings.verify(message.settings);
+                    if (error)
+                        return "settings." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates an UpdateSettingsRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.UpdateSettingsRequest} UpdateSettingsRequest
+             */
+            UpdateSettingsRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.UpdateSettingsRequest)
+                    return object;
+                var message = new $root.graphwiz.room.UpdateSettingsRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.requesterId != null)
+                    message.requesterId = String(object.requesterId);
+                if (object.settings != null) {
+                    if (typeof object.settings !== "object")
+                        throw TypeError(".graphwiz.room.UpdateSettingsRequest.settings: object expected");
+                    message.settings = $root.graphwiz.room.RoomSettings.fromObject(object.settings);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an UpdateSettingsRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {graphwiz.room.UpdateSettingsRequest} message UpdateSettingsRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            UpdateSettingsRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.requesterId = "";
+                    object.settings = null;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.requesterId != null && message.hasOwnProperty("requesterId"))
+                    object.requesterId = message.requesterId;
+                if (message.settings != null && message.hasOwnProperty("settings"))
+                    object.settings = $root.graphwiz.room.RoomSettings.toObject(message.settings, options);
+                return object;
+            };
+
+            /**
+             * Converts this UpdateSettingsRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            UpdateSettingsRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for UpdateSettingsRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.UpdateSettingsRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            UpdateSettingsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.UpdateSettingsRequest";
+            };
+
+            return UpdateSettingsRequest;
+        })();
+
+        room.UpdateSettingsResponse = (function() {
+
+            /**
+             * Properties of an UpdateSettingsResponse.
+             * @memberof graphwiz.room
+             * @interface IUpdateSettingsResponse
+             * @property {boolean|null} [success] UpdateSettingsResponse success
+             * @property {graphwiz.room.IRoomSettings|null} [settings] UpdateSettingsResponse settings
+             */
+
+            /**
+             * Constructs a new UpdateSettingsResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents an UpdateSettingsResponse.
+             * @implements IUpdateSettingsResponse
+             * @constructor
+             * @param {graphwiz.room.IUpdateSettingsResponse=} [properties] Properties to set
+             */
+            function UpdateSettingsResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * UpdateSettingsResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @instance
+             */
+            UpdateSettingsResponse.prototype.success = false;
+
+            /**
+             * UpdateSettingsResponse settings.
+             * @member {graphwiz.room.IRoomSettings|null|undefined} settings
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @instance
+             */
+            UpdateSettingsResponse.prototype.settings = null;
+
+            /**
+             * Creates a new UpdateSettingsResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {graphwiz.room.IUpdateSettingsResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.UpdateSettingsResponse} UpdateSettingsResponse instance
+             */
+            UpdateSettingsResponse.create = function create(properties) {
+                return new UpdateSettingsResponse(properties);
+            };
+
+            /**
+             * Encodes the specified UpdateSettingsResponse message. Does not implicitly {@link graphwiz.room.UpdateSettingsResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {graphwiz.room.IUpdateSettingsResponse} message UpdateSettingsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateSettingsResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.settings != null && Object.hasOwnProperty.call(message, "settings"))
+                    $root.graphwiz.room.RoomSettings.encode(message.settings, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified UpdateSettingsResponse message, length delimited. Does not implicitly {@link graphwiz.room.UpdateSettingsResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {graphwiz.room.IUpdateSettingsResponse} message UpdateSettingsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateSettingsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an UpdateSettingsResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.UpdateSettingsResponse} UpdateSettingsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateSettingsResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateSettingsResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.settings = $root.graphwiz.room.RoomSettings.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an UpdateSettingsResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.UpdateSettingsResponse} UpdateSettingsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateSettingsResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an UpdateSettingsResponse message.
+             * @function verify
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            UpdateSettingsResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.settings != null && message.hasOwnProperty("settings")) {
+                    var error = $root.graphwiz.room.RoomSettings.verify(message.settings);
+                    if (error)
+                        return "settings." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates an UpdateSettingsResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.UpdateSettingsResponse} UpdateSettingsResponse
+             */
+            UpdateSettingsResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.UpdateSettingsResponse)
+                    return object;
+                var message = new $root.graphwiz.room.UpdateSettingsResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.settings != null) {
+                    if (typeof object.settings !== "object")
+                        throw TypeError(".graphwiz.room.UpdateSettingsResponse.settings: object expected");
+                    message.settings = $root.graphwiz.room.RoomSettings.fromObject(object.settings);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an UpdateSettingsResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {graphwiz.room.UpdateSettingsResponse} message UpdateSettingsResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            UpdateSettingsResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.settings = null;
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.settings != null && message.hasOwnProperty("settings"))
+                    object.settings = $root.graphwiz.room.RoomSettings.toObject(message.settings, options);
+                return object;
+            };
+
+            /**
+             * Converts this UpdateSettingsResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            UpdateSettingsResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for UpdateSettingsResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.UpdateSettingsResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            UpdateSettingsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.UpdateSettingsResponse";
+            };
+
+            return UpdateSettingsResponse;
+        })();
+
+        room.GetPermissionsRequest = (function() {
+
+            /**
+             * Properties of a GetPermissionsRequest.
+             * @memberof graphwiz.room
+             * @interface IGetPermissionsRequest
+             * @property {string|null} [roomId] GetPermissionsRequest roomId
+             * @property {string|null} [userId] GetPermissionsRequest userId
+             */
+
+            /**
+             * Constructs a new GetPermissionsRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents a GetPermissionsRequest.
+             * @implements IGetPermissionsRequest
+             * @constructor
+             * @param {graphwiz.room.IGetPermissionsRequest=} [properties] Properties to set
+             */
+            function GetPermissionsRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * GetPermissionsRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @instance
+             */
+            GetPermissionsRequest.prototype.roomId = "";
+
+            /**
+             * GetPermissionsRequest userId.
+             * @member {string} userId
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @instance
+             */
+            GetPermissionsRequest.prototype.userId = "";
+
+            /**
+             * Creates a new GetPermissionsRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {graphwiz.room.IGetPermissionsRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.GetPermissionsRequest} GetPermissionsRequest instance
+             */
+            GetPermissionsRequest.create = function create(properties) {
+                return new GetPermissionsRequest(properties);
+            };
+
+            /**
+             * Encodes the specified GetPermissionsRequest message. Does not implicitly {@link graphwiz.room.GetPermissionsRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {graphwiz.room.IGetPermissionsRequest} message GetPermissionsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetPermissionsRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.userId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified GetPermissionsRequest message, length delimited. Does not implicitly {@link graphwiz.room.GetPermissionsRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {graphwiz.room.IGetPermissionsRequest} message GetPermissionsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetPermissionsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a GetPermissionsRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.GetPermissionsRequest} GetPermissionsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetPermissionsRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetPermissionsRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a GetPermissionsRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.GetPermissionsRequest} GetPermissionsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetPermissionsRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a GetPermissionsRequest message.
+             * @function verify
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            GetPermissionsRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a GetPermissionsRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.GetPermissionsRequest} GetPermissionsRequest
+             */
+            GetPermissionsRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.GetPermissionsRequest)
+                    return object;
+                var message = new $root.graphwiz.room.GetPermissionsRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a GetPermissionsRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {graphwiz.room.GetPermissionsRequest} message GetPermissionsRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            GetPermissionsRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.userId = "";
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                return object;
+            };
+
+            /**
+             * Converts this GetPermissionsRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            GetPermissionsRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for GetPermissionsRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.GetPermissionsRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            GetPermissionsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.GetPermissionsRequest";
+            };
+
+            return GetPermissionsRequest;
+        })();
+
+        room.GetPermissionsResponse = (function() {
+
+            /**
+             * Properties of a GetPermissionsResponse.
+             * @memberof graphwiz.room
+             * @interface IGetPermissionsResponse
+             * @property {boolean|null} [success] GetPermissionsResponse success
+             * @property {graphwiz.room.IRoomPermissions|null} [permissions] GetPermissionsResponse permissions
+             */
+
+            /**
+             * Constructs a new GetPermissionsResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents a GetPermissionsResponse.
+             * @implements IGetPermissionsResponse
+             * @constructor
+             * @param {graphwiz.room.IGetPermissionsResponse=} [properties] Properties to set
+             */
+            function GetPermissionsResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * GetPermissionsResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @instance
+             */
+            GetPermissionsResponse.prototype.success = false;
+
+            /**
+             * GetPermissionsResponse permissions.
+             * @member {graphwiz.room.IRoomPermissions|null|undefined} permissions
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @instance
+             */
+            GetPermissionsResponse.prototype.permissions = null;
+
+            /**
+             * Creates a new GetPermissionsResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {graphwiz.room.IGetPermissionsResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.GetPermissionsResponse} GetPermissionsResponse instance
+             */
+            GetPermissionsResponse.create = function create(properties) {
+                return new GetPermissionsResponse(properties);
+            };
+
+            /**
+             * Encodes the specified GetPermissionsResponse message. Does not implicitly {@link graphwiz.room.GetPermissionsResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {graphwiz.room.IGetPermissionsResponse} message GetPermissionsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetPermissionsResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.permissions != null && Object.hasOwnProperty.call(message, "permissions"))
+                    $root.graphwiz.room.RoomPermissions.encode(message.permissions, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified GetPermissionsResponse message, length delimited. Does not implicitly {@link graphwiz.room.GetPermissionsResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {graphwiz.room.IGetPermissionsResponse} message GetPermissionsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetPermissionsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a GetPermissionsResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.GetPermissionsResponse} GetPermissionsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetPermissionsResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetPermissionsResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.permissions = $root.graphwiz.room.RoomPermissions.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a GetPermissionsResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.GetPermissionsResponse} GetPermissionsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetPermissionsResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a GetPermissionsResponse message.
+             * @function verify
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            GetPermissionsResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.permissions != null && message.hasOwnProperty("permissions")) {
+                    var error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
+                    if (error)
+                        return "permissions." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a GetPermissionsResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.GetPermissionsResponse} GetPermissionsResponse
+             */
+            GetPermissionsResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.GetPermissionsResponse)
+                    return object;
+                var message = new $root.graphwiz.room.GetPermissionsResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.permissions != null) {
+                    if (typeof object.permissions !== "object")
+                        throw TypeError(".graphwiz.room.GetPermissionsResponse.permissions: object expected");
+                    message.permissions = $root.graphwiz.room.RoomPermissions.fromObject(object.permissions);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a GetPermissionsResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {graphwiz.room.GetPermissionsResponse} message GetPermissionsResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            GetPermissionsResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.permissions = null;
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.permissions != null && message.hasOwnProperty("permissions"))
+                    object.permissions = $root.graphwiz.room.RoomPermissions.toObject(message.permissions, options);
+                return object;
+            };
+
+            /**
+             * Converts this GetPermissionsResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            GetPermissionsResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for GetPermissionsResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.GetPermissionsResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            GetPermissionsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.GetPermissionsResponse";
+            };
+
+            return GetPermissionsResponse;
+        })();
+
+        room.UpdatePermissionsRequest = (function() {
+
+            /**
+             * Properties of an UpdatePermissionsRequest.
+             * @memberof graphwiz.room
+             * @interface IUpdatePermissionsRequest
+             * @property {string|null} [roomId] UpdatePermissionsRequest roomId
+             * @property {string|null} [requesterId] UpdatePermissionsRequest requesterId
+             * @property {graphwiz.room.IRoomPermissions|null} [permissions] UpdatePermissionsRequest permissions
+             */
+
+            /**
+             * Constructs a new UpdatePermissionsRequest.
+             * @memberof graphwiz.room
+             * @classdesc Represents an UpdatePermissionsRequest.
+             * @implements IUpdatePermissionsRequest
+             * @constructor
+             * @param {graphwiz.room.IUpdatePermissionsRequest=} [properties] Properties to set
+             */
+            function UpdatePermissionsRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * UpdatePermissionsRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @instance
+             */
+            UpdatePermissionsRequest.prototype.roomId = "";
+
+            /**
+             * UpdatePermissionsRequest requesterId.
+             * @member {string} requesterId
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @instance
+             */
+            UpdatePermissionsRequest.prototype.requesterId = "";
+
+            /**
+             * UpdatePermissionsRequest permissions.
+             * @member {graphwiz.room.IRoomPermissions|null|undefined} permissions
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @instance
+             */
+            UpdatePermissionsRequest.prototype.permissions = null;
+
+            /**
+             * Creates a new UpdatePermissionsRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {graphwiz.room.IUpdatePermissionsRequest=} [properties] Properties to set
+             * @returns {graphwiz.room.UpdatePermissionsRequest} UpdatePermissionsRequest instance
+             */
+            UpdatePermissionsRequest.create = function create(properties) {
+                return new UpdatePermissionsRequest(properties);
+            };
+
+            /**
+             * Encodes the specified UpdatePermissionsRequest message. Does not implicitly {@link graphwiz.room.UpdatePermissionsRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {graphwiz.room.IUpdatePermissionsRequest} message UpdatePermissionsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdatePermissionsRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.requesterId != null && Object.hasOwnProperty.call(message, "requesterId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.requesterId);
+                if (message.permissions != null && Object.hasOwnProperty.call(message, "permissions"))
+                    $root.graphwiz.room.RoomPermissions.encode(message.permissions, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified UpdatePermissionsRequest message, length delimited. Does not implicitly {@link graphwiz.room.UpdatePermissionsRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {graphwiz.room.IUpdatePermissionsRequest} message UpdatePermissionsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdatePermissionsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an UpdatePermissionsRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.UpdatePermissionsRequest} UpdatePermissionsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdatePermissionsRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdatePermissionsRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.requesterId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.permissions = $root.graphwiz.room.RoomPermissions.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an UpdatePermissionsRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.UpdatePermissionsRequest} UpdatePermissionsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdatePermissionsRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an UpdatePermissionsRequest message.
+             * @function verify
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            UpdatePermissionsRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.requesterId != null && message.hasOwnProperty("requesterId"))
+                    if (!$util.isString(message.requesterId))
+                        return "requesterId: string expected";
+                if (message.permissions != null && message.hasOwnProperty("permissions")) {
+                    var error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
+                    if (error)
+                        return "permissions." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates an UpdatePermissionsRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.UpdatePermissionsRequest} UpdatePermissionsRequest
+             */
+            UpdatePermissionsRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.UpdatePermissionsRequest)
+                    return object;
+                var message = new $root.graphwiz.room.UpdatePermissionsRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.requesterId != null)
+                    message.requesterId = String(object.requesterId);
+                if (object.permissions != null) {
+                    if (typeof object.permissions !== "object")
+                        throw TypeError(".graphwiz.room.UpdatePermissionsRequest.permissions: object expected");
+                    message.permissions = $root.graphwiz.room.RoomPermissions.fromObject(object.permissions);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an UpdatePermissionsRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {graphwiz.room.UpdatePermissionsRequest} message UpdatePermissionsRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            UpdatePermissionsRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.requesterId = "";
+                    object.permissions = null;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.requesterId != null && message.hasOwnProperty("requesterId"))
+                    object.requesterId = message.requesterId;
+                if (message.permissions != null && message.hasOwnProperty("permissions"))
+                    object.permissions = $root.graphwiz.room.RoomPermissions.toObject(message.permissions, options);
+                return object;
+            };
+
+            /**
+             * Converts this UpdatePermissionsRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            UpdatePermissionsRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for UpdatePermissionsRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.room.UpdatePermissionsRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            UpdatePermissionsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.UpdatePermissionsRequest";
+            };
+
+            return UpdatePermissionsRequest;
+        })();
+
+        room.UpdatePermissionsResponse = (function() {
+
+            /**
+             * Properties of an UpdatePermissionsResponse.
+             * @memberof graphwiz.room
+             * @interface IUpdatePermissionsResponse
+             * @property {boolean|null} [success] UpdatePermissionsResponse success
+             * @property {graphwiz.room.IRoomPermissions|null} [permissions] UpdatePermissionsResponse permissions
+             */
+
+            /**
+             * Constructs a new UpdatePermissionsResponse.
+             * @memberof graphwiz.room
+             * @classdesc Represents an UpdatePermissionsResponse.
+             * @implements IUpdatePermissionsResponse
+             * @constructor
+             * @param {graphwiz.room.IUpdatePermissionsResponse=} [properties] Properties to set
+             */
+            function UpdatePermissionsResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * UpdatePermissionsResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @instance
+             */
+            UpdatePermissionsResponse.prototype.success = false;
+
+            /**
+             * UpdatePermissionsResponse permissions.
+             * @member {graphwiz.room.IRoomPermissions|null|undefined} permissions
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @instance
+             */
+            UpdatePermissionsResponse.prototype.permissions = null;
+
+            /**
+             * Creates a new UpdatePermissionsResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {graphwiz.room.IUpdatePermissionsResponse=} [properties] Properties to set
+             * @returns {graphwiz.room.UpdatePermissionsResponse} UpdatePermissionsResponse instance
+             */
+            UpdatePermissionsResponse.create = function create(properties) {
+                return new UpdatePermissionsResponse(properties);
+            };
+
+            /**
+             * Encodes the specified UpdatePermissionsResponse message. Does not implicitly {@link graphwiz.room.UpdatePermissionsResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {graphwiz.room.IUpdatePermissionsResponse} message UpdatePermissionsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdatePermissionsResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.permissions != null && Object.hasOwnProperty.call(message, "permissions"))
+                    $root.graphwiz.room.RoomPermissions.encode(message.permissions, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified UpdatePermissionsResponse message, length delimited. Does not implicitly {@link graphwiz.room.UpdatePermissionsResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {graphwiz.room.IUpdatePermissionsResponse} message UpdatePermissionsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdatePermissionsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an UpdatePermissionsResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.UpdatePermissionsResponse} UpdatePermissionsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdatePermissionsResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdatePermissionsResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.permissions = $root.graphwiz.room.RoomPermissions.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an UpdatePermissionsResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.UpdatePermissionsResponse} UpdatePermissionsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdatePermissionsResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an UpdatePermissionsResponse message.
+             * @function verify
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            UpdatePermissionsResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.permissions != null && message.hasOwnProperty("permissions")) {
+                    var error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
+                    if (error)
+                        return "permissions." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates an UpdatePermissionsResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.UpdatePermissionsResponse} UpdatePermissionsResponse
+             */
+            UpdatePermissionsResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.UpdatePermissionsResponse)
+                    return object;
+                var message = new $root.graphwiz.room.UpdatePermissionsResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.permissions != null) {
+                    if (typeof object.permissions !== "object")
+                        throw TypeError(".graphwiz.room.UpdatePermissionsResponse.permissions: object expected");
+                    message.permissions = $root.graphwiz.room.RoomPermissions.fromObject(object.permissions);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an UpdatePermissionsResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {graphwiz.room.UpdatePermissionsResponse} message UpdatePermissionsResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            UpdatePermissionsResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.permissions = null;
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.permissions != null && message.hasOwnProperty("permissions"))
+                    object.permissions = $root.graphwiz.room.RoomPermissions.toObject(message.permissions, options);
+                return object;
+            };
+
+            /**
+             * Converts this UpdatePermissionsResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            UpdatePermissionsResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for UpdatePermissionsResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.room.UpdatePermissionsResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            UpdatePermissionsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.UpdatePermissionsResponse";
+            };
+
+            return UpdatePermissionsResponse;
+        })();
+
+        room.RoomSettings = (function() {
+
+            /**
+             * Properties of a RoomSettings.
+             * @memberof graphwiz.room
+             * @interface IRoomSettings
+             * @property {number|null} [maxPlayers] RoomSettings maxPlayers
+             * @property {boolean|null} [isPublic] RoomSettings isPublic
+             * @property {boolean|null} [allowVoiceChat] RoomSettings allowVoiceChat
+             * @property {boolean|null} [allowTextChat] RoomSettings allowTextChat
+             * @property {boolean|null} [allowInvites] RoomSettings allowInvites
+             * @property {number|null} [maxSpectators] RoomSettings maxSpectators
+             * @property {boolean|null} [requireApproval] RoomSettings requireApproval
+             * @property {string|null} [passwordHash] RoomSettings passwordHash
+             * @property {Object.<string,string>|null} [customSettings] RoomSettings customSettings
+             */
+
+            /**
+             * Constructs a new RoomSettings.
+             * @memberof graphwiz.room
+             * @classdesc Represents a RoomSettings.
+             * @implements IRoomSettings
+             * @constructor
+             * @param {graphwiz.room.IRoomSettings=} [properties] Properties to set
+             */
+            function RoomSettings(properties) {
+                this.customSettings = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RoomSettings maxPlayers.
+             * @member {number} maxPlayers
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.maxPlayers = 0;
+
+            /**
+             * RoomSettings isPublic.
+             * @member {boolean} isPublic
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.isPublic = false;
+
+            /**
+             * RoomSettings allowVoiceChat.
+             * @member {boolean} allowVoiceChat
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.allowVoiceChat = false;
+
+            /**
+             * RoomSettings allowTextChat.
+             * @member {boolean} allowTextChat
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.allowTextChat = false;
+
+            /**
+             * RoomSettings allowInvites.
+             * @member {boolean} allowInvites
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.allowInvites = false;
+
+            /**
+             * RoomSettings maxSpectators.
+             * @member {number} maxSpectators
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.maxSpectators = 0;
+
+            /**
+             * RoomSettings requireApproval.
+             * @member {boolean} requireApproval
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.requireApproval = false;
+
+            /**
+             * RoomSettings passwordHash.
+             * @member {string} passwordHash
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.passwordHash = "";
+
+            /**
+             * RoomSettings customSettings.
+             * @member {Object.<string,string>} customSettings
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             */
+            RoomSettings.prototype.customSettings = $util.emptyObject;
+
+            /**
+             * Creates a new RoomSettings instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {graphwiz.room.IRoomSettings=} [properties] Properties to set
+             * @returns {graphwiz.room.RoomSettings} RoomSettings instance
+             */
+            RoomSettings.create = function create(properties) {
+                return new RoomSettings(properties);
+            };
+
+            /**
+             * Encodes the specified RoomSettings message. Does not implicitly {@link graphwiz.room.RoomSettings.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {graphwiz.room.IRoomSettings} message RoomSettings message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomSettings.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.maxPlayers != null && Object.hasOwnProperty.call(message, "maxPlayers"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.maxPlayers);
+                if (message.isPublic != null && Object.hasOwnProperty.call(message, "isPublic"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.isPublic);
+                if (message.allowVoiceChat != null && Object.hasOwnProperty.call(message, "allowVoiceChat"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.allowVoiceChat);
+                if (message.allowTextChat != null && Object.hasOwnProperty.call(message, "allowTextChat"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.allowTextChat);
+                if (message.allowInvites != null && Object.hasOwnProperty.call(message, "allowInvites"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).bool(message.allowInvites);
+                if (message.maxSpectators != null && Object.hasOwnProperty.call(message, "maxSpectators"))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int32(message.maxSpectators);
+                if (message.requireApproval != null && Object.hasOwnProperty.call(message, "requireApproval"))
+                    writer.uint32(/* id 7, wireType 0 =*/56).bool(message.requireApproval);
+                if (message.passwordHash != null && Object.hasOwnProperty.call(message, "passwordHash"))
+                    writer.uint32(/* id 8, wireType 2 =*/66).string(message.passwordHash);
+                if (message.customSettings != null && Object.hasOwnProperty.call(message, "customSettings"))
+                    for (var keys = Object.keys(message.customSettings), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 9, wireType 2 =*/74).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.customSettings[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RoomSettings message, length delimited. Does not implicitly {@link graphwiz.room.RoomSettings.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {graphwiz.room.IRoomSettings} message RoomSettings message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RoomSettings message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.RoomSettings} RoomSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomSettings.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomSettings(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.maxPlayers = reader.int32();
+                            break;
+                        }
+                    case 2: {
+                            message.isPublic = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            message.allowVoiceChat = reader.bool();
+                            break;
+                        }
+                    case 4: {
+                            message.allowTextChat = reader.bool();
+                            break;
+                        }
+                    case 5: {
+                            message.allowInvites = reader.bool();
+                            break;
+                        }
+                    case 6: {
+                            message.maxSpectators = reader.int32();
+                            break;
+                        }
+                    case 7: {
+                            message.requireApproval = reader.bool();
+                            break;
+                        }
+                    case 8: {
+                            message.passwordHash = reader.string();
+                            break;
+                        }
+                    case 9: {
+                            if (message.customSettings === $util.emptyObject)
+                                message.customSettings = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.customSettings[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RoomSettings message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.RoomSettings} RoomSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomSettings.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RoomSettings message.
+             * @function verify
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RoomSettings.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.maxPlayers != null && message.hasOwnProperty("maxPlayers"))
+                    if (!$util.isInteger(message.maxPlayers))
+                        return "maxPlayers: integer expected";
+                if (message.isPublic != null && message.hasOwnProperty("isPublic"))
+                    if (typeof message.isPublic !== "boolean")
+                        return "isPublic: boolean expected";
+                if (message.allowVoiceChat != null && message.hasOwnProperty("allowVoiceChat"))
+                    if (typeof message.allowVoiceChat !== "boolean")
+                        return "allowVoiceChat: boolean expected";
+                if (message.allowTextChat != null && message.hasOwnProperty("allowTextChat"))
+                    if (typeof message.allowTextChat !== "boolean")
+                        return "allowTextChat: boolean expected";
+                if (message.allowInvites != null && message.hasOwnProperty("allowInvites"))
+                    if (typeof message.allowInvites !== "boolean")
+                        return "allowInvites: boolean expected";
+                if (message.maxSpectators != null && message.hasOwnProperty("maxSpectators"))
+                    if (!$util.isInteger(message.maxSpectators))
+                        return "maxSpectators: integer expected";
+                if (message.requireApproval != null && message.hasOwnProperty("requireApproval"))
+                    if (typeof message.requireApproval !== "boolean")
+                        return "requireApproval: boolean expected";
+                if (message.passwordHash != null && message.hasOwnProperty("passwordHash"))
+                    if (!$util.isString(message.passwordHash))
+                        return "passwordHash: string expected";
+                if (message.customSettings != null && message.hasOwnProperty("customSettings")) {
+                    if (!$util.isObject(message.customSettings))
+                        return "customSettings: object expected";
+                    var key = Object.keys(message.customSettings);
+                    for (var i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.customSettings[key[i]]))
+                            return "customSettings: string{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a RoomSettings message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.RoomSettings} RoomSettings
+             */
+            RoomSettings.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.RoomSettings)
+                    return object;
+                var message = new $root.graphwiz.room.RoomSettings();
+                if (object.maxPlayers != null)
+                    message.maxPlayers = object.maxPlayers | 0;
+                if (object.isPublic != null)
+                    message.isPublic = Boolean(object.isPublic);
+                if (object.allowVoiceChat != null)
+                    message.allowVoiceChat = Boolean(object.allowVoiceChat);
+                if (object.allowTextChat != null)
+                    message.allowTextChat = Boolean(object.allowTextChat);
+                if (object.allowInvites != null)
+                    message.allowInvites = Boolean(object.allowInvites);
+                if (object.maxSpectators != null)
+                    message.maxSpectators = object.maxSpectators | 0;
+                if (object.requireApproval != null)
+                    message.requireApproval = Boolean(object.requireApproval);
+                if (object.passwordHash != null)
+                    message.passwordHash = String(object.passwordHash);
+                if (object.customSettings) {
+                    if (typeof object.customSettings !== "object")
+                        throw TypeError(".graphwiz.room.RoomSettings.customSettings: object expected");
+                    message.customSettings = {};
+                    for (var keys = Object.keys(object.customSettings), i = 0; i < keys.length; ++i)
+                        message.customSettings[keys[i]] = String(object.customSettings[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RoomSettings message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {graphwiz.room.RoomSettings} message RoomSettings
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RoomSettings.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.objects || options.defaults)
+                    object.customSettings = {};
+                if (options.defaults) {
+                    object.maxPlayers = 0;
+                    object.isPublic = false;
+                    object.allowVoiceChat = false;
+                    object.allowTextChat = false;
+                    object.allowInvites = false;
+                    object.maxSpectators = 0;
+                    object.requireApproval = false;
+                    object.passwordHash = "";
+                }
+                if (message.maxPlayers != null && message.hasOwnProperty("maxPlayers"))
+                    object.maxPlayers = message.maxPlayers;
+                if (message.isPublic != null && message.hasOwnProperty("isPublic"))
+                    object.isPublic = message.isPublic;
+                if (message.allowVoiceChat != null && message.hasOwnProperty("allowVoiceChat"))
+                    object.allowVoiceChat = message.allowVoiceChat;
+                if (message.allowTextChat != null && message.hasOwnProperty("allowTextChat"))
+                    object.allowTextChat = message.allowTextChat;
+                if (message.allowInvites != null && message.hasOwnProperty("allowInvites"))
+                    object.allowInvites = message.allowInvites;
+                if (message.maxSpectators != null && message.hasOwnProperty("maxSpectators"))
+                    object.maxSpectators = message.maxSpectators;
+                if (message.requireApproval != null && message.hasOwnProperty("requireApproval"))
+                    object.requireApproval = message.requireApproval;
+                if (message.passwordHash != null && message.hasOwnProperty("passwordHash"))
+                    object.passwordHash = message.passwordHash;
+                var keys2;
+                if (message.customSettings && (keys2 = Object.keys(message.customSettings)).length) {
+                    object.customSettings = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.customSettings[keys2[j]] = message.customSettings[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this RoomSettings to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.RoomSettings
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RoomSettings.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RoomSettings
+             * @function getTypeUrl
+             * @memberof graphwiz.room.RoomSettings
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RoomSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.RoomSettings";
+            };
+
+            return RoomSettings;
+        })();
+
+        room.RoomPermissions = (function() {
+
+            /**
+             * Properties of a RoomPermissions.
+             * @memberof graphwiz.room
+             * @interface IRoomPermissions
+             * @property {Array.<string>|null} [ownerIds] RoomPermissions ownerIds
+             * @property {Array.<string>|null} [moderatorIds] RoomPermissions moderatorIds
+             * @property {Array.<string>|null} [bannedUserIds] RoomPermissions bannedUserIds
+             * @property {Array.<string>|null} [allowedUserIds] RoomPermissions allowedUserIds
+             * @property {graphwiz.room.PermissionLevel|null} [defaultPermission] RoomPermissions defaultPermission
+             */
+
+            /**
+             * Constructs a new RoomPermissions.
+             * @memberof graphwiz.room
+             * @classdesc Represents a RoomPermissions.
+             * @implements IRoomPermissions
+             * @constructor
+             * @param {graphwiz.room.IRoomPermissions=} [properties] Properties to set
+             */
+            function RoomPermissions(properties) {
+                this.ownerIds = [];
+                this.moderatorIds = [];
+                this.bannedUserIds = [];
+                this.allowedUserIds = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RoomPermissions ownerIds.
+             * @member {Array.<string>} ownerIds
+             * @memberof graphwiz.room.RoomPermissions
+             * @instance
+             */
+            RoomPermissions.prototype.ownerIds = $util.emptyArray;
+
+            /**
+             * RoomPermissions moderatorIds.
+             * @member {Array.<string>} moderatorIds
+             * @memberof graphwiz.room.RoomPermissions
+             * @instance
+             */
+            RoomPermissions.prototype.moderatorIds = $util.emptyArray;
+
+            /**
+             * RoomPermissions bannedUserIds.
+             * @member {Array.<string>} bannedUserIds
+             * @memberof graphwiz.room.RoomPermissions
+             * @instance
+             */
+            RoomPermissions.prototype.bannedUserIds = $util.emptyArray;
+
+            /**
+             * RoomPermissions allowedUserIds.
+             * @member {Array.<string>} allowedUserIds
+             * @memberof graphwiz.room.RoomPermissions
+             * @instance
+             */
+            RoomPermissions.prototype.allowedUserIds = $util.emptyArray;
+
+            /**
+             * RoomPermissions defaultPermission.
+             * @member {graphwiz.room.PermissionLevel} defaultPermission
+             * @memberof graphwiz.room.RoomPermissions
+             * @instance
+             */
+            RoomPermissions.prototype.defaultPermission = 0;
+
+            /**
+             * Creates a new RoomPermissions instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {graphwiz.room.IRoomPermissions=} [properties] Properties to set
+             * @returns {graphwiz.room.RoomPermissions} RoomPermissions instance
+             */
+            RoomPermissions.create = function create(properties) {
+                return new RoomPermissions(properties);
+            };
+
+            /**
+             * Encodes the specified RoomPermissions message. Does not implicitly {@link graphwiz.room.RoomPermissions.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {graphwiz.room.IRoomPermissions} message RoomPermissions message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomPermissions.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.ownerIds != null && message.ownerIds.length)
+                    for (var i = 0; i < message.ownerIds.length; ++i)
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.ownerIds[i]);
+                if (message.moderatorIds != null && message.moderatorIds.length)
+                    for (var i = 0; i < message.moderatorIds.length; ++i)
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.moderatorIds[i]);
+                if (message.bannedUserIds != null && message.bannedUserIds.length)
+                    for (var i = 0; i < message.bannedUserIds.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.bannedUserIds[i]);
+                if (message.allowedUserIds != null && message.allowedUserIds.length)
+                    for (var i = 0; i < message.allowedUserIds.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).string(message.allowedUserIds[i]);
+                if (message.defaultPermission != null && Object.hasOwnProperty.call(message, "defaultPermission"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.defaultPermission);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RoomPermissions message, length delimited. Does not implicitly {@link graphwiz.room.RoomPermissions.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {graphwiz.room.IRoomPermissions} message RoomPermissions message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomPermissions.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RoomPermissions message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.RoomPermissions} RoomPermissions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomPermissions.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomPermissions();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            if (!(message.ownerIds && message.ownerIds.length))
+                                message.ownerIds = [];
+                            message.ownerIds.push(reader.string());
+                            break;
+                        }
+                    case 2: {
+                            if (!(message.moderatorIds && message.moderatorIds.length))
+                                message.moderatorIds = [];
+                            message.moderatorIds.push(reader.string());
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.bannedUserIds && message.bannedUserIds.length))
+                                message.bannedUserIds = [];
+                            message.bannedUserIds.push(reader.string());
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.allowedUserIds && message.allowedUserIds.length))
+                                message.allowedUserIds = [];
+                            message.allowedUserIds.push(reader.string());
+                            break;
+                        }
+                    case 5: {
+                            message.defaultPermission = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RoomPermissions message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.RoomPermissions} RoomPermissions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomPermissions.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RoomPermissions message.
+             * @function verify
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RoomPermissions.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.ownerIds != null && message.hasOwnProperty("ownerIds")) {
+                    if (!Array.isArray(message.ownerIds))
+                        return "ownerIds: array expected";
+                    for (var i = 0; i < message.ownerIds.length; ++i)
+                        if (!$util.isString(message.ownerIds[i]))
+                            return "ownerIds: string[] expected";
+                }
+                if (message.moderatorIds != null && message.hasOwnProperty("moderatorIds")) {
+                    if (!Array.isArray(message.moderatorIds))
+                        return "moderatorIds: array expected";
+                    for (var i = 0; i < message.moderatorIds.length; ++i)
+                        if (!$util.isString(message.moderatorIds[i]))
+                            return "moderatorIds: string[] expected";
+                }
+                if (message.bannedUserIds != null && message.hasOwnProperty("bannedUserIds")) {
+                    if (!Array.isArray(message.bannedUserIds))
+                        return "bannedUserIds: array expected";
+                    for (var i = 0; i < message.bannedUserIds.length; ++i)
+                        if (!$util.isString(message.bannedUserIds[i]))
+                            return "bannedUserIds: string[] expected";
+                }
+                if (message.allowedUserIds != null && message.hasOwnProperty("allowedUserIds")) {
+                    if (!Array.isArray(message.allowedUserIds))
+                        return "allowedUserIds: array expected";
+                    for (var i = 0; i < message.allowedUserIds.length; ++i)
+                        if (!$util.isString(message.allowedUserIds[i]))
+                            return "allowedUserIds: string[] expected";
+                }
+                if (message.defaultPermission != null && message.hasOwnProperty("defaultPermission"))
+                    switch (message.defaultPermission) {
+                    default:
+                        return "defaultPermission: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        break;
+                    }
+                return null;
+            };
+
+            /**
+             * Creates a RoomPermissions message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.RoomPermissions} RoomPermissions
+             */
+            RoomPermissions.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.RoomPermissions)
+                    return object;
+                var message = new $root.graphwiz.room.RoomPermissions();
+                if (object.ownerIds) {
+                    if (!Array.isArray(object.ownerIds))
+                        throw TypeError(".graphwiz.room.RoomPermissions.ownerIds: array expected");
+                    message.ownerIds = [];
+                    for (var i = 0; i < object.ownerIds.length; ++i)
+                        message.ownerIds[i] = String(object.ownerIds[i]);
+                }
+                if (object.moderatorIds) {
+                    if (!Array.isArray(object.moderatorIds))
+                        throw TypeError(".graphwiz.room.RoomPermissions.moderatorIds: array expected");
+                    message.moderatorIds = [];
+                    for (var i = 0; i < object.moderatorIds.length; ++i)
+                        message.moderatorIds[i] = String(object.moderatorIds[i]);
+                }
+                if (object.bannedUserIds) {
+                    if (!Array.isArray(object.bannedUserIds))
+                        throw TypeError(".graphwiz.room.RoomPermissions.bannedUserIds: array expected");
+                    message.bannedUserIds = [];
+                    for (var i = 0; i < object.bannedUserIds.length; ++i)
+                        message.bannedUserIds[i] = String(object.bannedUserIds[i]);
+                }
+                if (object.allowedUserIds) {
+                    if (!Array.isArray(object.allowedUserIds))
+                        throw TypeError(".graphwiz.room.RoomPermissions.allowedUserIds: array expected");
+                    message.allowedUserIds = [];
+                    for (var i = 0; i < object.allowedUserIds.length; ++i)
+                        message.allowedUserIds[i] = String(object.allowedUserIds[i]);
+                }
+                switch (object.defaultPermission) {
+                default:
+                    if (typeof object.defaultPermission === "number") {
+                        message.defaultPermission = object.defaultPermission;
+                        break;
+                    }
+                    break;
+                case "NONE":
+                case 0:
+                    message.defaultPermission = 0;
+                    break;
+                case "VIEWER":
+                case 1:
+                    message.defaultPermission = 1;
+                    break;
+                case "PARTICIPANT":
+                case 2:
+                    message.defaultPermission = 2;
+                    break;
+                case "MODERATOR":
+                case 3:
+                    message.defaultPermission = 3;
+                    break;
+                case "OWNER":
+                case 4:
+                    message.defaultPermission = 4;
+                    break;
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RoomPermissions message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {graphwiz.room.RoomPermissions} message RoomPermissions
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RoomPermissions.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults) {
+                    object.ownerIds = [];
+                    object.moderatorIds = [];
+                    object.bannedUserIds = [];
+                    object.allowedUserIds = [];
+                }
+                if (options.defaults)
+                    object.defaultPermission = options.enums === String ? "NONE" : 0;
+                if (message.ownerIds && message.ownerIds.length) {
+                    object.ownerIds = [];
+                    for (var j = 0; j < message.ownerIds.length; ++j)
+                        object.ownerIds[j] = message.ownerIds[j];
+                }
+                if (message.moderatorIds && message.moderatorIds.length) {
+                    object.moderatorIds = [];
+                    for (var j = 0; j < message.moderatorIds.length; ++j)
+                        object.moderatorIds[j] = message.moderatorIds[j];
+                }
+                if (message.bannedUserIds && message.bannedUserIds.length) {
+                    object.bannedUserIds = [];
+                    for (var j = 0; j < message.bannedUserIds.length; ++j)
+                        object.bannedUserIds[j] = message.bannedUserIds[j];
+                }
+                if (message.allowedUserIds && message.allowedUserIds.length) {
+                    object.allowedUserIds = [];
+                    for (var j = 0; j < message.allowedUserIds.length; ++j)
+                        object.allowedUserIds[j] = message.allowedUserIds[j];
+                }
+                if (message.defaultPermission != null && message.hasOwnProperty("defaultPermission"))
+                    object.defaultPermission = options.enums === String ? $root.graphwiz.room.PermissionLevel[message.defaultPermission] === undefined ? message.defaultPermission : $root.graphwiz.room.PermissionLevel[message.defaultPermission] : message.defaultPermission;
+                return object;
+            };
+
+            /**
+             * Converts this RoomPermissions to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.RoomPermissions
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RoomPermissions.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RoomPermissions
+             * @function getTypeUrl
+             * @memberof graphwiz.room.RoomPermissions
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RoomPermissions.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.RoomPermissions";
+            };
+
+            return RoomPermissions;
+        })();
+
+        /**
+         * PermissionLevel enum.
+         * @name graphwiz.room.PermissionLevel
+         * @enum {number}
+         * @property {number} NONE=0 NONE value
+         * @property {number} VIEWER=1 VIEWER value
+         * @property {number} PARTICIPANT=2 PARTICIPANT value
+         * @property {number} MODERATOR=3 MODERATOR value
+         * @property {number} OWNER=4 OWNER value
+         */
+        room.PermissionLevel = (function() {
+            var valuesById = {}, values = Object.create(valuesById);
+            values[valuesById[0] = "NONE"] = 0;
+            values[valuesById[1] = "VIEWER"] = 1;
+            values[valuesById[2] = "PARTICIPANT"] = 2;
+            values[valuesById[3] = "MODERATOR"] = 3;
+            values[valuesById[4] = "OWNER"] = 4;
+            return values;
+        })();
+
+        room.RoomFilter = (function() {
+
+            /**
+             * Properties of a RoomFilter.
+             * @memberof graphwiz.room
+             * @interface IRoomFilter
+             * @property {boolean|null} [publicOnly] RoomFilter publicOnly
+             * @property {number|null} [minPlayers] RoomFilter minPlayers
+             * @property {number|null} [maxPlayers] RoomFilter maxPlayers
+             * @property {boolean|null} [hasVoiceChat] RoomFilter hasVoiceChat
+             * @property {boolean|null} [hasTextChat] RoomFilter hasTextChat
+             * @property {Array.<string>|null} [tags] RoomFilter tags
+             */
+
+            /**
+             * Constructs a new RoomFilter.
+             * @memberof graphwiz.room
+             * @classdesc Represents a RoomFilter.
+             * @implements IRoomFilter
+             * @constructor
+             * @param {graphwiz.room.IRoomFilter=} [properties] Properties to set
+             */
+            function RoomFilter(properties) {
+                this.tags = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RoomFilter publicOnly.
+             * @member {boolean} publicOnly
+             * @memberof graphwiz.room.RoomFilter
+             * @instance
+             */
+            RoomFilter.prototype.publicOnly = false;
+
+            /**
+             * RoomFilter minPlayers.
+             * @member {number} minPlayers
+             * @memberof graphwiz.room.RoomFilter
+             * @instance
+             */
+            RoomFilter.prototype.minPlayers = 0;
+
+            /**
+             * RoomFilter maxPlayers.
+             * @member {number} maxPlayers
+             * @memberof graphwiz.room.RoomFilter
+             * @instance
+             */
+            RoomFilter.prototype.maxPlayers = 0;
+
+            /**
+             * RoomFilter hasVoiceChat.
+             * @member {boolean} hasVoiceChat
+             * @memberof graphwiz.room.RoomFilter
+             * @instance
+             */
+            RoomFilter.prototype.hasVoiceChat = false;
+
+            /**
+             * RoomFilter hasTextChat.
+             * @member {boolean} hasTextChat
+             * @memberof graphwiz.room.RoomFilter
+             * @instance
+             */
+            RoomFilter.prototype.hasTextChat = false;
+
+            /**
+             * RoomFilter tags.
+             * @member {Array.<string>} tags
+             * @memberof graphwiz.room.RoomFilter
+             * @instance
+             */
+            RoomFilter.prototype.tags = $util.emptyArray;
+
+            /**
+             * Creates a new RoomFilter instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {graphwiz.room.IRoomFilter=} [properties] Properties to set
+             * @returns {graphwiz.room.RoomFilter} RoomFilter instance
+             */
+            RoomFilter.create = function create(properties) {
+                return new RoomFilter(properties);
+            };
+
+            /**
+             * Encodes the specified RoomFilter message. Does not implicitly {@link graphwiz.room.RoomFilter.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {graphwiz.room.IRoomFilter} message RoomFilter message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomFilter.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.publicOnly != null && Object.hasOwnProperty.call(message, "publicOnly"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.publicOnly);
+                if (message.minPlayers != null && Object.hasOwnProperty.call(message, "minPlayers"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.minPlayers);
+                if (message.maxPlayers != null && Object.hasOwnProperty.call(message, "maxPlayers"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.maxPlayers);
+                if (message.hasVoiceChat != null && Object.hasOwnProperty.call(message, "hasVoiceChat"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.hasVoiceChat);
+                if (message.hasTextChat != null && Object.hasOwnProperty.call(message, "hasTextChat"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).bool(message.hasTextChat);
+                if (message.tags != null && message.tags.length)
+                    for (var i = 0; i < message.tags.length; ++i)
+                        writer.uint32(/* id 6, wireType 2 =*/50).string(message.tags[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RoomFilter message, length delimited. Does not implicitly {@link graphwiz.room.RoomFilter.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {graphwiz.room.IRoomFilter} message RoomFilter message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomFilter.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RoomFilter message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.room.RoomFilter} RoomFilter
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomFilter.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomFilter();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.publicOnly = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.minPlayers = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            message.maxPlayers = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.hasVoiceChat = reader.bool();
+                            break;
+                        }
+                    case 5: {
+                            message.hasTextChat = reader.bool();
+                            break;
+                        }
+                    case 6: {
+                            if (!(message.tags && message.tags.length))
+                                message.tags = [];
+                            message.tags.push(reader.string());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RoomFilter message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.room.RoomFilter} RoomFilter
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomFilter.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RoomFilter message.
+             * @function verify
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RoomFilter.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.publicOnly != null && message.hasOwnProperty("publicOnly"))
+                    if (typeof message.publicOnly !== "boolean")
+                        return "publicOnly: boolean expected";
+                if (message.minPlayers != null && message.hasOwnProperty("minPlayers"))
+                    if (!$util.isInteger(message.minPlayers))
+                        return "minPlayers: integer expected";
+                if (message.maxPlayers != null && message.hasOwnProperty("maxPlayers"))
+                    if (!$util.isInteger(message.maxPlayers))
+                        return "maxPlayers: integer expected";
+                if (message.hasVoiceChat != null && message.hasOwnProperty("hasVoiceChat"))
+                    if (typeof message.hasVoiceChat !== "boolean")
+                        return "hasVoiceChat: boolean expected";
+                if (message.hasTextChat != null && message.hasOwnProperty("hasTextChat"))
+                    if (typeof message.hasTextChat !== "boolean")
+                        return "hasTextChat: boolean expected";
+                if (message.tags != null && message.hasOwnProperty("tags")) {
+                    if (!Array.isArray(message.tags))
+                        return "tags: array expected";
+                    for (var i = 0; i < message.tags.length; ++i)
+                        if (!$util.isString(message.tags[i]))
+                            return "tags: string[] expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a RoomFilter message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.room.RoomFilter} RoomFilter
+             */
+            RoomFilter.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.room.RoomFilter)
+                    return object;
+                var message = new $root.graphwiz.room.RoomFilter();
+                if (object.publicOnly != null)
+                    message.publicOnly = Boolean(object.publicOnly);
+                if (object.minPlayers != null)
+                    message.minPlayers = object.minPlayers | 0;
+                if (object.maxPlayers != null)
+                    message.maxPlayers = object.maxPlayers | 0;
+                if (object.hasVoiceChat != null)
+                    message.hasVoiceChat = Boolean(object.hasVoiceChat);
+                if (object.hasTextChat != null)
+                    message.hasTextChat = Boolean(object.hasTextChat);
+                if (object.tags) {
+                    if (!Array.isArray(object.tags))
+                        throw TypeError(".graphwiz.room.RoomFilter.tags: array expected");
+                    message.tags = [];
+                    for (var i = 0; i < object.tags.length; ++i)
+                        message.tags[i] = String(object.tags[i]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RoomFilter message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {graphwiz.room.RoomFilter} message RoomFilter
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RoomFilter.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.tags = [];
+                if (options.defaults) {
+                    object.publicOnly = false;
+                    object.minPlayers = 0;
+                    object.maxPlayers = 0;
+                    object.hasVoiceChat = false;
+                    object.hasTextChat = false;
+                }
+                if (message.publicOnly != null && message.hasOwnProperty("publicOnly"))
+                    object.publicOnly = message.publicOnly;
+                if (message.minPlayers != null && message.hasOwnProperty("minPlayers"))
+                    object.minPlayers = message.minPlayers;
+                if (message.maxPlayers != null && message.hasOwnProperty("maxPlayers"))
+                    object.maxPlayers = message.maxPlayers;
+                if (message.hasVoiceChat != null && message.hasOwnProperty("hasVoiceChat"))
+                    object.hasVoiceChat = message.hasVoiceChat;
+                if (message.hasTextChat != null && message.hasOwnProperty("hasTextChat"))
+                    object.hasTextChat = message.hasTextChat;
+                if (message.tags && message.tags.length) {
+                    object.tags = [];
+                    for (var j = 0; j < message.tags.length; ++j)
+                        object.tags[j] = message.tags[j];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this RoomFilter to JSON.
+             * @function toJSON
+             * @memberof graphwiz.room.RoomFilter
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RoomFilter.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RoomFilter
+             * @function getTypeUrl
+             * @memberof graphwiz.room.RoomFilter
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RoomFilter.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.room.RoomFilter";
+            };
+
+            return RoomFilter;
+        })();
+
+        return room;
+    })();
+
+    graphwiz.media = (function() {
+
+        /**
+         * Namespace media.
+         * @memberof graphwiz
+         * @namespace
+         */
+        var media = {};
+
+        media.MediaService = (function() {
+
+            /**
+             * Constructs a new MediaService service.
+             * @memberof graphwiz.media
+             * @classdesc Represents a MediaService
+             * @extends $protobuf.rpc.Service
+             * @constructor
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             */
+            function MediaService(rpcImpl, requestDelimited, responseDelimited) {
+                $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited);
+            }
+
+            (MediaService.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = MediaService;
+
+            /**
+             * Creates new MediaService service using the specified rpc implementation.
+             * @function create
+             * @memberof graphwiz.media.MediaService
+             * @static
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             * @returns {MediaService} RPC service. Useful where requests and/or responses are streamed.
+             */
+            MediaService.create = function create(rpcImpl, requestDelimited, responseDelimited) {
+                return new this(rpcImpl, requestDelimited, responseDelimited);
+            };
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#createOffer}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef CreateOfferCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.CreateOfferResponse} [response] CreateOfferResponse
+             */
+
+            /**
+             * Calls CreateOffer.
+             * @function createOffer
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.ICreateOfferRequest} request CreateOfferRequest message or plain object
+             * @param {graphwiz.media.MediaService.CreateOfferCallback} callback Node-style callback called with the error, if any, and CreateOfferResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.createOffer = function createOffer(request, callback) {
+                return this.rpcCall(createOffer, $root.graphwiz.media.CreateOfferRequest, $root.graphwiz.media.CreateOfferResponse, request, callback);
+            }, "name", { value: "CreateOffer" });
+
+            /**
+             * Calls CreateOffer.
+             * @function createOffer
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.ICreateOfferRequest} request CreateOfferRequest message or plain object
+             * @returns {Promise<graphwiz.media.CreateOfferResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#createAnswer}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef CreateAnswerCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.CreateAnswerResponse} [response] CreateAnswerResponse
+             */
+
+            /**
+             * Calls CreateAnswer.
+             * @function createAnswer
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.ICreateAnswerRequest} request CreateAnswerRequest message or plain object
+             * @param {graphwiz.media.MediaService.CreateAnswerCallback} callback Node-style callback called with the error, if any, and CreateAnswerResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.createAnswer = function createAnswer(request, callback) {
+                return this.rpcCall(createAnswer, $root.graphwiz.media.CreateAnswerRequest, $root.graphwiz.media.CreateAnswerResponse, request, callback);
+            }, "name", { value: "CreateAnswer" });
+
+            /**
+             * Calls CreateAnswer.
+             * @function createAnswer
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.ICreateAnswerRequest} request CreateAnswerRequest message or plain object
+             * @returns {Promise<graphwiz.media.CreateAnswerResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#setRemoteDescription}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef SetRemoteDescriptionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.SetRemoteDescriptionResponse} [response] SetRemoteDescriptionResponse
+             */
+
+            /**
+             * Calls SetRemoteDescription.
+             * @function setRemoteDescription
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.ISetRemoteDescriptionRequest} request SetRemoteDescriptionRequest message or plain object
+             * @param {graphwiz.media.MediaService.SetRemoteDescriptionCallback} callback Node-style callback called with the error, if any, and SetRemoteDescriptionResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.setRemoteDescription = function setRemoteDescription(request, callback) {
+                return this.rpcCall(setRemoteDescription, $root.graphwiz.media.SetRemoteDescriptionRequest, $root.graphwiz.media.SetRemoteDescriptionResponse, request, callback);
+            }, "name", { value: "SetRemoteDescription" });
+
+            /**
+             * Calls SetRemoteDescription.
+             * @function setRemoteDescription
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.ISetRemoteDescriptionRequest} request SetRemoteDescriptionRequest message or plain object
+             * @returns {Promise<graphwiz.media.SetRemoteDescriptionResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#addIceCandidate}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef AddIceCandidateCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.AddIceCandidateResponse} [response] AddIceCandidateResponse
+             */
+
+            /**
+             * Calls AddIceCandidate.
+             * @function addIceCandidate
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IAddIceCandidateRequest} request AddIceCandidateRequest message or plain object
+             * @param {graphwiz.media.MediaService.AddIceCandidateCallback} callback Node-style callback called with the error, if any, and AddIceCandidateResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.addIceCandidate = function addIceCandidate(request, callback) {
+                return this.rpcCall(addIceCandidate, $root.graphwiz.media.AddIceCandidateRequest, $root.graphwiz.media.AddIceCandidateResponse, request, callback);
+            }, "name", { value: "AddIceCandidate" });
+
+            /**
+             * Calls AddIceCandidate.
+             * @function addIceCandidate
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IAddIceCandidateRequest} request AddIceCandidateRequest message or plain object
+             * @returns {Promise<graphwiz.media.AddIceCandidateResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#addTrack}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef AddTrackCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.AddTrackResponse} [response] AddTrackResponse
+             */
+
+            /**
+             * Calls AddTrack.
+             * @function addTrack
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IAddTrackRequest} request AddTrackRequest message or plain object
+             * @param {graphwiz.media.MediaService.AddTrackCallback} callback Node-style callback called with the error, if any, and AddTrackResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.addTrack = function addTrack(request, callback) {
+                return this.rpcCall(addTrack, $root.graphwiz.media.AddTrackRequest, $root.graphwiz.media.AddTrackResponse, request, callback);
+            }, "name", { value: "AddTrack" });
+
+            /**
+             * Calls AddTrack.
+             * @function addTrack
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IAddTrackRequest} request AddTrackRequest message or plain object
+             * @returns {Promise<graphwiz.media.AddTrackResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#removeTrack}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef RemoveTrackCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.RemoveTrackResponse} [response] RemoveTrackResponse
+             */
+
+            /**
+             * Calls RemoveTrack.
+             * @function removeTrack
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IRemoveTrackRequest} request RemoveTrackRequest message or plain object
+             * @param {graphwiz.media.MediaService.RemoveTrackCallback} callback Node-style callback called with the error, if any, and RemoveTrackResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.removeTrack = function removeTrack(request, callback) {
+                return this.rpcCall(removeTrack, $root.graphwiz.media.RemoveTrackRequest, $root.graphwiz.media.RemoveTrackResponse, request, callback);
+            }, "name", { value: "RemoveTrack" });
+
+            /**
+             * Calls RemoveTrack.
+             * @function removeTrack
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IRemoveTrackRequest} request RemoveTrackRequest message or plain object
+             * @returns {Promise<graphwiz.media.RemoveTrackResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#muteTrack}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef MuteTrackCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.MuteTrackResponse} [response] MuteTrackResponse
+             */
+
+            /**
+             * Calls MuteTrack.
+             * @function muteTrack
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IMuteTrackRequest} request MuteTrackRequest message or plain object
+             * @param {graphwiz.media.MediaService.MuteTrackCallback} callback Node-style callback called with the error, if any, and MuteTrackResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.muteTrack = function muteTrack(request, callback) {
+                return this.rpcCall(muteTrack, $root.graphwiz.media.MuteTrackRequest, $root.graphwiz.media.MuteTrackResponse, request, callback);
+            }, "name", { value: "MuteTrack" });
+
+            /**
+             * Calls MuteTrack.
+             * @function muteTrack
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IMuteTrackRequest} request MuteTrackRequest message or plain object
+             * @returns {Promise<graphwiz.media.MuteTrackResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#joinSession}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef JoinSessionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.JoinSessionResponse} [response] JoinSessionResponse
+             */
+
+            /**
+             * Calls JoinSession.
+             * @function joinSession
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IJoinSessionRequest} request JoinSessionRequest message or plain object
+             * @param {graphwiz.media.MediaService.JoinSessionCallback} callback Node-style callback called with the error, if any, and JoinSessionResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.joinSession = function joinSession(request, callback) {
+                return this.rpcCall(joinSession, $root.graphwiz.media.JoinSessionRequest, $root.graphwiz.media.JoinSessionResponse, request, callback);
+            }, "name", { value: "JoinSession" });
+
+            /**
+             * Calls JoinSession.
+             * @function joinSession
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IJoinSessionRequest} request JoinSessionRequest message or plain object
+             * @returns {Promise<graphwiz.media.JoinSessionResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#leaveSession}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef LeaveSessionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.LeaveSessionResponse} [response] LeaveSessionResponse
+             */
+
+            /**
+             * Calls LeaveSession.
+             * @function leaveSession
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.ILeaveSessionRequest} request LeaveSessionRequest message or plain object
+             * @param {graphwiz.media.MediaService.LeaveSessionCallback} callback Node-style callback called with the error, if any, and LeaveSessionResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.leaveSession = function leaveSession(request, callback) {
+                return this.rpcCall(leaveSession, $root.graphwiz.media.LeaveSessionRequest, $root.graphwiz.media.LeaveSessionResponse, request, callback);
+            }, "name", { value: "LeaveSession" });
+
+            /**
+             * Calls LeaveSession.
+             * @function leaveSession
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.ILeaveSessionRequest} request LeaveSessionRequest message or plain object
+             * @returns {Promise<graphwiz.media.LeaveSessionResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.media.MediaService#streamMediaEvents}.
+             * @memberof graphwiz.media.MediaService
+             * @typedef StreamMediaEventsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.media.MediaEvent} [response] MediaEvent
+             */
+
+            /**
+             * Calls StreamMediaEvents.
+             * @function streamMediaEvents
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IStreamMediaEventsRequest} request StreamMediaEventsRequest message or plain object
+             * @param {graphwiz.media.MediaService.StreamMediaEventsCallback} callback Node-style callback called with the error, if any, and MediaEvent
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(MediaService.prototype.streamMediaEvents = function streamMediaEvents(request, callback) {
+                return this.rpcCall(streamMediaEvents, $root.graphwiz.media.StreamMediaEventsRequest, $root.graphwiz.media.MediaEvent, request, callback);
+            }, "name", { value: "StreamMediaEvents" });
+
+            /**
+             * Calls StreamMediaEvents.
+             * @function streamMediaEvents
+             * @memberof graphwiz.media.MediaService
+             * @instance
+             * @param {graphwiz.media.IStreamMediaEventsRequest} request StreamMediaEventsRequest message or plain object
+             * @returns {Promise<graphwiz.media.MediaEvent>} Promise
+             * @variation 2
+             */
+
+            return MediaService;
+        })();
+
+        media.CreateOfferRequest = (function() {
+
+            /**
+             * Properties of a CreateOfferRequest.
+             * @memberof graphwiz.media
+             * @interface ICreateOfferRequest
+             * @property {string|null} [roomId] CreateOfferRequest roomId
+             * @property {string|null} [clientId] CreateOfferRequest clientId
+             * @property {graphwiz.media.IMediaConstraints|null} [constraints] CreateOfferRequest constraints
+             */
+
+            /**
+             * Constructs a new CreateOfferRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents a CreateOfferRequest.
+             * @implements ICreateOfferRequest
+             * @constructor
+             * @param {graphwiz.media.ICreateOfferRequest=} [properties] Properties to set
+             */
+            function CreateOfferRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * CreateOfferRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @instance
+             */
+            CreateOfferRequest.prototype.roomId = "";
+
+            /**
+             * CreateOfferRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @instance
+             */
+            CreateOfferRequest.prototype.clientId = "";
+
+            /**
+             * CreateOfferRequest constraints.
+             * @member {graphwiz.media.IMediaConstraints|null|undefined} constraints
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @instance
+             */
+            CreateOfferRequest.prototype.constraints = null;
+
+            /**
+             * Creates a new CreateOfferRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {graphwiz.media.ICreateOfferRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.CreateOfferRequest} CreateOfferRequest instance
+             */
+            CreateOfferRequest.create = function create(properties) {
+                return new CreateOfferRequest(properties);
+            };
+
+            /**
+             * Encodes the specified CreateOfferRequest message. Does not implicitly {@link graphwiz.media.CreateOfferRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {graphwiz.media.ICreateOfferRequest} message CreateOfferRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateOfferRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.constraints != null && Object.hasOwnProperty.call(message, "constraints"))
+                    $root.graphwiz.media.MediaConstraints.encode(message.constraints, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified CreateOfferRequest message, length delimited. Does not implicitly {@link graphwiz.media.CreateOfferRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {graphwiz.media.ICreateOfferRequest} message CreateOfferRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateOfferRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a CreateOfferRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.CreateOfferRequest} CreateOfferRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateOfferRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateOfferRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.constraints = $root.graphwiz.media.MediaConstraints.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a CreateOfferRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.CreateOfferRequest} CreateOfferRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateOfferRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a CreateOfferRequest message.
+             * @function verify
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            CreateOfferRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.constraints != null && message.hasOwnProperty("constraints")) {
+                    var error = $root.graphwiz.media.MediaConstraints.verify(message.constraints);
+                    if (error)
+                        return "constraints." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a CreateOfferRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.CreateOfferRequest} CreateOfferRequest
+             */
+            CreateOfferRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.CreateOfferRequest)
+                    return object;
+                var message = new $root.graphwiz.media.CreateOfferRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.constraints != null) {
+                    if (typeof object.constraints !== "object")
+                        throw TypeError(".graphwiz.media.CreateOfferRequest.constraints: object expected");
+                    message.constraints = $root.graphwiz.media.MediaConstraints.fromObject(object.constraints);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a CreateOfferRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {graphwiz.media.CreateOfferRequest} message CreateOfferRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            CreateOfferRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.constraints = null;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.constraints != null && message.hasOwnProperty("constraints"))
+                    object.constraints = $root.graphwiz.media.MediaConstraints.toObject(message.constraints, options);
+                return object;
+            };
+
+            /**
+             * Converts this CreateOfferRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            CreateOfferRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for CreateOfferRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.CreateOfferRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            CreateOfferRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.CreateOfferRequest";
+            };
+
+            return CreateOfferRequest;
+        })();
+
+        media.CreateOfferResponse = (function() {
+
+            /**
+             * Properties of a CreateOfferResponse.
+             * @memberof graphwiz.media
+             * @interface ICreateOfferResponse
+             * @property {boolean|null} [success] CreateOfferResponse success
+             * @property {string|null} [sdp] CreateOfferResponse sdp
+             * @property {string|null} [sessionId] CreateOfferResponse sessionId
+             */
+
+            /**
+             * Constructs a new CreateOfferResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents a CreateOfferResponse.
+             * @implements ICreateOfferResponse
+             * @constructor
+             * @param {graphwiz.media.ICreateOfferResponse=} [properties] Properties to set
+             */
+            function CreateOfferResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * CreateOfferResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @instance
+             */
+            CreateOfferResponse.prototype.success = false;
+
+            /**
+             * CreateOfferResponse sdp.
+             * @member {string} sdp
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @instance
+             */
+            CreateOfferResponse.prototype.sdp = "";
+
+            /**
+             * CreateOfferResponse sessionId.
+             * @member {string} sessionId
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @instance
+             */
+            CreateOfferResponse.prototype.sessionId = "";
+
+            /**
+             * Creates a new CreateOfferResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {graphwiz.media.ICreateOfferResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.CreateOfferResponse} CreateOfferResponse instance
+             */
+            CreateOfferResponse.create = function create(properties) {
+                return new CreateOfferResponse(properties);
+            };
+
+            /**
+             * Encodes the specified CreateOfferResponse message. Does not implicitly {@link graphwiz.media.CreateOfferResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {graphwiz.media.ICreateOfferResponse} message CreateOfferResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateOfferResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.sdp != null && Object.hasOwnProperty.call(message, "sdp"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sdp);
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.sessionId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified CreateOfferResponse message, length delimited. Does not implicitly {@link graphwiz.media.CreateOfferResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {graphwiz.media.ICreateOfferResponse} message CreateOfferResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateOfferResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a CreateOfferResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.CreateOfferResponse} CreateOfferResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateOfferResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateOfferResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.sdp = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.sessionId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a CreateOfferResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.CreateOfferResponse} CreateOfferResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateOfferResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a CreateOfferResponse message.
+             * @function verify
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            CreateOfferResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    if (!$util.isString(message.sdp))
+                        return "sdp: string expected";
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a CreateOfferResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.CreateOfferResponse} CreateOfferResponse
+             */
+            CreateOfferResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.CreateOfferResponse)
+                    return object;
+                var message = new $root.graphwiz.media.CreateOfferResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.sdp != null)
+                    message.sdp = String(object.sdp);
+                if (object.sessionId != null)
+                    message.sessionId = String(object.sessionId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a CreateOfferResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {graphwiz.media.CreateOfferResponse} message CreateOfferResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            CreateOfferResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.sdp = "";
+                    object.sessionId = "";
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    object.sdp = message.sdp;
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    object.sessionId = message.sessionId;
+                return object;
+            };
+
+            /**
+             * Converts this CreateOfferResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            CreateOfferResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for CreateOfferResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.CreateOfferResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            CreateOfferResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.CreateOfferResponse";
+            };
+
+            return CreateOfferResponse;
+        })();
+
+        media.CreateAnswerRequest = (function() {
+
+            /**
+             * Properties of a CreateAnswerRequest.
+             * @memberof graphwiz.media
+             * @interface ICreateAnswerRequest
+             * @property {string|null} [roomId] CreateAnswerRequest roomId
+             * @property {string|null} [clientId] CreateAnswerRequest clientId
+             * @property {string|null} [offerSdp] CreateAnswerRequest offerSdp
+             * @property {graphwiz.media.IMediaConstraints|null} [constraints] CreateAnswerRequest constraints
+             */
+
+            /**
+             * Constructs a new CreateAnswerRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents a CreateAnswerRequest.
+             * @implements ICreateAnswerRequest
+             * @constructor
+             * @param {graphwiz.media.ICreateAnswerRequest=} [properties] Properties to set
+             */
+            function CreateAnswerRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * CreateAnswerRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @instance
+             */
+            CreateAnswerRequest.prototype.roomId = "";
+
+            /**
+             * CreateAnswerRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @instance
+             */
+            CreateAnswerRequest.prototype.clientId = "";
+
+            /**
+             * CreateAnswerRequest offerSdp.
+             * @member {string} offerSdp
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @instance
+             */
+            CreateAnswerRequest.prototype.offerSdp = "";
+
+            /**
+             * CreateAnswerRequest constraints.
+             * @member {graphwiz.media.IMediaConstraints|null|undefined} constraints
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @instance
+             */
+            CreateAnswerRequest.prototype.constraints = null;
+
+            /**
+             * Creates a new CreateAnswerRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {graphwiz.media.ICreateAnswerRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.CreateAnswerRequest} CreateAnswerRequest instance
+             */
+            CreateAnswerRequest.create = function create(properties) {
+                return new CreateAnswerRequest(properties);
+            };
+
+            /**
+             * Encodes the specified CreateAnswerRequest message. Does not implicitly {@link graphwiz.media.CreateAnswerRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {graphwiz.media.ICreateAnswerRequest} message CreateAnswerRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateAnswerRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.offerSdp != null && Object.hasOwnProperty.call(message, "offerSdp"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.offerSdp);
+                if (message.constraints != null && Object.hasOwnProperty.call(message, "constraints"))
+                    $root.graphwiz.media.MediaConstraints.encode(message.constraints, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified CreateAnswerRequest message, length delimited. Does not implicitly {@link graphwiz.media.CreateAnswerRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {graphwiz.media.ICreateAnswerRequest} message CreateAnswerRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateAnswerRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a CreateAnswerRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.CreateAnswerRequest} CreateAnswerRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateAnswerRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateAnswerRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.offerSdp = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.constraints = $root.graphwiz.media.MediaConstraints.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a CreateAnswerRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.CreateAnswerRequest} CreateAnswerRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateAnswerRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a CreateAnswerRequest message.
+             * @function verify
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            CreateAnswerRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.offerSdp != null && message.hasOwnProperty("offerSdp"))
+                    if (!$util.isString(message.offerSdp))
+                        return "offerSdp: string expected";
+                if (message.constraints != null && message.hasOwnProperty("constraints")) {
+                    var error = $root.graphwiz.media.MediaConstraints.verify(message.constraints);
+                    if (error)
+                        return "constraints." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a CreateAnswerRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.CreateAnswerRequest} CreateAnswerRequest
+             */
+            CreateAnswerRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.CreateAnswerRequest)
+                    return object;
+                var message = new $root.graphwiz.media.CreateAnswerRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.offerSdp != null)
+                    message.offerSdp = String(object.offerSdp);
+                if (object.constraints != null) {
+                    if (typeof object.constraints !== "object")
+                        throw TypeError(".graphwiz.media.CreateAnswerRequest.constraints: object expected");
+                    message.constraints = $root.graphwiz.media.MediaConstraints.fromObject(object.constraints);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a CreateAnswerRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {graphwiz.media.CreateAnswerRequest} message CreateAnswerRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            CreateAnswerRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.offerSdp = "";
+                    object.constraints = null;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.offerSdp != null && message.hasOwnProperty("offerSdp"))
+                    object.offerSdp = message.offerSdp;
+                if (message.constraints != null && message.hasOwnProperty("constraints"))
+                    object.constraints = $root.graphwiz.media.MediaConstraints.toObject(message.constraints, options);
+                return object;
+            };
+
+            /**
+             * Converts this CreateAnswerRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            CreateAnswerRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for CreateAnswerRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.CreateAnswerRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            CreateAnswerRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.CreateAnswerRequest";
+            };
+
+            return CreateAnswerRequest;
+        })();
+
+        media.CreateAnswerResponse = (function() {
+
+            /**
+             * Properties of a CreateAnswerResponse.
+             * @memberof graphwiz.media
+             * @interface ICreateAnswerResponse
+             * @property {boolean|null} [success] CreateAnswerResponse success
+             * @property {string|null} [sdp] CreateAnswerResponse sdp
+             */
+
+            /**
+             * Constructs a new CreateAnswerResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents a CreateAnswerResponse.
+             * @implements ICreateAnswerResponse
+             * @constructor
+             * @param {graphwiz.media.ICreateAnswerResponse=} [properties] Properties to set
+             */
+            function CreateAnswerResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * CreateAnswerResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @instance
+             */
+            CreateAnswerResponse.prototype.success = false;
+
+            /**
+             * CreateAnswerResponse sdp.
+             * @member {string} sdp
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @instance
+             */
+            CreateAnswerResponse.prototype.sdp = "";
+
+            /**
+             * Creates a new CreateAnswerResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {graphwiz.media.ICreateAnswerResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.CreateAnswerResponse} CreateAnswerResponse instance
+             */
+            CreateAnswerResponse.create = function create(properties) {
+                return new CreateAnswerResponse(properties);
+            };
+
+            /**
+             * Encodes the specified CreateAnswerResponse message. Does not implicitly {@link graphwiz.media.CreateAnswerResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {graphwiz.media.ICreateAnswerResponse} message CreateAnswerResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateAnswerResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.sdp != null && Object.hasOwnProperty.call(message, "sdp"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sdp);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified CreateAnswerResponse message, length delimited. Does not implicitly {@link graphwiz.media.CreateAnswerResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {graphwiz.media.ICreateAnswerResponse} message CreateAnswerResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            CreateAnswerResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a CreateAnswerResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.CreateAnswerResponse} CreateAnswerResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateAnswerResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateAnswerResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.sdp = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a CreateAnswerResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.CreateAnswerResponse} CreateAnswerResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            CreateAnswerResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a CreateAnswerResponse message.
+             * @function verify
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            CreateAnswerResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    if (!$util.isString(message.sdp))
+                        return "sdp: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a CreateAnswerResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.CreateAnswerResponse} CreateAnswerResponse
+             */
+            CreateAnswerResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.CreateAnswerResponse)
+                    return object;
+                var message = new $root.graphwiz.media.CreateAnswerResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.sdp != null)
+                    message.sdp = String(object.sdp);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a CreateAnswerResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {graphwiz.media.CreateAnswerResponse} message CreateAnswerResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            CreateAnswerResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.sdp = "";
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    object.sdp = message.sdp;
+                return object;
+            };
+
+            /**
+             * Converts this CreateAnswerResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            CreateAnswerResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for CreateAnswerResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.CreateAnswerResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            CreateAnswerResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.CreateAnswerResponse";
+            };
+
+            return CreateAnswerResponse;
+        })();
+
+        media.SetRemoteDescriptionRequest = (function() {
+
+            /**
+             * Properties of a SetRemoteDescriptionRequest.
+             * @memberof graphwiz.media
+             * @interface ISetRemoteDescriptionRequest
+             * @property {string|null} [roomId] SetRemoteDescriptionRequest roomId
+             * @property {string|null} [clientId] SetRemoteDescriptionRequest clientId
+             * @property {string|null} [sdp] SetRemoteDescriptionRequest sdp
+             * @property {graphwiz.media.SessionDescriptionType|null} [type] SetRemoteDescriptionRequest type
+             */
+
+            /**
+             * Constructs a new SetRemoteDescriptionRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents a SetRemoteDescriptionRequest.
+             * @implements ISetRemoteDescriptionRequest
+             * @constructor
+             * @param {graphwiz.media.ISetRemoteDescriptionRequest=} [properties] Properties to set
+             */
+            function SetRemoteDescriptionRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * SetRemoteDescriptionRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @instance
+             */
+            SetRemoteDescriptionRequest.prototype.roomId = "";
+
+            /**
+             * SetRemoteDescriptionRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @instance
+             */
+            SetRemoteDescriptionRequest.prototype.clientId = "";
+
+            /**
+             * SetRemoteDescriptionRequest sdp.
+             * @member {string} sdp
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @instance
+             */
+            SetRemoteDescriptionRequest.prototype.sdp = "";
+
+            /**
+             * SetRemoteDescriptionRequest type.
+             * @member {graphwiz.media.SessionDescriptionType} type
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @instance
+             */
+            SetRemoteDescriptionRequest.prototype.type = 0;
+
+            /**
+             * Creates a new SetRemoteDescriptionRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {graphwiz.media.ISetRemoteDescriptionRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.SetRemoteDescriptionRequest} SetRemoteDescriptionRequest instance
+             */
+            SetRemoteDescriptionRequest.create = function create(properties) {
+                return new SetRemoteDescriptionRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SetRemoteDescriptionRequest message. Does not implicitly {@link graphwiz.media.SetRemoteDescriptionRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {graphwiz.media.ISetRemoteDescriptionRequest} message SetRemoteDescriptionRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SetRemoteDescriptionRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.sdp != null && Object.hasOwnProperty.call(message, "sdp"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.sdp);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.type);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SetRemoteDescriptionRequest message, length delimited. Does not implicitly {@link graphwiz.media.SetRemoteDescriptionRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {graphwiz.media.ISetRemoteDescriptionRequest} message SetRemoteDescriptionRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SetRemoteDescriptionRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a SetRemoteDescriptionRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.SetRemoteDescriptionRequest} SetRemoteDescriptionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SetRemoteDescriptionRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SetRemoteDescriptionRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.sdp = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.type = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a SetRemoteDescriptionRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.SetRemoteDescriptionRequest} SetRemoteDescriptionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SetRemoteDescriptionRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SetRemoteDescriptionRequest message.
+             * @function verify
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SetRemoteDescriptionRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    if (!$util.isString(message.sdp))
+                        return "sdp: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
+                    default:
+                        return "type: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                return null;
+            };
+
+            /**
+             * Creates a SetRemoteDescriptionRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.SetRemoteDescriptionRequest} SetRemoteDescriptionRequest
+             */
+            SetRemoteDescriptionRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.SetRemoteDescriptionRequest)
+                    return object;
+                var message = new $root.graphwiz.media.SetRemoteDescriptionRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.sdp != null)
+                    message.sdp = String(object.sdp);
+                switch (object.type) {
+                default:
+                    if (typeof object.type === "number") {
+                        message.type = object.type;
+                        break;
+                    }
+                    break;
+                case "OFFER":
+                case 0:
+                    message.type = 0;
+                    break;
+                case "ANSWER":
+                case 1:
+                    message.type = 1;
+                    break;
+                case "PRANSWER":
+                case 2:
+                    message.type = 2;
+                    break;
+                case "ROLLBACK":
+                case 3:
+                    message.type = 3;
+                    break;
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SetRemoteDescriptionRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {graphwiz.media.SetRemoteDescriptionRequest} message SetRemoteDescriptionRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SetRemoteDescriptionRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.sdp = "";
+                    object.type = options.enums === String ? "OFFER" : 0;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    object.sdp = message.sdp;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.graphwiz.media.SessionDescriptionType[message.type] === undefined ? message.type : $root.graphwiz.media.SessionDescriptionType[message.type] : message.type;
+                return object;
+            };
+
+            /**
+             * Converts this SetRemoteDescriptionRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SetRemoteDescriptionRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for SetRemoteDescriptionRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.SetRemoteDescriptionRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            SetRemoteDescriptionRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.SetRemoteDescriptionRequest";
+            };
+
+            return SetRemoteDescriptionRequest;
+        })();
+
+        media.SetRemoteDescriptionResponse = (function() {
+
+            /**
+             * Properties of a SetRemoteDescriptionResponse.
+             * @memberof graphwiz.media
+             * @interface ISetRemoteDescriptionResponse
+             * @property {boolean|null} [success] SetRemoteDescriptionResponse success
+             */
+
+            /**
+             * Constructs a new SetRemoteDescriptionResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents a SetRemoteDescriptionResponse.
+             * @implements ISetRemoteDescriptionResponse
+             * @constructor
+             * @param {graphwiz.media.ISetRemoteDescriptionResponse=} [properties] Properties to set
+             */
+            function SetRemoteDescriptionResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * SetRemoteDescriptionResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @instance
+             */
+            SetRemoteDescriptionResponse.prototype.success = false;
+
+            /**
+             * Creates a new SetRemoteDescriptionResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {graphwiz.media.ISetRemoteDescriptionResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.SetRemoteDescriptionResponse} SetRemoteDescriptionResponse instance
+             */
+            SetRemoteDescriptionResponse.create = function create(properties) {
+                return new SetRemoteDescriptionResponse(properties);
+            };
+
+            /**
+             * Encodes the specified SetRemoteDescriptionResponse message. Does not implicitly {@link graphwiz.media.SetRemoteDescriptionResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {graphwiz.media.ISetRemoteDescriptionResponse} message SetRemoteDescriptionResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SetRemoteDescriptionResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SetRemoteDescriptionResponse message, length delimited. Does not implicitly {@link graphwiz.media.SetRemoteDescriptionResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {graphwiz.media.ISetRemoteDescriptionResponse} message SetRemoteDescriptionResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SetRemoteDescriptionResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a SetRemoteDescriptionResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.SetRemoteDescriptionResponse} SetRemoteDescriptionResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SetRemoteDescriptionResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SetRemoteDescriptionResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a SetRemoteDescriptionResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.SetRemoteDescriptionResponse} SetRemoteDescriptionResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SetRemoteDescriptionResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SetRemoteDescriptionResponse message.
+             * @function verify
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SetRemoteDescriptionResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a SetRemoteDescriptionResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.SetRemoteDescriptionResponse} SetRemoteDescriptionResponse
+             */
+            SetRemoteDescriptionResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.SetRemoteDescriptionResponse)
+                    return object;
+                var message = new $root.graphwiz.media.SetRemoteDescriptionResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SetRemoteDescriptionResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {graphwiz.media.SetRemoteDescriptionResponse} message SetRemoteDescriptionResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SetRemoteDescriptionResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.success = false;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                return object;
+            };
+
+            /**
+             * Converts this SetRemoteDescriptionResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SetRemoteDescriptionResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for SetRemoteDescriptionResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.SetRemoteDescriptionResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            SetRemoteDescriptionResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.SetRemoteDescriptionResponse";
+            };
+
+            return SetRemoteDescriptionResponse;
+        })();
+
+        media.AddIceCandidateRequest = (function() {
+
+            /**
+             * Properties of an AddIceCandidateRequest.
+             * @memberof graphwiz.media
+             * @interface IAddIceCandidateRequest
+             * @property {string|null} [roomId] AddIceCandidateRequest roomId
+             * @property {string|null} [clientId] AddIceCandidateRequest clientId
+             * @property {graphwiz.media.IIceCandidate|null} [candidate] AddIceCandidateRequest candidate
+             */
+
+            /**
+             * Constructs a new AddIceCandidateRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents an AddIceCandidateRequest.
+             * @implements IAddIceCandidateRequest
+             * @constructor
+             * @param {graphwiz.media.IAddIceCandidateRequest=} [properties] Properties to set
+             */
+            function AddIceCandidateRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * AddIceCandidateRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @instance
+             */
+            AddIceCandidateRequest.prototype.roomId = "";
+
+            /**
+             * AddIceCandidateRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @instance
+             */
+            AddIceCandidateRequest.prototype.clientId = "";
+
+            /**
+             * AddIceCandidateRequest candidate.
+             * @member {graphwiz.media.IIceCandidate|null|undefined} candidate
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @instance
+             */
+            AddIceCandidateRequest.prototype.candidate = null;
+
+            /**
+             * Creates a new AddIceCandidateRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {graphwiz.media.IAddIceCandidateRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.AddIceCandidateRequest} AddIceCandidateRequest instance
+             */
+            AddIceCandidateRequest.create = function create(properties) {
+                return new AddIceCandidateRequest(properties);
+            };
+
+            /**
+             * Encodes the specified AddIceCandidateRequest message. Does not implicitly {@link graphwiz.media.AddIceCandidateRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {graphwiz.media.IAddIceCandidateRequest} message AddIceCandidateRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AddIceCandidateRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.candidate != null && Object.hasOwnProperty.call(message, "candidate"))
+                    $root.graphwiz.media.IceCandidate.encode(message.candidate, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified AddIceCandidateRequest message, length delimited. Does not implicitly {@link graphwiz.media.AddIceCandidateRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {graphwiz.media.IAddIceCandidateRequest} message AddIceCandidateRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AddIceCandidateRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an AddIceCandidateRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.AddIceCandidateRequest} AddIceCandidateRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AddIceCandidateRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddIceCandidateRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.candidate = $root.graphwiz.media.IceCandidate.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an AddIceCandidateRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.AddIceCandidateRequest} AddIceCandidateRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AddIceCandidateRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an AddIceCandidateRequest message.
+             * @function verify
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            AddIceCandidateRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.candidate != null && message.hasOwnProperty("candidate")) {
+                    var error = $root.graphwiz.media.IceCandidate.verify(message.candidate);
+                    if (error)
+                        return "candidate." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates an AddIceCandidateRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.AddIceCandidateRequest} AddIceCandidateRequest
+             */
+            AddIceCandidateRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.AddIceCandidateRequest)
+                    return object;
+                var message = new $root.graphwiz.media.AddIceCandidateRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.candidate != null) {
+                    if (typeof object.candidate !== "object")
+                        throw TypeError(".graphwiz.media.AddIceCandidateRequest.candidate: object expected");
+                    message.candidate = $root.graphwiz.media.IceCandidate.fromObject(object.candidate);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an AddIceCandidateRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {graphwiz.media.AddIceCandidateRequest} message AddIceCandidateRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            AddIceCandidateRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.candidate = null;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.candidate != null && message.hasOwnProperty("candidate"))
+                    object.candidate = $root.graphwiz.media.IceCandidate.toObject(message.candidate, options);
+                return object;
+            };
+
+            /**
+             * Converts this AddIceCandidateRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            AddIceCandidateRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for AddIceCandidateRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.AddIceCandidateRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            AddIceCandidateRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.AddIceCandidateRequest";
+            };
+
+            return AddIceCandidateRequest;
+        })();
+
+        media.AddIceCandidateResponse = (function() {
+
+            /**
+             * Properties of an AddIceCandidateResponse.
+             * @memberof graphwiz.media
+             * @interface IAddIceCandidateResponse
+             * @property {boolean|null} [success] AddIceCandidateResponse success
+             */
+
+            /**
+             * Constructs a new AddIceCandidateResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents an AddIceCandidateResponse.
+             * @implements IAddIceCandidateResponse
+             * @constructor
+             * @param {graphwiz.media.IAddIceCandidateResponse=} [properties] Properties to set
+             */
+            function AddIceCandidateResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * AddIceCandidateResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @instance
+             */
+            AddIceCandidateResponse.prototype.success = false;
+
+            /**
+             * Creates a new AddIceCandidateResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {graphwiz.media.IAddIceCandidateResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.AddIceCandidateResponse} AddIceCandidateResponse instance
+             */
+            AddIceCandidateResponse.create = function create(properties) {
+                return new AddIceCandidateResponse(properties);
+            };
+
+            /**
+             * Encodes the specified AddIceCandidateResponse message. Does not implicitly {@link graphwiz.media.AddIceCandidateResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {graphwiz.media.IAddIceCandidateResponse} message AddIceCandidateResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AddIceCandidateResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified AddIceCandidateResponse message, length delimited. Does not implicitly {@link graphwiz.media.AddIceCandidateResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {graphwiz.media.IAddIceCandidateResponse} message AddIceCandidateResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AddIceCandidateResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an AddIceCandidateResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.AddIceCandidateResponse} AddIceCandidateResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AddIceCandidateResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddIceCandidateResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an AddIceCandidateResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.AddIceCandidateResponse} AddIceCandidateResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AddIceCandidateResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an AddIceCandidateResponse message.
+             * @function verify
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            AddIceCandidateResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates an AddIceCandidateResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.AddIceCandidateResponse} AddIceCandidateResponse
+             */
+            AddIceCandidateResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.AddIceCandidateResponse)
+                    return object;
+                var message = new $root.graphwiz.media.AddIceCandidateResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an AddIceCandidateResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {graphwiz.media.AddIceCandidateResponse} message AddIceCandidateResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            AddIceCandidateResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.success = false;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                return object;
+            };
+
+            /**
+             * Converts this AddIceCandidateResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            AddIceCandidateResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for AddIceCandidateResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.AddIceCandidateResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            AddIceCandidateResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.AddIceCandidateResponse";
+            };
+
+            return AddIceCandidateResponse;
+        })();
+
+        media.IceCandidate = (function() {
+
+            /**
+             * Properties of an IceCandidate.
+             * @memberof graphwiz.media
+             * @interface IIceCandidate
+             * @property {string|null} [candidate] IceCandidate candidate
+             * @property {string|null} [sdpMid] IceCandidate sdpMid
+             * @property {number|null} [sdpMlineIndex] IceCandidate sdpMlineIndex
+             * @property {string|null} [usernameFragment] IceCandidate usernameFragment
+             */
+
+            /**
+             * Constructs a new IceCandidate.
+             * @memberof graphwiz.media
+             * @classdesc Represents an IceCandidate.
+             * @implements IIceCandidate
+             * @constructor
+             * @param {graphwiz.media.IIceCandidate=} [properties] Properties to set
+             */
+            function IceCandidate(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * IceCandidate candidate.
+             * @member {string} candidate
+             * @memberof graphwiz.media.IceCandidate
+             * @instance
+             */
+            IceCandidate.prototype.candidate = "";
+
+            /**
+             * IceCandidate sdpMid.
+             * @member {string} sdpMid
+             * @memberof graphwiz.media.IceCandidate
+             * @instance
+             */
+            IceCandidate.prototype.sdpMid = "";
+
+            /**
+             * IceCandidate sdpMlineIndex.
+             * @member {number} sdpMlineIndex
+             * @memberof graphwiz.media.IceCandidate
+             * @instance
+             */
+            IceCandidate.prototype.sdpMlineIndex = 0;
+
+            /**
+             * IceCandidate usernameFragment.
+             * @member {string} usernameFragment
+             * @memberof graphwiz.media.IceCandidate
+             * @instance
+             */
+            IceCandidate.prototype.usernameFragment = "";
+
+            /**
+             * Creates a new IceCandidate instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {graphwiz.media.IIceCandidate=} [properties] Properties to set
+             * @returns {graphwiz.media.IceCandidate} IceCandidate instance
+             */
+            IceCandidate.create = function create(properties) {
+                return new IceCandidate(properties);
+            };
+
+            /**
+             * Encodes the specified IceCandidate message. Does not implicitly {@link graphwiz.media.IceCandidate.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {graphwiz.media.IIceCandidate} message IceCandidate message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            IceCandidate.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.candidate != null && Object.hasOwnProperty.call(message, "candidate"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.candidate);
+                if (message.sdpMid != null && Object.hasOwnProperty.call(message, "sdpMid"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sdpMid);
+                if (message.sdpMlineIndex != null && Object.hasOwnProperty.call(message, "sdpMlineIndex"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.sdpMlineIndex);
+                if (message.usernameFragment != null && Object.hasOwnProperty.call(message, "usernameFragment"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.usernameFragment);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified IceCandidate message, length delimited. Does not implicitly {@link graphwiz.media.IceCandidate.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {graphwiz.media.IIceCandidate} message IceCandidate message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            IceCandidate.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an IceCandidate message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.IceCandidate} IceCandidate
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            IceCandidate.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.IceCandidate();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.candidate = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.sdpMid = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.sdpMlineIndex = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.usernameFragment = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an IceCandidate message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.IceCandidate} IceCandidate
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            IceCandidate.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an IceCandidate message.
+             * @function verify
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            IceCandidate.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.candidate != null && message.hasOwnProperty("candidate"))
+                    if (!$util.isString(message.candidate))
+                        return "candidate: string expected";
+                if (message.sdpMid != null && message.hasOwnProperty("sdpMid"))
+                    if (!$util.isString(message.sdpMid))
+                        return "sdpMid: string expected";
+                if (message.sdpMlineIndex != null && message.hasOwnProperty("sdpMlineIndex"))
+                    if (!$util.isInteger(message.sdpMlineIndex))
+                        return "sdpMlineIndex: integer expected";
+                if (message.usernameFragment != null && message.hasOwnProperty("usernameFragment"))
+                    if (!$util.isString(message.usernameFragment))
+                        return "usernameFragment: string expected";
+                return null;
+            };
+
+            /**
+             * Creates an IceCandidate message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.IceCandidate} IceCandidate
+             */
+            IceCandidate.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.IceCandidate)
+                    return object;
+                var message = new $root.graphwiz.media.IceCandidate();
+                if (object.candidate != null)
+                    message.candidate = String(object.candidate);
+                if (object.sdpMid != null)
+                    message.sdpMid = String(object.sdpMid);
+                if (object.sdpMlineIndex != null)
+                    message.sdpMlineIndex = object.sdpMlineIndex | 0;
+                if (object.usernameFragment != null)
+                    message.usernameFragment = String(object.usernameFragment);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an IceCandidate message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {graphwiz.media.IceCandidate} message IceCandidate
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            IceCandidate.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.candidate = "";
+                    object.sdpMid = "";
+                    object.sdpMlineIndex = 0;
+                    object.usernameFragment = "";
+                }
+                if (message.candidate != null && message.hasOwnProperty("candidate"))
+                    object.candidate = message.candidate;
+                if (message.sdpMid != null && message.hasOwnProperty("sdpMid"))
+                    object.sdpMid = message.sdpMid;
+                if (message.sdpMlineIndex != null && message.hasOwnProperty("sdpMlineIndex"))
+                    object.sdpMlineIndex = message.sdpMlineIndex;
+                if (message.usernameFragment != null && message.hasOwnProperty("usernameFragment"))
+                    object.usernameFragment = message.usernameFragment;
+                return object;
+            };
+
+            /**
+             * Converts this IceCandidate to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.IceCandidate
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            IceCandidate.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for IceCandidate
+             * @function getTypeUrl
+             * @memberof graphwiz.media.IceCandidate
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            IceCandidate.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.IceCandidate";
+            };
+
+            return IceCandidate;
+        })();
+
+        media.AddTrackRequest = (function() {
+
+            /**
+             * Properties of an AddTrackRequest.
+             * @memberof graphwiz.media
+             * @interface IAddTrackRequest
+             * @property {string|null} [roomId] AddTrackRequest roomId
+             * @property {string|null} [clientId] AddTrackRequest clientId
+             * @property {string|null} [trackId] AddTrackRequest trackId
+             * @property {graphwiz.media.TrackKind|null} [kind] AddTrackRequest kind
+             * @property {Object.<string,string>|null} [metadata] AddTrackRequest metadata
+             */
+
+            /**
+             * Constructs a new AddTrackRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents an AddTrackRequest.
+             * @implements IAddTrackRequest
+             * @constructor
+             * @param {graphwiz.media.IAddTrackRequest=} [properties] Properties to set
+             */
+            function AddTrackRequest(properties) {
+                this.metadata = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * AddTrackRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.AddTrackRequest
+             * @instance
+             */
+            AddTrackRequest.prototype.roomId = "";
+
+            /**
+             * AddTrackRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.AddTrackRequest
+             * @instance
+             */
+            AddTrackRequest.prototype.clientId = "";
+
+            /**
+             * AddTrackRequest trackId.
+             * @member {string} trackId
+             * @memberof graphwiz.media.AddTrackRequest
+             * @instance
+             */
+            AddTrackRequest.prototype.trackId = "";
+
+            /**
+             * AddTrackRequest kind.
+             * @member {graphwiz.media.TrackKind} kind
+             * @memberof graphwiz.media.AddTrackRequest
+             * @instance
+             */
+            AddTrackRequest.prototype.kind = 0;
+
+            /**
+             * AddTrackRequest metadata.
+             * @member {Object.<string,string>} metadata
+             * @memberof graphwiz.media.AddTrackRequest
+             * @instance
+             */
+            AddTrackRequest.prototype.metadata = $util.emptyObject;
+
+            /**
+             * Creates a new AddTrackRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {graphwiz.media.IAddTrackRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.AddTrackRequest} AddTrackRequest instance
+             */
+            AddTrackRequest.create = function create(properties) {
+                return new AddTrackRequest(properties);
+            };
+
+            /**
+             * Encodes the specified AddTrackRequest message. Does not implicitly {@link graphwiz.media.AddTrackRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {graphwiz.media.IAddTrackRequest} message AddTrackRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AddTrackRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.trackId != null && Object.hasOwnProperty.call(message, "trackId"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.trackId);
+                if (message.kind != null && Object.hasOwnProperty.call(message, "kind"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.kind);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified AddTrackRequest message, length delimited. Does not implicitly {@link graphwiz.media.AddTrackRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {graphwiz.media.IAddTrackRequest} message AddTrackRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AddTrackRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an AddTrackRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.AddTrackRequest} AddTrackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AddTrackRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddTrackRequest(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.trackId = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.kind = reader.int32();
+                            break;
+                        }
+                    case 5: {
+                            if (message.metadata === $util.emptyObject)
+                                message.metadata = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.metadata[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an AddTrackRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.AddTrackRequest} AddTrackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AddTrackRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an AddTrackRequest message.
+             * @function verify
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            AddTrackRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    if (!$util.isString(message.trackId))
+                        return "trackId: string expected";
+                if (message.kind != null && message.hasOwnProperty("kind"))
+                    switch (message.kind) {
+                    default:
+                        return "kind: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                        break;
+                    }
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    if (!$util.isObject(message.metadata))
+                        return "metadata: object expected";
+                    var key = Object.keys(message.metadata);
+                    for (var i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.metadata[key[i]]))
+                            return "metadata: string{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates an AddTrackRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.AddTrackRequest} AddTrackRequest
+             */
+            AddTrackRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.AddTrackRequest)
+                    return object;
+                var message = new $root.graphwiz.media.AddTrackRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.trackId != null)
+                    message.trackId = String(object.trackId);
+                switch (object.kind) {
+                default:
+                    if (typeof object.kind === "number") {
+                        message.kind = object.kind;
+                        break;
+                    }
+                    break;
+                case "AUDIO":
+                case 0:
+                    message.kind = 0;
+                    break;
+                case "VIDEO":
+                case 1:
+                    message.kind = 1;
+                    break;
+                case "DATA":
+                case 2:
+                    message.kind = 2;
+                    break;
+                }
+                if (object.metadata) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".graphwiz.media.AddTrackRequest.metadata: object expected");
+                    message.metadata = {};
+                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                        message.metadata[keys[i]] = String(object.metadata[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an AddTrackRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {graphwiz.media.AddTrackRequest} message AddTrackRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            AddTrackRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.objects || options.defaults)
+                    object.metadata = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.trackId = "";
+                    object.kind = options.enums === String ? "AUDIO" : 0;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    object.trackId = message.trackId;
+                if (message.kind != null && message.hasOwnProperty("kind"))
+                    object.kind = options.enums === String ? $root.graphwiz.media.TrackKind[message.kind] === undefined ? message.kind : $root.graphwiz.media.TrackKind[message.kind] : message.kind;
+                var keys2;
+                if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
+                    object.metadata = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.metadata[keys2[j]] = message.metadata[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this AddTrackRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.AddTrackRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            AddTrackRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for AddTrackRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.AddTrackRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            AddTrackRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.AddTrackRequest";
+            };
+
+            return AddTrackRequest;
+        })();
+
+        media.AddTrackResponse = (function() {
+
+            /**
+             * Properties of an AddTrackResponse.
+             * @memberof graphwiz.media
+             * @interface IAddTrackResponse
+             * @property {boolean|null} [success] AddTrackResponse success
+             * @property {string|null} [trackId] AddTrackResponse trackId
+             * @property {string|null} [transceiverId] AddTrackResponse transceiverId
+             */
+
+            /**
+             * Constructs a new AddTrackResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents an AddTrackResponse.
+             * @implements IAddTrackResponse
+             * @constructor
+             * @param {graphwiz.media.IAddTrackResponse=} [properties] Properties to set
+             */
+            function AddTrackResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * AddTrackResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.AddTrackResponse
+             * @instance
+             */
+            AddTrackResponse.prototype.success = false;
+
+            /**
+             * AddTrackResponse trackId.
+             * @member {string} trackId
+             * @memberof graphwiz.media.AddTrackResponse
+             * @instance
+             */
+            AddTrackResponse.prototype.trackId = "";
+
+            /**
+             * AddTrackResponse transceiverId.
+             * @member {string} transceiverId
+             * @memberof graphwiz.media.AddTrackResponse
+             * @instance
+             */
+            AddTrackResponse.prototype.transceiverId = "";
+
+            /**
+             * Creates a new AddTrackResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {graphwiz.media.IAddTrackResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.AddTrackResponse} AddTrackResponse instance
+             */
+            AddTrackResponse.create = function create(properties) {
+                return new AddTrackResponse(properties);
+            };
+
+            /**
+             * Encodes the specified AddTrackResponse message. Does not implicitly {@link graphwiz.media.AddTrackResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {graphwiz.media.IAddTrackResponse} message AddTrackResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AddTrackResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.trackId != null && Object.hasOwnProperty.call(message, "trackId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.trackId);
+                if (message.transceiverId != null && Object.hasOwnProperty.call(message, "transceiverId"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.transceiverId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified AddTrackResponse message, length delimited. Does not implicitly {@link graphwiz.media.AddTrackResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {graphwiz.media.IAddTrackResponse} message AddTrackResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AddTrackResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an AddTrackResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.AddTrackResponse} AddTrackResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AddTrackResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddTrackResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.trackId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.transceiverId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an AddTrackResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.AddTrackResponse} AddTrackResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AddTrackResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an AddTrackResponse message.
+             * @function verify
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            AddTrackResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    if (!$util.isString(message.trackId))
+                        return "trackId: string expected";
+                if (message.transceiverId != null && message.hasOwnProperty("transceiverId"))
+                    if (!$util.isString(message.transceiverId))
+                        return "transceiverId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates an AddTrackResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.AddTrackResponse} AddTrackResponse
+             */
+            AddTrackResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.AddTrackResponse)
+                    return object;
+                var message = new $root.graphwiz.media.AddTrackResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.trackId != null)
+                    message.trackId = String(object.trackId);
+                if (object.transceiverId != null)
+                    message.transceiverId = String(object.transceiverId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an AddTrackResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {graphwiz.media.AddTrackResponse} message AddTrackResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            AddTrackResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.trackId = "";
+                    object.transceiverId = "";
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    object.trackId = message.trackId;
+                if (message.transceiverId != null && message.hasOwnProperty("transceiverId"))
+                    object.transceiverId = message.transceiverId;
+                return object;
+            };
+
+            /**
+             * Converts this AddTrackResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.AddTrackResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            AddTrackResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for AddTrackResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.AddTrackResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            AddTrackResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.AddTrackResponse";
+            };
+
+            return AddTrackResponse;
+        })();
+
+        media.RemoveTrackRequest = (function() {
+
+            /**
+             * Properties of a RemoveTrackRequest.
+             * @memberof graphwiz.media
+             * @interface IRemoveTrackRequest
+             * @property {string|null} [roomId] RemoveTrackRequest roomId
+             * @property {string|null} [clientId] RemoveTrackRequest clientId
+             * @property {string|null} [trackId] RemoveTrackRequest trackId
+             */
+
+            /**
+             * Constructs a new RemoveTrackRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents a RemoveTrackRequest.
+             * @implements IRemoveTrackRequest
+             * @constructor
+             * @param {graphwiz.media.IRemoveTrackRequest=} [properties] Properties to set
+             */
+            function RemoveTrackRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RemoveTrackRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @instance
+             */
+            RemoveTrackRequest.prototype.roomId = "";
+
+            /**
+             * RemoveTrackRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @instance
+             */
+            RemoveTrackRequest.prototype.clientId = "";
+
+            /**
+             * RemoveTrackRequest trackId.
+             * @member {string} trackId
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @instance
+             */
+            RemoveTrackRequest.prototype.trackId = "";
+
+            /**
+             * Creates a new RemoveTrackRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {graphwiz.media.IRemoveTrackRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.RemoveTrackRequest} RemoveTrackRequest instance
+             */
+            RemoveTrackRequest.create = function create(properties) {
+                return new RemoveTrackRequest(properties);
+            };
+
+            /**
+             * Encodes the specified RemoveTrackRequest message. Does not implicitly {@link graphwiz.media.RemoveTrackRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {graphwiz.media.IRemoveTrackRequest} message RemoveTrackRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RemoveTrackRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.trackId != null && Object.hasOwnProperty.call(message, "trackId"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.trackId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RemoveTrackRequest message, length delimited. Does not implicitly {@link graphwiz.media.RemoveTrackRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {graphwiz.media.IRemoveTrackRequest} message RemoveTrackRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RemoveTrackRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RemoveTrackRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.RemoveTrackRequest} RemoveTrackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RemoveTrackRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.RemoveTrackRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.trackId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RemoveTrackRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.RemoveTrackRequest} RemoveTrackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RemoveTrackRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RemoveTrackRequest message.
+             * @function verify
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RemoveTrackRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    if (!$util.isString(message.trackId))
+                        return "trackId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a RemoveTrackRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.RemoveTrackRequest} RemoveTrackRequest
+             */
+            RemoveTrackRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.RemoveTrackRequest)
+                    return object;
+                var message = new $root.graphwiz.media.RemoveTrackRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.trackId != null)
+                    message.trackId = String(object.trackId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RemoveTrackRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {graphwiz.media.RemoveTrackRequest} message RemoveTrackRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RemoveTrackRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.trackId = "";
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    object.trackId = message.trackId;
+                return object;
+            };
+
+            /**
+             * Converts this RemoveTrackRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RemoveTrackRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RemoveTrackRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.RemoveTrackRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RemoveTrackRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.RemoveTrackRequest";
+            };
+
+            return RemoveTrackRequest;
+        })();
+
+        media.RemoveTrackResponse = (function() {
+
+            /**
+             * Properties of a RemoveTrackResponse.
+             * @memberof graphwiz.media
+             * @interface IRemoveTrackResponse
+             * @property {boolean|null} [success] RemoveTrackResponse success
+             */
+
+            /**
+             * Constructs a new RemoveTrackResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents a RemoveTrackResponse.
+             * @implements IRemoveTrackResponse
+             * @constructor
+             * @param {graphwiz.media.IRemoveTrackResponse=} [properties] Properties to set
+             */
+            function RemoveTrackResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RemoveTrackResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @instance
+             */
+            RemoveTrackResponse.prototype.success = false;
+
+            /**
+             * Creates a new RemoveTrackResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {graphwiz.media.IRemoveTrackResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.RemoveTrackResponse} RemoveTrackResponse instance
+             */
+            RemoveTrackResponse.create = function create(properties) {
+                return new RemoveTrackResponse(properties);
+            };
+
+            /**
+             * Encodes the specified RemoveTrackResponse message. Does not implicitly {@link graphwiz.media.RemoveTrackResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {graphwiz.media.IRemoveTrackResponse} message RemoveTrackResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RemoveTrackResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RemoveTrackResponse message, length delimited. Does not implicitly {@link graphwiz.media.RemoveTrackResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {graphwiz.media.IRemoveTrackResponse} message RemoveTrackResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RemoveTrackResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RemoveTrackResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.RemoveTrackResponse} RemoveTrackResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RemoveTrackResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.RemoveTrackResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RemoveTrackResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.RemoveTrackResponse} RemoveTrackResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RemoveTrackResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RemoveTrackResponse message.
+             * @function verify
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RemoveTrackResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a RemoveTrackResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.RemoveTrackResponse} RemoveTrackResponse
+             */
+            RemoveTrackResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.RemoveTrackResponse)
+                    return object;
+                var message = new $root.graphwiz.media.RemoveTrackResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RemoveTrackResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {graphwiz.media.RemoveTrackResponse} message RemoveTrackResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RemoveTrackResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.success = false;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                return object;
+            };
+
+            /**
+             * Converts this RemoveTrackResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RemoveTrackResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RemoveTrackResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.RemoveTrackResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RemoveTrackResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.RemoveTrackResponse";
+            };
+
+            return RemoveTrackResponse;
+        })();
+
+        media.MuteTrackRequest = (function() {
+
+            /**
+             * Properties of a MuteTrackRequest.
+             * @memberof graphwiz.media
+             * @interface IMuteTrackRequest
+             * @property {string|null} [roomId] MuteTrackRequest roomId
+             * @property {string|null} [clientId] MuteTrackRequest clientId
+             * @property {string|null} [trackId] MuteTrackRequest trackId
+             * @property {boolean|null} [muted] MuteTrackRequest muted
+             */
+
+            /**
+             * Constructs a new MuteTrackRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents a MuteTrackRequest.
+             * @implements IMuteTrackRequest
+             * @constructor
+             * @param {graphwiz.media.IMuteTrackRequest=} [properties] Properties to set
+             */
+            function MuteTrackRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MuteTrackRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @instance
+             */
+            MuteTrackRequest.prototype.roomId = "";
+
+            /**
+             * MuteTrackRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @instance
+             */
+            MuteTrackRequest.prototype.clientId = "";
+
+            /**
+             * MuteTrackRequest trackId.
+             * @member {string} trackId
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @instance
+             */
+            MuteTrackRequest.prototype.trackId = "";
+
+            /**
+             * MuteTrackRequest muted.
+             * @member {boolean} muted
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @instance
+             */
+            MuteTrackRequest.prototype.muted = false;
+
+            /**
+             * Creates a new MuteTrackRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {graphwiz.media.IMuteTrackRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.MuteTrackRequest} MuteTrackRequest instance
+             */
+            MuteTrackRequest.create = function create(properties) {
+                return new MuteTrackRequest(properties);
+            };
+
+            /**
+             * Encodes the specified MuteTrackRequest message. Does not implicitly {@link graphwiz.media.MuteTrackRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {graphwiz.media.IMuteTrackRequest} message MuteTrackRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MuteTrackRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.trackId != null && Object.hasOwnProperty.call(message, "trackId"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.trackId);
+                if (message.muted != null && Object.hasOwnProperty.call(message, "muted"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.muted);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MuteTrackRequest message, length delimited. Does not implicitly {@link graphwiz.media.MuteTrackRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {graphwiz.media.IMuteTrackRequest} message MuteTrackRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MuteTrackRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MuteTrackRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.MuteTrackRequest} MuteTrackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MuteTrackRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MuteTrackRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.trackId = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.muted = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MuteTrackRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.MuteTrackRequest} MuteTrackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MuteTrackRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MuteTrackRequest message.
+             * @function verify
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MuteTrackRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    if (!$util.isString(message.trackId))
+                        return "trackId: string expected";
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    if (typeof message.muted !== "boolean")
+                        return "muted: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a MuteTrackRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.MuteTrackRequest} MuteTrackRequest
+             */
+            MuteTrackRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.MuteTrackRequest)
+                    return object;
+                var message = new $root.graphwiz.media.MuteTrackRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.trackId != null)
+                    message.trackId = String(object.trackId);
+                if (object.muted != null)
+                    message.muted = Boolean(object.muted);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MuteTrackRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {graphwiz.media.MuteTrackRequest} message MuteTrackRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MuteTrackRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.trackId = "";
+                    object.muted = false;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    object.trackId = message.trackId;
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    object.muted = message.muted;
+                return object;
+            };
+
+            /**
+             * Converts this MuteTrackRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MuteTrackRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MuteTrackRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.MuteTrackRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MuteTrackRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.MuteTrackRequest";
+            };
+
+            return MuteTrackRequest;
+        })();
+
+        media.MuteTrackResponse = (function() {
+
+            /**
+             * Properties of a MuteTrackResponse.
+             * @memberof graphwiz.media
+             * @interface IMuteTrackResponse
+             * @property {boolean|null} [success] MuteTrackResponse success
+             */
+
+            /**
+             * Constructs a new MuteTrackResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents a MuteTrackResponse.
+             * @implements IMuteTrackResponse
+             * @constructor
+             * @param {graphwiz.media.IMuteTrackResponse=} [properties] Properties to set
+             */
+            function MuteTrackResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MuteTrackResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @instance
+             */
+            MuteTrackResponse.prototype.success = false;
+
+            /**
+             * Creates a new MuteTrackResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {graphwiz.media.IMuteTrackResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.MuteTrackResponse} MuteTrackResponse instance
+             */
+            MuteTrackResponse.create = function create(properties) {
+                return new MuteTrackResponse(properties);
+            };
+
+            /**
+             * Encodes the specified MuteTrackResponse message. Does not implicitly {@link graphwiz.media.MuteTrackResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {graphwiz.media.IMuteTrackResponse} message MuteTrackResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MuteTrackResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MuteTrackResponse message, length delimited. Does not implicitly {@link graphwiz.media.MuteTrackResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {graphwiz.media.IMuteTrackResponse} message MuteTrackResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MuteTrackResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MuteTrackResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.MuteTrackResponse} MuteTrackResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MuteTrackResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MuteTrackResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MuteTrackResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.MuteTrackResponse} MuteTrackResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MuteTrackResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MuteTrackResponse message.
+             * @function verify
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MuteTrackResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a MuteTrackResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.MuteTrackResponse} MuteTrackResponse
+             */
+            MuteTrackResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.MuteTrackResponse)
+                    return object;
+                var message = new $root.graphwiz.media.MuteTrackResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MuteTrackResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {graphwiz.media.MuteTrackResponse} message MuteTrackResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MuteTrackResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.success = false;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                return object;
+            };
+
+            /**
+             * Converts this MuteTrackResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MuteTrackResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MuteTrackResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.MuteTrackResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MuteTrackResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.MuteTrackResponse";
+            };
+
+            return MuteTrackResponse;
+        })();
+
+        media.JoinSessionRequest = (function() {
+
+            /**
+             * Properties of a JoinSessionRequest.
+             * @memberof graphwiz.media
+             * @interface IJoinSessionRequest
+             * @property {string|null} [roomId] JoinSessionRequest roomId
+             * @property {string|null} [clientId] JoinSessionRequest clientId
+             * @property {string|null} [displayName] JoinSessionRequest displayName
+             * @property {boolean|null} [publishAudio] JoinSessionRequest publishAudio
+             * @property {boolean|null} [publishVideo] JoinSessionRequest publishVideo
+             */
+
+            /**
+             * Constructs a new JoinSessionRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents a JoinSessionRequest.
+             * @implements IJoinSessionRequest
+             * @constructor
+             * @param {graphwiz.media.IJoinSessionRequest=} [properties] Properties to set
+             */
+            function JoinSessionRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * JoinSessionRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @instance
+             */
+            JoinSessionRequest.prototype.roomId = "";
+
+            /**
+             * JoinSessionRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @instance
+             */
+            JoinSessionRequest.prototype.clientId = "";
+
+            /**
+             * JoinSessionRequest displayName.
+             * @member {string} displayName
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @instance
+             */
+            JoinSessionRequest.prototype.displayName = "";
+
+            /**
+             * JoinSessionRequest publishAudio.
+             * @member {boolean} publishAudio
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @instance
+             */
+            JoinSessionRequest.prototype.publishAudio = false;
+
+            /**
+             * JoinSessionRequest publishVideo.
+             * @member {boolean} publishVideo
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @instance
+             */
+            JoinSessionRequest.prototype.publishVideo = false;
+
+            /**
+             * Creates a new JoinSessionRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {graphwiz.media.IJoinSessionRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.JoinSessionRequest} JoinSessionRequest instance
+             */
+            JoinSessionRequest.create = function create(properties) {
+                return new JoinSessionRequest(properties);
+            };
+
+            /**
+             * Encodes the specified JoinSessionRequest message. Does not implicitly {@link graphwiz.media.JoinSessionRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {graphwiz.media.IJoinSessionRequest} message JoinSessionRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            JoinSessionRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.displayName);
+                if (message.publishAudio != null && Object.hasOwnProperty.call(message, "publishAudio"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.publishAudio);
+                if (message.publishVideo != null && Object.hasOwnProperty.call(message, "publishVideo"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).bool(message.publishVideo);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified JoinSessionRequest message, length delimited. Does not implicitly {@link graphwiz.media.JoinSessionRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {graphwiz.media.IJoinSessionRequest} message JoinSessionRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            JoinSessionRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a JoinSessionRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.JoinSessionRequest} JoinSessionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            JoinSessionRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.JoinSessionRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.displayName = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.publishAudio = reader.bool();
+                            break;
+                        }
+                    case 5: {
+                            message.publishVideo = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a JoinSessionRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.JoinSessionRequest} JoinSessionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            JoinSessionRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a JoinSessionRequest message.
+             * @function verify
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            JoinSessionRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    if (!$util.isString(message.displayName))
+                        return "displayName: string expected";
+                if (message.publishAudio != null && message.hasOwnProperty("publishAudio"))
+                    if (typeof message.publishAudio !== "boolean")
+                        return "publishAudio: boolean expected";
+                if (message.publishVideo != null && message.hasOwnProperty("publishVideo"))
+                    if (typeof message.publishVideo !== "boolean")
+                        return "publishVideo: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a JoinSessionRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.JoinSessionRequest} JoinSessionRequest
+             */
+            JoinSessionRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.JoinSessionRequest)
+                    return object;
+                var message = new $root.graphwiz.media.JoinSessionRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.displayName != null)
+                    message.displayName = String(object.displayName);
+                if (object.publishAudio != null)
+                    message.publishAudio = Boolean(object.publishAudio);
+                if (object.publishVideo != null)
+                    message.publishVideo = Boolean(object.publishVideo);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a JoinSessionRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {graphwiz.media.JoinSessionRequest} message JoinSessionRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            JoinSessionRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.displayName = "";
+                    object.publishAudio = false;
+                    object.publishVideo = false;
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    object.displayName = message.displayName;
+                if (message.publishAudio != null && message.hasOwnProperty("publishAudio"))
+                    object.publishAudio = message.publishAudio;
+                if (message.publishVideo != null && message.hasOwnProperty("publishVideo"))
+                    object.publishVideo = message.publishVideo;
+                return object;
+            };
+
+            /**
+             * Converts this JoinSessionRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            JoinSessionRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for JoinSessionRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.JoinSessionRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            JoinSessionRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.JoinSessionRequest";
+            };
+
+            return JoinSessionRequest;
+        })();
+
+        media.JoinSessionResponse = (function() {
+
+            /**
+             * Properties of a JoinSessionResponse.
+             * @memberof graphwiz.media
+             * @interface IJoinSessionResponse
+             * @property {boolean|null} [success] JoinSessionResponse success
+             * @property {string|null} [sessionId] JoinSessionResponse sessionId
+             * @property {Array.<graphwiz.media.IActiveTrack>|null} [existingTracks] JoinSessionResponse existingTracks
+             * @property {Array.<string>|null} [participantIds] JoinSessionResponse participantIds
+             */
+
+            /**
+             * Constructs a new JoinSessionResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents a JoinSessionResponse.
+             * @implements IJoinSessionResponse
+             * @constructor
+             * @param {graphwiz.media.IJoinSessionResponse=} [properties] Properties to set
+             */
+            function JoinSessionResponse(properties) {
+                this.existingTracks = [];
+                this.participantIds = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * JoinSessionResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @instance
+             */
+            JoinSessionResponse.prototype.success = false;
+
+            /**
+             * JoinSessionResponse sessionId.
+             * @member {string} sessionId
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @instance
+             */
+            JoinSessionResponse.prototype.sessionId = "";
+
+            /**
+             * JoinSessionResponse existingTracks.
+             * @member {Array.<graphwiz.media.IActiveTrack>} existingTracks
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @instance
+             */
+            JoinSessionResponse.prototype.existingTracks = $util.emptyArray;
+
+            /**
+             * JoinSessionResponse participantIds.
+             * @member {Array.<string>} participantIds
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @instance
+             */
+            JoinSessionResponse.prototype.participantIds = $util.emptyArray;
+
+            /**
+             * Creates a new JoinSessionResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {graphwiz.media.IJoinSessionResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.JoinSessionResponse} JoinSessionResponse instance
+             */
+            JoinSessionResponse.create = function create(properties) {
+                return new JoinSessionResponse(properties);
+            };
+
+            /**
+             * Encodes the specified JoinSessionResponse message. Does not implicitly {@link graphwiz.media.JoinSessionResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {graphwiz.media.IJoinSessionResponse} message JoinSessionResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            JoinSessionResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
+                if (message.existingTracks != null && message.existingTracks.length)
+                    for (var i = 0; i < message.existingTracks.length; ++i)
+                        $root.graphwiz.media.ActiveTrack.encode(message.existingTracks[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.participantIds != null && message.participantIds.length)
+                    for (var i = 0; i < message.participantIds.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).string(message.participantIds[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified JoinSessionResponse message, length delimited. Does not implicitly {@link graphwiz.media.JoinSessionResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {graphwiz.media.IJoinSessionResponse} message JoinSessionResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            JoinSessionResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a JoinSessionResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.JoinSessionResponse} JoinSessionResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            JoinSessionResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.JoinSessionResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.sessionId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.existingTracks && message.existingTracks.length))
+                                message.existingTracks = [];
+                            message.existingTracks.push($root.graphwiz.media.ActiveTrack.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.participantIds && message.participantIds.length))
+                                message.participantIds = [];
+                            message.participantIds.push(reader.string());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a JoinSessionResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.JoinSessionResponse} JoinSessionResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            JoinSessionResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a JoinSessionResponse message.
+             * @function verify
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            JoinSessionResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.existingTracks != null && message.hasOwnProperty("existingTracks")) {
+                    if (!Array.isArray(message.existingTracks))
+                        return "existingTracks: array expected";
+                    for (var i = 0; i < message.existingTracks.length; ++i) {
+                        var error = $root.graphwiz.media.ActiveTrack.verify(message.existingTracks[i]);
+                        if (error)
+                            return "existingTracks." + error;
+                    }
+                }
+                if (message.participantIds != null && message.hasOwnProperty("participantIds")) {
+                    if (!Array.isArray(message.participantIds))
+                        return "participantIds: array expected";
+                    for (var i = 0; i < message.participantIds.length; ++i)
+                        if (!$util.isString(message.participantIds[i]))
+                            return "participantIds: string[] expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a JoinSessionResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.JoinSessionResponse} JoinSessionResponse
+             */
+            JoinSessionResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.JoinSessionResponse)
+                    return object;
+                var message = new $root.graphwiz.media.JoinSessionResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.sessionId != null)
+                    message.sessionId = String(object.sessionId);
+                if (object.existingTracks) {
+                    if (!Array.isArray(object.existingTracks))
+                        throw TypeError(".graphwiz.media.JoinSessionResponse.existingTracks: array expected");
+                    message.existingTracks = [];
+                    for (var i = 0; i < object.existingTracks.length; ++i) {
+                        if (typeof object.existingTracks[i] !== "object")
+                            throw TypeError(".graphwiz.media.JoinSessionResponse.existingTracks: object expected");
+                        message.existingTracks[i] = $root.graphwiz.media.ActiveTrack.fromObject(object.existingTracks[i]);
+                    }
+                }
+                if (object.participantIds) {
+                    if (!Array.isArray(object.participantIds))
+                        throw TypeError(".graphwiz.media.JoinSessionResponse.participantIds: array expected");
+                    message.participantIds = [];
+                    for (var i = 0; i < object.participantIds.length; ++i)
+                        message.participantIds[i] = String(object.participantIds[i]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a JoinSessionResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {graphwiz.media.JoinSessionResponse} message JoinSessionResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            JoinSessionResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults) {
+                    object.existingTracks = [];
+                    object.participantIds = [];
+                }
+                if (options.defaults) {
+                    object.success = false;
+                    object.sessionId = "";
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.existingTracks && message.existingTracks.length) {
+                    object.existingTracks = [];
+                    for (var j = 0; j < message.existingTracks.length; ++j)
+                        object.existingTracks[j] = $root.graphwiz.media.ActiveTrack.toObject(message.existingTracks[j], options);
+                }
+                if (message.participantIds && message.participantIds.length) {
+                    object.participantIds = [];
+                    for (var j = 0; j < message.participantIds.length; ++j)
+                        object.participantIds[j] = message.participantIds[j];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this JoinSessionResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            JoinSessionResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for JoinSessionResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.JoinSessionResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            JoinSessionResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.JoinSessionResponse";
+            };
+
+            return JoinSessionResponse;
+        })();
+
+        media.LeaveSessionRequest = (function() {
+
+            /**
+             * Properties of a LeaveSessionRequest.
+             * @memberof graphwiz.media
+             * @interface ILeaveSessionRequest
+             * @property {string|null} [roomId] LeaveSessionRequest roomId
+             * @property {string|null} [clientId] LeaveSessionRequest clientId
+             * @property {string|null} [sessionId] LeaveSessionRequest sessionId
+             */
+
+            /**
+             * Constructs a new LeaveSessionRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents a LeaveSessionRequest.
+             * @implements ILeaveSessionRequest
+             * @constructor
+             * @param {graphwiz.media.ILeaveSessionRequest=} [properties] Properties to set
+             */
+            function LeaveSessionRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * LeaveSessionRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @instance
+             */
+            LeaveSessionRequest.prototype.roomId = "";
+
+            /**
+             * LeaveSessionRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @instance
+             */
+            LeaveSessionRequest.prototype.clientId = "";
+
+            /**
+             * LeaveSessionRequest sessionId.
+             * @member {string} sessionId
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @instance
+             */
+            LeaveSessionRequest.prototype.sessionId = "";
+
+            /**
+             * Creates a new LeaveSessionRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {graphwiz.media.ILeaveSessionRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.LeaveSessionRequest} LeaveSessionRequest instance
+             */
+            LeaveSessionRequest.create = function create(properties) {
+                return new LeaveSessionRequest(properties);
+            };
+
+            /**
+             * Encodes the specified LeaveSessionRequest message. Does not implicitly {@link graphwiz.media.LeaveSessionRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {graphwiz.media.ILeaveSessionRequest} message LeaveSessionRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LeaveSessionRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.sessionId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified LeaveSessionRequest message, length delimited. Does not implicitly {@link graphwiz.media.LeaveSessionRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {graphwiz.media.ILeaveSessionRequest} message LeaveSessionRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LeaveSessionRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a LeaveSessionRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.LeaveSessionRequest} LeaveSessionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LeaveSessionRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.LeaveSessionRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.sessionId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a LeaveSessionRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.LeaveSessionRequest} LeaveSessionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LeaveSessionRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a LeaveSessionRequest message.
+             * @function verify
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            LeaveSessionRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a LeaveSessionRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.LeaveSessionRequest} LeaveSessionRequest
+             */
+            LeaveSessionRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.LeaveSessionRequest)
+                    return object;
+                var message = new $root.graphwiz.media.LeaveSessionRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.sessionId != null)
+                    message.sessionId = String(object.sessionId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a LeaveSessionRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {graphwiz.media.LeaveSessionRequest} message LeaveSessionRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            LeaveSessionRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                    object.sessionId = "";
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    object.sessionId = message.sessionId;
+                return object;
+            };
+
+            /**
+             * Converts this LeaveSessionRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            LeaveSessionRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for LeaveSessionRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.LeaveSessionRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            LeaveSessionRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.LeaveSessionRequest";
+            };
+
+            return LeaveSessionRequest;
+        })();
+
+        media.LeaveSessionResponse = (function() {
+
+            /**
+             * Properties of a LeaveSessionResponse.
+             * @memberof graphwiz.media
+             * @interface ILeaveSessionResponse
+             * @property {boolean|null} [success] LeaveSessionResponse success
+             */
+
+            /**
+             * Constructs a new LeaveSessionResponse.
+             * @memberof graphwiz.media
+             * @classdesc Represents a LeaveSessionResponse.
+             * @implements ILeaveSessionResponse
+             * @constructor
+             * @param {graphwiz.media.ILeaveSessionResponse=} [properties] Properties to set
+             */
+            function LeaveSessionResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * LeaveSessionResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @instance
+             */
+            LeaveSessionResponse.prototype.success = false;
+
+            /**
+             * Creates a new LeaveSessionResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {graphwiz.media.ILeaveSessionResponse=} [properties] Properties to set
+             * @returns {graphwiz.media.LeaveSessionResponse} LeaveSessionResponse instance
+             */
+            LeaveSessionResponse.create = function create(properties) {
+                return new LeaveSessionResponse(properties);
+            };
+
+            /**
+             * Encodes the specified LeaveSessionResponse message. Does not implicitly {@link graphwiz.media.LeaveSessionResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {graphwiz.media.ILeaveSessionResponse} message LeaveSessionResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LeaveSessionResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified LeaveSessionResponse message, length delimited. Does not implicitly {@link graphwiz.media.LeaveSessionResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {graphwiz.media.ILeaveSessionResponse} message LeaveSessionResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LeaveSessionResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a LeaveSessionResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.LeaveSessionResponse} LeaveSessionResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LeaveSessionResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.LeaveSessionResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a LeaveSessionResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.LeaveSessionResponse} LeaveSessionResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LeaveSessionResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a LeaveSessionResponse message.
+             * @function verify
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            LeaveSessionResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a LeaveSessionResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.LeaveSessionResponse} LeaveSessionResponse
+             */
+            LeaveSessionResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.LeaveSessionResponse)
+                    return object;
+                var message = new $root.graphwiz.media.LeaveSessionResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a LeaveSessionResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {graphwiz.media.LeaveSessionResponse} message LeaveSessionResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            LeaveSessionResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.success = false;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                return object;
+            };
+
+            /**
+             * Converts this LeaveSessionResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            LeaveSessionResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for LeaveSessionResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.media.LeaveSessionResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            LeaveSessionResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.LeaveSessionResponse";
+            };
+
+            return LeaveSessionResponse;
+        })();
+
+        media.StreamMediaEventsRequest = (function() {
+
+            /**
+             * Properties of a StreamMediaEventsRequest.
+             * @memberof graphwiz.media
+             * @interface IStreamMediaEventsRequest
+             * @property {string|null} [roomId] StreamMediaEventsRequest roomId
+             * @property {string|null} [clientId] StreamMediaEventsRequest clientId
+             */
+
+            /**
+             * Constructs a new StreamMediaEventsRequest.
+             * @memberof graphwiz.media
+             * @classdesc Represents a StreamMediaEventsRequest.
+             * @implements IStreamMediaEventsRequest
+             * @constructor
+             * @param {graphwiz.media.IStreamMediaEventsRequest=} [properties] Properties to set
+             */
+            function StreamMediaEventsRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * StreamMediaEventsRequest roomId.
+             * @member {string} roomId
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @instance
+             */
+            StreamMediaEventsRequest.prototype.roomId = "";
+
+            /**
+             * StreamMediaEventsRequest clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @instance
+             */
+            StreamMediaEventsRequest.prototype.clientId = "";
+
+            /**
+             * Creates a new StreamMediaEventsRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {graphwiz.media.IStreamMediaEventsRequest=} [properties] Properties to set
+             * @returns {graphwiz.media.StreamMediaEventsRequest} StreamMediaEventsRequest instance
+             */
+            StreamMediaEventsRequest.create = function create(properties) {
+                return new StreamMediaEventsRequest(properties);
+            };
+
+            /**
+             * Encodes the specified StreamMediaEventsRequest message. Does not implicitly {@link graphwiz.media.StreamMediaEventsRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {graphwiz.media.IStreamMediaEventsRequest} message StreamMediaEventsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            StreamMediaEventsRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.roomId != null && Object.hasOwnProperty.call(message, "roomId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.roomId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified StreamMediaEventsRequest message, length delimited. Does not implicitly {@link graphwiz.media.StreamMediaEventsRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {graphwiz.media.IStreamMediaEventsRequest} message StreamMediaEventsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            StreamMediaEventsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a StreamMediaEventsRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.StreamMediaEventsRequest} StreamMediaEventsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            StreamMediaEventsRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.StreamMediaEventsRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.roomId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a StreamMediaEventsRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.StreamMediaEventsRequest} StreamMediaEventsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            StreamMediaEventsRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a StreamMediaEventsRequest message.
+             * @function verify
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            StreamMediaEventsRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    if (!$util.isString(message.roomId))
+                        return "roomId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a StreamMediaEventsRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.StreamMediaEventsRequest} StreamMediaEventsRequest
+             */
+            StreamMediaEventsRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.StreamMediaEventsRequest)
+                    return object;
+                var message = new $root.graphwiz.media.StreamMediaEventsRequest();
+                if (object.roomId != null)
+                    message.roomId = String(object.roomId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a StreamMediaEventsRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {graphwiz.media.StreamMediaEventsRequest} message StreamMediaEventsRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            StreamMediaEventsRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.roomId = "";
+                    object.clientId = "";
+                }
+                if (message.roomId != null && message.hasOwnProperty("roomId"))
+                    object.roomId = message.roomId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                return object;
+            };
+
+            /**
+             * Converts this StreamMediaEventsRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            StreamMediaEventsRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for StreamMediaEventsRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.media.StreamMediaEventsRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            StreamMediaEventsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.StreamMediaEventsRequest";
+            };
+
+            return StreamMediaEventsRequest;
+        })();
+
+        media.MediaEvent = (function() {
+
+            /**
+             * Properties of a MediaEvent.
+             * @memberof graphwiz.media
+             * @interface IMediaEvent
+             * @property {string|null} [eventId] MediaEvent eventId
+             * @property {number|Long|null} [timestamp] MediaEvent timestamp
+             * @property {graphwiz.media.ITrackPublished|null} [trackPublished] MediaEvent trackPublished
+             * @property {graphwiz.media.ITrackUnpublished|null} [trackUnpublished] MediaEvent trackUnpublished
+             * @property {graphwiz.media.ITrackUpdated|null} [trackUpdated] MediaEvent trackUpdated
+             * @property {graphwiz.media.IParticipantJoined|null} [participantJoined] MediaEvent participantJoined
+             * @property {graphwiz.media.IParticipantLeft|null} [participantLeft] MediaEvent participantLeft
+             * @property {graphwiz.media.IParticipantUpdated|null} [participantUpdated] MediaEvent participantUpdated
+             * @property {graphwiz.media.ISdpOffer|null} [sdpOffer] MediaEvent sdpOffer
+             * @property {graphwiz.media.ISdpAnswer|null} [sdpAnswer] MediaEvent sdpAnswer
+             * @property {graphwiz.media.IIceCandidate|null} [iceCandidate] MediaEvent iceCandidate
+             */
+
+            /**
+             * Constructs a new MediaEvent.
+             * @memberof graphwiz.media
+             * @classdesc Represents a MediaEvent.
+             * @implements IMediaEvent
+             * @constructor
+             * @param {graphwiz.media.IMediaEvent=} [properties] Properties to set
+             */
+            function MediaEvent(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MediaEvent eventId.
+             * @member {string} eventId
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.eventId = "";
+
+            /**
+             * MediaEvent timestamp.
+             * @member {number|Long} timestamp
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.timestamp = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * MediaEvent trackPublished.
+             * @member {graphwiz.media.ITrackPublished|null|undefined} trackPublished
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.trackPublished = null;
+
+            /**
+             * MediaEvent trackUnpublished.
+             * @member {graphwiz.media.ITrackUnpublished|null|undefined} trackUnpublished
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.trackUnpublished = null;
+
+            /**
+             * MediaEvent trackUpdated.
+             * @member {graphwiz.media.ITrackUpdated|null|undefined} trackUpdated
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.trackUpdated = null;
+
+            /**
+             * MediaEvent participantJoined.
+             * @member {graphwiz.media.IParticipantJoined|null|undefined} participantJoined
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.participantJoined = null;
+
+            /**
+             * MediaEvent participantLeft.
+             * @member {graphwiz.media.IParticipantLeft|null|undefined} participantLeft
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.participantLeft = null;
+
+            /**
+             * MediaEvent participantUpdated.
+             * @member {graphwiz.media.IParticipantUpdated|null|undefined} participantUpdated
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.participantUpdated = null;
+
+            /**
+             * MediaEvent sdpOffer.
+             * @member {graphwiz.media.ISdpOffer|null|undefined} sdpOffer
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.sdpOffer = null;
+
+            /**
+             * MediaEvent sdpAnswer.
+             * @member {graphwiz.media.ISdpAnswer|null|undefined} sdpAnswer
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.sdpAnswer = null;
+
+            /**
+             * MediaEvent iceCandidate.
+             * @member {graphwiz.media.IIceCandidate|null|undefined} iceCandidate
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            MediaEvent.prototype.iceCandidate = null;
+
+            // OneOf field names bound to virtual getters and setters
+            var $oneOfFields;
+
+            /**
+             * MediaEvent payload.
+             * @member {"trackPublished"|"trackUnpublished"|"trackUpdated"|"participantJoined"|"participantLeft"|"participantUpdated"|"sdpOffer"|"sdpAnswer"|"iceCandidate"|undefined} payload
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             */
+            Object.defineProperty(MediaEvent.prototype, "payload", {
+                get: $util.oneOfGetter($oneOfFields = ["trackPublished", "trackUnpublished", "trackUpdated", "participantJoined", "participantLeft", "participantUpdated", "sdpOffer", "sdpAnswer", "iceCandidate"]),
+                set: $util.oneOfSetter($oneOfFields)
+            });
+
+            /**
+             * Creates a new MediaEvent instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {graphwiz.media.IMediaEvent=} [properties] Properties to set
+             * @returns {graphwiz.media.MediaEvent} MediaEvent instance
+             */
+            MediaEvent.create = function create(properties) {
+                return new MediaEvent(properties);
+            };
+
+            /**
+             * Encodes the specified MediaEvent message. Does not implicitly {@link graphwiz.media.MediaEvent.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {graphwiz.media.IMediaEvent} message MediaEvent message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MediaEvent.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.eventId != null && Object.hasOwnProperty.call(message, "eventId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.eventId);
+                if (message.timestamp != null && Object.hasOwnProperty.call(message, "timestamp"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.timestamp);
+                if (message.trackPublished != null && Object.hasOwnProperty.call(message, "trackPublished"))
+                    $root.graphwiz.media.TrackPublished.encode(message.trackPublished, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                if (message.trackUnpublished != null && Object.hasOwnProperty.call(message, "trackUnpublished"))
+                    $root.graphwiz.media.TrackUnpublished.encode(message.trackUnpublished, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                if (message.trackUpdated != null && Object.hasOwnProperty.call(message, "trackUpdated"))
+                    $root.graphwiz.media.TrackUpdated.encode(message.trackUpdated, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+                if (message.participantJoined != null && Object.hasOwnProperty.call(message, "participantJoined"))
+                    $root.graphwiz.media.ParticipantJoined.encode(message.participantJoined, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+                if (message.participantLeft != null && Object.hasOwnProperty.call(message, "participantLeft"))
+                    $root.graphwiz.media.ParticipantLeft.encode(message.participantLeft, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+                if (message.participantUpdated != null && Object.hasOwnProperty.call(message, "participantUpdated"))
+                    $root.graphwiz.media.ParticipantUpdated.encode(message.participantUpdated, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+                if (message.sdpOffer != null && Object.hasOwnProperty.call(message, "sdpOffer"))
+                    $root.graphwiz.media.SdpOffer.encode(message.sdpOffer, writer.uint32(/* id 30, wireType 2 =*/242).fork()).ldelim();
+                if (message.sdpAnswer != null && Object.hasOwnProperty.call(message, "sdpAnswer"))
+                    $root.graphwiz.media.SdpAnswer.encode(message.sdpAnswer, writer.uint32(/* id 31, wireType 2 =*/250).fork()).ldelim();
+                if (message.iceCandidate != null && Object.hasOwnProperty.call(message, "iceCandidate"))
+                    $root.graphwiz.media.IceCandidate.encode(message.iceCandidate, writer.uint32(/* id 32, wireType 2 =*/258).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MediaEvent message, length delimited. Does not implicitly {@link graphwiz.media.MediaEvent.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {graphwiz.media.IMediaEvent} message MediaEvent message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MediaEvent.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MediaEvent message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.MediaEvent} MediaEvent
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MediaEvent.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MediaEvent();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.eventId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.timestamp = reader.int64();
+                            break;
+                        }
+                    case 10: {
+                            message.trackPublished = $root.graphwiz.media.TrackPublished.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 11: {
+                            message.trackUnpublished = $root.graphwiz.media.TrackUnpublished.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 12: {
+                            message.trackUpdated = $root.graphwiz.media.TrackUpdated.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 20: {
+                            message.participantJoined = $root.graphwiz.media.ParticipantJoined.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 21: {
+                            message.participantLeft = $root.graphwiz.media.ParticipantLeft.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 22: {
+                            message.participantUpdated = $root.graphwiz.media.ParticipantUpdated.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 30: {
+                            message.sdpOffer = $root.graphwiz.media.SdpOffer.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 31: {
+                            message.sdpAnswer = $root.graphwiz.media.SdpAnswer.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 32: {
+                            message.iceCandidate = $root.graphwiz.media.IceCandidate.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MediaEvent message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.MediaEvent} MediaEvent
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MediaEvent.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MediaEvent message.
+             * @function verify
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MediaEvent.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                var properties = {};
+                if (message.eventId != null && message.hasOwnProperty("eventId"))
+                    if (!$util.isString(message.eventId))
+                        return "eventId: string expected";
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    if (!$util.isInteger(message.timestamp) && !(message.timestamp && $util.isInteger(message.timestamp.low) && $util.isInteger(message.timestamp.high)))
+                        return "timestamp: integer|Long expected";
+                if (message.trackPublished != null && message.hasOwnProperty("trackPublished")) {
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.TrackPublished.verify(message.trackPublished);
+                        if (error)
+                            return "trackPublished." + error;
+                    }
+                }
+                if (message.trackUnpublished != null && message.hasOwnProperty("trackUnpublished")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.TrackUnpublished.verify(message.trackUnpublished);
+                        if (error)
+                            return "trackUnpublished." + error;
+                    }
+                }
+                if (message.trackUpdated != null && message.hasOwnProperty("trackUpdated")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.TrackUpdated.verify(message.trackUpdated);
+                        if (error)
+                            return "trackUpdated." + error;
+                    }
+                }
+                if (message.participantJoined != null && message.hasOwnProperty("participantJoined")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.ParticipantJoined.verify(message.participantJoined);
+                        if (error)
+                            return "participantJoined." + error;
+                    }
+                }
+                if (message.participantLeft != null && message.hasOwnProperty("participantLeft")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.ParticipantLeft.verify(message.participantLeft);
+                        if (error)
+                            return "participantLeft." + error;
+                    }
+                }
+                if (message.participantUpdated != null && message.hasOwnProperty("participantUpdated")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.ParticipantUpdated.verify(message.participantUpdated);
+                        if (error)
+                            return "participantUpdated." + error;
+                    }
+                }
+                if (message.sdpOffer != null && message.hasOwnProperty("sdpOffer")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.SdpOffer.verify(message.sdpOffer);
+                        if (error)
+                            return "sdpOffer." + error;
+                    }
+                }
+                if (message.sdpAnswer != null && message.hasOwnProperty("sdpAnswer")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.SdpAnswer.verify(message.sdpAnswer);
+                        if (error)
+                            return "sdpAnswer." + error;
+                    }
+                }
+                if (message.iceCandidate != null && message.hasOwnProperty("iceCandidate")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        var error = $root.graphwiz.media.IceCandidate.verify(message.iceCandidate);
+                        if (error)
+                            return "iceCandidate." + error;
+                    }
+                }
+                return null;
+            };
+
+            /**
+             * Creates a MediaEvent message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.MediaEvent} MediaEvent
+             */
+            MediaEvent.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.MediaEvent)
+                    return object;
+                var message = new $root.graphwiz.media.MediaEvent();
+                if (object.eventId != null)
+                    message.eventId = String(object.eventId);
+                if (object.timestamp != null)
+                    if ($util.Long)
+                        (message.timestamp = $util.Long.fromValue(object.timestamp)).unsigned = false;
+                    else if (typeof object.timestamp === "string")
+                        message.timestamp = parseInt(object.timestamp, 10);
+                    else if (typeof object.timestamp === "number")
+                        message.timestamp = object.timestamp;
+                    else if (typeof object.timestamp === "object")
+                        message.timestamp = new $util.LongBits(object.timestamp.low >>> 0, object.timestamp.high >>> 0).toNumber();
+                if (object.trackPublished != null) {
+                    if (typeof object.trackPublished !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.trackPublished: object expected");
+                    message.trackPublished = $root.graphwiz.media.TrackPublished.fromObject(object.trackPublished);
+                }
+                if (object.trackUnpublished != null) {
+                    if (typeof object.trackUnpublished !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.trackUnpublished: object expected");
+                    message.trackUnpublished = $root.graphwiz.media.TrackUnpublished.fromObject(object.trackUnpublished);
+                }
+                if (object.trackUpdated != null) {
+                    if (typeof object.trackUpdated !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.trackUpdated: object expected");
+                    message.trackUpdated = $root.graphwiz.media.TrackUpdated.fromObject(object.trackUpdated);
+                }
+                if (object.participantJoined != null) {
+                    if (typeof object.participantJoined !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.participantJoined: object expected");
+                    message.participantJoined = $root.graphwiz.media.ParticipantJoined.fromObject(object.participantJoined);
+                }
+                if (object.participantLeft != null) {
+                    if (typeof object.participantLeft !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.participantLeft: object expected");
+                    message.participantLeft = $root.graphwiz.media.ParticipantLeft.fromObject(object.participantLeft);
+                }
+                if (object.participantUpdated != null) {
+                    if (typeof object.participantUpdated !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.participantUpdated: object expected");
+                    message.participantUpdated = $root.graphwiz.media.ParticipantUpdated.fromObject(object.participantUpdated);
+                }
+                if (object.sdpOffer != null) {
+                    if (typeof object.sdpOffer !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.sdpOffer: object expected");
+                    message.sdpOffer = $root.graphwiz.media.SdpOffer.fromObject(object.sdpOffer);
+                }
+                if (object.sdpAnswer != null) {
+                    if (typeof object.sdpAnswer !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.sdpAnswer: object expected");
+                    message.sdpAnswer = $root.graphwiz.media.SdpAnswer.fromObject(object.sdpAnswer);
+                }
+                if (object.iceCandidate != null) {
+                    if (typeof object.iceCandidate !== "object")
+                        throw TypeError(".graphwiz.media.MediaEvent.iceCandidate: object expected");
+                    message.iceCandidate = $root.graphwiz.media.IceCandidate.fromObject(object.iceCandidate);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MediaEvent message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {graphwiz.media.MediaEvent} message MediaEvent
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MediaEvent.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.eventId = "";
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.timestamp = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.timestamp = options.longs === String ? "0" : 0;
+                }
+                if (message.eventId != null && message.hasOwnProperty("eventId"))
+                    object.eventId = message.eventId;
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    if (typeof message.timestamp === "number")
+                        object.timestamp = options.longs === String ? String(message.timestamp) : message.timestamp;
+                    else
+                        object.timestamp = options.longs === String ? $util.Long.prototype.toString.call(message.timestamp) : options.longs === Number ? new $util.LongBits(message.timestamp.low >>> 0, message.timestamp.high >>> 0).toNumber() : message.timestamp;
+                if (message.trackPublished != null && message.hasOwnProperty("trackPublished")) {
+                    object.trackPublished = $root.graphwiz.media.TrackPublished.toObject(message.trackPublished, options);
+                    if (options.oneofs)
+                        object.payload = "trackPublished";
+                }
+                if (message.trackUnpublished != null && message.hasOwnProperty("trackUnpublished")) {
+                    object.trackUnpublished = $root.graphwiz.media.TrackUnpublished.toObject(message.trackUnpublished, options);
+                    if (options.oneofs)
+                        object.payload = "trackUnpublished";
+                }
+                if (message.trackUpdated != null && message.hasOwnProperty("trackUpdated")) {
+                    object.trackUpdated = $root.graphwiz.media.TrackUpdated.toObject(message.trackUpdated, options);
+                    if (options.oneofs)
+                        object.payload = "trackUpdated";
+                }
+                if (message.participantJoined != null && message.hasOwnProperty("participantJoined")) {
+                    object.participantJoined = $root.graphwiz.media.ParticipantJoined.toObject(message.participantJoined, options);
+                    if (options.oneofs)
+                        object.payload = "participantJoined";
+                }
+                if (message.participantLeft != null && message.hasOwnProperty("participantLeft")) {
+                    object.participantLeft = $root.graphwiz.media.ParticipantLeft.toObject(message.participantLeft, options);
+                    if (options.oneofs)
+                        object.payload = "participantLeft";
+                }
+                if (message.participantUpdated != null && message.hasOwnProperty("participantUpdated")) {
+                    object.participantUpdated = $root.graphwiz.media.ParticipantUpdated.toObject(message.participantUpdated, options);
+                    if (options.oneofs)
+                        object.payload = "participantUpdated";
+                }
+                if (message.sdpOffer != null && message.hasOwnProperty("sdpOffer")) {
+                    object.sdpOffer = $root.graphwiz.media.SdpOffer.toObject(message.sdpOffer, options);
+                    if (options.oneofs)
+                        object.payload = "sdpOffer";
+                }
+                if (message.sdpAnswer != null && message.hasOwnProperty("sdpAnswer")) {
+                    object.sdpAnswer = $root.graphwiz.media.SdpAnswer.toObject(message.sdpAnswer, options);
+                    if (options.oneofs)
+                        object.payload = "sdpAnswer";
+                }
+                if (message.iceCandidate != null && message.hasOwnProperty("iceCandidate")) {
+                    object.iceCandidate = $root.graphwiz.media.IceCandidate.toObject(message.iceCandidate, options);
+                    if (options.oneofs)
+                        object.payload = "iceCandidate";
+                }
+                return object;
+            };
+
+            /**
+             * Converts this MediaEvent to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.MediaEvent
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MediaEvent.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MediaEvent
+             * @function getTypeUrl
+             * @memberof graphwiz.media.MediaEvent
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MediaEvent.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.MediaEvent";
+            };
+
+            return MediaEvent;
+        })();
+
+        media.TrackPublished = (function() {
+
+            /**
+             * Properties of a TrackPublished.
+             * @memberof graphwiz.media
+             * @interface ITrackPublished
+             * @property {string|null} [trackId] TrackPublished trackId
+             * @property {string|null} [clientId] TrackPublished clientId
+             * @property {graphwiz.media.TrackKind|null} [kind] TrackPublished kind
+             * @property {Object.<string,string>|null} [metadata] TrackPublished metadata
+             */
+
+            /**
+             * Constructs a new TrackPublished.
+             * @memberof graphwiz.media
+             * @classdesc Represents a TrackPublished.
+             * @implements ITrackPublished
+             * @constructor
+             * @param {graphwiz.media.ITrackPublished=} [properties] Properties to set
+             */
+            function TrackPublished(properties) {
+                this.metadata = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * TrackPublished trackId.
+             * @member {string} trackId
+             * @memberof graphwiz.media.TrackPublished
+             * @instance
+             */
+            TrackPublished.prototype.trackId = "";
+
+            /**
+             * TrackPublished clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.TrackPublished
+             * @instance
+             */
+            TrackPublished.prototype.clientId = "";
+
+            /**
+             * TrackPublished kind.
+             * @member {graphwiz.media.TrackKind} kind
+             * @memberof graphwiz.media.TrackPublished
+             * @instance
+             */
+            TrackPublished.prototype.kind = 0;
+
+            /**
+             * TrackPublished metadata.
+             * @member {Object.<string,string>} metadata
+             * @memberof graphwiz.media.TrackPublished
+             * @instance
+             */
+            TrackPublished.prototype.metadata = $util.emptyObject;
+
+            /**
+             * Creates a new TrackPublished instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {graphwiz.media.ITrackPublished=} [properties] Properties to set
+             * @returns {graphwiz.media.TrackPublished} TrackPublished instance
+             */
+            TrackPublished.create = function create(properties) {
+                return new TrackPublished(properties);
+            };
+
+            /**
+             * Encodes the specified TrackPublished message. Does not implicitly {@link graphwiz.media.TrackPublished.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {graphwiz.media.ITrackPublished} message TrackPublished message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            TrackPublished.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.trackId != null && Object.hasOwnProperty.call(message, "trackId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.trackId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.kind != null && Object.hasOwnProperty.call(message, "kind"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.kind);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified TrackPublished message, length delimited. Does not implicitly {@link graphwiz.media.TrackPublished.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {graphwiz.media.ITrackPublished} message TrackPublished message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            TrackPublished.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a TrackPublished message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.TrackPublished} TrackPublished
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            TrackPublished.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackPublished(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.trackId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.kind = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            if (message.metadata === $util.emptyObject)
+                                message.metadata = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.metadata[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a TrackPublished message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.TrackPublished} TrackPublished
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            TrackPublished.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a TrackPublished message.
+             * @function verify
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            TrackPublished.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    if (!$util.isString(message.trackId))
+                        return "trackId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.kind != null && message.hasOwnProperty("kind"))
+                    switch (message.kind) {
+                    default:
+                        return "kind: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                        break;
+                    }
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    if (!$util.isObject(message.metadata))
+                        return "metadata: object expected";
+                    var key = Object.keys(message.metadata);
+                    for (var i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.metadata[key[i]]))
+                            return "metadata: string{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a TrackPublished message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.TrackPublished} TrackPublished
+             */
+            TrackPublished.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.TrackPublished)
+                    return object;
+                var message = new $root.graphwiz.media.TrackPublished();
+                if (object.trackId != null)
+                    message.trackId = String(object.trackId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                switch (object.kind) {
+                default:
+                    if (typeof object.kind === "number") {
+                        message.kind = object.kind;
+                        break;
+                    }
+                    break;
+                case "AUDIO":
+                case 0:
+                    message.kind = 0;
+                    break;
+                case "VIDEO":
+                case 1:
+                    message.kind = 1;
+                    break;
+                case "DATA":
+                case 2:
+                    message.kind = 2;
+                    break;
+                }
+                if (object.metadata) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".graphwiz.media.TrackPublished.metadata: object expected");
+                    message.metadata = {};
+                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                        message.metadata[keys[i]] = String(object.metadata[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a TrackPublished message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {graphwiz.media.TrackPublished} message TrackPublished
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            TrackPublished.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.objects || options.defaults)
+                    object.metadata = {};
+                if (options.defaults) {
+                    object.trackId = "";
+                    object.clientId = "";
+                    object.kind = options.enums === String ? "AUDIO" : 0;
+                }
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    object.trackId = message.trackId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.kind != null && message.hasOwnProperty("kind"))
+                    object.kind = options.enums === String ? $root.graphwiz.media.TrackKind[message.kind] === undefined ? message.kind : $root.graphwiz.media.TrackKind[message.kind] : message.kind;
+                var keys2;
+                if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
+                    object.metadata = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.metadata[keys2[j]] = message.metadata[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this TrackPublished to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.TrackPublished
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            TrackPublished.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for TrackPublished
+             * @function getTypeUrl
+             * @memberof graphwiz.media.TrackPublished
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            TrackPublished.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.TrackPublished";
+            };
+
+            return TrackPublished;
+        })();
+
+        media.TrackUnpublished = (function() {
+
+            /**
+             * Properties of a TrackUnpublished.
+             * @memberof graphwiz.media
+             * @interface ITrackUnpublished
+             * @property {string|null} [trackId] TrackUnpublished trackId
+             * @property {string|null} [clientId] TrackUnpublished clientId
+             */
+
+            /**
+             * Constructs a new TrackUnpublished.
+             * @memberof graphwiz.media
+             * @classdesc Represents a TrackUnpublished.
+             * @implements ITrackUnpublished
+             * @constructor
+             * @param {graphwiz.media.ITrackUnpublished=} [properties] Properties to set
+             */
+            function TrackUnpublished(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * TrackUnpublished trackId.
+             * @member {string} trackId
+             * @memberof graphwiz.media.TrackUnpublished
+             * @instance
+             */
+            TrackUnpublished.prototype.trackId = "";
+
+            /**
+             * TrackUnpublished clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.TrackUnpublished
+             * @instance
+             */
+            TrackUnpublished.prototype.clientId = "";
+
+            /**
+             * Creates a new TrackUnpublished instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {graphwiz.media.ITrackUnpublished=} [properties] Properties to set
+             * @returns {graphwiz.media.TrackUnpublished} TrackUnpublished instance
+             */
+            TrackUnpublished.create = function create(properties) {
+                return new TrackUnpublished(properties);
+            };
+
+            /**
+             * Encodes the specified TrackUnpublished message. Does not implicitly {@link graphwiz.media.TrackUnpublished.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {graphwiz.media.ITrackUnpublished} message TrackUnpublished message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            TrackUnpublished.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.trackId != null && Object.hasOwnProperty.call(message, "trackId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.trackId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified TrackUnpublished message, length delimited. Does not implicitly {@link graphwiz.media.TrackUnpublished.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {graphwiz.media.ITrackUnpublished} message TrackUnpublished message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            TrackUnpublished.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a TrackUnpublished message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.TrackUnpublished} TrackUnpublished
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            TrackUnpublished.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackUnpublished();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.trackId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a TrackUnpublished message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.TrackUnpublished} TrackUnpublished
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            TrackUnpublished.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a TrackUnpublished message.
+             * @function verify
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            TrackUnpublished.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    if (!$util.isString(message.trackId))
+                        return "trackId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a TrackUnpublished message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.TrackUnpublished} TrackUnpublished
+             */
+            TrackUnpublished.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.TrackUnpublished)
+                    return object;
+                var message = new $root.graphwiz.media.TrackUnpublished();
+                if (object.trackId != null)
+                    message.trackId = String(object.trackId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a TrackUnpublished message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {graphwiz.media.TrackUnpublished} message TrackUnpublished
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            TrackUnpublished.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.trackId = "";
+                    object.clientId = "";
+                }
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    object.trackId = message.trackId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                return object;
+            };
+
+            /**
+             * Converts this TrackUnpublished to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.TrackUnpublished
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            TrackUnpublished.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for TrackUnpublished
+             * @function getTypeUrl
+             * @memberof graphwiz.media.TrackUnpublished
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            TrackUnpublished.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.TrackUnpublished";
+            };
+
+            return TrackUnpublished;
+        })();
+
+        media.TrackUpdated = (function() {
+
+            /**
+             * Properties of a TrackUpdated.
+             * @memberof graphwiz.media
+             * @interface ITrackUpdated
+             * @property {string|null} [trackId] TrackUpdated trackId
+             * @property {boolean|null} [muted] TrackUpdated muted
+             * @property {Object.<string,string>|null} [metadata] TrackUpdated metadata
+             */
+
+            /**
+             * Constructs a new TrackUpdated.
+             * @memberof graphwiz.media
+             * @classdesc Represents a TrackUpdated.
+             * @implements ITrackUpdated
+             * @constructor
+             * @param {graphwiz.media.ITrackUpdated=} [properties] Properties to set
+             */
+            function TrackUpdated(properties) {
+                this.metadata = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * TrackUpdated trackId.
+             * @member {string} trackId
+             * @memberof graphwiz.media.TrackUpdated
+             * @instance
+             */
+            TrackUpdated.prototype.trackId = "";
+
+            /**
+             * TrackUpdated muted.
+             * @member {boolean} muted
+             * @memberof graphwiz.media.TrackUpdated
+             * @instance
+             */
+            TrackUpdated.prototype.muted = false;
+
+            /**
+             * TrackUpdated metadata.
+             * @member {Object.<string,string>} metadata
+             * @memberof graphwiz.media.TrackUpdated
+             * @instance
+             */
+            TrackUpdated.prototype.metadata = $util.emptyObject;
+
+            /**
+             * Creates a new TrackUpdated instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {graphwiz.media.ITrackUpdated=} [properties] Properties to set
+             * @returns {graphwiz.media.TrackUpdated} TrackUpdated instance
+             */
+            TrackUpdated.create = function create(properties) {
+                return new TrackUpdated(properties);
+            };
+
+            /**
+             * Encodes the specified TrackUpdated message. Does not implicitly {@link graphwiz.media.TrackUpdated.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {graphwiz.media.ITrackUpdated} message TrackUpdated message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            TrackUpdated.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.trackId != null && Object.hasOwnProperty.call(message, "trackId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.trackId);
+                if (message.muted != null && Object.hasOwnProperty.call(message, "muted"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.muted);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified TrackUpdated message, length delimited. Does not implicitly {@link graphwiz.media.TrackUpdated.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {graphwiz.media.ITrackUpdated} message TrackUpdated message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            TrackUpdated.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a TrackUpdated message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.TrackUpdated} TrackUpdated
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            TrackUpdated.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackUpdated(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.trackId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.muted = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            if (message.metadata === $util.emptyObject)
+                                message.metadata = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.metadata[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a TrackUpdated message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.TrackUpdated} TrackUpdated
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            TrackUpdated.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a TrackUpdated message.
+             * @function verify
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            TrackUpdated.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    if (!$util.isString(message.trackId))
+                        return "trackId: string expected";
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    if (typeof message.muted !== "boolean")
+                        return "muted: boolean expected";
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    if (!$util.isObject(message.metadata))
+                        return "metadata: object expected";
+                    var key = Object.keys(message.metadata);
+                    for (var i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.metadata[key[i]]))
+                            return "metadata: string{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a TrackUpdated message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.TrackUpdated} TrackUpdated
+             */
+            TrackUpdated.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.TrackUpdated)
+                    return object;
+                var message = new $root.graphwiz.media.TrackUpdated();
+                if (object.trackId != null)
+                    message.trackId = String(object.trackId);
+                if (object.muted != null)
+                    message.muted = Boolean(object.muted);
+                if (object.metadata) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".graphwiz.media.TrackUpdated.metadata: object expected");
+                    message.metadata = {};
+                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                        message.metadata[keys[i]] = String(object.metadata[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a TrackUpdated message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {graphwiz.media.TrackUpdated} message TrackUpdated
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            TrackUpdated.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.objects || options.defaults)
+                    object.metadata = {};
+                if (options.defaults) {
+                    object.trackId = "";
+                    object.muted = false;
+                }
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    object.trackId = message.trackId;
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    object.muted = message.muted;
+                var keys2;
+                if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
+                    object.metadata = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.metadata[keys2[j]] = message.metadata[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this TrackUpdated to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.TrackUpdated
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            TrackUpdated.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for TrackUpdated
+             * @function getTypeUrl
+             * @memberof graphwiz.media.TrackUpdated
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            TrackUpdated.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.TrackUpdated";
+            };
+
+            return TrackUpdated;
+        })();
+
+        media.ParticipantJoined = (function() {
+
+            /**
+             * Properties of a ParticipantJoined.
+             * @memberof graphwiz.media
+             * @interface IParticipantJoined
+             * @property {string|null} [clientId] ParticipantJoined clientId
+             * @property {string|null} [displayName] ParticipantJoined displayName
+             * @property {Array.<string>|null} [trackIds] ParticipantJoined trackIds
+             */
+
+            /**
+             * Constructs a new ParticipantJoined.
+             * @memberof graphwiz.media
+             * @classdesc Represents a ParticipantJoined.
+             * @implements IParticipantJoined
+             * @constructor
+             * @param {graphwiz.media.IParticipantJoined=} [properties] Properties to set
+             */
+            function ParticipantJoined(properties) {
+                this.trackIds = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ParticipantJoined clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.ParticipantJoined
+             * @instance
+             */
+            ParticipantJoined.prototype.clientId = "";
+
+            /**
+             * ParticipantJoined displayName.
+             * @member {string} displayName
+             * @memberof graphwiz.media.ParticipantJoined
+             * @instance
+             */
+            ParticipantJoined.prototype.displayName = "";
+
+            /**
+             * ParticipantJoined trackIds.
+             * @member {Array.<string>} trackIds
+             * @memberof graphwiz.media.ParticipantJoined
+             * @instance
+             */
+            ParticipantJoined.prototype.trackIds = $util.emptyArray;
+
+            /**
+             * Creates a new ParticipantJoined instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {graphwiz.media.IParticipantJoined=} [properties] Properties to set
+             * @returns {graphwiz.media.ParticipantJoined} ParticipantJoined instance
+             */
+            ParticipantJoined.create = function create(properties) {
+                return new ParticipantJoined(properties);
+            };
+
+            /**
+             * Encodes the specified ParticipantJoined message. Does not implicitly {@link graphwiz.media.ParticipantJoined.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {graphwiz.media.IParticipantJoined} message ParticipantJoined message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ParticipantJoined.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientId);
+                if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.displayName);
+                if (message.trackIds != null && message.trackIds.length)
+                    for (var i = 0; i < message.trackIds.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.trackIds[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ParticipantJoined message, length delimited. Does not implicitly {@link graphwiz.media.ParticipantJoined.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {graphwiz.media.IParticipantJoined} message ParticipantJoined message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ParticipantJoined.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ParticipantJoined message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.ParticipantJoined} ParticipantJoined
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ParticipantJoined.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantJoined();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.displayName = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.trackIds && message.trackIds.length))
+                                message.trackIds = [];
+                            message.trackIds.push(reader.string());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ParticipantJoined message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.ParticipantJoined} ParticipantJoined
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ParticipantJoined.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ParticipantJoined message.
+             * @function verify
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ParticipantJoined.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    if (!$util.isString(message.displayName))
+                        return "displayName: string expected";
+                if (message.trackIds != null && message.hasOwnProperty("trackIds")) {
+                    if (!Array.isArray(message.trackIds))
+                        return "trackIds: array expected";
+                    for (var i = 0; i < message.trackIds.length; ++i)
+                        if (!$util.isString(message.trackIds[i]))
+                            return "trackIds: string[] expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a ParticipantJoined message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.ParticipantJoined} ParticipantJoined
+             */
+            ParticipantJoined.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.ParticipantJoined)
+                    return object;
+                var message = new $root.graphwiz.media.ParticipantJoined();
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.displayName != null)
+                    message.displayName = String(object.displayName);
+                if (object.trackIds) {
+                    if (!Array.isArray(object.trackIds))
+                        throw TypeError(".graphwiz.media.ParticipantJoined.trackIds: array expected");
+                    message.trackIds = [];
+                    for (var i = 0; i < object.trackIds.length; ++i)
+                        message.trackIds[i] = String(object.trackIds[i]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ParticipantJoined message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {graphwiz.media.ParticipantJoined} message ParticipantJoined
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ParticipantJoined.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.trackIds = [];
+                if (options.defaults) {
+                    object.clientId = "";
+                    object.displayName = "";
+                }
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    object.displayName = message.displayName;
+                if (message.trackIds && message.trackIds.length) {
+                    object.trackIds = [];
+                    for (var j = 0; j < message.trackIds.length; ++j)
+                        object.trackIds[j] = message.trackIds[j];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this ParticipantJoined to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.ParticipantJoined
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ParticipantJoined.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for ParticipantJoined
+             * @function getTypeUrl
+             * @memberof graphwiz.media.ParticipantJoined
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            ParticipantJoined.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.ParticipantJoined";
+            };
+
+            return ParticipantJoined;
+        })();
+
+        media.ParticipantLeft = (function() {
+
+            /**
+             * Properties of a ParticipantLeft.
+             * @memberof graphwiz.media
+             * @interface IParticipantLeft
+             * @property {string|null} [clientId] ParticipantLeft clientId
+             */
+
+            /**
+             * Constructs a new ParticipantLeft.
+             * @memberof graphwiz.media
+             * @classdesc Represents a ParticipantLeft.
+             * @implements IParticipantLeft
+             * @constructor
+             * @param {graphwiz.media.IParticipantLeft=} [properties] Properties to set
+             */
+            function ParticipantLeft(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ParticipantLeft clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.ParticipantLeft
+             * @instance
+             */
+            ParticipantLeft.prototype.clientId = "";
+
+            /**
+             * Creates a new ParticipantLeft instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {graphwiz.media.IParticipantLeft=} [properties] Properties to set
+             * @returns {graphwiz.media.ParticipantLeft} ParticipantLeft instance
+             */
+            ParticipantLeft.create = function create(properties) {
+                return new ParticipantLeft(properties);
+            };
+
+            /**
+             * Encodes the specified ParticipantLeft message. Does not implicitly {@link graphwiz.media.ParticipantLeft.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {graphwiz.media.IParticipantLeft} message ParticipantLeft message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ParticipantLeft.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ParticipantLeft message, length delimited. Does not implicitly {@link graphwiz.media.ParticipantLeft.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {graphwiz.media.IParticipantLeft} message ParticipantLeft message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ParticipantLeft.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ParticipantLeft message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.ParticipantLeft} ParticipantLeft
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ParticipantLeft.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantLeft();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ParticipantLeft message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.ParticipantLeft} ParticipantLeft
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ParticipantLeft.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ParticipantLeft message.
+             * @function verify
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ParticipantLeft.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a ParticipantLeft message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.ParticipantLeft} ParticipantLeft
+             */
+            ParticipantLeft.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.ParticipantLeft)
+                    return object;
+                var message = new $root.graphwiz.media.ParticipantLeft();
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ParticipantLeft message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {graphwiz.media.ParticipantLeft} message ParticipantLeft
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ParticipantLeft.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.clientId = "";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                return object;
+            };
+
+            /**
+             * Converts this ParticipantLeft to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.ParticipantLeft
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ParticipantLeft.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for ParticipantLeft
+             * @function getTypeUrl
+             * @memberof graphwiz.media.ParticipantLeft
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            ParticipantLeft.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.ParticipantLeft";
+            };
+
+            return ParticipantLeft;
+        })();
+
+        media.ParticipantUpdated = (function() {
+
+            /**
+             * Properties of a ParticipantUpdated.
+             * @memberof graphwiz.media
+             * @interface IParticipantUpdated
+             * @property {string|null} [clientId] ParticipantUpdated clientId
+             * @property {Object.<string,boolean>|null} [mutedTracks] ParticipantUpdated mutedTracks
+             */
+
+            /**
+             * Constructs a new ParticipantUpdated.
+             * @memberof graphwiz.media
+             * @classdesc Represents a ParticipantUpdated.
+             * @implements IParticipantUpdated
+             * @constructor
+             * @param {graphwiz.media.IParticipantUpdated=} [properties] Properties to set
+             */
+            function ParticipantUpdated(properties) {
+                this.mutedTracks = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ParticipantUpdated clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @instance
+             */
+            ParticipantUpdated.prototype.clientId = "";
+
+            /**
+             * ParticipantUpdated mutedTracks.
+             * @member {Object.<string,boolean>} mutedTracks
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @instance
+             */
+            ParticipantUpdated.prototype.mutedTracks = $util.emptyObject;
+
+            /**
+             * Creates a new ParticipantUpdated instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {graphwiz.media.IParticipantUpdated=} [properties] Properties to set
+             * @returns {graphwiz.media.ParticipantUpdated} ParticipantUpdated instance
+             */
+            ParticipantUpdated.create = function create(properties) {
+                return new ParticipantUpdated(properties);
+            };
+
+            /**
+             * Encodes the specified ParticipantUpdated message. Does not implicitly {@link graphwiz.media.ParticipantUpdated.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {graphwiz.media.IParticipantUpdated} message ParticipantUpdated message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ParticipantUpdated.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientId);
+                if (message.mutedTracks != null && Object.hasOwnProperty.call(message, "mutedTracks"))
+                    for (var keys = Object.keys(message.mutedTracks), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).bool(message.mutedTracks[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ParticipantUpdated message, length delimited. Does not implicitly {@link graphwiz.media.ParticipantUpdated.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {graphwiz.media.IParticipantUpdated} message ParticipantUpdated message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ParticipantUpdated.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ParticipantUpdated message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.ParticipantUpdated} ParticipantUpdated
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ParticipantUpdated.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantUpdated(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            if (message.mutedTracks === $util.emptyObject)
+                                message.mutedTracks = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = false;
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.bool();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.mutedTracks[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ParticipantUpdated message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.ParticipantUpdated} ParticipantUpdated
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ParticipantUpdated.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ParticipantUpdated message.
+             * @function verify
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ParticipantUpdated.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.mutedTracks != null && message.hasOwnProperty("mutedTracks")) {
+                    if (!$util.isObject(message.mutedTracks))
+                        return "mutedTracks: object expected";
+                    var key = Object.keys(message.mutedTracks);
+                    for (var i = 0; i < key.length; ++i)
+                        if (typeof message.mutedTracks[key[i]] !== "boolean")
+                            return "mutedTracks: boolean{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a ParticipantUpdated message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.ParticipantUpdated} ParticipantUpdated
+             */
+            ParticipantUpdated.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.ParticipantUpdated)
+                    return object;
+                var message = new $root.graphwiz.media.ParticipantUpdated();
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.mutedTracks) {
+                    if (typeof object.mutedTracks !== "object")
+                        throw TypeError(".graphwiz.media.ParticipantUpdated.mutedTracks: object expected");
+                    message.mutedTracks = {};
+                    for (var keys = Object.keys(object.mutedTracks), i = 0; i < keys.length; ++i)
+                        message.mutedTracks[keys[i]] = Boolean(object.mutedTracks[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ParticipantUpdated message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {graphwiz.media.ParticipantUpdated} message ParticipantUpdated
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ParticipantUpdated.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.objects || options.defaults)
+                    object.mutedTracks = {};
+                if (options.defaults)
+                    object.clientId = "";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                var keys2;
+                if (message.mutedTracks && (keys2 = Object.keys(message.mutedTracks)).length) {
+                    object.mutedTracks = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.mutedTracks[keys2[j]] = message.mutedTracks[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this ParticipantUpdated to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ParticipantUpdated.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for ParticipantUpdated
+             * @function getTypeUrl
+             * @memberof graphwiz.media.ParticipantUpdated
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            ParticipantUpdated.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.ParticipantUpdated";
+            };
+
+            return ParticipantUpdated;
+        })();
+
+        media.SdpOffer = (function() {
+
+            /**
+             * Properties of a SdpOffer.
+             * @memberof graphwiz.media
+             * @interface ISdpOffer
+             * @property {string|null} [clientId] SdpOffer clientId
+             * @property {string|null} [sdp] SdpOffer sdp
+             */
+
+            /**
+             * Constructs a new SdpOffer.
+             * @memberof graphwiz.media
+             * @classdesc Represents a SdpOffer.
+             * @implements ISdpOffer
+             * @constructor
+             * @param {graphwiz.media.ISdpOffer=} [properties] Properties to set
+             */
+            function SdpOffer(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * SdpOffer clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.SdpOffer
+             * @instance
+             */
+            SdpOffer.prototype.clientId = "";
+
+            /**
+             * SdpOffer sdp.
+             * @member {string} sdp
+             * @memberof graphwiz.media.SdpOffer
+             * @instance
+             */
+            SdpOffer.prototype.sdp = "";
+
+            /**
+             * Creates a new SdpOffer instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {graphwiz.media.ISdpOffer=} [properties] Properties to set
+             * @returns {graphwiz.media.SdpOffer} SdpOffer instance
+             */
+            SdpOffer.create = function create(properties) {
+                return new SdpOffer(properties);
+            };
+
+            /**
+             * Encodes the specified SdpOffer message. Does not implicitly {@link graphwiz.media.SdpOffer.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {graphwiz.media.ISdpOffer} message SdpOffer message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SdpOffer.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientId);
+                if (message.sdp != null && Object.hasOwnProperty.call(message, "sdp"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sdp);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SdpOffer message, length delimited. Does not implicitly {@link graphwiz.media.SdpOffer.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {graphwiz.media.ISdpOffer} message SdpOffer message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SdpOffer.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a SdpOffer message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.SdpOffer} SdpOffer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SdpOffer.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SdpOffer();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.sdp = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a SdpOffer message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.SdpOffer} SdpOffer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SdpOffer.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SdpOffer message.
+             * @function verify
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SdpOffer.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    if (!$util.isString(message.sdp))
+                        return "sdp: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SdpOffer message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.SdpOffer} SdpOffer
+             */
+            SdpOffer.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.SdpOffer)
+                    return object;
+                var message = new $root.graphwiz.media.SdpOffer();
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.sdp != null)
+                    message.sdp = String(object.sdp);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SdpOffer message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {graphwiz.media.SdpOffer} message SdpOffer
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SdpOffer.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.clientId = "";
+                    object.sdp = "";
+                }
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    object.sdp = message.sdp;
+                return object;
+            };
+
+            /**
+             * Converts this SdpOffer to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.SdpOffer
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SdpOffer.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for SdpOffer
+             * @function getTypeUrl
+             * @memberof graphwiz.media.SdpOffer
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            SdpOffer.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.SdpOffer";
+            };
+
+            return SdpOffer;
+        })();
+
+        media.SdpAnswer = (function() {
+
+            /**
+             * Properties of a SdpAnswer.
+             * @memberof graphwiz.media
+             * @interface ISdpAnswer
+             * @property {string|null} [clientId] SdpAnswer clientId
+             * @property {string|null} [sdp] SdpAnswer sdp
+             */
+
+            /**
+             * Constructs a new SdpAnswer.
+             * @memberof graphwiz.media
+             * @classdesc Represents a SdpAnswer.
+             * @implements ISdpAnswer
+             * @constructor
+             * @param {graphwiz.media.ISdpAnswer=} [properties] Properties to set
+             */
+            function SdpAnswer(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * SdpAnswer clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.SdpAnswer
+             * @instance
+             */
+            SdpAnswer.prototype.clientId = "";
+
+            /**
+             * SdpAnswer sdp.
+             * @member {string} sdp
+             * @memberof graphwiz.media.SdpAnswer
+             * @instance
+             */
+            SdpAnswer.prototype.sdp = "";
+
+            /**
+             * Creates a new SdpAnswer instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {graphwiz.media.ISdpAnswer=} [properties] Properties to set
+             * @returns {graphwiz.media.SdpAnswer} SdpAnswer instance
+             */
+            SdpAnswer.create = function create(properties) {
+                return new SdpAnswer(properties);
+            };
+
+            /**
+             * Encodes the specified SdpAnswer message. Does not implicitly {@link graphwiz.media.SdpAnswer.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {graphwiz.media.ISdpAnswer} message SdpAnswer message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SdpAnswer.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientId);
+                if (message.sdp != null && Object.hasOwnProperty.call(message, "sdp"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sdp);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SdpAnswer message, length delimited. Does not implicitly {@link graphwiz.media.SdpAnswer.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {graphwiz.media.ISdpAnswer} message SdpAnswer message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SdpAnswer.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a SdpAnswer message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.SdpAnswer} SdpAnswer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SdpAnswer.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SdpAnswer();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.sdp = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a SdpAnswer message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.SdpAnswer} SdpAnswer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SdpAnswer.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SdpAnswer message.
+             * @function verify
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SdpAnswer.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    if (!$util.isString(message.sdp))
+                        return "sdp: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SdpAnswer message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.SdpAnswer} SdpAnswer
+             */
+            SdpAnswer.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.SdpAnswer)
+                    return object;
+                var message = new $root.graphwiz.media.SdpAnswer();
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.sdp != null)
+                    message.sdp = String(object.sdp);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SdpAnswer message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {graphwiz.media.SdpAnswer} message SdpAnswer
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SdpAnswer.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.clientId = "";
+                    object.sdp = "";
+                }
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.sdp != null && message.hasOwnProperty("sdp"))
+                    object.sdp = message.sdp;
+                return object;
+            };
+
+            /**
+             * Converts this SdpAnswer to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.SdpAnswer
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SdpAnswer.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for SdpAnswer
+             * @function getTypeUrl
+             * @memberof graphwiz.media.SdpAnswer
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            SdpAnswer.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.SdpAnswer";
+            };
+
+            return SdpAnswer;
+        })();
+
+        media.ActiveTrack = (function() {
+
+            /**
+             * Properties of an ActiveTrack.
+             * @memberof graphwiz.media
+             * @interface IActiveTrack
+             * @property {string|null} [trackId] ActiveTrack trackId
+             * @property {string|null} [clientId] ActiveTrack clientId
+             * @property {graphwiz.media.TrackKind|null} [kind] ActiveTrack kind
+             * @property {boolean|null} [muted] ActiveTrack muted
+             * @property {Object.<string,string>|null} [metadata] ActiveTrack metadata
+             */
+
+            /**
+             * Constructs a new ActiveTrack.
+             * @memberof graphwiz.media
+             * @classdesc Represents an ActiveTrack.
+             * @implements IActiveTrack
+             * @constructor
+             * @param {graphwiz.media.IActiveTrack=} [properties] Properties to set
+             */
+            function ActiveTrack(properties) {
+                this.metadata = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ActiveTrack trackId.
+             * @member {string} trackId
+             * @memberof graphwiz.media.ActiveTrack
+             * @instance
+             */
+            ActiveTrack.prototype.trackId = "";
+
+            /**
+             * ActiveTrack clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.media.ActiveTrack
+             * @instance
+             */
+            ActiveTrack.prototype.clientId = "";
+
+            /**
+             * ActiveTrack kind.
+             * @member {graphwiz.media.TrackKind} kind
+             * @memberof graphwiz.media.ActiveTrack
+             * @instance
+             */
+            ActiveTrack.prototype.kind = 0;
+
+            /**
+             * ActiveTrack muted.
+             * @member {boolean} muted
+             * @memberof graphwiz.media.ActiveTrack
+             * @instance
+             */
+            ActiveTrack.prototype.muted = false;
+
+            /**
+             * ActiveTrack metadata.
+             * @member {Object.<string,string>} metadata
+             * @memberof graphwiz.media.ActiveTrack
+             * @instance
+             */
+            ActiveTrack.prototype.metadata = $util.emptyObject;
+
+            /**
+             * Creates a new ActiveTrack instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {graphwiz.media.IActiveTrack=} [properties] Properties to set
+             * @returns {graphwiz.media.ActiveTrack} ActiveTrack instance
+             */
+            ActiveTrack.create = function create(properties) {
+                return new ActiveTrack(properties);
+            };
+
+            /**
+             * Encodes the specified ActiveTrack message. Does not implicitly {@link graphwiz.media.ActiveTrack.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {graphwiz.media.IActiveTrack} message ActiveTrack message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ActiveTrack.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.trackId != null && Object.hasOwnProperty.call(message, "trackId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.trackId);
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.clientId);
+                if (message.kind != null && Object.hasOwnProperty.call(message, "kind"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.kind);
+                if (message.muted != null && Object.hasOwnProperty.call(message, "muted"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.muted);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ActiveTrack message, length delimited. Does not implicitly {@link graphwiz.media.ActiveTrack.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {graphwiz.media.IActiveTrack} message ActiveTrack message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ActiveTrack.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an ActiveTrack message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.ActiveTrack} ActiveTrack
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ActiveTrack.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ActiveTrack(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.trackId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.kind = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.muted = reader.bool();
+                            break;
+                        }
+                    case 5: {
+                            if (message.metadata === $util.emptyObject)
+                                message.metadata = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.metadata[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an ActiveTrack message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.ActiveTrack} ActiveTrack
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ActiveTrack.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an ActiveTrack message.
+             * @function verify
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ActiveTrack.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    if (!$util.isString(message.trackId))
+                        return "trackId: string expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.kind != null && message.hasOwnProperty("kind"))
+                    switch (message.kind) {
+                    default:
+                        return "kind: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                        break;
+                    }
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    if (typeof message.muted !== "boolean")
+                        return "muted: boolean expected";
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    if (!$util.isObject(message.metadata))
+                        return "metadata: object expected";
+                    var key = Object.keys(message.metadata);
+                    for (var i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.metadata[key[i]]))
+                            return "metadata: string{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates an ActiveTrack message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.ActiveTrack} ActiveTrack
+             */
+            ActiveTrack.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.ActiveTrack)
+                    return object;
+                var message = new $root.graphwiz.media.ActiveTrack();
+                if (object.trackId != null)
+                    message.trackId = String(object.trackId);
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                switch (object.kind) {
+                default:
+                    if (typeof object.kind === "number") {
+                        message.kind = object.kind;
+                        break;
+                    }
+                    break;
+                case "AUDIO":
+                case 0:
+                    message.kind = 0;
+                    break;
+                case "VIDEO":
+                case 1:
+                    message.kind = 1;
+                    break;
+                case "DATA":
+                case 2:
+                    message.kind = 2;
+                    break;
+                }
+                if (object.muted != null)
+                    message.muted = Boolean(object.muted);
+                if (object.metadata) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".graphwiz.media.ActiveTrack.metadata: object expected");
+                    message.metadata = {};
+                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                        message.metadata[keys[i]] = String(object.metadata[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an ActiveTrack message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {graphwiz.media.ActiveTrack} message ActiveTrack
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ActiveTrack.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.objects || options.defaults)
+                    object.metadata = {};
+                if (options.defaults) {
+                    object.trackId = "";
+                    object.clientId = "";
+                    object.kind = options.enums === String ? "AUDIO" : 0;
+                    object.muted = false;
+                }
+                if (message.trackId != null && message.hasOwnProperty("trackId"))
+                    object.trackId = message.trackId;
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.kind != null && message.hasOwnProperty("kind"))
+                    object.kind = options.enums === String ? $root.graphwiz.media.TrackKind[message.kind] === undefined ? message.kind : $root.graphwiz.media.TrackKind[message.kind] : message.kind;
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    object.muted = message.muted;
+                var keys2;
+                if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
+                    object.metadata = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.metadata[keys2[j]] = message.metadata[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this ActiveTrack to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.ActiveTrack
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ActiveTrack.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for ActiveTrack
+             * @function getTypeUrl
+             * @memberof graphwiz.media.ActiveTrack
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            ActiveTrack.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.ActiveTrack";
+            };
+
+            return ActiveTrack;
+        })();
+
+        /**
+         * TrackKind enum.
+         * @name graphwiz.media.TrackKind
+         * @enum {number}
+         * @property {number} AUDIO=0 AUDIO value
+         * @property {number} VIDEO=1 VIDEO value
+         * @property {number} DATA=2 DATA value
+         */
+        media.TrackKind = (function() {
+            var valuesById = {}, values = Object.create(valuesById);
+            values[valuesById[0] = "AUDIO"] = 0;
+            values[valuesById[1] = "VIDEO"] = 1;
+            values[valuesById[2] = "DATA"] = 2;
+            return values;
+        })();
+
+        /**
+         * SessionDescriptionType enum.
+         * @name graphwiz.media.SessionDescriptionType
+         * @enum {number}
+         * @property {number} OFFER=0 OFFER value
+         * @property {number} ANSWER=1 ANSWER value
+         * @property {number} PRANSWER=2 PRANSWER value
+         * @property {number} ROLLBACK=3 ROLLBACK value
+         */
+        media.SessionDescriptionType = (function() {
+            var valuesById = {}, values = Object.create(valuesById);
+            values[valuesById[0] = "OFFER"] = 0;
+            values[valuesById[1] = "ANSWER"] = 1;
+            values[valuesById[2] = "PRANSWER"] = 2;
+            values[valuesById[3] = "ROLLBACK"] = 3;
+            return values;
+        })();
+
+        media.MediaConstraints = (function() {
+
+            /**
+             * Properties of a MediaConstraints.
+             * @memberof graphwiz.media
+             * @interface IMediaConstraints
+             * @property {boolean|null} [audio] MediaConstraints audio
+             * @property {boolean|null} [video] MediaConstraints video
+             * @property {boolean|null} [data] MediaConstraints data
+             * @property {graphwiz.media.IAudioConstraints|null} [audioConstraints] MediaConstraints audioConstraints
+             * @property {graphwiz.media.IVideoConstraints|null} [videoConstraints] MediaConstraints videoConstraints
+             */
+
+            /**
+             * Constructs a new MediaConstraints.
+             * @memberof graphwiz.media
+             * @classdesc Represents a MediaConstraints.
+             * @implements IMediaConstraints
+             * @constructor
+             * @param {graphwiz.media.IMediaConstraints=} [properties] Properties to set
+             */
+            function MediaConstraints(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MediaConstraints audio.
+             * @member {boolean} audio
+             * @memberof graphwiz.media.MediaConstraints
+             * @instance
+             */
+            MediaConstraints.prototype.audio = false;
+
+            /**
+             * MediaConstraints video.
+             * @member {boolean} video
+             * @memberof graphwiz.media.MediaConstraints
+             * @instance
+             */
+            MediaConstraints.prototype.video = false;
+
+            /**
+             * MediaConstraints data.
+             * @member {boolean} data
+             * @memberof graphwiz.media.MediaConstraints
+             * @instance
+             */
+            MediaConstraints.prototype.data = false;
+
+            /**
+             * MediaConstraints audioConstraints.
+             * @member {graphwiz.media.IAudioConstraints|null|undefined} audioConstraints
+             * @memberof graphwiz.media.MediaConstraints
+             * @instance
+             */
+            MediaConstraints.prototype.audioConstraints = null;
+
+            /**
+             * MediaConstraints videoConstraints.
+             * @member {graphwiz.media.IVideoConstraints|null|undefined} videoConstraints
+             * @memberof graphwiz.media.MediaConstraints
+             * @instance
+             */
+            MediaConstraints.prototype.videoConstraints = null;
+
+            /**
+             * Creates a new MediaConstraints instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {graphwiz.media.IMediaConstraints=} [properties] Properties to set
+             * @returns {graphwiz.media.MediaConstraints} MediaConstraints instance
+             */
+            MediaConstraints.create = function create(properties) {
+                return new MediaConstraints(properties);
+            };
+
+            /**
+             * Encodes the specified MediaConstraints message. Does not implicitly {@link graphwiz.media.MediaConstraints.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {graphwiz.media.IMediaConstraints} message MediaConstraints message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MediaConstraints.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.audio != null && Object.hasOwnProperty.call(message, "audio"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.audio);
+                if (message.video != null && Object.hasOwnProperty.call(message, "video"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.video);
+                if (message.data != null && Object.hasOwnProperty.call(message, "data"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.data);
+                if (message.audioConstraints != null && Object.hasOwnProperty.call(message, "audioConstraints"))
+                    $root.graphwiz.media.AudioConstraints.encode(message.audioConstraints, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.videoConstraints != null && Object.hasOwnProperty.call(message, "videoConstraints"))
+                    $root.graphwiz.media.VideoConstraints.encode(message.videoConstraints, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MediaConstraints message, length delimited. Does not implicitly {@link graphwiz.media.MediaConstraints.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {graphwiz.media.IMediaConstraints} message MediaConstraints message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MediaConstraints.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MediaConstraints message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.MediaConstraints} MediaConstraints
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MediaConstraints.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MediaConstraints();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.audio = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.video = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            message.data = reader.bool();
+                            break;
+                        }
+                    case 4: {
+                            message.audioConstraints = $root.graphwiz.media.AudioConstraints.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.videoConstraints = $root.graphwiz.media.VideoConstraints.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MediaConstraints message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.MediaConstraints} MediaConstraints
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MediaConstraints.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MediaConstraints message.
+             * @function verify
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MediaConstraints.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.audio != null && message.hasOwnProperty("audio"))
+                    if (typeof message.audio !== "boolean")
+                        return "audio: boolean expected";
+                if (message.video != null && message.hasOwnProperty("video"))
+                    if (typeof message.video !== "boolean")
+                        return "video: boolean expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (typeof message.data !== "boolean")
+                        return "data: boolean expected";
+                if (message.audioConstraints != null && message.hasOwnProperty("audioConstraints")) {
+                    var error = $root.graphwiz.media.AudioConstraints.verify(message.audioConstraints);
+                    if (error)
+                        return "audioConstraints." + error;
+                }
+                if (message.videoConstraints != null && message.hasOwnProperty("videoConstraints")) {
+                    var error = $root.graphwiz.media.VideoConstraints.verify(message.videoConstraints);
+                    if (error)
+                        return "videoConstraints." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a MediaConstraints message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.MediaConstraints} MediaConstraints
+             */
+            MediaConstraints.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.MediaConstraints)
+                    return object;
+                var message = new $root.graphwiz.media.MediaConstraints();
+                if (object.audio != null)
+                    message.audio = Boolean(object.audio);
+                if (object.video != null)
+                    message.video = Boolean(object.video);
+                if (object.data != null)
+                    message.data = Boolean(object.data);
+                if (object.audioConstraints != null) {
+                    if (typeof object.audioConstraints !== "object")
+                        throw TypeError(".graphwiz.media.MediaConstraints.audioConstraints: object expected");
+                    message.audioConstraints = $root.graphwiz.media.AudioConstraints.fromObject(object.audioConstraints);
+                }
+                if (object.videoConstraints != null) {
+                    if (typeof object.videoConstraints !== "object")
+                        throw TypeError(".graphwiz.media.MediaConstraints.videoConstraints: object expected");
+                    message.videoConstraints = $root.graphwiz.media.VideoConstraints.fromObject(object.videoConstraints);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MediaConstraints message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {graphwiz.media.MediaConstraints} message MediaConstraints
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MediaConstraints.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.audio = false;
+                    object.video = false;
+                    object.data = false;
+                    object.audioConstraints = null;
+                    object.videoConstraints = null;
+                }
+                if (message.audio != null && message.hasOwnProperty("audio"))
+                    object.audio = message.audio;
+                if (message.video != null && message.hasOwnProperty("video"))
+                    object.video = message.video;
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = message.data;
+                if (message.audioConstraints != null && message.hasOwnProperty("audioConstraints"))
+                    object.audioConstraints = $root.graphwiz.media.AudioConstraints.toObject(message.audioConstraints, options);
+                if (message.videoConstraints != null && message.hasOwnProperty("videoConstraints"))
+                    object.videoConstraints = $root.graphwiz.media.VideoConstraints.toObject(message.videoConstraints, options);
+                return object;
+            };
+
+            /**
+             * Converts this MediaConstraints to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.MediaConstraints
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MediaConstraints.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MediaConstraints
+             * @function getTypeUrl
+             * @memberof graphwiz.media.MediaConstraints
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MediaConstraints.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.MediaConstraints";
+            };
+
+            return MediaConstraints;
+        })();
+
+        media.AudioConstraints = (function() {
+
+            /**
+             * Properties of an AudioConstraints.
+             * @memberof graphwiz.media
+             * @interface IAudioConstraints
+             * @property {boolean|null} [echoCancellation] AudioConstraints echoCancellation
+             * @property {boolean|null} [noiseSuppression] AudioConstraints noiseSuppression
+             * @property {boolean|null} [autoGainControl] AudioConstraints autoGainControl
+             * @property {number|null} [sampleRate] AudioConstraints sampleRate
+             * @property {number|null} [channelCount] AudioConstraints channelCount
+             */
+
+            /**
+             * Constructs a new AudioConstraints.
+             * @memberof graphwiz.media
+             * @classdesc Represents an AudioConstraints.
+             * @implements IAudioConstraints
+             * @constructor
+             * @param {graphwiz.media.IAudioConstraints=} [properties] Properties to set
+             */
+            function AudioConstraints(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * AudioConstraints echoCancellation.
+             * @member {boolean} echoCancellation
+             * @memberof graphwiz.media.AudioConstraints
+             * @instance
+             */
+            AudioConstraints.prototype.echoCancellation = false;
+
+            /**
+             * AudioConstraints noiseSuppression.
+             * @member {boolean} noiseSuppression
+             * @memberof graphwiz.media.AudioConstraints
+             * @instance
+             */
+            AudioConstraints.prototype.noiseSuppression = false;
+
+            /**
+             * AudioConstraints autoGainControl.
+             * @member {boolean} autoGainControl
+             * @memberof graphwiz.media.AudioConstraints
+             * @instance
+             */
+            AudioConstraints.prototype.autoGainControl = false;
+
+            /**
+             * AudioConstraints sampleRate.
+             * @member {number} sampleRate
+             * @memberof graphwiz.media.AudioConstraints
+             * @instance
+             */
+            AudioConstraints.prototype.sampleRate = 0;
+
+            /**
+             * AudioConstraints channelCount.
+             * @member {number} channelCount
+             * @memberof graphwiz.media.AudioConstraints
+             * @instance
+             */
+            AudioConstraints.prototype.channelCount = 0;
+
+            /**
+             * Creates a new AudioConstraints instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {graphwiz.media.IAudioConstraints=} [properties] Properties to set
+             * @returns {graphwiz.media.AudioConstraints} AudioConstraints instance
+             */
+            AudioConstraints.create = function create(properties) {
+                return new AudioConstraints(properties);
+            };
+
+            /**
+             * Encodes the specified AudioConstraints message. Does not implicitly {@link graphwiz.media.AudioConstraints.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {graphwiz.media.IAudioConstraints} message AudioConstraints message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AudioConstraints.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.echoCancellation != null && Object.hasOwnProperty.call(message, "echoCancellation"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.echoCancellation);
+                if (message.noiseSuppression != null && Object.hasOwnProperty.call(message, "noiseSuppression"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.noiseSuppression);
+                if (message.autoGainControl != null && Object.hasOwnProperty.call(message, "autoGainControl"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.autoGainControl);
+                if (message.sampleRate != null && Object.hasOwnProperty.call(message, "sampleRate"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.sampleRate);
+                if (message.channelCount != null && Object.hasOwnProperty.call(message, "channelCount"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.channelCount);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified AudioConstraints message, length delimited. Does not implicitly {@link graphwiz.media.AudioConstraints.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {graphwiz.media.IAudioConstraints} message AudioConstraints message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AudioConstraints.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an AudioConstraints message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.AudioConstraints} AudioConstraints
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AudioConstraints.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AudioConstraints();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.echoCancellation = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.noiseSuppression = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            message.autoGainControl = reader.bool();
+                            break;
+                        }
+                    case 4: {
+                            message.sampleRate = reader.int32();
+                            break;
+                        }
+                    case 5: {
+                            message.channelCount = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an AudioConstraints message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.AudioConstraints} AudioConstraints
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AudioConstraints.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an AudioConstraints message.
+             * @function verify
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            AudioConstraints.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.echoCancellation != null && message.hasOwnProperty("echoCancellation"))
+                    if (typeof message.echoCancellation !== "boolean")
+                        return "echoCancellation: boolean expected";
+                if (message.noiseSuppression != null && message.hasOwnProperty("noiseSuppression"))
+                    if (typeof message.noiseSuppression !== "boolean")
+                        return "noiseSuppression: boolean expected";
+                if (message.autoGainControl != null && message.hasOwnProperty("autoGainControl"))
+                    if (typeof message.autoGainControl !== "boolean")
+                        return "autoGainControl: boolean expected";
+                if (message.sampleRate != null && message.hasOwnProperty("sampleRate"))
+                    if (!$util.isInteger(message.sampleRate))
+                        return "sampleRate: integer expected";
+                if (message.channelCount != null && message.hasOwnProperty("channelCount"))
+                    if (!$util.isInteger(message.channelCount))
+                        return "channelCount: integer expected";
+                return null;
+            };
+
+            /**
+             * Creates an AudioConstraints message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.AudioConstraints} AudioConstraints
+             */
+            AudioConstraints.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.AudioConstraints)
+                    return object;
+                var message = new $root.graphwiz.media.AudioConstraints();
+                if (object.echoCancellation != null)
+                    message.echoCancellation = Boolean(object.echoCancellation);
+                if (object.noiseSuppression != null)
+                    message.noiseSuppression = Boolean(object.noiseSuppression);
+                if (object.autoGainControl != null)
+                    message.autoGainControl = Boolean(object.autoGainControl);
+                if (object.sampleRate != null)
+                    message.sampleRate = object.sampleRate | 0;
+                if (object.channelCount != null)
+                    message.channelCount = object.channelCount | 0;
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an AudioConstraints message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {graphwiz.media.AudioConstraints} message AudioConstraints
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            AudioConstraints.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.echoCancellation = false;
+                    object.noiseSuppression = false;
+                    object.autoGainControl = false;
+                    object.sampleRate = 0;
+                    object.channelCount = 0;
+                }
+                if (message.echoCancellation != null && message.hasOwnProperty("echoCancellation"))
+                    object.echoCancellation = message.echoCancellation;
+                if (message.noiseSuppression != null && message.hasOwnProperty("noiseSuppression"))
+                    object.noiseSuppression = message.noiseSuppression;
+                if (message.autoGainControl != null && message.hasOwnProperty("autoGainControl"))
+                    object.autoGainControl = message.autoGainControl;
+                if (message.sampleRate != null && message.hasOwnProperty("sampleRate"))
+                    object.sampleRate = message.sampleRate;
+                if (message.channelCount != null && message.hasOwnProperty("channelCount"))
+                    object.channelCount = message.channelCount;
+                return object;
+            };
+
+            /**
+             * Converts this AudioConstraints to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.AudioConstraints
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            AudioConstraints.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for AudioConstraints
+             * @function getTypeUrl
+             * @memberof graphwiz.media.AudioConstraints
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            AudioConstraints.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.AudioConstraints";
+            };
+
+            return AudioConstraints;
+        })();
+
+        media.VideoConstraints = (function() {
+
+            /**
+             * Properties of a VideoConstraints.
+             * @memberof graphwiz.media
+             * @interface IVideoConstraints
+             * @property {number|null} [maxWidth] VideoConstraints maxWidth
+             * @property {number|null} [maxHeight] VideoConstraints maxHeight
+             * @property {number|null} [maxFrameRate] VideoConstraints maxFrameRate
+             * @property {graphwiz.media.VideoCodecType|null} [preferredCodec] VideoConstraints preferredCodec
+             */
+
+            /**
+             * Constructs a new VideoConstraints.
+             * @memberof graphwiz.media
+             * @classdesc Represents a VideoConstraints.
+             * @implements IVideoConstraints
+             * @constructor
+             * @param {graphwiz.media.IVideoConstraints=} [properties] Properties to set
+             */
+            function VideoConstraints(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * VideoConstraints maxWidth.
+             * @member {number} maxWidth
+             * @memberof graphwiz.media.VideoConstraints
+             * @instance
+             */
+            VideoConstraints.prototype.maxWidth = 0;
+
+            /**
+             * VideoConstraints maxHeight.
+             * @member {number} maxHeight
+             * @memberof graphwiz.media.VideoConstraints
+             * @instance
+             */
+            VideoConstraints.prototype.maxHeight = 0;
+
+            /**
+             * VideoConstraints maxFrameRate.
+             * @member {number} maxFrameRate
+             * @memberof graphwiz.media.VideoConstraints
+             * @instance
+             */
+            VideoConstraints.prototype.maxFrameRate = 0;
+
+            /**
+             * VideoConstraints preferredCodec.
+             * @member {graphwiz.media.VideoCodecType} preferredCodec
+             * @memberof graphwiz.media.VideoConstraints
+             * @instance
+             */
+            VideoConstraints.prototype.preferredCodec = 0;
+
+            /**
+             * Creates a new VideoConstraints instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {graphwiz.media.IVideoConstraints=} [properties] Properties to set
+             * @returns {graphwiz.media.VideoConstraints} VideoConstraints instance
+             */
+            VideoConstraints.create = function create(properties) {
+                return new VideoConstraints(properties);
+            };
+
+            /**
+             * Encodes the specified VideoConstraints message. Does not implicitly {@link graphwiz.media.VideoConstraints.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {graphwiz.media.IVideoConstraints} message VideoConstraints message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            VideoConstraints.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.maxWidth != null && Object.hasOwnProperty.call(message, "maxWidth"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.maxWidth);
+                if (message.maxHeight != null && Object.hasOwnProperty.call(message, "maxHeight"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.maxHeight);
+                if (message.maxFrameRate != null && Object.hasOwnProperty.call(message, "maxFrameRate"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.maxFrameRate);
+                if (message.preferredCodec != null && Object.hasOwnProperty.call(message, "preferredCodec"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.preferredCodec);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified VideoConstraints message, length delimited. Does not implicitly {@link graphwiz.media.VideoConstraints.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {graphwiz.media.IVideoConstraints} message VideoConstraints message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            VideoConstraints.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a VideoConstraints message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.media.VideoConstraints} VideoConstraints
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            VideoConstraints.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.VideoConstraints();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.maxWidth = reader.int32();
+                            break;
+                        }
+                    case 2: {
+                            message.maxHeight = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            message.maxFrameRate = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.preferredCodec = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a VideoConstraints message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.media.VideoConstraints} VideoConstraints
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            VideoConstraints.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a VideoConstraints message.
+             * @function verify
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            VideoConstraints.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.maxWidth != null && message.hasOwnProperty("maxWidth"))
+                    if (!$util.isInteger(message.maxWidth))
+                        return "maxWidth: integer expected";
+                if (message.maxHeight != null && message.hasOwnProperty("maxHeight"))
+                    if (!$util.isInteger(message.maxHeight))
+                        return "maxHeight: integer expected";
+                if (message.maxFrameRate != null && message.hasOwnProperty("maxFrameRate"))
+                    if (!$util.isInteger(message.maxFrameRate))
+                        return "maxFrameRate: integer expected";
+                if (message.preferredCodec != null && message.hasOwnProperty("preferredCodec"))
+                    switch (message.preferredCodec) {
+                    default:
+                        return "preferredCodec: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                return null;
+            };
+
+            /**
+             * Creates a VideoConstraints message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.media.VideoConstraints} VideoConstraints
+             */
+            VideoConstraints.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.media.VideoConstraints)
+                    return object;
+                var message = new $root.graphwiz.media.VideoConstraints();
+                if (object.maxWidth != null)
+                    message.maxWidth = object.maxWidth | 0;
+                if (object.maxHeight != null)
+                    message.maxHeight = object.maxHeight | 0;
+                if (object.maxFrameRate != null)
+                    message.maxFrameRate = object.maxFrameRate | 0;
+                switch (object.preferredCodec) {
+                default:
+                    if (typeof object.preferredCodec === "number") {
+                        message.preferredCodec = object.preferredCodec;
+                        break;
+                    }
+                    break;
+                case "VP8":
+                case 0:
+                    message.preferredCodec = 0;
+                    break;
+                case "VP9":
+                case 1:
+                    message.preferredCodec = 1;
+                    break;
+                case "H264":
+                case 2:
+                    message.preferredCodec = 2;
+                    break;
+                case "AV1":
+                case 3:
+                    message.preferredCodec = 3;
+                    break;
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a VideoConstraints message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {graphwiz.media.VideoConstraints} message VideoConstraints
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            VideoConstraints.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.maxWidth = 0;
+                    object.maxHeight = 0;
+                    object.maxFrameRate = 0;
+                    object.preferredCodec = options.enums === String ? "VP8" : 0;
+                }
+                if (message.maxWidth != null && message.hasOwnProperty("maxWidth"))
+                    object.maxWidth = message.maxWidth;
+                if (message.maxHeight != null && message.hasOwnProperty("maxHeight"))
+                    object.maxHeight = message.maxHeight;
+                if (message.maxFrameRate != null && message.hasOwnProperty("maxFrameRate"))
+                    object.maxFrameRate = message.maxFrameRate;
+                if (message.preferredCodec != null && message.hasOwnProperty("preferredCodec"))
+                    object.preferredCodec = options.enums === String ? $root.graphwiz.media.VideoCodecType[message.preferredCodec] === undefined ? message.preferredCodec : $root.graphwiz.media.VideoCodecType[message.preferredCodec] : message.preferredCodec;
+                return object;
+            };
+
+            /**
+             * Converts this VideoConstraints to JSON.
+             * @function toJSON
+             * @memberof graphwiz.media.VideoConstraints
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            VideoConstraints.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for VideoConstraints
+             * @function getTypeUrl
+             * @memberof graphwiz.media.VideoConstraints
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            VideoConstraints.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.media.VideoConstraints";
+            };
+
+            return VideoConstraints;
+        })();
+
+        /**
+         * VideoCodecType enum.
+         * @name graphwiz.media.VideoCodecType
+         * @enum {number}
+         * @property {number} VP8=0 VP8 value
+         * @property {number} VP9=1 VP9 value
+         * @property {number} H264=2 H264 value
+         * @property {number} AV1=3 AV1 value
+         */
+        media.VideoCodecType = (function() {
+            var valuesById = {}, values = Object.create(valuesById);
+            values[valuesById[0] = "VP8"] = 0;
+            values[valuesById[1] = "VP9"] = 1;
+            values[valuesById[2] = "H264"] = 2;
+            values[valuesById[3] = "AV1"] = 3;
+            return values;
+        })();
+
+        return media;
     })();
 
     return graphwiz;

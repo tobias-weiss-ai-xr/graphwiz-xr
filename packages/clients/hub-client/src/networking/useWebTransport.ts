@@ -2,14 +2,15 @@
  * React hook for WebTransport client
  */
 
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { WebTransportClient, type WebTransportClientConfig } from './WebTransportClient';
 import type {
   WorldState,
   PresenceEvent,
   EntitySpawn,
   ChatMessage,
 } from '@graphwiz/protocol';
+import { useEffect, useState, useCallback, useRef } from 'react';
+
+import { WebTransportClient, type WebTransportClientConfig } from './WebTransportClient';
 
 export interface UseWebTransportOptions extends Partial<WebTransportClientConfig> {
   autoConnect?: boolean;

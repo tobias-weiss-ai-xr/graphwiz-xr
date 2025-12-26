@@ -1,0 +1,25 @@
+# Dockerfile for Hub Client Development with Hot Reload
+# Uses Vite's HMR (Hot Module Replacement) for instant updates
+
+FROM node:20-alpine
+
+# Install pnpm
+RUN npm install -g pnpm@8
+
+WORKDIR /app
+
+# Copy package files
+COPY packages/clients/hub-client/package.json packages/clients/hub-client/pnpm-lock.yaml* ./
+
+# Install dependencies
+RUN pnpm install
+
+# Copy source code
+COPY packages/clients/hub-client ./
+
+# Expose Vite dev server port
+EXPOSE 5173
+
+# Run development server with HMR enabled
+# --host allows external access (needed for Docker)
+CMD ["pnpm", "dev", "--host", "--port", "5173"]

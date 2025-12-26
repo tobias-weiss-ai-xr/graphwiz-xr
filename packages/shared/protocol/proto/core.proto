@@ -165,3 +165,45 @@ message PlayerSnapshot {
   Vector3 position = 4;
   Quaternion rotation = 5;
 }
+
+// Room information
+message Room {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  RoomSettings settings = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+  string creator_id = 7;
+  int32 current_players = 8;
+  repeated string tags = 9;
+  map<string, string> metadata = 10;
+}
+
+message RoomSettings {
+  int32 max_players = 1;
+  bool is_public = 2;
+  bool allow_voice_chat = 3;
+  bool allow_text_chat = 4;
+  bool allow_invites = 5;
+  int32 max_spectators = 6;
+  bool require_approval = 7;
+}
+
+// User identity and authentication
+message User {
+  string id = 1;
+  string username = 2;
+  string display_name = 3;
+  string email = 4;
+  string avatar_url = 5;
+  int64 created_at = 6;
+  map<string, string> metadata = 7;
+}
+
+message AuthToken {
+  string token = 1;
+  string user_id = 2;
+  int64 expires_at = 3;
+  repeated string permissions = 4;
+}

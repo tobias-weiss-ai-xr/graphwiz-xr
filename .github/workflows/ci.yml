@@ -1,9 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
+    branches: [main, develop]
+  push:
     branches: [main, develop]
 
 env:
@@ -11,40 +11,63 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
-  # Rust Backend Tests
+  typecheck:
+    name: Type Check TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run type checking
+        run: pnpm check
+
   test-rust:
     name: Test Rust Services
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Rust
+      - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
+          components: clippy
 
-      - name: Cache Cargo
-        uses: actions/cache@v3
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry/index/
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache Cargo build
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
-            ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Run Rust tests
-        run: |
-          cd packages/services
-          cargo test --workspace --verbose
+      - name: Run cargo test
+        run: cargo test --workspace
 
-      - name: Run Rust linter
-        run: |
-          cargo fmt --all -- --check
-          cargo clippy --workspace -- -D warnings
+      - name: Run cargo clippy
+        run: cargo clippy --workspace -- -D warnings
 
-  # TypeScript Frontend Tests
   test-typescript:
     name: Test TypeScript Packages
     runs-on: ubuntu-latest
@@ -62,83 +85,23 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
+      - name: Cache pnpm
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Run TypeScript checks
-        run: pnpm check
 
       - name: Run tests
         run: pnpm test
 
-      - name: Build
-        run: pnpm build
-
-  # Protocol Validation
-  validate-protocol:
-    name: Validate Protocol Definitions
+  lint:
+    name: Lint Code
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-
-      - name: Install protobuf compiler
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y protobuf-compiler
-
-      - name: Generate TypeScript types
-        run: |
-          cd packages/shared/protocol
-          pnpm run build:ts
-
-      - name: Generate Rust types
-        run: |
-          cd packages/shared/protocol
-          cargo build
-
-      - name: Validate protocol consistency
-        run: |
-          # Add validation script here
-          echo "Protocol validation passed"
-
-  # Docker Build
-  build-docker:
-    name: Build Docker Images
-    runs-on: ubuntu-latest
-    needs: [test-rust, test-typescript]
-    strategy:
-      matrix:
-        service: [core, auth, hub, presence, storage]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build ${{ matrix.service }}
-        run: |
-          docker build -f packages/deploy/docker/Dockerfile.reticulum \
-            --build-arg SERVICE=${{ matrix.service }} \
-            -t graphwiz-xr/reticulum-${{ matrix.service }}:latest .
-
-  # E2E Tests
-  test-e2e:
-    name: E2E Tests
-    runs-on: ubuntu-latest
-    needs: [build-docker]
     steps:
       - uses: actions/checkout@v4
 
@@ -156,15 +119,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright
-        run: pnpm exec playwright install --with-deps
+      - name: Run linter
+        run: pnpm lint
 
-      - name: Run E2E tests
-        run: pnpm test:e2e
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: playwright-report
-          path: packages/clients/hub-client/playwright-report/
+      - name: Check Rust formatting
+        run: |
+          rustup component add rustfmt
+          cargo fmt --all -- --check

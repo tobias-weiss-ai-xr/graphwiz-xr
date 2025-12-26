@@ -1,0 +1,120 @@
+# GraphWiz-XR Development Docker Compose Commands
+# Usage: make -f Makefile.dev [command]
+
+.PHONY: help up down restart logs build clean status db shell
+
+# Default target
+help:
+	@echo "GraphWiz-XR Development Docker Commands"
+	@echo ""
+	@echo "Usage: make -f Makefile.dev [command]"
+	@echo ""
+	@echo "Commands:"
+	@echo "  up          - Start all development services"
+	@echo "  down        - Stop all services (preserves data)"
+	@echo "  restart     - Restart all services"
+	@echo "  logs        - View logs from all services"
+	@echo "  logs-api    - View Core API logs"
+	@echo "  logs-client - View Hub Client logs"
+	@echo "  build       - Rebuild all containers"
+	@echo "  rebuild     - Clean rebuild (remove volumes)"
+	@echo "  clean       - Remove all containers and volumes"
+	@echo "  status      - Show status of all services"
+	@echo "  db          - Open PostgreSQL shell"
+	@echo "  shell-api   - Open shell in Core API container"
+	@echo "  shell-client - Open shell in Hub Client container"
+	@echo "  test        - Run tests in containers"
+	@echo "  migrate     - Run database migrations"
+
+# Start development environment
+up:
+	@echo "Starting development environment..."
+	docker-compose -f docker-compose.dev.yml up -d
+	@echo ""
+	@echo "Services started:"
+	@echo "  - Hub Client:   http://localhost:5173"
+	@echo "  - Core API:     http://localhost:8000"
+	@echo "  - Adminer DB:   http://localhost:8080"
+	@echo ""
+	@echo "Run 'make -f Makefile.dev logs' to view logs"
+
+# Stop services
+down:
+	@echo "Stopping services..."
+	docker-compose -f docker-compose.dev.yml down
+	@echo "Services stopped (data preserved)"
+
+# Restart services
+restart: down up
+
+# View all logs
+logs:
+	docker-compose -f docker-compose.dev.yml logs -f
+
+# View API logs
+logs-api:
+	docker-compose -f docker-compose.dev.yml logs -f core-api
+
+# View client logs
+logs-client:
+	docker-compose -f docker-compose.dev.yml logs -f hub-client
+
+# Build containers
+build:
+	@echo "Building containers..."
+	docker-compose -f docker-compose.dev.yml build
+
+# Rebuild from scratch
+rebuild: clean
+	@echo "Rebuilding containers..."
+	docker-compose -f docker-compose.dev.yml up -d --build
+
+# Clean everything
+clean:
+	@echo "Removing containers and volumes..."
+	docker-compose -f docker-compose.dev.yml down -v
+	@echo "Clean complete"
+
+# Show status
+status:
+	@echo "Service Status:"
+	@echo ""
+	docker-compose -f docker-compose.dev.yml ps
+
+# Open database shell
+db:
+	@echo "Connecting to PostgreSQL..."
+	docker exec -it graphwiz-postgres-dev psql -U graphwiz -d graphwiz
+
+# Open API container shell
+shell-api:
+	@echo "Opening Core API shell..."
+	docker exec -it graphwiz-core-api-dev bash
+
+# Open client container shell
+shell-client:
+	@echo "Opening Hub Client shell..."
+	docker exec -it graphwiz-hub-client-dev sh
+
+# Run tests
+test:
+	@echo "Running tests..."
+	docker-compose -f docker-compose.dev.yml exec core-api cargo test
+	docker-compose -f docker-compose.dev.yml exec hub-client pnpm test
+
+# Run migrations
+migrate:
+	@echo "Running database migrations..."
+	docker-compose -f docker-compose.dev.yml exec core-api sqlx migrate run
+
+# Watch API rebuild
+watch-api:
+	docker-compose -f docker-compose.dev.yml logs -f core-api &
+	@echo "Watching API for changes..."
+	@echo "Make changes to packages/services/reticulum/ to trigger rebuild"
+
+# Watch client HMR
+watch-client:
+	docker-compose -f docker-compose.dev.yml logs -f hub-client &
+	@echo "Watching client for changes..."
+	@echo "Make changes to packages/clients/hub-client/ to trigger HMR"

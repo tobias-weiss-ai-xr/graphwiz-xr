@@ -4,8 +4,8 @@
  * Updates entity transforms each frame.
  */
 
-import { System } from '../system';
 import { TransformComponent } from '../entity';
+import { System } from '../system';
 
 export class TransformSystem extends System {
   override update(_deltaTime: number): void {

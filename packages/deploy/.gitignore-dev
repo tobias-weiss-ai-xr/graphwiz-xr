@@ -1,0 +1,18 @@
+# Development Environment Files
+.env
+.env.local
+.env.*.local
+
+# Development volumes data
+*.log
+
+# Docker artifacts
+.docker/
+
+# PostgreSQL data (if mounted locally)
+postgres-data/
+redis-data/
+
+# Backup files
+*.backup
+*.bak

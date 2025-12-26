@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { WebTransportClient } from '../networking/WebTransportClient';
 
 // Mock WebTransport API

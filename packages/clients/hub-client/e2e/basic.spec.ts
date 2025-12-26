@@ -24,7 +24,7 @@ test.describe('Hub Client - Basic Tests', () => {
     await page.goto('/');
 
     // Check for connection status element
-    const statusIndicator = page.locator('[data-testid="connection-status"], .connection-status, #status').first();
+    const _statusIndicator = page.locator('[data-testid="connection-status"], .connection-status, #status').first();
     // The status indicator might not exist yet, so we don't assert
     // Just verify the page doesn't crash
     await expect(page).toHaveTitle(/./);
@@ -64,7 +64,7 @@ test.describe('Hub Client - 3D Scene Tests', () => {
 
     // Check for WebGL context (Three.js uses WebGL)
     const hasWebGL = await page.evaluate(() => {
-      const canvas = document.createElement('canvas');
+      const _canvas = document.createElement('canvas');
       return !!(
         window.WebGLRenderingContext ||
         (window as any).WebGL2RenderingContext
@@ -118,7 +118,7 @@ test.describe('Hub Client - Performance', () => {
     await page.goto('/');
 
     // Get initial memory usage
-    const initialMetrics = await page.metrics();
+    const _initialMetrics = await page.metrics();
 
     // Perform some interactions
     await page.mouse.move(100, 100);

@@ -1,9 +1,10 @@
-import { Canvas } from '@react-three/fiber';
+/* eslint-disable react/no-unknown-property */
+import type { EntitySpawn } from '@graphwiz/protocol';
 import { OrbitControls, Grid, PerspectiveCamera, Text } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
 import { useState, useCallback } from 'react';
 
 import { useWebTransport, usePresence, useEntities, useChat } from './networking/useWebTransport';
-import type { EntitySpawn } from '@graphwiz/protocol';
 
 interface Entity {
   id: string;

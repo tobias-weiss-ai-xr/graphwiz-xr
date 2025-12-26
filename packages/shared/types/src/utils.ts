@@ -5,6 +5,46 @@
 import type { Vector3, Quaternion } from './types';
 
 /**
+ * Generate a unique identifier
+ */
+export function uuid(): string {
+  return `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+/**
+ * Format timestamp to human-readable date string
+ */
+export function formatDate(timestamp: number): string {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+/**
+ * Clamp a value between min and max
+ */
+export function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+/**
+ * Linear interpolation between two values
+ */
+export function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
+/**
  * Create a zero vector
  */
 export function vec3(x = 0, y = 0, z = 0): Vector3 {
@@ -43,15 +83,12 @@ export function lerpVector3(a: Vector3, b: Vector3, t: number): Vector3 {
  * Spherical linear interpolation for quaternions
  */
 export function slerpQuaternion(qa: Quaternion, qb: Quaternion, t: number): Quaternion {
-  // Calculate cosine of the angle between quaternions
   let cosHalfTheta = qa.x * qb.x + qa.y * qb.y + qa.z * qb.z + qa.w * qb.w;
 
-  // If qa and qb are the same, return qa
   if (cosHalfTheta >= 1.0) {
     return qa;
   }
 
-  // Calculate temporary values
   const halfTheta = Math.acos(cosHalfTheta);
   const sinHalfTheta = Math.sqrt(1.0 - cosHalfTheta * cosHalfTheta);
 
@@ -75,7 +112,7 @@ export function slerpQuaternion(qa: Quaternion, qb: Quaternion, t: number): Quat
 }
 
 /**
- * Format timestamp to human-readable string
+ * Format timestamp to ISO string
  */
 export function formatTimestamp(timestamp: number): string {
   const date = new Date(timestamp);
@@ -87,13 +124,6 @@ export function formatTimestamp(timestamp: number): string {
  */
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-}
-
-/**
- * Clamp a value between min and max
- */
-export function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
 }
 
 /**

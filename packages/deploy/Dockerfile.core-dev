@@ -1,0 +1,51 @@
+# Dockerfile for Core API Development with Hot Reload
+# Uses cargo-watch for automatic recompilation on file changes
+
+FROM rust:1.75-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    postgresql-client \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install cargo-watch for hot reload
+RUN cargo install cargo-watch
+
+# Install sqlx-cli for database migrations
+RUN cargo install sqlx-cli --no-default-features --features postgres
+
+WORKDIR /app
+
+# Copy Cargo workspace files
+COPY Cargo.toml Cargo.lock ./
+COPY packages/shared/protocol packages/shared/protocol
+COPY packages/services/reticulum packages/services/reticulum
+
+# Create dummy main file to cache dependencies
+RUN mkdir -p packages/services/reticulum/core/src && \
+    echo "fn main() {}" > packages/services/reticulum/core/src/main.rs && \
+    echo "fn main() {}" > packages/services/reticulum/auth/src/main.rs && \
+    echo "fn main() {}" > packages/services/reticulum/hub/src/main.rs && \
+    echo "fn main() {}" > packages/services/reticulum/presence/src/main.rs
+
+# Build dependencies (cache this layer)
+RUN cargo build --bin reticulum-core
+
+# Remove dummy files
+RUN rm -rf packages/services/reticulum/*/src/*.rs
+
+# Copy actual source code
+COPY packages/services/reticulum/core packages/services/reticulum/core
+COPY packages/services/reticulum/auth packages/services/reticulum/auth
+COPY packages/services/reticulum/hub packages/services/reticulum/hub
+COPY packages/services/reticulum/presence packages/services/reticulum/presence
+
+# Expose port
+EXPOSE 8000
+
+# Run with cargo-watch for hot reload
+# Run all reticulum services
+CMD ["cargo", "watch", "-x", "run -p reticulum-core --bin reticulum-core"]

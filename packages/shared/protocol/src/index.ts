@@ -16,7 +16,24 @@ export { MessageParser } from './parser.js';
 export type * from './types.js';
 
 // Re-export enums as values
-export { MessageType, VoiceCodec, ChatMessageType, PresenceEventType } from './types.js';
+export {
+  MessageType,
+  VoiceCodec,
+  ChatMessageType,
+  PresenceEventType,
+  PermissionLevel,
+  TrackKind,
+  SessionDescriptionType,
+  VideoCodecType
+} from './types.js';
 
 // Re-export all networking types
 export type * from './generated/networking.js';
+
+// Re-export room types (avoiding duplicates with types.ts)
+export type {
+  RoomPermissions
+} from './types.js';
+
+// Re-export media types (avoiding duplicates with types.ts)
+// All media types are already exported from types.ts

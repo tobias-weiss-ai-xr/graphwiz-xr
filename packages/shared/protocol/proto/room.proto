@@ -1,0 +1,211 @@
+syntax = "proto3";
+
+package graphwiz.room;
+
+import "core.proto";
+
+// Room management service
+service RoomService {
+  // Room CRUD operations
+  rpc CreateRoom (CreateRoomRequest) returns (CreateRoomResponse);
+  rpc GetRoom (GetRoomRequest) returns (GetRoomResponse);
+  rpc UpdateRoom (UpdateRoomRequest) returns (UpdateRoomResponse);
+  rpc DeleteRoom (DeleteRoomRequest) returns (DeleteRoomResponse);
+
+  // Room discovery
+  rpc ListRooms (ListRoomsRequest) returns (ListRoomsResponse);
+  rpc SearchRooms (SearchRoomsRequest) returns (SearchRoomsResponse);
+
+  // Room membership
+  rpc JoinRoom (JoinRoomRequest) returns (JoinRoomResponse);
+  rpc LeaveRoom (LeaveRoomRequest) returns (LeaveRoomResponse);
+  rpc KickUser (KickUserRequest) returns (KickUserResponse);
+
+  // Room settings and permissions
+  rpc UpdateSettings (UpdateSettingsRequest) returns (UpdateSettingsResponse);
+  rpc GetPermissions (GetPermissionsRequest) returns (GetPermissionsResponse);
+  rpc UpdatePermissions (UpdatePermissionsRequest) returns (UpdatePermissionsResponse);
+}
+
+// Room creation
+message CreateRoomRequest {
+  string name = 1;
+  string description = 2;
+  RoomSettings settings = 3;
+  string creator_id = 4;
+}
+
+message CreateRoomResponse {
+  bool success = 1;
+  string room_id = 2;
+  graphwiz.core.Room room = 3;
+}
+
+// Room retrieval
+message GetRoomRequest {
+  string room_id = 1;
+}
+
+message GetRoomResponse {
+  bool success = 1;
+  graphwiz.core.Room room = 2;
+}
+
+// Room update
+message UpdateRoomRequest {
+  string room_id = 1;
+  string name = 2;
+  string description = 3;
+  RoomSettings settings = 4;
+}
+
+message UpdateRoomResponse {
+  bool success = 1;
+  graphwiz.core.Room room = 2;
+}
+
+// Room deletion
+message DeleteRoomRequest {
+  string room_id = 1;
+  string requester_id = 2;
+}
+
+message DeleteRoomResponse {
+  bool success = 1;
+}
+
+// Room listing
+message ListRoomsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  RoomFilter filter = 3;
+}
+
+message ListRoomsResponse {
+  repeated graphwiz.core.Room rooms = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// Room search
+message SearchRoomsRequest {
+  string query = 1;
+  int32 limit = 2;
+  RoomFilter filter = 3;
+}
+
+message SearchRoomsResponse {
+  repeated graphwiz.core.Room rooms = 1;
+  int32 total_results = 2;
+}
+
+// Room join
+message JoinRoomRequest {
+  string room_id = 1;
+  string user_id = 2;
+  string auth_token = 3;
+  string display_name = 4;
+}
+
+message JoinRoomResponse {
+  bool success = 1;
+  string room_id = 2;
+  graphwiz.core.Room room = 3;
+  repeated graphwiz.core.PlayerSnapshot initial_players = 4;
+}
+
+// Room leave
+message LeaveRoomRequest {
+  string room_id = 1;
+  string user_id = 2;
+}
+
+message LeaveRoomResponse {
+  bool success = 1;
+}
+
+// User management
+message KickUserRequest {
+  string room_id = 1;
+  string requester_id = 2;
+  string target_user_id = 3;
+  string reason = 4;
+}
+
+message KickUserResponse {
+  bool success = 1;
+}
+
+// Settings management
+message UpdateSettingsRequest {
+  string room_id = 1;
+  string requester_id = 2;
+  RoomSettings settings = 3;
+}
+
+message UpdateSettingsResponse {
+  bool success = 1;
+  RoomSettings settings = 2;
+}
+
+// Permissions
+message GetPermissionsRequest {
+  string room_id = 1;
+  string user_id = 2;
+}
+
+message GetPermissionsResponse {
+  bool success = 1;
+  RoomPermissions permissions = 2;
+}
+
+message UpdatePermissionsRequest {
+  string room_id = 1;
+  string requester_id = 2;
+  RoomPermissions permissions = 3;
+}
+
+message UpdatePermissionsResponse {
+  bool success = 1;
+  RoomPermissions permissions = 2;
+}
+
+// Room settings
+message RoomSettings {
+  int32 max_players = 1;
+  bool is_public = 2;
+  bool allow_voice_chat = 3;
+  bool allow_text_chat = 4;
+  bool allow_invites = 5;
+  int32 max_spectators = 6;
+  bool require_approval = 7;
+  string password_hash = 8;
+  map<string, string> custom_settings = 9;
+}
+
+// Room permissions
+message RoomPermissions {
+  repeated string owner_ids = 1;
+  repeated string moderator_ids = 2;
+  repeated string banned_user_ids = 3;
+  repeated string allowed_user_ids = 4;
+  PermissionLevel default_permission = 5;
+}
+
+enum PermissionLevel {
+  NONE = 0;
+  VIEWER = 1;
+  PARTICIPANT = 2;
+  MODERATOR = 3;
+  OWNER = 4;
+}
+
+// Room filter for listing/searching
+message RoomFilter {
+  bool public_only = 1;
+  int32 min_players = 2;
+  int32 max_players = 3;
+  bool has_voice_chat = 4;
+  bool has_text_chat = 5;
+  repeated string tags = 6;
+}

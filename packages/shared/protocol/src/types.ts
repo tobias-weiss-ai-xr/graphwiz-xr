@@ -155,3 +155,114 @@ export interface PlayerSnapshot {
   position: Vector3;
   rotation: Quaternion;
 }
+
+// Room types
+export interface Room {
+  id: string;
+  name: string;
+  description: string;
+  settings: RoomSettings;
+  createdAt: number;
+  updatedAt: number;
+  creatorId: string;
+  currentPlayers: number;
+  tags: string[];
+  metadata: Record<string, string>;
+}
+
+export interface RoomSettings {
+  maxPlayers: number;
+  isPublic: boolean;
+  allowVoiceChat: boolean;
+  allowTextChat: boolean;
+  allowInvites: boolean;
+  maxSpectators: number;
+  requireApproval: boolean;
+  passwordHash?: string;
+  customSettings?: Record<string, string>;
+}
+
+export enum PermissionLevel {
+  NONE = 0,
+  VIEWER = 1,
+  PARTICIPANT = 2,
+  MODERATOR = 3,
+  OWNER = 4,
+}
+
+export interface RoomPermissions {
+  ownerIds: string[];
+  moderatorIds: string[];
+  bannedUserIds: string[];
+  allowedUserIds: string[];
+  defaultPermission: PermissionLevel;
+}
+
+// User types
+export interface User {
+  id: string;
+  username: string;
+  displayName: string;
+  email: string;
+  avatarUrl: string;
+  createdAt: number;
+  metadata: Record<string, string>;
+}
+
+export interface AuthToken {
+  token: string;
+  userId: string;
+  expiresAt: number;
+  permissions: string[];
+}
+
+// Media types
+export enum TrackKind {
+  AUDIO = 0,
+  VIDEO = 1,
+  DATA = 2,
+}
+
+export enum SessionDescriptionType {
+  OFFER = 0,
+  ANSWER = 1,
+  PRANSWER = 2,
+  ROLLBACK = 3,
+}
+
+export enum VideoCodecType {
+  VP8 = 0,
+  VP9 = 1,
+  H264 = 2,
+  AV1 = 3,
+}
+
+export interface MediaConstraints {
+  audio: boolean;
+  video: boolean;
+  data: boolean;
+  audioConstraints?: AudioConstraints;
+  videoConstraints?: VideoConstraints;
+}
+
+export interface AudioConstraints {
+  echoCancellation: boolean;
+  noiseSuppression: boolean;
+  autoGainControl: boolean;
+  sampleRate: number;
+  channelCount: number;
+}
+
+export interface VideoConstraints {
+  maxWidth: number;
+  maxHeight: number;
+  maxFrameRate: number;
+  preferredCodec: VideoCodecType;
+}
+
+export interface IceCandidate {
+  candidate: string;
+  sdpMid: string;
+  sdpMLineIndex: number;
+  usernameFragment: string;
+}

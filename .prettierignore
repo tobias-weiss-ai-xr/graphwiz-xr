@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.turbo/
+
+# Generated files
+*.generated.ts
+*.generated.js
+packages/shared/protocol/src/
+
+# Rust
+target/
+Cargo.lock
+
+# Cache
+.cache/
+.parcel-cache/
+coverage/
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+
+# Misc
+.DS_Store
+*.tgz
+
+# Environment files
+.env
+.env.*
+!.env.example

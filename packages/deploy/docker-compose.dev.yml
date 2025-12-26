@@ -1,0 +1,141 @@
+# GraphWiz-XR Development Docker Compose
+# Hot-reload enabled setup for local development
+#
+# Usage:
+#   docker-compose -f docker-compose.dev.yml up -d
+#   docker-compose -f docker-compose.dev.yml logs -f hub-client core-api
+#   docker-compose -f docker-compose.dev.yml down
+
+version: "3.9"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: graphwiz-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DATABASE_USER:-graphwiz}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-graphwiz_dev}
+      POSTGRES_DB: ${DATABASE_NAME:-graphwiz}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./compose/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-graphwiz}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - graphwiz-dev-network
+
+  # Redis for caching, sessions, and presence
+  redis:
+    image: redis:7-alpine
+    container_name: graphwiz-redis-dev
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_dev_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - graphwiz-dev-network
+
+  # Adminer - Database Management UI
+  adminer:
+    image: adminer:latest
+    container_name: graphwiz-adminer-dev
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: nette
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - graphwiz-dev-network
+
+  # Core API Service (Rust with hot reload)
+  core-api:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/Dockerfile.core-dev
+    container_name: graphwiz-core-api-dev
+    restart: unless-stopped
+    environment:
+      RUST_LOG: ${RUST_LOG:-debug}
+      DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
+      REDIS_URL: redis://redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8000
+      JWT_SECRET: ${JWT_SECRET:-graphwiz_dev_secret_change_in_production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../packages/services/reticulum:/app/packages/services/reticulum:cached
+      - ../../packages/shared/protocol:/app/packages/shared/protocol:cached
+      - cargo_registry:/usr/local/cargo/registry
+      - cargo_git:/usr/local/cargo/git
+      - target_cache:/app/target
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - graphwiz-dev-network
+    privileged: true
+
+  # Hub Client (Vite dev server with hot reload)
+  hub-client:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/Dockerfile.hub-client-dev
+    container_name: graphwiz-hub-client-dev
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+      VITE_HUB_API_URL: http://localhost:8002
+      VITE_PRESENCE_WS_URL: ws://localhost:8003
+      VITE_SFU_URL: http://localhost:8004
+      NODE_ENV: development
+    ports:
+      - "${HUB_CLIENT_PORT:-5173}:5173"
+    volumes:
+      - ../../packages/clients/hub-client:/app:cached
+      - hub_client_node_modules:/app/node_modules
+      - /app/.turbo
+    depends_on:
+      - core-api
+    networks:
+      - graphwiz-dev-network
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+  cargo_registry:
+    driver: local
+  cargo_git:
+    driver: local
+  target_cache:
+    driver: local
+  hub_client_node_modules:
+    driver: local
+
+networks:
+  graphwiz-dev-network:
+    driver: bridge

@@ -11,6 +11,12 @@ pub mod generated {
         pub mod networking {
             include!(concat!(env!("OUT_DIR"), "/graphwiz.networking.rs"));
         }
+        pub mod room {
+            include!(concat!(env!("OUT_DIR"), "/graphwiz.room.rs"));
+        }
+        pub mod media {
+            include!(concat!(env!("OUT_DIR"), "/graphwiz.media.rs"));
+        }
     }
 }
 
