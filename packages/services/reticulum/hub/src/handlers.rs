@@ -239,3 +239,116 @@ pub async fn health() -> HttpResponse {
         "service": "reticulum-hub"
     }))
 }
+
+/// Leave a room
+pub async fn leave_room(
+    config: web::Data<Config>,
+    room_manager: web::Data<RoomManager>,
+    room_id: web::Path<String>,
+) -> HttpResponse {
+    let room_id = room_id.into_inner();
+
+    // Remove player from room
+    match room_manager.remove_player(&room_id).await {
+        Ok(_) => HttpResponse::Ok().json(serde_json::json!({
+            "room_id": room_id,
+            "message": "Successfully left room"
+        })),
+        Err(e) => {
+            log::error!("Failed to remove player: {}", e);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "internal_error",
+                "message": "Failed to leave room"
+            }))
+        }
+    }
+}
+
+/// Spawn an entity in a room
+pub async fn spawn_entity(
+    config: web::Data<Config>,
+    room_manager: web::Data<RoomManager>,
+    room_id: web::Path<String>,
+    req: web::Json<crate::room::SpawnEntityRequest>,
+) -> HttpResponse {
+    let room_id = room_id.into_inner();
+
+    match room_manager.spawn_entity(&room_id, req.into_inner()).await {
+        Ok(_) => HttpResponse::Created().json(serde_json::json!({
+            "room_id": room_id,
+            "message": "Entity spawned successfully"
+        })),
+        Err(e) => {
+            log::error!("Failed to spawn entity: {}", e);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "internal_error",
+                "message": "Failed to spawn entity"
+            }))
+        }
+    }
+}
+
+/// List all entities in a room
+pub async fn list_entities(
+    config: web::Data<Config>,
+    room_manager: web::Data<RoomManager>,
+    room_id: web::Path<String>,
+) -> HttpResponse {
+    let room_id = room_id.into_inner();
+
+    match room_manager.get_entities(&room_id).await {
+        Ok(entities) => HttpResponse::Ok().json(entities),
+        Err(e) => {
+            log::error!("Failed to list entities: {}", e);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "internal_error",
+                "message": "Failed to list entities"
+            }))
+        }
+    }
+}
+
+/// Update an entity in a room
+pub async fn update_entity(
+    config: web::Data<Config>,
+    room_manager: web::Data<RoomManager>,
+    path: web::Path<(String, String)>,
+    req: web::Json<core_models::EntityData>,
+) -> HttpResponse {
+    let (room_id, entity_id) = path.into_inner();
+
+    match room_manager.update_entity(&room_id, &entity_id, req.into_inner()).await {
+        Ok(_) => HttpResponse::Ok().json(serde_json::json!({
+            "message": "Entity updated successfully"
+        })),
+        Err(e) => {
+            log::error!("Failed to update entity: {}", e);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "internal_error",
+                "message": "Failed to update entity"
+            }))
+        }
+    }
+}
+
+/// Despawn an entity from a room
+pub async fn despawn_entity(
+    config: web::Data<Config>,
+    room_manager: web::Data<RoomManager>,
+    path: web::Path<(String, String)>,
+) -> HttpResponse {
+    let (room_id, entity_id) = path.into_inner();
+
+    match room_manager.despawn_entity(&room_id, &entity_id).await {
+        Ok(_) => HttpResponse::Ok().json(serde_json::json!({
+            "message": "Entity despawned successfully"
+        })),
+        Err(e) => {
+            log::error!("Failed to despawn entity: {}", e);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "internal_error",
+                "message": "Failed to despawn entity"
+            }))
+        }
+    }
+}

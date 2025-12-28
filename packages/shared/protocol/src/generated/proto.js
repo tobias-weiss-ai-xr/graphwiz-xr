@@ -25651,6 +25651,5664 @@ $root.graphwiz = (function() {
         return media;
     })();
 
+    graphwiz.auth = (function() {
+
+        /**
+         * Namespace auth.
+         * @memberof graphwiz
+         * @namespace
+         */
+        var auth = {};
+
+        auth.AuthService = (function() {
+
+            /**
+             * Constructs a new AuthService service.
+             * @memberof graphwiz.auth
+             * @classdesc Represents an AuthService
+             * @extends $protobuf.rpc.Service
+             * @constructor
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             */
+            function AuthService(rpcImpl, requestDelimited, responseDelimited) {
+                $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited);
+            }
+
+            (AuthService.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = AuthService;
+
+            /**
+             * Creates new AuthService service using the specified rpc implementation.
+             * @function create
+             * @memberof graphwiz.auth.AuthService
+             * @static
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             * @returns {AuthService} RPC service. Useful where requests and/or responses are streamed.
+             */
+            AuthService.create = function create(rpcImpl, requestDelimited, responseDelimited) {
+                return new this(rpcImpl, requestDelimited, responseDelimited);
+            };
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#sendMagicLink}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef SendMagicLinkCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.MagicLinkResponse} [response] MagicLinkResponse
+             */
+
+            /**
+             * Calls SendMagicLink.
+             * @function sendMagicLink
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IMagicLinkRequest} request MagicLinkRequest message or plain object
+             * @param {graphwiz.auth.AuthService.SendMagicLinkCallback} callback Node-style callback called with the error, if any, and MagicLinkResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.sendMagicLink = function sendMagicLink(request, callback) {
+                return this.rpcCall(sendMagicLink, $root.graphwiz.auth.MagicLinkRequest, $root.graphwiz.auth.MagicLinkResponse, request, callback);
+            }, "name", { value: "SendMagicLink" });
+
+            /**
+             * Calls SendMagicLink.
+             * @function sendMagicLink
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IMagicLinkRequest} request MagicLinkRequest message or plain object
+             * @returns {Promise<graphwiz.auth.MagicLinkResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#verifyMagicLink}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef VerifyMagicLinkCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.AuthResponse} [response] AuthResponse
+             */
+
+            /**
+             * Calls VerifyMagicLink.
+             * @function verifyMagicLink
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IMagicLinkVerifyRequest} request MagicLinkVerifyRequest message or plain object
+             * @param {graphwiz.auth.AuthService.VerifyMagicLinkCallback} callback Node-style callback called with the error, if any, and AuthResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.verifyMagicLink = function verifyMagicLink(request, callback) {
+                return this.rpcCall(verifyMagicLink, $root.graphwiz.auth.MagicLinkVerifyRequest, $root.graphwiz.auth.AuthResponse, request, callback);
+            }, "name", { value: "VerifyMagicLink" });
+
+            /**
+             * Calls VerifyMagicLink.
+             * @function verifyMagicLink
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IMagicLinkVerifyRequest} request MagicLinkVerifyRequest message or plain object
+             * @returns {Promise<graphwiz.auth.AuthResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#getOAuthUrl}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef GetOAuthUrlCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.OAuthUrlResponse} [response] OAuthUrlResponse
+             */
+
+            /**
+             * Calls GetOAuthUrl.
+             * @function getOAuthUrl
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IOAuthUrlRequest} request OAuthUrlRequest message or plain object
+             * @param {graphwiz.auth.AuthService.GetOAuthUrlCallback} callback Node-style callback called with the error, if any, and OAuthUrlResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.getOAuthUrl = function getOAuthUrl(request, callback) {
+                return this.rpcCall(getOAuthUrl, $root.graphwiz.auth.OAuthUrlRequest, $root.graphwiz.auth.OAuthUrlResponse, request, callback);
+            }, "name", { value: "GetOAuthUrl" });
+
+            /**
+             * Calls GetOAuthUrl.
+             * @function getOAuthUrl
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IOAuthUrlRequest} request OAuthUrlRequest message or plain object
+             * @returns {Promise<graphwiz.auth.OAuthUrlResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#oAuthCallback}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef OAuthCallbackCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.AuthResponse} [response] AuthResponse
+             */
+
+            /**
+             * Calls OAuthCallback.
+             * @function oAuthCallback
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IOAuthCallbackRequest} request OAuthCallbackRequest message or plain object
+             * @param {graphwiz.auth.AuthService.OAuthCallbackCallback} callback Node-style callback called with the error, if any, and AuthResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.oAuthCallback = function oAuthCallback(request, callback) {
+                return this.rpcCall(oAuthCallback, $root.graphwiz.auth.OAuthCallbackRequest, $root.graphwiz.auth.AuthResponse, request, callback);
+            }, "name", { value: "OAuthCallback" });
+
+            /**
+             * Calls OAuthCallback.
+             * @function oAuthCallback
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IOAuthCallbackRequest} request OAuthCallbackRequest message or plain object
+             * @returns {Promise<graphwiz.auth.AuthResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#updateProfile}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef UpdateProfileCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.User} [response] User
+             */
+
+            /**
+             * Calls UpdateProfile.
+             * @function updateProfile
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IUpdateProfileRequest} request UpdateProfileRequest message or plain object
+             * @param {graphwiz.auth.AuthService.UpdateProfileCallback} callback Node-style callback called with the error, if any, and User
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.updateProfile = function updateProfile(request, callback) {
+                return this.rpcCall(updateProfile, $root.graphwiz.auth.UpdateProfileRequest, $root.graphwiz.auth.User, request, callback);
+            }, "name", { value: "UpdateProfile" });
+
+            /**
+             * Calls UpdateProfile.
+             * @function updateProfile
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IUpdateProfileRequest} request UpdateProfileRequest message or plain object
+             * @returns {Promise<graphwiz.auth.User>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#changePassword}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef ChangePasswordCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.Empty} [response] Empty
+             */
+
+            /**
+             * Calls ChangePassword.
+             * @function changePassword
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IChangePasswordRequest} request ChangePasswordRequest message or plain object
+             * @param {graphwiz.auth.AuthService.ChangePasswordCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.changePassword = function changePassword(request, callback) {
+                return this.rpcCall(changePassword, $root.graphwiz.auth.ChangePasswordRequest, $root.graphwiz.auth.Empty, request, callback);
+            }, "name", { value: "ChangePassword" });
+
+            /**
+             * Calls ChangePassword.
+             * @function changePassword
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IChangePasswordRequest} request ChangePasswordRequest message or plain object
+             * @returns {Promise<graphwiz.auth.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#deleteAccount}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef DeleteAccountCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.Empty} [response] Empty
+             */
+
+            /**
+             * Calls DeleteAccount.
+             * @function deleteAccount
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IDeleteAccountRequest} request DeleteAccountRequest message or plain object
+             * @param {graphwiz.auth.AuthService.DeleteAccountCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.deleteAccount = function deleteAccount(request, callback) {
+                return this.rpcCall(deleteAccount, $root.graphwiz.auth.DeleteAccountRequest, $root.graphwiz.auth.Empty, request, callback);
+            }, "name", { value: "DeleteAccount" });
+
+            /**
+             * Calls DeleteAccount.
+             * @function deleteAccount
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IDeleteAccountRequest} request DeleteAccountRequest message or plain object
+             * @returns {Promise<graphwiz.auth.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#grantRole}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef GrantRoleCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.Empty} [response] Empty
+             */
+
+            /**
+             * Calls GrantRole.
+             * @function grantRole
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IGrantRoleRequest} request GrantRoleRequest message or plain object
+             * @param {graphwiz.auth.AuthService.GrantRoleCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.grantRole = function grantRole(request, callback) {
+                return this.rpcCall(grantRole, $root.graphwiz.auth.GrantRoleRequest, $root.graphwiz.auth.Empty, request, callback);
+            }, "name", { value: "GrantRole" });
+
+            /**
+             * Calls GrantRole.
+             * @function grantRole
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IGrantRoleRequest} request GrantRoleRequest message or plain object
+             * @returns {Promise<graphwiz.auth.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#revokeRole}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef RevokeRoleCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.Empty} [response] Empty
+             */
+
+            /**
+             * Calls RevokeRole.
+             * @function revokeRole
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IRevokeRoleRequest} request RevokeRoleRequest message or plain object
+             * @param {graphwiz.auth.AuthService.RevokeRoleCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.revokeRole = function revokeRole(request, callback) {
+                return this.rpcCall(revokeRole, $root.graphwiz.auth.RevokeRoleRequest, $root.graphwiz.auth.Empty, request, callback);
+            }, "name", { value: "RevokeRole" });
+
+            /**
+             * Calls RevokeRole.
+             * @function revokeRole
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IRevokeRoleRequest} request RevokeRoleRequest message or plain object
+             * @returns {Promise<graphwiz.auth.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#logout}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef LogoutCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.Empty} [response] Empty
+             */
+
+            /**
+             * Calls Logout.
+             * @function logout
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.ILogoutRequest} request LogoutRequest message or plain object
+             * @param {graphwiz.auth.AuthService.LogoutCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.logout = function logout(request, callback) {
+                return this.rpcCall(logout, $root.graphwiz.auth.LogoutRequest, $root.graphwiz.auth.Empty, request, callback);
+            }, "name", { value: "Logout" });
+
+            /**
+             * Calls Logout.
+             * @function logout
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.ILogoutRequest} request LogoutRequest message or plain object
+             * @returns {Promise<graphwiz.auth.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#refreshToken}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef RefreshTokenCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.AuthResponse} [response] AuthResponse
+             */
+
+            /**
+             * Calls RefreshToken.
+             * @function refreshToken
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IRefreshTokenRequest} request RefreshTokenRequest message or plain object
+             * @param {graphwiz.auth.AuthService.RefreshTokenCallback} callback Node-style callback called with the error, if any, and AuthResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.refreshToken = function refreshToken(request, callback) {
+                return this.rpcCall(refreshToken, $root.graphwiz.auth.RefreshTokenRequest, $root.graphwiz.auth.AuthResponse, request, callback);
+            }, "name", { value: "RefreshToken" });
+
+            /**
+             * Calls RefreshToken.
+             * @function refreshToken
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IRefreshTokenRequest} request RefreshTokenRequest message or plain object
+             * @returns {Promise<graphwiz.auth.AuthResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#getActiveSessions}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef GetActiveSessionsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.GetActiveSessionsResponse} [response] GetActiveSessionsResponse
+             */
+
+            /**
+             * Calls GetActiveSessions.
+             * @function getActiveSessions
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IGetActiveSessionsRequest} request GetActiveSessionsRequest message or plain object
+             * @param {graphwiz.auth.AuthService.GetActiveSessionsCallback} callback Node-style callback called with the error, if any, and GetActiveSessionsResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.getActiveSessions = function getActiveSessions(request, callback) {
+                return this.rpcCall(getActiveSessions, $root.graphwiz.auth.GetActiveSessionsRequest, $root.graphwiz.auth.GetActiveSessionsResponse, request, callback);
+            }, "name", { value: "GetActiveSessions" });
+
+            /**
+             * Calls GetActiveSessions.
+             * @function getActiveSessions
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IGetActiveSessionsRequest} request GetActiveSessionsRequest message or plain object
+             * @returns {Promise<graphwiz.auth.GetActiveSessionsResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#revokeSession}.
+             * @memberof graphwiz.auth.AuthService
+             * @typedef RevokeSessionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {graphwiz.auth.Empty} [response] Empty
+             */
+
+            /**
+             * Calls RevokeSession.
+             * @function revokeSession
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IRevokeSessionRequest} request RevokeSessionRequest message or plain object
+             * @param {graphwiz.auth.AuthService.RevokeSessionCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(AuthService.prototype.revokeSession = function revokeSession(request, callback) {
+                return this.rpcCall(revokeSession, $root.graphwiz.auth.RevokeSessionRequest, $root.graphwiz.auth.Empty, request, callback);
+            }, "name", { value: "RevokeSession" });
+
+            /**
+             * Calls RevokeSession.
+             * @function revokeSession
+             * @memberof graphwiz.auth.AuthService
+             * @instance
+             * @param {graphwiz.auth.IRevokeSessionRequest} request RevokeSessionRequest message or plain object
+             * @returns {Promise<graphwiz.auth.Empty>} Promise
+             * @variation 2
+             */
+
+            return AuthService;
+        })();
+
+        /**
+         * OAuthProvider enum.
+         * @name graphwiz.auth.OAuthProvider
+         * @enum {number}
+         * @property {number} UNKNOWN_PROVIDER=0 UNKNOWN_PROVIDER value
+         * @property {number} GITHUB=1 GITHUB value
+         * @property {number} GOOGLE=2 GOOGLE value
+         * @property {number} DISCORD=3 DISCORD value
+         */
+        auth.OAuthProvider = (function() {
+            var valuesById = {}, values = Object.create(valuesById);
+            values[valuesById[0] = "UNKNOWN_PROVIDER"] = 0;
+            values[valuesById[1] = "GITHUB"] = 1;
+            values[valuesById[2] = "GOOGLE"] = 2;
+            values[valuesById[3] = "DISCORD"] = 3;
+            return values;
+        })();
+
+        /**
+         * Role enum.
+         * @name graphwiz.auth.Role
+         * @enum {number}
+         * @property {number} UNKNOWN_ROLE=0 UNKNOWN_ROLE value
+         * @property {number} USER=1 USER value
+         * @property {number} MODERATOR=2 MODERATOR value
+         * @property {number} ADMIN=3 ADMIN value
+         */
+        auth.Role = (function() {
+            var valuesById = {}, values = Object.create(valuesById);
+            values[valuesById[0] = "UNKNOWN_ROLE"] = 0;
+            values[valuesById[1] = "USER"] = 1;
+            values[valuesById[2] = "MODERATOR"] = 2;
+            values[valuesById[3] = "ADMIN"] = 3;
+            return values;
+        })();
+
+        auth.MagicLinkRequest = (function() {
+
+            /**
+             * Properties of a MagicLinkRequest.
+             * @memberof graphwiz.auth
+             * @interface IMagicLinkRequest
+             * @property {string|null} [email] MagicLinkRequest email
+             * @property {string|null} [redirectUrl] MagicLinkRequest redirectUrl
+             */
+
+            /**
+             * Constructs a new MagicLinkRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a MagicLinkRequest.
+             * @implements IMagicLinkRequest
+             * @constructor
+             * @param {graphwiz.auth.IMagicLinkRequest=} [properties] Properties to set
+             */
+            function MagicLinkRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MagicLinkRequest email.
+             * @member {string} email
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @instance
+             */
+            MagicLinkRequest.prototype.email = "";
+
+            /**
+             * MagicLinkRequest redirectUrl.
+             * @member {string} redirectUrl
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @instance
+             */
+            MagicLinkRequest.prototype.redirectUrl = "";
+
+            /**
+             * Creates a new MagicLinkRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {graphwiz.auth.IMagicLinkRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.MagicLinkRequest} MagicLinkRequest instance
+             */
+            MagicLinkRequest.create = function create(properties) {
+                return new MagicLinkRequest(properties);
+            };
+
+            /**
+             * Encodes the specified MagicLinkRequest message. Does not implicitly {@link graphwiz.auth.MagicLinkRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {graphwiz.auth.IMagicLinkRequest} message MagicLinkRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MagicLinkRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.email);
+                if (message.redirectUrl != null && Object.hasOwnProperty.call(message, "redirectUrl"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.redirectUrl);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MagicLinkRequest message, length delimited. Does not implicitly {@link graphwiz.auth.MagicLinkRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {graphwiz.auth.IMagicLinkRequest} message MagicLinkRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MagicLinkRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MagicLinkRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.MagicLinkRequest} MagicLinkRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MagicLinkRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.email = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.redirectUrl = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MagicLinkRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.MagicLinkRequest} MagicLinkRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MagicLinkRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MagicLinkRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MagicLinkRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
+                        return "email: string expected";
+                if (message.redirectUrl != null && message.hasOwnProperty("redirectUrl"))
+                    if (!$util.isString(message.redirectUrl))
+                        return "redirectUrl: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a MagicLinkRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.MagicLinkRequest} MagicLinkRequest
+             */
+            MagicLinkRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.MagicLinkRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.MagicLinkRequest();
+                if (object.email != null)
+                    message.email = String(object.email);
+                if (object.redirectUrl != null)
+                    message.redirectUrl = String(object.redirectUrl);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MagicLinkRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {graphwiz.auth.MagicLinkRequest} message MagicLinkRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MagicLinkRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.email = "";
+                    object.redirectUrl = "";
+                }
+                if (message.email != null && message.hasOwnProperty("email"))
+                    object.email = message.email;
+                if (message.redirectUrl != null && message.hasOwnProperty("redirectUrl"))
+                    object.redirectUrl = message.redirectUrl;
+                return object;
+            };
+
+            /**
+             * Converts this MagicLinkRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MagicLinkRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MagicLinkRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.MagicLinkRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MagicLinkRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.MagicLinkRequest";
+            };
+
+            return MagicLinkRequest;
+        })();
+
+        auth.MagicLinkResponse = (function() {
+
+            /**
+             * Properties of a MagicLinkResponse.
+             * @memberof graphwiz.auth
+             * @interface IMagicLinkResponse
+             * @property {boolean|null} [success] MagicLinkResponse success
+             * @property {string|null} [message] MagicLinkResponse message
+             */
+
+            /**
+             * Constructs a new MagicLinkResponse.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a MagicLinkResponse.
+             * @implements IMagicLinkResponse
+             * @constructor
+             * @param {graphwiz.auth.IMagicLinkResponse=} [properties] Properties to set
+             */
+            function MagicLinkResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MagicLinkResponse success.
+             * @member {boolean} success
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @instance
+             */
+            MagicLinkResponse.prototype.success = false;
+
+            /**
+             * MagicLinkResponse message.
+             * @member {string} message
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @instance
+             */
+            MagicLinkResponse.prototype.message = "";
+
+            /**
+             * Creates a new MagicLinkResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {graphwiz.auth.IMagicLinkResponse=} [properties] Properties to set
+             * @returns {graphwiz.auth.MagicLinkResponse} MagicLinkResponse instance
+             */
+            MagicLinkResponse.create = function create(properties) {
+                return new MagicLinkResponse(properties);
+            };
+
+            /**
+             * Encodes the specified MagicLinkResponse message. Does not implicitly {@link graphwiz.auth.MagicLinkResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {graphwiz.auth.IMagicLinkResponse} message MagicLinkResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MagicLinkResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.message != null && Object.hasOwnProperty.call(message, "message"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.message);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MagicLinkResponse message, length delimited. Does not implicitly {@link graphwiz.auth.MagicLinkResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {graphwiz.auth.IMagicLinkResponse} message MagicLinkResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MagicLinkResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MagicLinkResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.MagicLinkResponse} MagicLinkResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MagicLinkResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.message = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MagicLinkResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.MagicLinkResponse} MagicLinkResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MagicLinkResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MagicLinkResponse message.
+             * @function verify
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MagicLinkResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.message != null && message.hasOwnProperty("message"))
+                    if (!$util.isString(message.message))
+                        return "message: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a MagicLinkResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.MagicLinkResponse} MagicLinkResponse
+             */
+            MagicLinkResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.MagicLinkResponse)
+                    return object;
+                var message = new $root.graphwiz.auth.MagicLinkResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.message != null)
+                    message.message = String(object.message);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MagicLinkResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {graphwiz.auth.MagicLinkResponse} message MagicLinkResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MagicLinkResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.message = "";
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.message != null && message.hasOwnProperty("message"))
+                    object.message = message.message;
+                return object;
+            };
+
+            /**
+             * Converts this MagicLinkResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MagicLinkResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MagicLinkResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.MagicLinkResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MagicLinkResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.MagicLinkResponse";
+            };
+
+            return MagicLinkResponse;
+        })();
+
+        auth.MagicLinkVerifyRequest = (function() {
+
+            /**
+             * Properties of a MagicLinkVerifyRequest.
+             * @memberof graphwiz.auth
+             * @interface IMagicLinkVerifyRequest
+             * @property {string|null} [token] MagicLinkVerifyRequest token
+             */
+
+            /**
+             * Constructs a new MagicLinkVerifyRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a MagicLinkVerifyRequest.
+             * @implements IMagicLinkVerifyRequest
+             * @constructor
+             * @param {graphwiz.auth.IMagicLinkVerifyRequest=} [properties] Properties to set
+             */
+            function MagicLinkVerifyRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MagicLinkVerifyRequest token.
+             * @member {string} token
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @instance
+             */
+            MagicLinkVerifyRequest.prototype.token = "";
+
+            /**
+             * Creates a new MagicLinkVerifyRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {graphwiz.auth.IMagicLinkVerifyRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.MagicLinkVerifyRequest} MagicLinkVerifyRequest instance
+             */
+            MagicLinkVerifyRequest.create = function create(properties) {
+                return new MagicLinkVerifyRequest(properties);
+            };
+
+            /**
+             * Encodes the specified MagicLinkVerifyRequest message. Does not implicitly {@link graphwiz.auth.MagicLinkVerifyRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {graphwiz.auth.IMagicLinkVerifyRequest} message MagicLinkVerifyRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MagicLinkVerifyRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.token != null && Object.hasOwnProperty.call(message, "token"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.token);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MagicLinkVerifyRequest message, length delimited. Does not implicitly {@link graphwiz.auth.MagicLinkVerifyRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {graphwiz.auth.IMagicLinkVerifyRequest} message MagicLinkVerifyRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MagicLinkVerifyRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MagicLinkVerifyRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.MagicLinkVerifyRequest} MagicLinkVerifyRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MagicLinkVerifyRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkVerifyRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.token = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MagicLinkVerifyRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.MagicLinkVerifyRequest} MagicLinkVerifyRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MagicLinkVerifyRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MagicLinkVerifyRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MagicLinkVerifyRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.token != null && message.hasOwnProperty("token"))
+                    if (!$util.isString(message.token))
+                        return "token: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a MagicLinkVerifyRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.MagicLinkVerifyRequest} MagicLinkVerifyRequest
+             */
+            MagicLinkVerifyRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.MagicLinkVerifyRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.MagicLinkVerifyRequest();
+                if (object.token != null)
+                    message.token = String(object.token);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MagicLinkVerifyRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {graphwiz.auth.MagicLinkVerifyRequest} message MagicLinkVerifyRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MagicLinkVerifyRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.token = "";
+                if (message.token != null && message.hasOwnProperty("token"))
+                    object.token = message.token;
+                return object;
+            };
+
+            /**
+             * Converts this MagicLinkVerifyRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MagicLinkVerifyRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MagicLinkVerifyRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.MagicLinkVerifyRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MagicLinkVerifyRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.MagicLinkVerifyRequest";
+            };
+
+            return MagicLinkVerifyRequest;
+        })();
+
+        auth.OAuthUrlRequest = (function() {
+
+            /**
+             * Properties of a OAuthUrlRequest.
+             * @memberof graphwiz.auth
+             * @interface IOAuthUrlRequest
+             * @property {graphwiz.auth.OAuthProvider|null} [provider] OAuthUrlRequest provider
+             * @property {string|null} [redirectUri] OAuthUrlRequest redirectUri
+             * @property {string|null} [state] OAuthUrlRequest state
+             */
+
+            /**
+             * Constructs a new OAuthUrlRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a OAuthUrlRequest.
+             * @implements IOAuthUrlRequest
+             * @constructor
+             * @param {graphwiz.auth.IOAuthUrlRequest=} [properties] Properties to set
+             */
+            function OAuthUrlRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * OAuthUrlRequest provider.
+             * @member {graphwiz.auth.OAuthProvider} provider
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @instance
+             */
+            OAuthUrlRequest.prototype.provider = 0;
+
+            /**
+             * OAuthUrlRequest redirectUri.
+             * @member {string} redirectUri
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @instance
+             */
+            OAuthUrlRequest.prototype.redirectUri = "";
+
+            /**
+             * OAuthUrlRequest state.
+             * @member {string} state
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @instance
+             */
+            OAuthUrlRequest.prototype.state = "";
+
+            /**
+             * Creates a new OAuthUrlRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {graphwiz.auth.IOAuthUrlRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.OAuthUrlRequest} OAuthUrlRequest instance
+             */
+            OAuthUrlRequest.create = function create(properties) {
+                return new OAuthUrlRequest(properties);
+            };
+
+            /**
+             * Encodes the specified OAuthUrlRequest message. Does not implicitly {@link graphwiz.auth.OAuthUrlRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {graphwiz.auth.IOAuthUrlRequest} message OAuthUrlRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            OAuthUrlRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.provider != null && Object.hasOwnProperty.call(message, "provider"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.provider);
+                if (message.redirectUri != null && Object.hasOwnProperty.call(message, "redirectUri"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.redirectUri);
+                if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.state);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified OAuthUrlRequest message, length delimited. Does not implicitly {@link graphwiz.auth.OAuthUrlRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {graphwiz.auth.IOAuthUrlRequest} message OAuthUrlRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            OAuthUrlRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a OAuthUrlRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.OAuthUrlRequest} OAuthUrlRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            OAuthUrlRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthUrlRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.provider = reader.int32();
+                            break;
+                        }
+                    case 2: {
+                            message.redirectUri = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.state = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a OAuthUrlRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.OAuthUrlRequest} OAuthUrlRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            OAuthUrlRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a OAuthUrlRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            OAuthUrlRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.provider != null && message.hasOwnProperty("provider"))
+                    switch (message.provider) {
+                    default:
+                        return "provider: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                if (message.redirectUri != null && message.hasOwnProperty("redirectUri"))
+                    if (!$util.isString(message.redirectUri))
+                        return "redirectUri: string expected";
+                if (message.state != null && message.hasOwnProperty("state"))
+                    if (!$util.isString(message.state))
+                        return "state: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a OAuthUrlRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.OAuthUrlRequest} OAuthUrlRequest
+             */
+            OAuthUrlRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.OAuthUrlRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.OAuthUrlRequest();
+                switch (object.provider) {
+                default:
+                    if (typeof object.provider === "number") {
+                        message.provider = object.provider;
+                        break;
+                    }
+                    break;
+                case "UNKNOWN_PROVIDER":
+                case 0:
+                    message.provider = 0;
+                    break;
+                case "GITHUB":
+                case 1:
+                    message.provider = 1;
+                    break;
+                case "GOOGLE":
+                case 2:
+                    message.provider = 2;
+                    break;
+                case "DISCORD":
+                case 3:
+                    message.provider = 3;
+                    break;
+                }
+                if (object.redirectUri != null)
+                    message.redirectUri = String(object.redirectUri);
+                if (object.state != null)
+                    message.state = String(object.state);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a OAuthUrlRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {graphwiz.auth.OAuthUrlRequest} message OAuthUrlRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            OAuthUrlRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.provider = options.enums === String ? "UNKNOWN_PROVIDER" : 0;
+                    object.redirectUri = "";
+                    object.state = "";
+                }
+                if (message.provider != null && message.hasOwnProperty("provider"))
+                    object.provider = options.enums === String ? $root.graphwiz.auth.OAuthProvider[message.provider] === undefined ? message.provider : $root.graphwiz.auth.OAuthProvider[message.provider] : message.provider;
+                if (message.redirectUri != null && message.hasOwnProperty("redirectUri"))
+                    object.redirectUri = message.redirectUri;
+                if (message.state != null && message.hasOwnProperty("state"))
+                    object.state = message.state;
+                return object;
+            };
+
+            /**
+             * Converts this OAuthUrlRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            OAuthUrlRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for OAuthUrlRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.OAuthUrlRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            OAuthUrlRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.OAuthUrlRequest";
+            };
+
+            return OAuthUrlRequest;
+        })();
+
+        auth.OAuthUrlResponse = (function() {
+
+            /**
+             * Properties of a OAuthUrlResponse.
+             * @memberof graphwiz.auth
+             * @interface IOAuthUrlResponse
+             * @property {string|null} [url] OAuthUrlResponse url
+             * @property {string|null} [state] OAuthUrlResponse state
+             */
+
+            /**
+             * Constructs a new OAuthUrlResponse.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a OAuthUrlResponse.
+             * @implements IOAuthUrlResponse
+             * @constructor
+             * @param {graphwiz.auth.IOAuthUrlResponse=} [properties] Properties to set
+             */
+            function OAuthUrlResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * OAuthUrlResponse url.
+             * @member {string} url
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @instance
+             */
+            OAuthUrlResponse.prototype.url = "";
+
+            /**
+             * OAuthUrlResponse state.
+             * @member {string} state
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @instance
+             */
+            OAuthUrlResponse.prototype.state = "";
+
+            /**
+             * Creates a new OAuthUrlResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {graphwiz.auth.IOAuthUrlResponse=} [properties] Properties to set
+             * @returns {graphwiz.auth.OAuthUrlResponse} OAuthUrlResponse instance
+             */
+            OAuthUrlResponse.create = function create(properties) {
+                return new OAuthUrlResponse(properties);
+            };
+
+            /**
+             * Encodes the specified OAuthUrlResponse message. Does not implicitly {@link graphwiz.auth.OAuthUrlResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {graphwiz.auth.IOAuthUrlResponse} message OAuthUrlResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            OAuthUrlResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.url != null && Object.hasOwnProperty.call(message, "url"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.url);
+                if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.state);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified OAuthUrlResponse message, length delimited. Does not implicitly {@link graphwiz.auth.OAuthUrlResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {graphwiz.auth.IOAuthUrlResponse} message OAuthUrlResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            OAuthUrlResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a OAuthUrlResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.OAuthUrlResponse} OAuthUrlResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            OAuthUrlResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthUrlResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.url = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.state = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a OAuthUrlResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.OAuthUrlResponse} OAuthUrlResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            OAuthUrlResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a OAuthUrlResponse message.
+             * @function verify
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            OAuthUrlResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.url != null && message.hasOwnProperty("url"))
+                    if (!$util.isString(message.url))
+                        return "url: string expected";
+                if (message.state != null && message.hasOwnProperty("state"))
+                    if (!$util.isString(message.state))
+                        return "state: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a OAuthUrlResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.OAuthUrlResponse} OAuthUrlResponse
+             */
+            OAuthUrlResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.OAuthUrlResponse)
+                    return object;
+                var message = new $root.graphwiz.auth.OAuthUrlResponse();
+                if (object.url != null)
+                    message.url = String(object.url);
+                if (object.state != null)
+                    message.state = String(object.state);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a OAuthUrlResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {graphwiz.auth.OAuthUrlResponse} message OAuthUrlResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            OAuthUrlResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.url = "";
+                    object.state = "";
+                }
+                if (message.url != null && message.hasOwnProperty("url"))
+                    object.url = message.url;
+                if (message.state != null && message.hasOwnProperty("state"))
+                    object.state = message.state;
+                return object;
+            };
+
+            /**
+             * Converts this OAuthUrlResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            OAuthUrlResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for OAuthUrlResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.OAuthUrlResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            OAuthUrlResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.OAuthUrlResponse";
+            };
+
+            return OAuthUrlResponse;
+        })();
+
+        auth.OAuthCallbackRequest = (function() {
+
+            /**
+             * Properties of a OAuthCallbackRequest.
+             * @memberof graphwiz.auth
+             * @interface IOAuthCallbackRequest
+             * @property {graphwiz.auth.OAuthProvider|null} [provider] OAuthCallbackRequest provider
+             * @property {string|null} [code] OAuthCallbackRequest code
+             * @property {string|null} [state] OAuthCallbackRequest state
+             * @property {string|null} [redirectUri] OAuthCallbackRequest redirectUri
+             */
+
+            /**
+             * Constructs a new OAuthCallbackRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a OAuthCallbackRequest.
+             * @implements IOAuthCallbackRequest
+             * @constructor
+             * @param {graphwiz.auth.IOAuthCallbackRequest=} [properties] Properties to set
+             */
+            function OAuthCallbackRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * OAuthCallbackRequest provider.
+             * @member {graphwiz.auth.OAuthProvider} provider
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @instance
+             */
+            OAuthCallbackRequest.prototype.provider = 0;
+
+            /**
+             * OAuthCallbackRequest code.
+             * @member {string} code
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @instance
+             */
+            OAuthCallbackRequest.prototype.code = "";
+
+            /**
+             * OAuthCallbackRequest state.
+             * @member {string} state
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @instance
+             */
+            OAuthCallbackRequest.prototype.state = "";
+
+            /**
+             * OAuthCallbackRequest redirectUri.
+             * @member {string} redirectUri
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @instance
+             */
+            OAuthCallbackRequest.prototype.redirectUri = "";
+
+            /**
+             * Creates a new OAuthCallbackRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {graphwiz.auth.IOAuthCallbackRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.OAuthCallbackRequest} OAuthCallbackRequest instance
+             */
+            OAuthCallbackRequest.create = function create(properties) {
+                return new OAuthCallbackRequest(properties);
+            };
+
+            /**
+             * Encodes the specified OAuthCallbackRequest message. Does not implicitly {@link graphwiz.auth.OAuthCallbackRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {graphwiz.auth.IOAuthCallbackRequest} message OAuthCallbackRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            OAuthCallbackRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.provider != null && Object.hasOwnProperty.call(message, "provider"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.provider);
+                if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.code);
+                if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.state);
+                if (message.redirectUri != null && Object.hasOwnProperty.call(message, "redirectUri"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.redirectUri);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified OAuthCallbackRequest message, length delimited. Does not implicitly {@link graphwiz.auth.OAuthCallbackRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {graphwiz.auth.IOAuthCallbackRequest} message OAuthCallbackRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            OAuthCallbackRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a OAuthCallbackRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.OAuthCallbackRequest} OAuthCallbackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            OAuthCallbackRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthCallbackRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.provider = reader.int32();
+                            break;
+                        }
+                    case 2: {
+                            message.code = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.state = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.redirectUri = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a OAuthCallbackRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.OAuthCallbackRequest} OAuthCallbackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            OAuthCallbackRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a OAuthCallbackRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            OAuthCallbackRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.provider != null && message.hasOwnProperty("provider"))
+                    switch (message.provider) {
+                    default:
+                        return "provider: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                if (message.code != null && message.hasOwnProperty("code"))
+                    if (!$util.isString(message.code))
+                        return "code: string expected";
+                if (message.state != null && message.hasOwnProperty("state"))
+                    if (!$util.isString(message.state))
+                        return "state: string expected";
+                if (message.redirectUri != null && message.hasOwnProperty("redirectUri"))
+                    if (!$util.isString(message.redirectUri))
+                        return "redirectUri: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a OAuthCallbackRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.OAuthCallbackRequest} OAuthCallbackRequest
+             */
+            OAuthCallbackRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.OAuthCallbackRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.OAuthCallbackRequest();
+                switch (object.provider) {
+                default:
+                    if (typeof object.provider === "number") {
+                        message.provider = object.provider;
+                        break;
+                    }
+                    break;
+                case "UNKNOWN_PROVIDER":
+                case 0:
+                    message.provider = 0;
+                    break;
+                case "GITHUB":
+                case 1:
+                    message.provider = 1;
+                    break;
+                case "GOOGLE":
+                case 2:
+                    message.provider = 2;
+                    break;
+                case "DISCORD":
+                case 3:
+                    message.provider = 3;
+                    break;
+                }
+                if (object.code != null)
+                    message.code = String(object.code);
+                if (object.state != null)
+                    message.state = String(object.state);
+                if (object.redirectUri != null)
+                    message.redirectUri = String(object.redirectUri);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a OAuthCallbackRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {graphwiz.auth.OAuthCallbackRequest} message OAuthCallbackRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            OAuthCallbackRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.provider = options.enums === String ? "UNKNOWN_PROVIDER" : 0;
+                    object.code = "";
+                    object.state = "";
+                    object.redirectUri = "";
+                }
+                if (message.provider != null && message.hasOwnProperty("provider"))
+                    object.provider = options.enums === String ? $root.graphwiz.auth.OAuthProvider[message.provider] === undefined ? message.provider : $root.graphwiz.auth.OAuthProvider[message.provider] : message.provider;
+                if (message.code != null && message.hasOwnProperty("code"))
+                    object.code = message.code;
+                if (message.state != null && message.hasOwnProperty("state"))
+                    object.state = message.state;
+                if (message.redirectUri != null && message.hasOwnProperty("redirectUri"))
+                    object.redirectUri = message.redirectUri;
+                return object;
+            };
+
+            /**
+             * Converts this OAuthCallbackRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            OAuthCallbackRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for OAuthCallbackRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.OAuthCallbackRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            OAuthCallbackRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.OAuthCallbackRequest";
+            };
+
+            return OAuthCallbackRequest;
+        })();
+
+        auth.UpdateProfileRequest = (function() {
+
+            /**
+             * Properties of an UpdateProfileRequest.
+             * @memberof graphwiz.auth
+             * @interface IUpdateProfileRequest
+             * @property {string|null} [displayName] UpdateProfileRequest displayName
+             * @property {string|null} [bio] UpdateProfileRequest bio
+             * @property {string|null} [avatarUrl] UpdateProfileRequest avatarUrl
+             */
+
+            /**
+             * Constructs a new UpdateProfileRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents an UpdateProfileRequest.
+             * @implements IUpdateProfileRequest
+             * @constructor
+             * @param {graphwiz.auth.IUpdateProfileRequest=} [properties] Properties to set
+             */
+            function UpdateProfileRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * UpdateProfileRequest displayName.
+             * @member {string} displayName
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @instance
+             */
+            UpdateProfileRequest.prototype.displayName = "";
+
+            /**
+             * UpdateProfileRequest bio.
+             * @member {string} bio
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @instance
+             */
+            UpdateProfileRequest.prototype.bio = "";
+
+            /**
+             * UpdateProfileRequest avatarUrl.
+             * @member {string} avatarUrl
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @instance
+             */
+            UpdateProfileRequest.prototype.avatarUrl = "";
+
+            /**
+             * Creates a new UpdateProfileRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {graphwiz.auth.IUpdateProfileRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.UpdateProfileRequest} UpdateProfileRequest instance
+             */
+            UpdateProfileRequest.create = function create(properties) {
+                return new UpdateProfileRequest(properties);
+            };
+
+            /**
+             * Encodes the specified UpdateProfileRequest message. Does not implicitly {@link graphwiz.auth.UpdateProfileRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {graphwiz.auth.IUpdateProfileRequest} message UpdateProfileRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateProfileRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.displayName);
+                if (message.bio != null && Object.hasOwnProperty.call(message, "bio"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.bio);
+                if (message.avatarUrl != null && Object.hasOwnProperty.call(message, "avatarUrl"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.avatarUrl);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified UpdateProfileRequest message, length delimited. Does not implicitly {@link graphwiz.auth.UpdateProfileRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {graphwiz.auth.IUpdateProfileRequest} message UpdateProfileRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            UpdateProfileRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an UpdateProfileRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.UpdateProfileRequest} UpdateProfileRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateProfileRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.UpdateProfileRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.displayName = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.bio = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.avatarUrl = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an UpdateProfileRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.UpdateProfileRequest} UpdateProfileRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UpdateProfileRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an UpdateProfileRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            UpdateProfileRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    if (!$util.isString(message.displayName))
+                        return "displayName: string expected";
+                if (message.bio != null && message.hasOwnProperty("bio"))
+                    if (!$util.isString(message.bio))
+                        return "bio: string expected";
+                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
+                    if (!$util.isString(message.avatarUrl))
+                        return "avatarUrl: string expected";
+                return null;
+            };
+
+            /**
+             * Creates an UpdateProfileRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.UpdateProfileRequest} UpdateProfileRequest
+             */
+            UpdateProfileRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.UpdateProfileRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.UpdateProfileRequest();
+                if (object.displayName != null)
+                    message.displayName = String(object.displayName);
+                if (object.bio != null)
+                    message.bio = String(object.bio);
+                if (object.avatarUrl != null)
+                    message.avatarUrl = String(object.avatarUrl);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an UpdateProfileRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {graphwiz.auth.UpdateProfileRequest} message UpdateProfileRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            UpdateProfileRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.displayName = "";
+                    object.bio = "";
+                    object.avatarUrl = "";
+                }
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    object.displayName = message.displayName;
+                if (message.bio != null && message.hasOwnProperty("bio"))
+                    object.bio = message.bio;
+                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
+                    object.avatarUrl = message.avatarUrl;
+                return object;
+            };
+
+            /**
+             * Converts this UpdateProfileRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            UpdateProfileRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for UpdateProfileRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.UpdateProfileRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            UpdateProfileRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.UpdateProfileRequest";
+            };
+
+            return UpdateProfileRequest;
+        })();
+
+        auth.ChangePasswordRequest = (function() {
+
+            /**
+             * Properties of a ChangePasswordRequest.
+             * @memberof graphwiz.auth
+             * @interface IChangePasswordRequest
+             * @property {string|null} [oldPassword] ChangePasswordRequest oldPassword
+             * @property {string|null} [newPassword] ChangePasswordRequest newPassword
+             */
+
+            /**
+             * Constructs a new ChangePasswordRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a ChangePasswordRequest.
+             * @implements IChangePasswordRequest
+             * @constructor
+             * @param {graphwiz.auth.IChangePasswordRequest=} [properties] Properties to set
+             */
+            function ChangePasswordRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ChangePasswordRequest oldPassword.
+             * @member {string} oldPassword
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @instance
+             */
+            ChangePasswordRequest.prototype.oldPassword = "";
+
+            /**
+             * ChangePasswordRequest newPassword.
+             * @member {string} newPassword
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @instance
+             */
+            ChangePasswordRequest.prototype.newPassword = "";
+
+            /**
+             * Creates a new ChangePasswordRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {graphwiz.auth.IChangePasswordRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.ChangePasswordRequest} ChangePasswordRequest instance
+             */
+            ChangePasswordRequest.create = function create(properties) {
+                return new ChangePasswordRequest(properties);
+            };
+
+            /**
+             * Encodes the specified ChangePasswordRequest message. Does not implicitly {@link graphwiz.auth.ChangePasswordRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {graphwiz.auth.IChangePasswordRequest} message ChangePasswordRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ChangePasswordRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.oldPassword != null && Object.hasOwnProperty.call(message, "oldPassword"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.oldPassword);
+                if (message.newPassword != null && Object.hasOwnProperty.call(message, "newPassword"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.newPassword);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ChangePasswordRequest message, length delimited. Does not implicitly {@link graphwiz.auth.ChangePasswordRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {graphwiz.auth.IChangePasswordRequest} message ChangePasswordRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ChangePasswordRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ChangePasswordRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.ChangePasswordRequest} ChangePasswordRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ChangePasswordRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.ChangePasswordRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.oldPassword = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.newPassword = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ChangePasswordRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.ChangePasswordRequest} ChangePasswordRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ChangePasswordRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ChangePasswordRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ChangePasswordRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.oldPassword != null && message.hasOwnProperty("oldPassword"))
+                    if (!$util.isString(message.oldPassword))
+                        return "oldPassword: string expected";
+                if (message.newPassword != null && message.hasOwnProperty("newPassword"))
+                    if (!$util.isString(message.newPassword))
+                        return "newPassword: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a ChangePasswordRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.ChangePasswordRequest} ChangePasswordRequest
+             */
+            ChangePasswordRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.ChangePasswordRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.ChangePasswordRequest();
+                if (object.oldPassword != null)
+                    message.oldPassword = String(object.oldPassword);
+                if (object.newPassword != null)
+                    message.newPassword = String(object.newPassword);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ChangePasswordRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {graphwiz.auth.ChangePasswordRequest} message ChangePasswordRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ChangePasswordRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.oldPassword = "";
+                    object.newPassword = "";
+                }
+                if (message.oldPassword != null && message.hasOwnProperty("oldPassword"))
+                    object.oldPassword = message.oldPassword;
+                if (message.newPassword != null && message.hasOwnProperty("newPassword"))
+                    object.newPassword = message.newPassword;
+                return object;
+            };
+
+            /**
+             * Converts this ChangePasswordRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ChangePasswordRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for ChangePasswordRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.ChangePasswordRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            ChangePasswordRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.ChangePasswordRequest";
+            };
+
+            return ChangePasswordRequest;
+        })();
+
+        auth.DeleteAccountRequest = (function() {
+
+            /**
+             * Properties of a DeleteAccountRequest.
+             * @memberof graphwiz.auth
+             * @interface IDeleteAccountRequest
+             * @property {string|null} [password] DeleteAccountRequest password
+             */
+
+            /**
+             * Constructs a new DeleteAccountRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a DeleteAccountRequest.
+             * @implements IDeleteAccountRequest
+             * @constructor
+             * @param {graphwiz.auth.IDeleteAccountRequest=} [properties] Properties to set
+             */
+            function DeleteAccountRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * DeleteAccountRequest password.
+             * @member {string} password
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @instance
+             */
+            DeleteAccountRequest.prototype.password = "";
+
+            /**
+             * Creates a new DeleteAccountRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {graphwiz.auth.IDeleteAccountRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.DeleteAccountRequest} DeleteAccountRequest instance
+             */
+            DeleteAccountRequest.create = function create(properties) {
+                return new DeleteAccountRequest(properties);
+            };
+
+            /**
+             * Encodes the specified DeleteAccountRequest message. Does not implicitly {@link graphwiz.auth.DeleteAccountRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {graphwiz.auth.IDeleteAccountRequest} message DeleteAccountRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeleteAccountRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.password != null && Object.hasOwnProperty.call(message, "password"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.password);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified DeleteAccountRequest message, length delimited. Does not implicitly {@link graphwiz.auth.DeleteAccountRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {graphwiz.auth.IDeleteAccountRequest} message DeleteAccountRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeleteAccountRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a DeleteAccountRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.DeleteAccountRequest} DeleteAccountRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeleteAccountRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.DeleteAccountRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.password = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a DeleteAccountRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.DeleteAccountRequest} DeleteAccountRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeleteAccountRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a DeleteAccountRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            DeleteAccountRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.password != null && message.hasOwnProperty("password"))
+                    if (!$util.isString(message.password))
+                        return "password: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a DeleteAccountRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.DeleteAccountRequest} DeleteAccountRequest
+             */
+            DeleteAccountRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.DeleteAccountRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.DeleteAccountRequest();
+                if (object.password != null)
+                    message.password = String(object.password);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a DeleteAccountRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {graphwiz.auth.DeleteAccountRequest} message DeleteAccountRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            DeleteAccountRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.password = "";
+                if (message.password != null && message.hasOwnProperty("password"))
+                    object.password = message.password;
+                return object;
+            };
+
+            /**
+             * Converts this DeleteAccountRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            DeleteAccountRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for DeleteAccountRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.DeleteAccountRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            DeleteAccountRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.DeleteAccountRequest";
+            };
+
+            return DeleteAccountRequest;
+        })();
+
+        auth.GrantRoleRequest = (function() {
+
+            /**
+             * Properties of a GrantRoleRequest.
+             * @memberof graphwiz.auth
+             * @interface IGrantRoleRequest
+             * @property {string|null} [userId] GrantRoleRequest userId
+             * @property {graphwiz.auth.Role|null} [role] GrantRoleRequest role
+             */
+
+            /**
+             * Constructs a new GrantRoleRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a GrantRoleRequest.
+             * @implements IGrantRoleRequest
+             * @constructor
+             * @param {graphwiz.auth.IGrantRoleRequest=} [properties] Properties to set
+             */
+            function GrantRoleRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * GrantRoleRequest userId.
+             * @member {string} userId
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @instance
+             */
+            GrantRoleRequest.prototype.userId = "";
+
+            /**
+             * GrantRoleRequest role.
+             * @member {graphwiz.auth.Role} role
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @instance
+             */
+            GrantRoleRequest.prototype.role = 0;
+
+            /**
+             * Creates a new GrantRoleRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {graphwiz.auth.IGrantRoleRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.GrantRoleRequest} GrantRoleRequest instance
+             */
+            GrantRoleRequest.create = function create(properties) {
+                return new GrantRoleRequest(properties);
+            };
+
+            /**
+             * Encodes the specified GrantRoleRequest message. Does not implicitly {@link graphwiz.auth.GrantRoleRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {graphwiz.auth.IGrantRoleRequest} message GrantRoleRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GrantRoleRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.userId);
+                if (message.role != null && Object.hasOwnProperty.call(message, "role"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.role);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified GrantRoleRequest message, length delimited. Does not implicitly {@link graphwiz.auth.GrantRoleRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {graphwiz.auth.IGrantRoleRequest} message GrantRoleRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GrantRoleRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a GrantRoleRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.GrantRoleRequest} GrantRoleRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GrantRoleRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GrantRoleRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.role = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a GrantRoleRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.GrantRoleRequest} GrantRoleRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GrantRoleRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a GrantRoleRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            GrantRoleRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                if (message.role != null && message.hasOwnProperty("role"))
+                    switch (message.role) {
+                    default:
+                        return "role: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                return null;
+            };
+
+            /**
+             * Creates a GrantRoleRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.GrantRoleRequest} GrantRoleRequest
+             */
+            GrantRoleRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.GrantRoleRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.GrantRoleRequest();
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                switch (object.role) {
+                default:
+                    if (typeof object.role === "number") {
+                        message.role = object.role;
+                        break;
+                    }
+                    break;
+                case "UNKNOWN_ROLE":
+                case 0:
+                    message.role = 0;
+                    break;
+                case "USER":
+                case 1:
+                    message.role = 1;
+                    break;
+                case "MODERATOR":
+                case 2:
+                    message.role = 2;
+                    break;
+                case "ADMIN":
+                case 3:
+                    message.role = 3;
+                    break;
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a GrantRoleRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {graphwiz.auth.GrantRoleRequest} message GrantRoleRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            GrantRoleRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.userId = "";
+                    object.role = options.enums === String ? "UNKNOWN_ROLE" : 0;
+                }
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                if (message.role != null && message.hasOwnProperty("role"))
+                    object.role = options.enums === String ? $root.graphwiz.auth.Role[message.role] === undefined ? message.role : $root.graphwiz.auth.Role[message.role] : message.role;
+                return object;
+            };
+
+            /**
+             * Converts this GrantRoleRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            GrantRoleRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for GrantRoleRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.GrantRoleRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            GrantRoleRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.GrantRoleRequest";
+            };
+
+            return GrantRoleRequest;
+        })();
+
+        auth.RevokeRoleRequest = (function() {
+
+            /**
+             * Properties of a RevokeRoleRequest.
+             * @memberof graphwiz.auth
+             * @interface IRevokeRoleRequest
+             * @property {string|null} [userId] RevokeRoleRequest userId
+             * @property {graphwiz.auth.Role|null} [role] RevokeRoleRequest role
+             */
+
+            /**
+             * Constructs a new RevokeRoleRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a RevokeRoleRequest.
+             * @implements IRevokeRoleRequest
+             * @constructor
+             * @param {graphwiz.auth.IRevokeRoleRequest=} [properties] Properties to set
+             */
+            function RevokeRoleRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RevokeRoleRequest userId.
+             * @member {string} userId
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @instance
+             */
+            RevokeRoleRequest.prototype.userId = "";
+
+            /**
+             * RevokeRoleRequest role.
+             * @member {graphwiz.auth.Role} role
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @instance
+             */
+            RevokeRoleRequest.prototype.role = 0;
+
+            /**
+             * Creates a new RevokeRoleRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {graphwiz.auth.IRevokeRoleRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.RevokeRoleRequest} RevokeRoleRequest instance
+             */
+            RevokeRoleRequest.create = function create(properties) {
+                return new RevokeRoleRequest(properties);
+            };
+
+            /**
+             * Encodes the specified RevokeRoleRequest message. Does not implicitly {@link graphwiz.auth.RevokeRoleRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {graphwiz.auth.IRevokeRoleRequest} message RevokeRoleRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RevokeRoleRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.userId);
+                if (message.role != null && Object.hasOwnProperty.call(message, "role"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.role);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RevokeRoleRequest message, length delimited. Does not implicitly {@link graphwiz.auth.RevokeRoleRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {graphwiz.auth.IRevokeRoleRequest} message RevokeRoleRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RevokeRoleRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RevokeRoleRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.RevokeRoleRequest} RevokeRoleRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RevokeRoleRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RevokeRoleRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.role = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RevokeRoleRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.RevokeRoleRequest} RevokeRoleRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RevokeRoleRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RevokeRoleRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RevokeRoleRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                if (message.role != null && message.hasOwnProperty("role"))
+                    switch (message.role) {
+                    default:
+                        return "role: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                return null;
+            };
+
+            /**
+             * Creates a RevokeRoleRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.RevokeRoleRequest} RevokeRoleRequest
+             */
+            RevokeRoleRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.RevokeRoleRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.RevokeRoleRequest();
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                switch (object.role) {
+                default:
+                    if (typeof object.role === "number") {
+                        message.role = object.role;
+                        break;
+                    }
+                    break;
+                case "UNKNOWN_ROLE":
+                case 0:
+                    message.role = 0;
+                    break;
+                case "USER":
+                case 1:
+                    message.role = 1;
+                    break;
+                case "MODERATOR":
+                case 2:
+                    message.role = 2;
+                    break;
+                case "ADMIN":
+                case 3:
+                    message.role = 3;
+                    break;
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RevokeRoleRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {graphwiz.auth.RevokeRoleRequest} message RevokeRoleRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RevokeRoleRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.userId = "";
+                    object.role = options.enums === String ? "UNKNOWN_ROLE" : 0;
+                }
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                if (message.role != null && message.hasOwnProperty("role"))
+                    object.role = options.enums === String ? $root.graphwiz.auth.Role[message.role] === undefined ? message.role : $root.graphwiz.auth.Role[message.role] : message.role;
+                return object;
+            };
+
+            /**
+             * Converts this RevokeRoleRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RevokeRoleRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RevokeRoleRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.RevokeRoleRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RevokeRoleRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.RevokeRoleRequest";
+            };
+
+            return RevokeRoleRequest;
+        })();
+
+        auth.LogoutRequest = (function() {
+
+            /**
+             * Properties of a LogoutRequest.
+             * @memberof graphwiz.auth
+             * @interface ILogoutRequest
+             * @property {string|null} [refreshToken] LogoutRequest refreshToken
+             * @property {boolean|null} [allDevices] LogoutRequest allDevices
+             */
+
+            /**
+             * Constructs a new LogoutRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a LogoutRequest.
+             * @implements ILogoutRequest
+             * @constructor
+             * @param {graphwiz.auth.ILogoutRequest=} [properties] Properties to set
+             */
+            function LogoutRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * LogoutRequest refreshToken.
+             * @member {string} refreshToken
+             * @memberof graphwiz.auth.LogoutRequest
+             * @instance
+             */
+            LogoutRequest.prototype.refreshToken = "";
+
+            /**
+             * LogoutRequest allDevices.
+             * @member {boolean} allDevices
+             * @memberof graphwiz.auth.LogoutRequest
+             * @instance
+             */
+            LogoutRequest.prototype.allDevices = false;
+
+            /**
+             * Creates a new LogoutRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {graphwiz.auth.ILogoutRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.LogoutRequest} LogoutRequest instance
+             */
+            LogoutRequest.create = function create(properties) {
+                return new LogoutRequest(properties);
+            };
+
+            /**
+             * Encodes the specified LogoutRequest message. Does not implicitly {@link graphwiz.auth.LogoutRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {graphwiz.auth.ILogoutRequest} message LogoutRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LogoutRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.refreshToken != null && Object.hasOwnProperty.call(message, "refreshToken"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.refreshToken);
+                if (message.allDevices != null && Object.hasOwnProperty.call(message, "allDevices"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.allDevices);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified LogoutRequest message, length delimited. Does not implicitly {@link graphwiz.auth.LogoutRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {graphwiz.auth.ILogoutRequest} message LogoutRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LogoutRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a LogoutRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.LogoutRequest} LogoutRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LogoutRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.LogoutRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.refreshToken = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.allDevices = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a LogoutRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.LogoutRequest} LogoutRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LogoutRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a LogoutRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            LogoutRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.refreshToken != null && message.hasOwnProperty("refreshToken"))
+                    if (!$util.isString(message.refreshToken))
+                        return "refreshToken: string expected";
+                if (message.allDevices != null && message.hasOwnProperty("allDevices"))
+                    if (typeof message.allDevices !== "boolean")
+                        return "allDevices: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a LogoutRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.LogoutRequest} LogoutRequest
+             */
+            LogoutRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.LogoutRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.LogoutRequest();
+                if (object.refreshToken != null)
+                    message.refreshToken = String(object.refreshToken);
+                if (object.allDevices != null)
+                    message.allDevices = Boolean(object.allDevices);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a LogoutRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {graphwiz.auth.LogoutRequest} message LogoutRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            LogoutRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.refreshToken = "";
+                    object.allDevices = false;
+                }
+                if (message.refreshToken != null && message.hasOwnProperty("refreshToken"))
+                    object.refreshToken = message.refreshToken;
+                if (message.allDevices != null && message.hasOwnProperty("allDevices"))
+                    object.allDevices = message.allDevices;
+                return object;
+            };
+
+            /**
+             * Converts this LogoutRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.LogoutRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            LogoutRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for LogoutRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.LogoutRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            LogoutRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.LogoutRequest";
+            };
+
+            return LogoutRequest;
+        })();
+
+        auth.RefreshTokenRequest = (function() {
+
+            /**
+             * Properties of a RefreshTokenRequest.
+             * @memberof graphwiz.auth
+             * @interface IRefreshTokenRequest
+             * @property {string|null} [refreshToken] RefreshTokenRequest refreshToken
+             */
+
+            /**
+             * Constructs a new RefreshTokenRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a RefreshTokenRequest.
+             * @implements IRefreshTokenRequest
+             * @constructor
+             * @param {graphwiz.auth.IRefreshTokenRequest=} [properties] Properties to set
+             */
+            function RefreshTokenRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RefreshTokenRequest refreshToken.
+             * @member {string} refreshToken
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @instance
+             */
+            RefreshTokenRequest.prototype.refreshToken = "";
+
+            /**
+             * Creates a new RefreshTokenRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {graphwiz.auth.IRefreshTokenRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.RefreshTokenRequest} RefreshTokenRequest instance
+             */
+            RefreshTokenRequest.create = function create(properties) {
+                return new RefreshTokenRequest(properties);
+            };
+
+            /**
+             * Encodes the specified RefreshTokenRequest message. Does not implicitly {@link graphwiz.auth.RefreshTokenRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {graphwiz.auth.IRefreshTokenRequest} message RefreshTokenRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RefreshTokenRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.refreshToken != null && Object.hasOwnProperty.call(message, "refreshToken"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.refreshToken);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RefreshTokenRequest message, length delimited. Does not implicitly {@link graphwiz.auth.RefreshTokenRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {graphwiz.auth.IRefreshTokenRequest} message RefreshTokenRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RefreshTokenRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RefreshTokenRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.RefreshTokenRequest} RefreshTokenRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RefreshTokenRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RefreshTokenRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.refreshToken = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RefreshTokenRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.RefreshTokenRequest} RefreshTokenRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RefreshTokenRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RefreshTokenRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RefreshTokenRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.refreshToken != null && message.hasOwnProperty("refreshToken"))
+                    if (!$util.isString(message.refreshToken))
+                        return "refreshToken: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a RefreshTokenRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.RefreshTokenRequest} RefreshTokenRequest
+             */
+            RefreshTokenRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.RefreshTokenRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.RefreshTokenRequest();
+                if (object.refreshToken != null)
+                    message.refreshToken = String(object.refreshToken);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RefreshTokenRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {graphwiz.auth.RefreshTokenRequest} message RefreshTokenRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RefreshTokenRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.refreshToken = "";
+                if (message.refreshToken != null && message.hasOwnProperty("refreshToken"))
+                    object.refreshToken = message.refreshToken;
+                return object;
+            };
+
+            /**
+             * Converts this RefreshTokenRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RefreshTokenRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RefreshTokenRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.RefreshTokenRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RefreshTokenRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.RefreshTokenRequest";
+            };
+
+            return RefreshTokenRequest;
+        })();
+
+        auth.GetActiveSessionsRequest = (function() {
+
+            /**
+             * Properties of a GetActiveSessionsRequest.
+             * @memberof graphwiz.auth
+             * @interface IGetActiveSessionsRequest
+             * @property {number|null} [limit] GetActiveSessionsRequest limit
+             * @property {number|null} [offset] GetActiveSessionsRequest offset
+             */
+
+            /**
+             * Constructs a new GetActiveSessionsRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a GetActiveSessionsRequest.
+             * @implements IGetActiveSessionsRequest
+             * @constructor
+             * @param {graphwiz.auth.IGetActiveSessionsRequest=} [properties] Properties to set
+             */
+            function GetActiveSessionsRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * GetActiveSessionsRequest limit.
+             * @member {number} limit
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @instance
+             */
+            GetActiveSessionsRequest.prototype.limit = 0;
+
+            /**
+             * GetActiveSessionsRequest offset.
+             * @member {number} offset
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @instance
+             */
+            GetActiveSessionsRequest.prototype.offset = 0;
+
+            /**
+             * Creates a new GetActiveSessionsRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {graphwiz.auth.IGetActiveSessionsRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.GetActiveSessionsRequest} GetActiveSessionsRequest instance
+             */
+            GetActiveSessionsRequest.create = function create(properties) {
+                return new GetActiveSessionsRequest(properties);
+            };
+
+            /**
+             * Encodes the specified GetActiveSessionsRequest message. Does not implicitly {@link graphwiz.auth.GetActiveSessionsRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {graphwiz.auth.IGetActiveSessionsRequest} message GetActiveSessionsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetActiveSessionsRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.limit != null && Object.hasOwnProperty.call(message, "limit"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.limit);
+                if (message.offset != null && Object.hasOwnProperty.call(message, "offset"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.offset);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified GetActiveSessionsRequest message, length delimited. Does not implicitly {@link graphwiz.auth.GetActiveSessionsRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {graphwiz.auth.IGetActiveSessionsRequest} message GetActiveSessionsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetActiveSessionsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a GetActiveSessionsRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.GetActiveSessionsRequest} GetActiveSessionsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetActiveSessionsRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GetActiveSessionsRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.limit = reader.int32();
+                            break;
+                        }
+                    case 2: {
+                            message.offset = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a GetActiveSessionsRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.GetActiveSessionsRequest} GetActiveSessionsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetActiveSessionsRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a GetActiveSessionsRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            GetActiveSessionsRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.limit != null && message.hasOwnProperty("limit"))
+                    if (!$util.isInteger(message.limit))
+                        return "limit: integer expected";
+                if (message.offset != null && message.hasOwnProperty("offset"))
+                    if (!$util.isInteger(message.offset))
+                        return "offset: integer expected";
+                return null;
+            };
+
+            /**
+             * Creates a GetActiveSessionsRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.GetActiveSessionsRequest} GetActiveSessionsRequest
+             */
+            GetActiveSessionsRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.GetActiveSessionsRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.GetActiveSessionsRequest();
+                if (object.limit != null)
+                    message.limit = object.limit | 0;
+                if (object.offset != null)
+                    message.offset = object.offset | 0;
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a GetActiveSessionsRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {graphwiz.auth.GetActiveSessionsRequest} message GetActiveSessionsRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            GetActiveSessionsRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.limit = 0;
+                    object.offset = 0;
+                }
+                if (message.limit != null && message.hasOwnProperty("limit"))
+                    object.limit = message.limit;
+                if (message.offset != null && message.hasOwnProperty("offset"))
+                    object.offset = message.offset;
+                return object;
+            };
+
+            /**
+             * Converts this GetActiveSessionsRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            GetActiveSessionsRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for GetActiveSessionsRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.GetActiveSessionsRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            GetActiveSessionsRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.GetActiveSessionsRequest";
+            };
+
+            return GetActiveSessionsRequest;
+        })();
+
+        auth.Session = (function() {
+
+            /**
+             * Properties of a Session.
+             * @memberof graphwiz.auth
+             * @interface ISession
+             * @property {string|null} [sessionId] Session sessionId
+             * @property {string|null} [deviceInfo] Session deviceInfo
+             * @property {string|null} [ipAddress] Session ipAddress
+             * @property {number|Long|null} [createdAt] Session createdAt
+             * @property {number|Long|null} [lastActive] Session lastActive
+             * @property {boolean|null} [isCurrent] Session isCurrent
+             */
+
+            /**
+             * Constructs a new Session.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a Session.
+             * @implements ISession
+             * @constructor
+             * @param {graphwiz.auth.ISession=} [properties] Properties to set
+             */
+            function Session(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Session sessionId.
+             * @member {string} sessionId
+             * @memberof graphwiz.auth.Session
+             * @instance
+             */
+            Session.prototype.sessionId = "";
+
+            /**
+             * Session deviceInfo.
+             * @member {string} deviceInfo
+             * @memberof graphwiz.auth.Session
+             * @instance
+             */
+            Session.prototype.deviceInfo = "";
+
+            /**
+             * Session ipAddress.
+             * @member {string} ipAddress
+             * @memberof graphwiz.auth.Session
+             * @instance
+             */
+            Session.prototype.ipAddress = "";
+
+            /**
+             * Session createdAt.
+             * @member {number|Long} createdAt
+             * @memberof graphwiz.auth.Session
+             * @instance
+             */
+            Session.prototype.createdAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Session lastActive.
+             * @member {number|Long} lastActive
+             * @memberof graphwiz.auth.Session
+             * @instance
+             */
+            Session.prototype.lastActive = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Session isCurrent.
+             * @member {boolean} isCurrent
+             * @memberof graphwiz.auth.Session
+             * @instance
+             */
+            Session.prototype.isCurrent = false;
+
+            /**
+             * Creates a new Session instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {graphwiz.auth.ISession=} [properties] Properties to set
+             * @returns {graphwiz.auth.Session} Session instance
+             */
+            Session.create = function create(properties) {
+                return new Session(properties);
+            };
+
+            /**
+             * Encodes the specified Session message. Does not implicitly {@link graphwiz.auth.Session.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {graphwiz.auth.ISession} message Session message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Session.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.sessionId);
+                if (message.deviceInfo != null && Object.hasOwnProperty.call(message, "deviceInfo"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.deviceInfo);
+                if (message.ipAddress != null && Object.hasOwnProperty.call(message, "ipAddress"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.ipAddress);
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int64(message.createdAt);
+                if (message.lastActive != null && Object.hasOwnProperty.call(message, "lastActive"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int64(message.lastActive);
+                if (message.isCurrent != null && Object.hasOwnProperty.call(message, "isCurrent"))
+                    writer.uint32(/* id 6, wireType 0 =*/48).bool(message.isCurrent);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Session message, length delimited. Does not implicitly {@link graphwiz.auth.Session.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {graphwiz.auth.ISession} message Session message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Session.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a Session message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.Session} Session
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Session.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.Session();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.sessionId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.deviceInfo = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.ipAddress = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.createdAt = reader.int64();
+                            break;
+                        }
+                    case 5: {
+                            message.lastActive = reader.int64();
+                            break;
+                        }
+                    case 6: {
+                            message.isCurrent = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a Session message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.Session} Session
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Session.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a Session message.
+             * @function verify
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Session.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.deviceInfo != null && message.hasOwnProperty("deviceInfo"))
+                    if (!$util.isString(message.deviceInfo))
+                        return "deviceInfo: string expected";
+                if (message.ipAddress != null && message.hasOwnProperty("ipAddress"))
+                    if (!$util.isString(message.ipAddress))
+                        return "ipAddress: string expected";
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    if (!$util.isInteger(message.createdAt) && !(message.createdAt && $util.isInteger(message.createdAt.low) && $util.isInteger(message.createdAt.high)))
+                        return "createdAt: integer|Long expected";
+                if (message.lastActive != null && message.hasOwnProperty("lastActive"))
+                    if (!$util.isInteger(message.lastActive) && !(message.lastActive && $util.isInteger(message.lastActive.low) && $util.isInteger(message.lastActive.high)))
+                        return "lastActive: integer|Long expected";
+                if (message.isCurrent != null && message.hasOwnProperty("isCurrent"))
+                    if (typeof message.isCurrent !== "boolean")
+                        return "isCurrent: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a Session message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.Session} Session
+             */
+            Session.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.Session)
+                    return object;
+                var message = new $root.graphwiz.auth.Session();
+                if (object.sessionId != null)
+                    message.sessionId = String(object.sessionId);
+                if (object.deviceInfo != null)
+                    message.deviceInfo = String(object.deviceInfo);
+                if (object.ipAddress != null)
+                    message.ipAddress = String(object.ipAddress);
+                if (object.createdAt != null)
+                    if ($util.Long)
+                        (message.createdAt = $util.Long.fromValue(object.createdAt)).unsigned = false;
+                    else if (typeof object.createdAt === "string")
+                        message.createdAt = parseInt(object.createdAt, 10);
+                    else if (typeof object.createdAt === "number")
+                        message.createdAt = object.createdAt;
+                    else if (typeof object.createdAt === "object")
+                        message.createdAt = new $util.LongBits(object.createdAt.low >>> 0, object.createdAt.high >>> 0).toNumber();
+                if (object.lastActive != null)
+                    if ($util.Long)
+                        (message.lastActive = $util.Long.fromValue(object.lastActive)).unsigned = false;
+                    else if (typeof object.lastActive === "string")
+                        message.lastActive = parseInt(object.lastActive, 10);
+                    else if (typeof object.lastActive === "number")
+                        message.lastActive = object.lastActive;
+                    else if (typeof object.lastActive === "object")
+                        message.lastActive = new $util.LongBits(object.lastActive.low >>> 0, object.lastActive.high >>> 0).toNumber();
+                if (object.isCurrent != null)
+                    message.isCurrent = Boolean(object.isCurrent);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a Session message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {graphwiz.auth.Session} message Session
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Session.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.sessionId = "";
+                    object.deviceInfo = "";
+                    object.ipAddress = "";
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.createdAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.createdAt = options.longs === String ? "0" : 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.lastActive = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.lastActive = options.longs === String ? "0" : 0;
+                    object.isCurrent = false;
+                }
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.deviceInfo != null && message.hasOwnProperty("deviceInfo"))
+                    object.deviceInfo = message.deviceInfo;
+                if (message.ipAddress != null && message.hasOwnProperty("ipAddress"))
+                    object.ipAddress = message.ipAddress;
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    if (typeof message.createdAt === "number")
+                        object.createdAt = options.longs === String ? String(message.createdAt) : message.createdAt;
+                    else
+                        object.createdAt = options.longs === String ? $util.Long.prototype.toString.call(message.createdAt) : options.longs === Number ? new $util.LongBits(message.createdAt.low >>> 0, message.createdAt.high >>> 0).toNumber() : message.createdAt;
+                if (message.lastActive != null && message.hasOwnProperty("lastActive"))
+                    if (typeof message.lastActive === "number")
+                        object.lastActive = options.longs === String ? String(message.lastActive) : message.lastActive;
+                    else
+                        object.lastActive = options.longs === String ? $util.Long.prototype.toString.call(message.lastActive) : options.longs === Number ? new $util.LongBits(message.lastActive.low >>> 0, message.lastActive.high >>> 0).toNumber() : message.lastActive;
+                if (message.isCurrent != null && message.hasOwnProperty("isCurrent"))
+                    object.isCurrent = message.isCurrent;
+                return object;
+            };
+
+            /**
+             * Converts this Session to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.Session
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Session.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Session
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.Session
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Session.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.Session";
+            };
+
+            return Session;
+        })();
+
+        auth.GetActiveSessionsResponse = (function() {
+
+            /**
+             * Properties of a GetActiveSessionsResponse.
+             * @memberof graphwiz.auth
+             * @interface IGetActiveSessionsResponse
+             * @property {Array.<graphwiz.auth.ISession>|null} [sessions] GetActiveSessionsResponse sessions
+             * @property {number|null} [total] GetActiveSessionsResponse total
+             */
+
+            /**
+             * Constructs a new GetActiveSessionsResponse.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a GetActiveSessionsResponse.
+             * @implements IGetActiveSessionsResponse
+             * @constructor
+             * @param {graphwiz.auth.IGetActiveSessionsResponse=} [properties] Properties to set
+             */
+            function GetActiveSessionsResponse(properties) {
+                this.sessions = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * GetActiveSessionsResponse sessions.
+             * @member {Array.<graphwiz.auth.ISession>} sessions
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @instance
+             */
+            GetActiveSessionsResponse.prototype.sessions = $util.emptyArray;
+
+            /**
+             * GetActiveSessionsResponse total.
+             * @member {number} total
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @instance
+             */
+            GetActiveSessionsResponse.prototype.total = 0;
+
+            /**
+             * Creates a new GetActiveSessionsResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {graphwiz.auth.IGetActiveSessionsResponse=} [properties] Properties to set
+             * @returns {graphwiz.auth.GetActiveSessionsResponse} GetActiveSessionsResponse instance
+             */
+            GetActiveSessionsResponse.create = function create(properties) {
+                return new GetActiveSessionsResponse(properties);
+            };
+
+            /**
+             * Encodes the specified GetActiveSessionsResponse message. Does not implicitly {@link graphwiz.auth.GetActiveSessionsResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {graphwiz.auth.IGetActiveSessionsResponse} message GetActiveSessionsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetActiveSessionsResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.sessions != null && message.sessions.length)
+                    for (var i = 0; i < message.sessions.length; ++i)
+                        $root.graphwiz.auth.Session.encode(message.sessions[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.total != null && Object.hasOwnProperty.call(message, "total"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.total);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified GetActiveSessionsResponse message, length delimited. Does not implicitly {@link graphwiz.auth.GetActiveSessionsResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {graphwiz.auth.IGetActiveSessionsResponse} message GetActiveSessionsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            GetActiveSessionsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a GetActiveSessionsResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.GetActiveSessionsResponse} GetActiveSessionsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetActiveSessionsResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GetActiveSessionsResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            if (!(message.sessions && message.sessions.length))
+                                message.sessions = [];
+                            message.sessions.push($root.graphwiz.auth.Session.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 2: {
+                            message.total = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a GetActiveSessionsResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.GetActiveSessionsResponse} GetActiveSessionsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            GetActiveSessionsResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a GetActiveSessionsResponse message.
+             * @function verify
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            GetActiveSessionsResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.sessions != null && message.hasOwnProperty("sessions")) {
+                    if (!Array.isArray(message.sessions))
+                        return "sessions: array expected";
+                    for (var i = 0; i < message.sessions.length; ++i) {
+                        var error = $root.graphwiz.auth.Session.verify(message.sessions[i]);
+                        if (error)
+                            return "sessions." + error;
+                    }
+                }
+                if (message.total != null && message.hasOwnProperty("total"))
+                    if (!$util.isInteger(message.total))
+                        return "total: integer expected";
+                return null;
+            };
+
+            /**
+             * Creates a GetActiveSessionsResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.GetActiveSessionsResponse} GetActiveSessionsResponse
+             */
+            GetActiveSessionsResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.GetActiveSessionsResponse)
+                    return object;
+                var message = new $root.graphwiz.auth.GetActiveSessionsResponse();
+                if (object.sessions) {
+                    if (!Array.isArray(object.sessions))
+                        throw TypeError(".graphwiz.auth.GetActiveSessionsResponse.sessions: array expected");
+                    message.sessions = [];
+                    for (var i = 0; i < object.sessions.length; ++i) {
+                        if (typeof object.sessions[i] !== "object")
+                            throw TypeError(".graphwiz.auth.GetActiveSessionsResponse.sessions: object expected");
+                        message.sessions[i] = $root.graphwiz.auth.Session.fromObject(object.sessions[i]);
+                    }
+                }
+                if (object.total != null)
+                    message.total = object.total | 0;
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a GetActiveSessionsResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {graphwiz.auth.GetActiveSessionsResponse} message GetActiveSessionsResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            GetActiveSessionsResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.sessions = [];
+                if (options.defaults)
+                    object.total = 0;
+                if (message.sessions && message.sessions.length) {
+                    object.sessions = [];
+                    for (var j = 0; j < message.sessions.length; ++j)
+                        object.sessions[j] = $root.graphwiz.auth.Session.toObject(message.sessions[j], options);
+                }
+                if (message.total != null && message.hasOwnProperty("total"))
+                    object.total = message.total;
+                return object;
+            };
+
+            /**
+             * Converts this GetActiveSessionsResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            GetActiveSessionsResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for GetActiveSessionsResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.GetActiveSessionsResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            GetActiveSessionsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.GetActiveSessionsResponse";
+            };
+
+            return GetActiveSessionsResponse;
+        })();
+
+        auth.RevokeSessionRequest = (function() {
+
+            /**
+             * Properties of a RevokeSessionRequest.
+             * @memberof graphwiz.auth
+             * @interface IRevokeSessionRequest
+             * @property {string|null} [sessionId] RevokeSessionRequest sessionId
+             */
+
+            /**
+             * Constructs a new RevokeSessionRequest.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a RevokeSessionRequest.
+             * @implements IRevokeSessionRequest
+             * @constructor
+             * @param {graphwiz.auth.IRevokeSessionRequest=} [properties] Properties to set
+             */
+            function RevokeSessionRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RevokeSessionRequest sessionId.
+             * @member {string} sessionId
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @instance
+             */
+            RevokeSessionRequest.prototype.sessionId = "";
+
+            /**
+             * Creates a new RevokeSessionRequest instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {graphwiz.auth.IRevokeSessionRequest=} [properties] Properties to set
+             * @returns {graphwiz.auth.RevokeSessionRequest} RevokeSessionRequest instance
+             */
+            RevokeSessionRequest.create = function create(properties) {
+                return new RevokeSessionRequest(properties);
+            };
+
+            /**
+             * Encodes the specified RevokeSessionRequest message. Does not implicitly {@link graphwiz.auth.RevokeSessionRequest.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {graphwiz.auth.IRevokeSessionRequest} message RevokeSessionRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RevokeSessionRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.sessionId);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RevokeSessionRequest message, length delimited. Does not implicitly {@link graphwiz.auth.RevokeSessionRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {graphwiz.auth.IRevokeSessionRequest} message RevokeSessionRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RevokeSessionRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RevokeSessionRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.RevokeSessionRequest} RevokeSessionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RevokeSessionRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RevokeSessionRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.sessionId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RevokeSessionRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.RevokeSessionRequest} RevokeSessionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RevokeSessionRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RevokeSessionRequest message.
+             * @function verify
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RevokeSessionRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a RevokeSessionRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.RevokeSessionRequest} RevokeSessionRequest
+             */
+            RevokeSessionRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.RevokeSessionRequest)
+                    return object;
+                var message = new $root.graphwiz.auth.RevokeSessionRequest();
+                if (object.sessionId != null)
+                    message.sessionId = String(object.sessionId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RevokeSessionRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {graphwiz.auth.RevokeSessionRequest} message RevokeSessionRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RevokeSessionRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.sessionId = "";
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    object.sessionId = message.sessionId;
+                return object;
+            };
+
+            /**
+             * Converts this RevokeSessionRequest to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RevokeSessionRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RevokeSessionRequest
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.RevokeSessionRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RevokeSessionRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.RevokeSessionRequest";
+            };
+
+            return RevokeSessionRequest;
+        })();
+
+        auth.AuthResponse = (function() {
+
+            /**
+             * Properties of an AuthResponse.
+             * @memberof graphwiz.auth
+             * @interface IAuthResponse
+             * @property {graphwiz.auth.IUser|null} [user] AuthResponse user
+             * @property {string|null} [accessToken] AuthResponse accessToken
+             * @property {string|null} [refreshToken] AuthResponse refreshToken
+             * @property {number|Long|null} [expiresAt] AuthResponse expiresAt
+             */
+
+            /**
+             * Constructs a new AuthResponse.
+             * @memberof graphwiz.auth
+             * @classdesc Represents an AuthResponse.
+             * @implements IAuthResponse
+             * @constructor
+             * @param {graphwiz.auth.IAuthResponse=} [properties] Properties to set
+             */
+            function AuthResponse(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * AuthResponse user.
+             * @member {graphwiz.auth.IUser|null|undefined} user
+             * @memberof graphwiz.auth.AuthResponse
+             * @instance
+             */
+            AuthResponse.prototype.user = null;
+
+            /**
+             * AuthResponse accessToken.
+             * @member {string} accessToken
+             * @memberof graphwiz.auth.AuthResponse
+             * @instance
+             */
+            AuthResponse.prototype.accessToken = "";
+
+            /**
+             * AuthResponse refreshToken.
+             * @member {string} refreshToken
+             * @memberof graphwiz.auth.AuthResponse
+             * @instance
+             */
+            AuthResponse.prototype.refreshToken = "";
+
+            /**
+             * AuthResponse expiresAt.
+             * @member {number|Long} expiresAt
+             * @memberof graphwiz.auth.AuthResponse
+             * @instance
+             */
+            AuthResponse.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Creates a new AuthResponse instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {graphwiz.auth.IAuthResponse=} [properties] Properties to set
+             * @returns {graphwiz.auth.AuthResponse} AuthResponse instance
+             */
+            AuthResponse.create = function create(properties) {
+                return new AuthResponse(properties);
+            };
+
+            /**
+             * Encodes the specified AuthResponse message. Does not implicitly {@link graphwiz.auth.AuthResponse.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {graphwiz.auth.IAuthResponse} message AuthResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AuthResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.user != null && Object.hasOwnProperty.call(message, "user"))
+                    $root.graphwiz.auth.User.encode(message.user, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.accessToken != null && Object.hasOwnProperty.call(message, "accessToken"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.accessToken);
+                if (message.refreshToken != null && Object.hasOwnProperty.call(message, "refreshToken"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.refreshToken);
+                if (message.expiresAt != null && Object.hasOwnProperty.call(message, "expiresAt"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int64(message.expiresAt);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified AuthResponse message, length delimited. Does not implicitly {@link graphwiz.auth.AuthResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {graphwiz.auth.IAuthResponse} message AuthResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AuthResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an AuthResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.AuthResponse} AuthResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AuthResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.AuthResponse();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.user = $root.graphwiz.auth.User.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 2: {
+                            message.accessToken = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.refreshToken = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.expiresAt = reader.int64();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an AuthResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.AuthResponse} AuthResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AuthResponse.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an AuthResponse message.
+             * @function verify
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            AuthResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.user != null && message.hasOwnProperty("user")) {
+                    var error = $root.graphwiz.auth.User.verify(message.user);
+                    if (error)
+                        return "user." + error;
+                }
+                if (message.accessToken != null && message.hasOwnProperty("accessToken"))
+                    if (!$util.isString(message.accessToken))
+                        return "accessToken: string expected";
+                if (message.refreshToken != null && message.hasOwnProperty("refreshToken"))
+                    if (!$util.isString(message.refreshToken))
+                        return "refreshToken: string expected";
+                if (message.expiresAt != null && message.hasOwnProperty("expiresAt"))
+                    if (!$util.isInteger(message.expiresAt) && !(message.expiresAt && $util.isInteger(message.expiresAt.low) && $util.isInteger(message.expiresAt.high)))
+                        return "expiresAt: integer|Long expected";
+                return null;
+            };
+
+            /**
+             * Creates an AuthResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.AuthResponse} AuthResponse
+             */
+            AuthResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.AuthResponse)
+                    return object;
+                var message = new $root.graphwiz.auth.AuthResponse();
+                if (object.user != null) {
+                    if (typeof object.user !== "object")
+                        throw TypeError(".graphwiz.auth.AuthResponse.user: object expected");
+                    message.user = $root.graphwiz.auth.User.fromObject(object.user);
+                }
+                if (object.accessToken != null)
+                    message.accessToken = String(object.accessToken);
+                if (object.refreshToken != null)
+                    message.refreshToken = String(object.refreshToken);
+                if (object.expiresAt != null)
+                    if ($util.Long)
+                        (message.expiresAt = $util.Long.fromValue(object.expiresAt)).unsigned = false;
+                    else if (typeof object.expiresAt === "string")
+                        message.expiresAt = parseInt(object.expiresAt, 10);
+                    else if (typeof object.expiresAt === "number")
+                        message.expiresAt = object.expiresAt;
+                    else if (typeof object.expiresAt === "object")
+                        message.expiresAt = new $util.LongBits(object.expiresAt.low >>> 0, object.expiresAt.high >>> 0).toNumber();
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an AuthResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {graphwiz.auth.AuthResponse} message AuthResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            AuthResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.user = null;
+                    object.accessToken = "";
+                    object.refreshToken = "";
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.expiresAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.expiresAt = options.longs === String ? "0" : 0;
+                }
+                if (message.user != null && message.hasOwnProperty("user"))
+                    object.user = $root.graphwiz.auth.User.toObject(message.user, options);
+                if (message.accessToken != null && message.hasOwnProperty("accessToken"))
+                    object.accessToken = message.accessToken;
+                if (message.refreshToken != null && message.hasOwnProperty("refreshToken"))
+                    object.refreshToken = message.refreshToken;
+                if (message.expiresAt != null && message.hasOwnProperty("expiresAt"))
+                    if (typeof message.expiresAt === "number")
+                        object.expiresAt = options.longs === String ? String(message.expiresAt) : message.expiresAt;
+                    else
+                        object.expiresAt = options.longs === String ? $util.Long.prototype.toString.call(message.expiresAt) : options.longs === Number ? new $util.LongBits(message.expiresAt.low >>> 0, message.expiresAt.high >>> 0).toNumber() : message.expiresAt;
+                return object;
+            };
+
+            /**
+             * Converts this AuthResponse to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.AuthResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            AuthResponse.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for AuthResponse
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.AuthResponse
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            AuthResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.AuthResponse";
+            };
+
+            return AuthResponse;
+        })();
+
+        auth.User = (function() {
+
+            /**
+             * Properties of a User.
+             * @memberof graphwiz.auth
+             * @interface IUser
+             * @property {string|null} [id] User id
+             * @property {string|null} [email] User email
+             * @property {string|null} [displayName] User displayName
+             * @property {string|null} [username] User username
+             * @property {string|null} [avatarUrl] User avatarUrl
+             * @property {string|null} [bio] User bio
+             * @property {graphwiz.auth.Role|null} [role] User role
+             * @property {number|Long|null} [createdAt] User createdAt
+             * @property {number|Long|null} [updatedAt] User updatedAt
+             * @property {boolean|null} [isActive] User isActive
+             * @property {Object.<string,string>|null} [metadata] User metadata
+             */
+
+            /**
+             * Constructs a new User.
+             * @memberof graphwiz.auth
+             * @classdesc Represents a User.
+             * @implements IUser
+             * @constructor
+             * @param {graphwiz.auth.IUser=} [properties] Properties to set
+             */
+            function User(properties) {
+                this.metadata = {};
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * User id.
+             * @member {string} id
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.id = "";
+
+            /**
+             * User email.
+             * @member {string} email
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.email = "";
+
+            /**
+             * User displayName.
+             * @member {string} displayName
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.displayName = "";
+
+            /**
+             * User username.
+             * @member {string} username
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.username = "";
+
+            /**
+             * User avatarUrl.
+             * @member {string} avatarUrl
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.avatarUrl = "";
+
+            /**
+             * User bio.
+             * @member {string} bio
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.bio = "";
+
+            /**
+             * User role.
+             * @member {graphwiz.auth.Role} role
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.role = 0;
+
+            /**
+             * User createdAt.
+             * @member {number|Long} createdAt
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.createdAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * User updatedAt.
+             * @member {number|Long} updatedAt
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.updatedAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * User isActive.
+             * @member {boolean} isActive
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.isActive = false;
+
+            /**
+             * User metadata.
+             * @member {Object.<string,string>} metadata
+             * @memberof graphwiz.auth.User
+             * @instance
+             */
+            User.prototype.metadata = $util.emptyObject;
+
+            /**
+             * Creates a new User instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {graphwiz.auth.IUser=} [properties] Properties to set
+             * @returns {graphwiz.auth.User} User instance
+             */
+            User.create = function create(properties) {
+                return new User(properties);
+            };
+
+            /**
+             * Encodes the specified User message. Does not implicitly {@link graphwiz.auth.User.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {graphwiz.auth.IUser} message User message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            User.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.email);
+                if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.displayName);
+                if (message.username != null && Object.hasOwnProperty.call(message, "username"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.username);
+                if (message.avatarUrl != null && Object.hasOwnProperty.call(message, "avatarUrl"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.avatarUrl);
+                if (message.bio != null && Object.hasOwnProperty.call(message, "bio"))
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.bio);
+                if (message.role != null && Object.hasOwnProperty.call(message, "role"))
+                    writer.uint32(/* id 7, wireType 0 =*/56).int32(message.role);
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
+                    writer.uint32(/* id 8, wireType 0 =*/64).int64(message.createdAt);
+                if (message.updatedAt != null && Object.hasOwnProperty.call(message, "updatedAt"))
+                    writer.uint32(/* id 9, wireType 0 =*/72).int64(message.updatedAt);
+                if (message.isActive != null && Object.hasOwnProperty.call(message, "isActive"))
+                    writer.uint32(/* id 10, wireType 0 =*/80).bool(message.isActive);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 11, wireType 2 =*/90).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified User message, length delimited. Does not implicitly {@link graphwiz.auth.User.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {graphwiz.auth.IUser} message User message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            User.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a User message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.User} User
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            User.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.User(), key, value;
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.email = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.displayName = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.username = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.avatarUrl = reader.string();
+                            break;
+                        }
+                    case 6: {
+                            message.bio = reader.string();
+                            break;
+                        }
+                    case 7: {
+                            message.role = reader.int32();
+                            break;
+                        }
+                    case 8: {
+                            message.createdAt = reader.int64();
+                            break;
+                        }
+                    case 9: {
+                            message.updatedAt = reader.int64();
+                            break;
+                        }
+                    case 10: {
+                            message.isActive = reader.bool();
+                            break;
+                        }
+                    case 11: {
+                            if (message.metadata === $util.emptyObject)
+                                message.metadata = {};
+                            var end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                var tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.metadata[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a User message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.User} User
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            User.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a User message.
+             * @function verify
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            User.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
+                        return "email: string expected";
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    if (!$util.isString(message.displayName))
+                        return "displayName: string expected";
+                if (message.username != null && message.hasOwnProperty("username"))
+                    if (!$util.isString(message.username))
+                        return "username: string expected";
+                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
+                    if (!$util.isString(message.avatarUrl))
+                        return "avatarUrl: string expected";
+                if (message.bio != null && message.hasOwnProperty("bio"))
+                    if (!$util.isString(message.bio))
+                        return "bio: string expected";
+                if (message.role != null && message.hasOwnProperty("role"))
+                    switch (message.role) {
+                    default:
+                        return "role: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    if (!$util.isInteger(message.createdAt) && !(message.createdAt && $util.isInteger(message.createdAt.low) && $util.isInteger(message.createdAt.high)))
+                        return "createdAt: integer|Long expected";
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt"))
+                    if (!$util.isInteger(message.updatedAt) && !(message.updatedAt && $util.isInteger(message.updatedAt.low) && $util.isInteger(message.updatedAt.high)))
+                        return "updatedAt: integer|Long expected";
+                if (message.isActive != null && message.hasOwnProperty("isActive"))
+                    if (typeof message.isActive !== "boolean")
+                        return "isActive: boolean expected";
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    if (!$util.isObject(message.metadata))
+                        return "metadata: object expected";
+                    var key = Object.keys(message.metadata);
+                    for (var i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.metadata[key[i]]))
+                            return "metadata: string{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a User message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.User} User
+             */
+            User.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.User)
+                    return object;
+                var message = new $root.graphwiz.auth.User();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.email != null)
+                    message.email = String(object.email);
+                if (object.displayName != null)
+                    message.displayName = String(object.displayName);
+                if (object.username != null)
+                    message.username = String(object.username);
+                if (object.avatarUrl != null)
+                    message.avatarUrl = String(object.avatarUrl);
+                if (object.bio != null)
+                    message.bio = String(object.bio);
+                switch (object.role) {
+                default:
+                    if (typeof object.role === "number") {
+                        message.role = object.role;
+                        break;
+                    }
+                    break;
+                case "UNKNOWN_ROLE":
+                case 0:
+                    message.role = 0;
+                    break;
+                case "USER":
+                case 1:
+                    message.role = 1;
+                    break;
+                case "MODERATOR":
+                case 2:
+                    message.role = 2;
+                    break;
+                case "ADMIN":
+                case 3:
+                    message.role = 3;
+                    break;
+                }
+                if (object.createdAt != null)
+                    if ($util.Long)
+                        (message.createdAt = $util.Long.fromValue(object.createdAt)).unsigned = false;
+                    else if (typeof object.createdAt === "string")
+                        message.createdAt = parseInt(object.createdAt, 10);
+                    else if (typeof object.createdAt === "number")
+                        message.createdAt = object.createdAt;
+                    else if (typeof object.createdAt === "object")
+                        message.createdAt = new $util.LongBits(object.createdAt.low >>> 0, object.createdAt.high >>> 0).toNumber();
+                if (object.updatedAt != null)
+                    if ($util.Long)
+                        (message.updatedAt = $util.Long.fromValue(object.updatedAt)).unsigned = false;
+                    else if (typeof object.updatedAt === "string")
+                        message.updatedAt = parseInt(object.updatedAt, 10);
+                    else if (typeof object.updatedAt === "number")
+                        message.updatedAt = object.updatedAt;
+                    else if (typeof object.updatedAt === "object")
+                        message.updatedAt = new $util.LongBits(object.updatedAt.low >>> 0, object.updatedAt.high >>> 0).toNumber();
+                if (object.isActive != null)
+                    message.isActive = Boolean(object.isActive);
+                if (object.metadata) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".graphwiz.auth.User.metadata: object expected");
+                    message.metadata = {};
+                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                        message.metadata[keys[i]] = String(object.metadata[keys[i]]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a User message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {graphwiz.auth.User} message User
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            User.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.objects || options.defaults)
+                    object.metadata = {};
+                if (options.defaults) {
+                    object.id = "";
+                    object.email = "";
+                    object.displayName = "";
+                    object.username = "";
+                    object.avatarUrl = "";
+                    object.bio = "";
+                    object.role = options.enums === String ? "UNKNOWN_ROLE" : 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.createdAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.createdAt = options.longs === String ? "0" : 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.updatedAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.updatedAt = options.longs === String ? "0" : 0;
+                    object.isActive = false;
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.email != null && message.hasOwnProperty("email"))
+                    object.email = message.email;
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    object.displayName = message.displayName;
+                if (message.username != null && message.hasOwnProperty("username"))
+                    object.username = message.username;
+                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
+                    object.avatarUrl = message.avatarUrl;
+                if (message.bio != null && message.hasOwnProperty("bio"))
+                    object.bio = message.bio;
+                if (message.role != null && message.hasOwnProperty("role"))
+                    object.role = options.enums === String ? $root.graphwiz.auth.Role[message.role] === undefined ? message.role : $root.graphwiz.auth.Role[message.role] : message.role;
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    if (typeof message.createdAt === "number")
+                        object.createdAt = options.longs === String ? String(message.createdAt) : message.createdAt;
+                    else
+                        object.createdAt = options.longs === String ? $util.Long.prototype.toString.call(message.createdAt) : options.longs === Number ? new $util.LongBits(message.createdAt.low >>> 0, message.createdAt.high >>> 0).toNumber() : message.createdAt;
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt"))
+                    if (typeof message.updatedAt === "number")
+                        object.updatedAt = options.longs === String ? String(message.updatedAt) : message.updatedAt;
+                    else
+                        object.updatedAt = options.longs === String ? $util.Long.prototype.toString.call(message.updatedAt) : options.longs === Number ? new $util.LongBits(message.updatedAt.low >>> 0, message.updatedAt.high >>> 0).toNumber() : message.updatedAt;
+                if (message.isActive != null && message.hasOwnProperty("isActive"))
+                    object.isActive = message.isActive;
+                var keys2;
+                if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
+                    object.metadata = {};
+                    for (var j = 0; j < keys2.length; ++j)
+                        object.metadata[keys2[j]] = message.metadata[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this User to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.User
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            User.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for User
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.User
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            User.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.User";
+            };
+
+            return User;
+        })();
+
+        auth.Empty = (function() {
+
+            /**
+             * Properties of an Empty.
+             * @memberof graphwiz.auth
+             * @interface IEmpty
+             */
+
+            /**
+             * Constructs a new Empty.
+             * @memberof graphwiz.auth
+             * @classdesc Represents an Empty.
+             * @implements IEmpty
+             * @constructor
+             * @param {graphwiz.auth.IEmpty=} [properties] Properties to set
+             */
+            function Empty(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Creates a new Empty instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {graphwiz.auth.IEmpty=} [properties] Properties to set
+             * @returns {graphwiz.auth.Empty} Empty instance
+             */
+            Empty.create = function create(properties) {
+                return new Empty(properties);
+            };
+
+            /**
+             * Encodes the specified Empty message. Does not implicitly {@link graphwiz.auth.Empty.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {graphwiz.auth.IEmpty} message Empty message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Empty.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Empty message, length delimited. Does not implicitly {@link graphwiz.auth.Empty.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {graphwiz.auth.IEmpty} message Empty message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Empty.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.auth.Empty} Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Empty.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.Empty();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.auth.Empty} Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Empty.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an Empty message.
+             * @function verify
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Empty.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                return null;
+            };
+
+            /**
+             * Creates an Empty message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.auth.Empty} Empty
+             */
+            Empty.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.auth.Empty)
+                    return object;
+                return new $root.graphwiz.auth.Empty();
+            };
+
+            /**
+             * Creates a plain object from an Empty message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {graphwiz.auth.Empty} message Empty
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Empty.toObject = function toObject() {
+                return {};
+            };
+
+            /**
+             * Converts this Empty to JSON.
+             * @function toJSON
+             * @memberof graphwiz.auth.Empty
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Empty.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Empty
+             * @function getTypeUrl
+             * @memberof graphwiz.auth.Empty
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Empty.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.auth.Empty";
+            };
+
+            return Empty;
+        })();
+
+        return auth;
+    })();
+
     return graphwiz;
 })();
 

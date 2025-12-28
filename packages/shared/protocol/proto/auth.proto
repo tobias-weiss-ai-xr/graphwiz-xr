@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package graphwiz.auth;
+
+// Authentication Service for managing user authentication and authorization
+service AuthService {
+  // Magic link authentication
+  rpc SendMagicLink(MagicLinkRequest) returns (MagicLinkResponse);
+  rpc VerifyMagicLink(MagicLinkVerifyRequest) returns (AuthResponse);
+
+  // OAuth authentication
+  rpc GetOAuthUrl(OAuthUrlRequest) returns (OAuthUrlResponse);
+  rpc OAuthCallback(OAuthCallbackRequest) returns (AuthResponse);
+
+  // Profile management
+  rpc UpdateProfile(UpdateProfileRequest) returns (User);
+  rpc ChangePassword(ChangePasswordRequest) returns (Empty);
+  rpc DeleteAccount(DeleteAccountRequest) returns (Empty);
+
+  // Role management (admin only)
+  rpc GrantRole(GrantRoleRequest) returns (Empty);
+  rpc RevokeRole(RevokeRoleRequest) returns (Empty);
+
+  // Session management
+  rpc Logout(LogoutRequest) returns (Empty);
+  rpc RefreshToken(RefreshTokenRequest) returns (AuthResponse);
+  rpc GetActiveSessions(GetActiveSessionsRequest) returns (GetActiveSessionsResponse);
+  rpc RevokeSession(RevokeSessionRequest) returns (Empty);
+}
+
+// OAuth provider enumeration
+enum OAuthProvider {
+  UNKNOWN_PROVIDER = 0;
+  GITHUB = 1;
+  GOOGLE = 2;
+  DISCORD = 3;
+}
+
+// User role enumeration
+enum Role {
+  UNKNOWN_ROLE = 0;
+  USER = 1;
+  MODERATOR = 2;
+  ADMIN = 3;
+}
+
+// Magic link authentication
+message MagicLinkRequest {
+  string email = 1;
+  string redirect_url = 2;  // Optional: where to redirect after login
+}
+
+message MagicLinkResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message MagicLinkVerifyRequest {
+  string token = 1;
+}
+
+// OAuth authentication
+message OAuthUrlRequest {
+  OAuthProvider provider = 1;
+  string redirect_uri = 2;
+  string state = 3;  // Optional: custom state for CSRF protection
+}
+
+message OAuthUrlResponse {
+  string url = 1;
+  string state = 2;
+}
+
+message OAuthCallbackRequest {
+  OAuthProvider provider = 1;
+  string code = 2;
+  string state = 3;
+  string redirect_uri = 4;
+}
+
+// Profile management
+message UpdateProfileRequest {
+  string display_name = 1;
+  string bio = 2;
+  string avatar_url = 3;
+}
+
+message ChangePasswordRequest {
+  string old_password = 1;
+  string new_password = 2;
+}
+
+message DeleteAccountRequest {
+  string password = 1;  // Required for confirmation
+}
+
+// Role management
+message GrantRoleRequest {
+  string user_id = 1;
+  Role role = 2;
+}
+
+message RevokeRoleRequest {
+  string user_id = 1;
+  Role role = 2;
+}
+
+// Session management
+message LogoutRequest {
+  string refresh_token = 1;
+  bool all_devices = 2;  // Logout from all devices
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message GetActiveSessionsRequest {
+  int32 limit = 1;  // Default: 10
+  int32 offset = 2; // Default: 0
+}
+
+message Session {
+  string session_id = 1;
+  string device_info = 2;
+  string ip_address = 3;
+  int64 created_at = 4;
+  int64 last_active = 5;
+  bool is_current = 6;
+}
+
+message GetActiveSessionsResponse {
+  repeated Session sessions = 1;
+  int32 total = 2;
+}
+
+message RevokeSessionRequest {
+  string session_id = 1;
+}
+
+// Authentication response with tokens
+message AuthResponse {
+  User user = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+  int64 expires_at = 4;
+}
+
+// User information
+message User {
+  string id = 1;
+  string email = 2;
+  string display_name = 3;
+  string username = 4;
+  string avatar_url = 5;
+  string bio = 6;
+  Role role = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
+  bool is_active = 10;
+  map<string, string> metadata = 11;
+}
+
+// Empty message for methods that don't take parameters
+message Empty {}

@@ -1,18 +1,18 @@
 //! Authentication utilities including password hashing
 
 use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
-    Argon2,
+    password_hash::{rand_core::OsRng, PasswordHash, PasswordVerifier, SaltString},
+    Argon2, PasswordHasher,
 };
 
 use crate::Error;
 
 /// Password hasher using Argon2
-pub struct PasswordHasher {
+pub struct PasswordHasherWrapper {
     argon2: Argon2<'static>,
 }
 
-impl PasswordHasher {
+impl PasswordHasherWrapper {
     /// Create a new password hasher with default parameters
     pub fn new() -> Self {
         Self {
@@ -23,8 +23,7 @@ impl PasswordHasher {
     /// Hash a password with a random salt
     pub fn hash_password(&self, password: &str) -> Result<String, Error> {
         let salt = SaltString::generate(&mut OsRng);
-        let password_hash = self
-            .argon2
+        let password_hash = Argon2::default()
             .hash_password(password.as_bytes(), &salt)
             .map_err(|e| Error::internal(format!("Failed to hash password: {}", e)))?;
 
@@ -43,7 +42,7 @@ impl PasswordHasher {
     }
 }
 
-impl Default for PasswordHasher {
+impl Default for PasswordHasherWrapper {
     fn default() -> Self {
         Self::new()
     }
@@ -51,12 +50,12 @@ impl Default for PasswordHasher {
 
 /// Utility functions for password operations
 pub fn hash_password(password: &str) -> Result<String, Error> {
-    PasswordHasher::new().hash_password(password)
+    PasswordHasherWrapper::new().hash_password(password)
 }
 
 /// Verify a password against a hash
 pub fn verify_password(password: &str, hash: &str) -> Result<bool, Error> {
-    PasswordHasher::new().verify_password(password, hash)
+    PasswordHasherWrapper::new().verify_password(password, hash)
 }
 
 /// Validate password strength
@@ -104,7 +103,7 @@ mod tests {
 
     #[test]
     fn test_hash_and_verify_password() {
-        let hasher = PasswordHasher::new();
+        let hasher = PasswordHasherWrapper::new();
         let password = "TestPassword123!";
 
         let hash = hasher.hash_password(password).unwrap();
@@ -116,7 +115,7 @@ mod tests {
 
     #[test]
     fn test_verify_wrong_password() {
-        let hasher = PasswordHasher::new();
+        let hasher = PasswordHasherWrapper::new();
         let password = "TestPassword123!";
         let wrong_password = "WrongPassword123!";
 
@@ -128,7 +127,7 @@ mod tests {
 
     #[test]
     fn test_hash_uniqueness() {
-        let hasher = PasswordHasher::new();
+        let hasher = PasswordHasherWrapper::new();
         let password = "TestPassword123!";
 
         let hash1 = hasher.hash_password(password).unwrap();

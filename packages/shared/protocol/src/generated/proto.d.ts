@@ -10440,4 +10440,2459 @@ export namespace graphwiz {
             AV1 = 3
         }
     }
+
+    /** Namespace auth. */
+    namespace auth {
+
+        /** Represents an AuthService */
+        class AuthService extends $protobuf.rpc.Service {
+
+            /**
+             * Constructs a new AuthService service.
+             * @param rpcImpl RPC implementation
+             * @param [requestDelimited=false] Whether requests are length-delimited
+             * @param [responseDelimited=false] Whether responses are length-delimited
+             */
+            constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
+            /**
+             * Creates new AuthService service using the specified rpc implementation.
+             * @param rpcImpl RPC implementation
+             * @param [requestDelimited=false] Whether requests are length-delimited
+             * @param [responseDelimited=false] Whether responses are length-delimited
+             * @returns RPC service. Useful where requests and/or responses are streamed.
+             */
+            public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): AuthService;
+
+            /**
+             * Calls SendMagicLink.
+             * @param request MagicLinkRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and MagicLinkResponse
+             */
+            public sendMagicLink(request: graphwiz.auth.IMagicLinkRequest, callback: graphwiz.auth.AuthService.SendMagicLinkCallback): void;
+
+            /**
+             * Calls SendMagicLink.
+             * @param request MagicLinkRequest message or plain object
+             * @returns Promise
+             */
+            public sendMagicLink(request: graphwiz.auth.IMagicLinkRequest): Promise<graphwiz.auth.MagicLinkResponse>;
+
+            /**
+             * Calls VerifyMagicLink.
+             * @param request MagicLinkVerifyRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and AuthResponse
+             */
+            public verifyMagicLink(request: graphwiz.auth.IMagicLinkVerifyRequest, callback: graphwiz.auth.AuthService.VerifyMagicLinkCallback): void;
+
+            /**
+             * Calls VerifyMagicLink.
+             * @param request MagicLinkVerifyRequest message or plain object
+             * @returns Promise
+             */
+            public verifyMagicLink(request: graphwiz.auth.IMagicLinkVerifyRequest): Promise<graphwiz.auth.AuthResponse>;
+
+            /**
+             * Calls GetOAuthUrl.
+             * @param request OAuthUrlRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and OAuthUrlResponse
+             */
+            public getOAuthUrl(request: graphwiz.auth.IOAuthUrlRequest, callback: graphwiz.auth.AuthService.GetOAuthUrlCallback): void;
+
+            /**
+             * Calls GetOAuthUrl.
+             * @param request OAuthUrlRequest message or plain object
+             * @returns Promise
+             */
+            public getOAuthUrl(request: graphwiz.auth.IOAuthUrlRequest): Promise<graphwiz.auth.OAuthUrlResponse>;
+
+            /**
+             * Calls OAuthCallback.
+             * @param request OAuthCallbackRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and AuthResponse
+             */
+            public oAuthCallback(request: graphwiz.auth.IOAuthCallbackRequest, callback: graphwiz.auth.AuthService.OAuthCallbackCallback): void;
+
+            /**
+             * Calls OAuthCallback.
+             * @param request OAuthCallbackRequest message or plain object
+             * @returns Promise
+             */
+            public oAuthCallback(request: graphwiz.auth.IOAuthCallbackRequest): Promise<graphwiz.auth.AuthResponse>;
+
+            /**
+             * Calls UpdateProfile.
+             * @param request UpdateProfileRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and User
+             */
+            public updateProfile(request: graphwiz.auth.IUpdateProfileRequest, callback: graphwiz.auth.AuthService.UpdateProfileCallback): void;
+
+            /**
+             * Calls UpdateProfile.
+             * @param request UpdateProfileRequest message or plain object
+             * @returns Promise
+             */
+            public updateProfile(request: graphwiz.auth.IUpdateProfileRequest): Promise<graphwiz.auth.User>;
+
+            /**
+             * Calls ChangePassword.
+             * @param request ChangePasswordRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public changePassword(request: graphwiz.auth.IChangePasswordRequest, callback: graphwiz.auth.AuthService.ChangePasswordCallback): void;
+
+            /**
+             * Calls ChangePassword.
+             * @param request ChangePasswordRequest message or plain object
+             * @returns Promise
+             */
+            public changePassword(request: graphwiz.auth.IChangePasswordRequest): Promise<graphwiz.auth.Empty>;
+
+            /**
+             * Calls DeleteAccount.
+             * @param request DeleteAccountRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public deleteAccount(request: graphwiz.auth.IDeleteAccountRequest, callback: graphwiz.auth.AuthService.DeleteAccountCallback): void;
+
+            /**
+             * Calls DeleteAccount.
+             * @param request DeleteAccountRequest message or plain object
+             * @returns Promise
+             */
+            public deleteAccount(request: graphwiz.auth.IDeleteAccountRequest): Promise<graphwiz.auth.Empty>;
+
+            /**
+             * Calls GrantRole.
+             * @param request GrantRoleRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public grantRole(request: graphwiz.auth.IGrantRoleRequest, callback: graphwiz.auth.AuthService.GrantRoleCallback): void;
+
+            /**
+             * Calls GrantRole.
+             * @param request GrantRoleRequest message or plain object
+             * @returns Promise
+             */
+            public grantRole(request: graphwiz.auth.IGrantRoleRequest): Promise<graphwiz.auth.Empty>;
+
+            /**
+             * Calls RevokeRole.
+             * @param request RevokeRoleRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public revokeRole(request: graphwiz.auth.IRevokeRoleRequest, callback: graphwiz.auth.AuthService.RevokeRoleCallback): void;
+
+            /**
+             * Calls RevokeRole.
+             * @param request RevokeRoleRequest message or plain object
+             * @returns Promise
+             */
+            public revokeRole(request: graphwiz.auth.IRevokeRoleRequest): Promise<graphwiz.auth.Empty>;
+
+            /**
+             * Calls Logout.
+             * @param request LogoutRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public logout(request: graphwiz.auth.ILogoutRequest, callback: graphwiz.auth.AuthService.LogoutCallback): void;
+
+            /**
+             * Calls Logout.
+             * @param request LogoutRequest message or plain object
+             * @returns Promise
+             */
+            public logout(request: graphwiz.auth.ILogoutRequest): Promise<graphwiz.auth.Empty>;
+
+            /**
+             * Calls RefreshToken.
+             * @param request RefreshTokenRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and AuthResponse
+             */
+            public refreshToken(request: graphwiz.auth.IRefreshTokenRequest, callback: graphwiz.auth.AuthService.RefreshTokenCallback): void;
+
+            /**
+             * Calls RefreshToken.
+             * @param request RefreshTokenRequest message or plain object
+             * @returns Promise
+             */
+            public refreshToken(request: graphwiz.auth.IRefreshTokenRequest): Promise<graphwiz.auth.AuthResponse>;
+
+            /**
+             * Calls GetActiveSessions.
+             * @param request GetActiveSessionsRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and GetActiveSessionsResponse
+             */
+            public getActiveSessions(request: graphwiz.auth.IGetActiveSessionsRequest, callback: graphwiz.auth.AuthService.GetActiveSessionsCallback): void;
+
+            /**
+             * Calls GetActiveSessions.
+             * @param request GetActiveSessionsRequest message or plain object
+             * @returns Promise
+             */
+            public getActiveSessions(request: graphwiz.auth.IGetActiveSessionsRequest): Promise<graphwiz.auth.GetActiveSessionsResponse>;
+
+            /**
+             * Calls RevokeSession.
+             * @param request RevokeSessionRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public revokeSession(request: graphwiz.auth.IRevokeSessionRequest, callback: graphwiz.auth.AuthService.RevokeSessionCallback): void;
+
+            /**
+             * Calls RevokeSession.
+             * @param request RevokeSessionRequest message or plain object
+             * @returns Promise
+             */
+            public revokeSession(request: graphwiz.auth.IRevokeSessionRequest): Promise<graphwiz.auth.Empty>;
+        }
+
+        namespace AuthService {
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#sendMagicLink}.
+             * @param error Error, if any
+             * @param [response] MagicLinkResponse
+             */
+            type SendMagicLinkCallback = (error: (Error|null), response?: graphwiz.auth.MagicLinkResponse) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#verifyMagicLink}.
+             * @param error Error, if any
+             * @param [response] AuthResponse
+             */
+            type VerifyMagicLinkCallback = (error: (Error|null), response?: graphwiz.auth.AuthResponse) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#getOAuthUrl}.
+             * @param error Error, if any
+             * @param [response] OAuthUrlResponse
+             */
+            type GetOAuthUrlCallback = (error: (Error|null), response?: graphwiz.auth.OAuthUrlResponse) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#oAuthCallback}.
+             * @param error Error, if any
+             * @param [response] AuthResponse
+             */
+            type OAuthCallbackCallback = (error: (Error|null), response?: graphwiz.auth.AuthResponse) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#updateProfile}.
+             * @param error Error, if any
+             * @param [response] User
+             */
+            type UpdateProfileCallback = (error: (Error|null), response?: graphwiz.auth.User) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#changePassword}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type ChangePasswordCallback = (error: (Error|null), response?: graphwiz.auth.Empty) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#deleteAccount}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type DeleteAccountCallback = (error: (Error|null), response?: graphwiz.auth.Empty) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#grantRole}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type GrantRoleCallback = (error: (Error|null), response?: graphwiz.auth.Empty) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#revokeRole}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type RevokeRoleCallback = (error: (Error|null), response?: graphwiz.auth.Empty) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#logout}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type LogoutCallback = (error: (Error|null), response?: graphwiz.auth.Empty) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#refreshToken}.
+             * @param error Error, if any
+             * @param [response] AuthResponse
+             */
+            type RefreshTokenCallback = (error: (Error|null), response?: graphwiz.auth.AuthResponse) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#getActiveSessions}.
+             * @param error Error, if any
+             * @param [response] GetActiveSessionsResponse
+             */
+            type GetActiveSessionsCallback = (error: (Error|null), response?: graphwiz.auth.GetActiveSessionsResponse) => void;
+
+            /**
+             * Callback as used by {@link graphwiz.auth.AuthService#revokeSession}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type RevokeSessionCallback = (error: (Error|null), response?: graphwiz.auth.Empty) => void;
+        }
+
+        /** OAuthProvider enum. */
+        enum OAuthProvider {
+            UNKNOWN_PROVIDER = 0,
+            GITHUB = 1,
+            GOOGLE = 2,
+            DISCORD = 3
+        }
+
+        /** Role enum. */
+        enum Role {
+            UNKNOWN_ROLE = 0,
+            USER = 1,
+            MODERATOR = 2,
+            ADMIN = 3
+        }
+
+        /** Properties of a MagicLinkRequest. */
+        interface IMagicLinkRequest {
+
+            /** MagicLinkRequest email */
+            email?: (string|null);
+
+            /** MagicLinkRequest redirectUrl */
+            redirectUrl?: (string|null);
+        }
+
+        /** Represents a MagicLinkRequest. */
+        class MagicLinkRequest implements IMagicLinkRequest {
+
+            /**
+             * Constructs a new MagicLinkRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IMagicLinkRequest);
+
+            /** MagicLinkRequest email. */
+            public email: string;
+
+            /** MagicLinkRequest redirectUrl. */
+            public redirectUrl: string;
+
+            /**
+             * Creates a new MagicLinkRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MagicLinkRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IMagicLinkRequest): graphwiz.auth.MagicLinkRequest;
+
+            /**
+             * Encodes the specified MagicLinkRequest message. Does not implicitly {@link graphwiz.auth.MagicLinkRequest.verify|verify} messages.
+             * @param message MagicLinkRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IMagicLinkRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MagicLinkRequest message, length delimited. Does not implicitly {@link graphwiz.auth.MagicLinkRequest.verify|verify} messages.
+             * @param message MagicLinkRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IMagicLinkRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MagicLinkRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MagicLinkRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.MagicLinkRequest;
+
+            /**
+             * Decodes a MagicLinkRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MagicLinkRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.MagicLinkRequest;
+
+            /**
+             * Verifies a MagicLinkRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MagicLinkRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MagicLinkRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.MagicLinkRequest;
+
+            /**
+             * Creates a plain object from a MagicLinkRequest message. Also converts values to other types if specified.
+             * @param message MagicLinkRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.MagicLinkRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MagicLinkRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MagicLinkRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a MagicLinkResponse. */
+        interface IMagicLinkResponse {
+
+            /** MagicLinkResponse success */
+            success?: (boolean|null);
+
+            /** MagicLinkResponse message */
+            message?: (string|null);
+        }
+
+        /** Represents a MagicLinkResponse. */
+        class MagicLinkResponse implements IMagicLinkResponse {
+
+            /**
+             * Constructs a new MagicLinkResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IMagicLinkResponse);
+
+            /** MagicLinkResponse success. */
+            public success: boolean;
+
+            /** MagicLinkResponse message. */
+            public message: string;
+
+            /**
+             * Creates a new MagicLinkResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MagicLinkResponse instance
+             */
+            public static create(properties?: graphwiz.auth.IMagicLinkResponse): graphwiz.auth.MagicLinkResponse;
+
+            /**
+             * Encodes the specified MagicLinkResponse message. Does not implicitly {@link graphwiz.auth.MagicLinkResponse.verify|verify} messages.
+             * @param message MagicLinkResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IMagicLinkResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MagicLinkResponse message, length delimited. Does not implicitly {@link graphwiz.auth.MagicLinkResponse.verify|verify} messages.
+             * @param message MagicLinkResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IMagicLinkResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MagicLinkResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MagicLinkResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.MagicLinkResponse;
+
+            /**
+             * Decodes a MagicLinkResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MagicLinkResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.MagicLinkResponse;
+
+            /**
+             * Verifies a MagicLinkResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MagicLinkResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MagicLinkResponse
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.MagicLinkResponse;
+
+            /**
+             * Creates a plain object from a MagicLinkResponse message. Also converts values to other types if specified.
+             * @param message MagicLinkResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.MagicLinkResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MagicLinkResponse to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MagicLinkResponse
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a MagicLinkVerifyRequest. */
+        interface IMagicLinkVerifyRequest {
+
+            /** MagicLinkVerifyRequest token */
+            token?: (string|null);
+        }
+
+        /** Represents a MagicLinkVerifyRequest. */
+        class MagicLinkVerifyRequest implements IMagicLinkVerifyRequest {
+
+            /**
+             * Constructs a new MagicLinkVerifyRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IMagicLinkVerifyRequest);
+
+            /** MagicLinkVerifyRequest token. */
+            public token: string;
+
+            /**
+             * Creates a new MagicLinkVerifyRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MagicLinkVerifyRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IMagicLinkVerifyRequest): graphwiz.auth.MagicLinkVerifyRequest;
+
+            /**
+             * Encodes the specified MagicLinkVerifyRequest message. Does not implicitly {@link graphwiz.auth.MagicLinkVerifyRequest.verify|verify} messages.
+             * @param message MagicLinkVerifyRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IMagicLinkVerifyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MagicLinkVerifyRequest message, length delimited. Does not implicitly {@link graphwiz.auth.MagicLinkVerifyRequest.verify|verify} messages.
+             * @param message MagicLinkVerifyRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IMagicLinkVerifyRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MagicLinkVerifyRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MagicLinkVerifyRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.MagicLinkVerifyRequest;
+
+            /**
+             * Decodes a MagicLinkVerifyRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MagicLinkVerifyRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.MagicLinkVerifyRequest;
+
+            /**
+             * Verifies a MagicLinkVerifyRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MagicLinkVerifyRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MagicLinkVerifyRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.MagicLinkVerifyRequest;
+
+            /**
+             * Creates a plain object from a MagicLinkVerifyRequest message. Also converts values to other types if specified.
+             * @param message MagicLinkVerifyRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.MagicLinkVerifyRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MagicLinkVerifyRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MagicLinkVerifyRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a OAuthUrlRequest. */
+        interface IOAuthUrlRequest {
+
+            /** OAuthUrlRequest provider */
+            provider?: (graphwiz.auth.OAuthProvider|null);
+
+            /** OAuthUrlRequest redirectUri */
+            redirectUri?: (string|null);
+
+            /** OAuthUrlRequest state */
+            state?: (string|null);
+        }
+
+        /** Represents a OAuthUrlRequest. */
+        class OAuthUrlRequest implements IOAuthUrlRequest {
+
+            /**
+             * Constructs a new OAuthUrlRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IOAuthUrlRequest);
+
+            /** OAuthUrlRequest provider. */
+            public provider: graphwiz.auth.OAuthProvider;
+
+            /** OAuthUrlRequest redirectUri. */
+            public redirectUri: string;
+
+            /** OAuthUrlRequest state. */
+            public state: string;
+
+            /**
+             * Creates a new OAuthUrlRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns OAuthUrlRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IOAuthUrlRequest): graphwiz.auth.OAuthUrlRequest;
+
+            /**
+             * Encodes the specified OAuthUrlRequest message. Does not implicitly {@link graphwiz.auth.OAuthUrlRequest.verify|verify} messages.
+             * @param message OAuthUrlRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IOAuthUrlRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified OAuthUrlRequest message, length delimited. Does not implicitly {@link graphwiz.auth.OAuthUrlRequest.verify|verify} messages.
+             * @param message OAuthUrlRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IOAuthUrlRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a OAuthUrlRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns OAuthUrlRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.OAuthUrlRequest;
+
+            /**
+             * Decodes a OAuthUrlRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns OAuthUrlRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.OAuthUrlRequest;
+
+            /**
+             * Verifies a OAuthUrlRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a OAuthUrlRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns OAuthUrlRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.OAuthUrlRequest;
+
+            /**
+             * Creates a plain object from a OAuthUrlRequest message. Also converts values to other types if specified.
+             * @param message OAuthUrlRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.OAuthUrlRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this OAuthUrlRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for OAuthUrlRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a OAuthUrlResponse. */
+        interface IOAuthUrlResponse {
+
+            /** OAuthUrlResponse url */
+            url?: (string|null);
+
+            /** OAuthUrlResponse state */
+            state?: (string|null);
+        }
+
+        /** Represents a OAuthUrlResponse. */
+        class OAuthUrlResponse implements IOAuthUrlResponse {
+
+            /**
+             * Constructs a new OAuthUrlResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IOAuthUrlResponse);
+
+            /** OAuthUrlResponse url. */
+            public url: string;
+
+            /** OAuthUrlResponse state. */
+            public state: string;
+
+            /**
+             * Creates a new OAuthUrlResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns OAuthUrlResponse instance
+             */
+            public static create(properties?: graphwiz.auth.IOAuthUrlResponse): graphwiz.auth.OAuthUrlResponse;
+
+            /**
+             * Encodes the specified OAuthUrlResponse message. Does not implicitly {@link graphwiz.auth.OAuthUrlResponse.verify|verify} messages.
+             * @param message OAuthUrlResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IOAuthUrlResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified OAuthUrlResponse message, length delimited. Does not implicitly {@link graphwiz.auth.OAuthUrlResponse.verify|verify} messages.
+             * @param message OAuthUrlResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IOAuthUrlResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a OAuthUrlResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns OAuthUrlResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.OAuthUrlResponse;
+
+            /**
+             * Decodes a OAuthUrlResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns OAuthUrlResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.OAuthUrlResponse;
+
+            /**
+             * Verifies a OAuthUrlResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a OAuthUrlResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns OAuthUrlResponse
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.OAuthUrlResponse;
+
+            /**
+             * Creates a plain object from a OAuthUrlResponse message. Also converts values to other types if specified.
+             * @param message OAuthUrlResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.OAuthUrlResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this OAuthUrlResponse to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for OAuthUrlResponse
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a OAuthCallbackRequest. */
+        interface IOAuthCallbackRequest {
+
+            /** OAuthCallbackRequest provider */
+            provider?: (graphwiz.auth.OAuthProvider|null);
+
+            /** OAuthCallbackRequest code */
+            code?: (string|null);
+
+            /** OAuthCallbackRequest state */
+            state?: (string|null);
+
+            /** OAuthCallbackRequest redirectUri */
+            redirectUri?: (string|null);
+        }
+
+        /** Represents a OAuthCallbackRequest. */
+        class OAuthCallbackRequest implements IOAuthCallbackRequest {
+
+            /**
+             * Constructs a new OAuthCallbackRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IOAuthCallbackRequest);
+
+            /** OAuthCallbackRequest provider. */
+            public provider: graphwiz.auth.OAuthProvider;
+
+            /** OAuthCallbackRequest code. */
+            public code: string;
+
+            /** OAuthCallbackRequest state. */
+            public state: string;
+
+            /** OAuthCallbackRequest redirectUri. */
+            public redirectUri: string;
+
+            /**
+             * Creates a new OAuthCallbackRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns OAuthCallbackRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IOAuthCallbackRequest): graphwiz.auth.OAuthCallbackRequest;
+
+            /**
+             * Encodes the specified OAuthCallbackRequest message. Does not implicitly {@link graphwiz.auth.OAuthCallbackRequest.verify|verify} messages.
+             * @param message OAuthCallbackRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IOAuthCallbackRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified OAuthCallbackRequest message, length delimited. Does not implicitly {@link graphwiz.auth.OAuthCallbackRequest.verify|verify} messages.
+             * @param message OAuthCallbackRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IOAuthCallbackRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a OAuthCallbackRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns OAuthCallbackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.OAuthCallbackRequest;
+
+            /**
+             * Decodes a OAuthCallbackRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns OAuthCallbackRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.OAuthCallbackRequest;
+
+            /**
+             * Verifies a OAuthCallbackRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a OAuthCallbackRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns OAuthCallbackRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.OAuthCallbackRequest;
+
+            /**
+             * Creates a plain object from a OAuthCallbackRequest message. Also converts values to other types if specified.
+             * @param message OAuthCallbackRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.OAuthCallbackRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this OAuthCallbackRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for OAuthCallbackRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of an UpdateProfileRequest. */
+        interface IUpdateProfileRequest {
+
+            /** UpdateProfileRequest displayName */
+            displayName?: (string|null);
+
+            /** UpdateProfileRequest bio */
+            bio?: (string|null);
+
+            /** UpdateProfileRequest avatarUrl */
+            avatarUrl?: (string|null);
+        }
+
+        /** Represents an UpdateProfileRequest. */
+        class UpdateProfileRequest implements IUpdateProfileRequest {
+
+            /**
+             * Constructs a new UpdateProfileRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IUpdateProfileRequest);
+
+            /** UpdateProfileRequest displayName. */
+            public displayName: string;
+
+            /** UpdateProfileRequest bio. */
+            public bio: string;
+
+            /** UpdateProfileRequest avatarUrl. */
+            public avatarUrl: string;
+
+            /**
+             * Creates a new UpdateProfileRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns UpdateProfileRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IUpdateProfileRequest): graphwiz.auth.UpdateProfileRequest;
+
+            /**
+             * Encodes the specified UpdateProfileRequest message. Does not implicitly {@link graphwiz.auth.UpdateProfileRequest.verify|verify} messages.
+             * @param message UpdateProfileRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IUpdateProfileRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified UpdateProfileRequest message, length delimited. Does not implicitly {@link graphwiz.auth.UpdateProfileRequest.verify|verify} messages.
+             * @param message UpdateProfileRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IUpdateProfileRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an UpdateProfileRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns UpdateProfileRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.UpdateProfileRequest;
+
+            /**
+             * Decodes an UpdateProfileRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns UpdateProfileRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.UpdateProfileRequest;
+
+            /**
+             * Verifies an UpdateProfileRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an UpdateProfileRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns UpdateProfileRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.UpdateProfileRequest;
+
+            /**
+             * Creates a plain object from an UpdateProfileRequest message. Also converts values to other types if specified.
+             * @param message UpdateProfileRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.UpdateProfileRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this UpdateProfileRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for UpdateProfileRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a ChangePasswordRequest. */
+        interface IChangePasswordRequest {
+
+            /** ChangePasswordRequest oldPassword */
+            oldPassword?: (string|null);
+
+            /** ChangePasswordRequest newPassword */
+            newPassword?: (string|null);
+        }
+
+        /** Represents a ChangePasswordRequest. */
+        class ChangePasswordRequest implements IChangePasswordRequest {
+
+            /**
+             * Constructs a new ChangePasswordRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IChangePasswordRequest);
+
+            /** ChangePasswordRequest oldPassword. */
+            public oldPassword: string;
+
+            /** ChangePasswordRequest newPassword. */
+            public newPassword: string;
+
+            /**
+             * Creates a new ChangePasswordRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ChangePasswordRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IChangePasswordRequest): graphwiz.auth.ChangePasswordRequest;
+
+            /**
+             * Encodes the specified ChangePasswordRequest message. Does not implicitly {@link graphwiz.auth.ChangePasswordRequest.verify|verify} messages.
+             * @param message ChangePasswordRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IChangePasswordRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ChangePasswordRequest message, length delimited. Does not implicitly {@link graphwiz.auth.ChangePasswordRequest.verify|verify} messages.
+             * @param message ChangePasswordRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IChangePasswordRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ChangePasswordRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ChangePasswordRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.ChangePasswordRequest;
+
+            /**
+             * Decodes a ChangePasswordRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ChangePasswordRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.ChangePasswordRequest;
+
+            /**
+             * Verifies a ChangePasswordRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ChangePasswordRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ChangePasswordRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.ChangePasswordRequest;
+
+            /**
+             * Creates a plain object from a ChangePasswordRequest message. Also converts values to other types if specified.
+             * @param message ChangePasswordRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.ChangePasswordRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ChangePasswordRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ChangePasswordRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a DeleteAccountRequest. */
+        interface IDeleteAccountRequest {
+
+            /** DeleteAccountRequest password */
+            password?: (string|null);
+        }
+
+        /** Represents a DeleteAccountRequest. */
+        class DeleteAccountRequest implements IDeleteAccountRequest {
+
+            /**
+             * Constructs a new DeleteAccountRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IDeleteAccountRequest);
+
+            /** DeleteAccountRequest password. */
+            public password: string;
+
+            /**
+             * Creates a new DeleteAccountRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DeleteAccountRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IDeleteAccountRequest): graphwiz.auth.DeleteAccountRequest;
+
+            /**
+             * Encodes the specified DeleteAccountRequest message. Does not implicitly {@link graphwiz.auth.DeleteAccountRequest.verify|verify} messages.
+             * @param message DeleteAccountRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IDeleteAccountRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DeleteAccountRequest message, length delimited. Does not implicitly {@link graphwiz.auth.DeleteAccountRequest.verify|verify} messages.
+             * @param message DeleteAccountRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IDeleteAccountRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DeleteAccountRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns DeleteAccountRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.DeleteAccountRequest;
+
+            /**
+             * Decodes a DeleteAccountRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns DeleteAccountRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.DeleteAccountRequest;
+
+            /**
+             * Verifies a DeleteAccountRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a DeleteAccountRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DeleteAccountRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.DeleteAccountRequest;
+
+            /**
+             * Creates a plain object from a DeleteAccountRequest message. Also converts values to other types if specified.
+             * @param message DeleteAccountRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.DeleteAccountRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this DeleteAccountRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DeleteAccountRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a GrantRoleRequest. */
+        interface IGrantRoleRequest {
+
+            /** GrantRoleRequest userId */
+            userId?: (string|null);
+
+            /** GrantRoleRequest role */
+            role?: (graphwiz.auth.Role|null);
+        }
+
+        /** Represents a GrantRoleRequest. */
+        class GrantRoleRequest implements IGrantRoleRequest {
+
+            /**
+             * Constructs a new GrantRoleRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IGrantRoleRequest);
+
+            /** GrantRoleRequest userId. */
+            public userId: string;
+
+            /** GrantRoleRequest role. */
+            public role: graphwiz.auth.Role;
+
+            /**
+             * Creates a new GrantRoleRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns GrantRoleRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IGrantRoleRequest): graphwiz.auth.GrantRoleRequest;
+
+            /**
+             * Encodes the specified GrantRoleRequest message. Does not implicitly {@link graphwiz.auth.GrantRoleRequest.verify|verify} messages.
+             * @param message GrantRoleRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IGrantRoleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified GrantRoleRequest message, length delimited. Does not implicitly {@link graphwiz.auth.GrantRoleRequest.verify|verify} messages.
+             * @param message GrantRoleRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IGrantRoleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a GrantRoleRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns GrantRoleRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.GrantRoleRequest;
+
+            /**
+             * Decodes a GrantRoleRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns GrantRoleRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.GrantRoleRequest;
+
+            /**
+             * Verifies a GrantRoleRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a GrantRoleRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns GrantRoleRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.GrantRoleRequest;
+
+            /**
+             * Creates a plain object from a GrantRoleRequest message. Also converts values to other types if specified.
+             * @param message GrantRoleRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.GrantRoleRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this GrantRoleRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GrantRoleRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RevokeRoleRequest. */
+        interface IRevokeRoleRequest {
+
+            /** RevokeRoleRequest userId */
+            userId?: (string|null);
+
+            /** RevokeRoleRequest role */
+            role?: (graphwiz.auth.Role|null);
+        }
+
+        /** Represents a RevokeRoleRequest. */
+        class RevokeRoleRequest implements IRevokeRoleRequest {
+
+            /**
+             * Constructs a new RevokeRoleRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IRevokeRoleRequest);
+
+            /** RevokeRoleRequest userId. */
+            public userId: string;
+
+            /** RevokeRoleRequest role. */
+            public role: graphwiz.auth.Role;
+
+            /**
+             * Creates a new RevokeRoleRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RevokeRoleRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IRevokeRoleRequest): graphwiz.auth.RevokeRoleRequest;
+
+            /**
+             * Encodes the specified RevokeRoleRequest message. Does not implicitly {@link graphwiz.auth.RevokeRoleRequest.verify|verify} messages.
+             * @param message RevokeRoleRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IRevokeRoleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RevokeRoleRequest message, length delimited. Does not implicitly {@link graphwiz.auth.RevokeRoleRequest.verify|verify} messages.
+             * @param message RevokeRoleRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IRevokeRoleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RevokeRoleRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RevokeRoleRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.RevokeRoleRequest;
+
+            /**
+             * Decodes a RevokeRoleRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RevokeRoleRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.RevokeRoleRequest;
+
+            /**
+             * Verifies a RevokeRoleRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RevokeRoleRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RevokeRoleRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.RevokeRoleRequest;
+
+            /**
+             * Creates a plain object from a RevokeRoleRequest message. Also converts values to other types if specified.
+             * @param message RevokeRoleRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.RevokeRoleRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RevokeRoleRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RevokeRoleRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a LogoutRequest. */
+        interface ILogoutRequest {
+
+            /** LogoutRequest refreshToken */
+            refreshToken?: (string|null);
+
+            /** LogoutRequest allDevices */
+            allDevices?: (boolean|null);
+        }
+
+        /** Represents a LogoutRequest. */
+        class LogoutRequest implements ILogoutRequest {
+
+            /**
+             * Constructs a new LogoutRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.ILogoutRequest);
+
+            /** LogoutRequest refreshToken. */
+            public refreshToken: string;
+
+            /** LogoutRequest allDevices. */
+            public allDevices: boolean;
+
+            /**
+             * Creates a new LogoutRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns LogoutRequest instance
+             */
+            public static create(properties?: graphwiz.auth.ILogoutRequest): graphwiz.auth.LogoutRequest;
+
+            /**
+             * Encodes the specified LogoutRequest message. Does not implicitly {@link graphwiz.auth.LogoutRequest.verify|verify} messages.
+             * @param message LogoutRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.ILogoutRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified LogoutRequest message, length delimited. Does not implicitly {@link graphwiz.auth.LogoutRequest.verify|verify} messages.
+             * @param message LogoutRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.ILogoutRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a LogoutRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns LogoutRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.LogoutRequest;
+
+            /**
+             * Decodes a LogoutRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns LogoutRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.LogoutRequest;
+
+            /**
+             * Verifies a LogoutRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a LogoutRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns LogoutRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.LogoutRequest;
+
+            /**
+             * Creates a plain object from a LogoutRequest message. Also converts values to other types if specified.
+             * @param message LogoutRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.LogoutRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this LogoutRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for LogoutRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RefreshTokenRequest. */
+        interface IRefreshTokenRequest {
+
+            /** RefreshTokenRequest refreshToken */
+            refreshToken?: (string|null);
+        }
+
+        /** Represents a RefreshTokenRequest. */
+        class RefreshTokenRequest implements IRefreshTokenRequest {
+
+            /**
+             * Constructs a new RefreshTokenRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IRefreshTokenRequest);
+
+            /** RefreshTokenRequest refreshToken. */
+            public refreshToken: string;
+
+            /**
+             * Creates a new RefreshTokenRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RefreshTokenRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IRefreshTokenRequest): graphwiz.auth.RefreshTokenRequest;
+
+            /**
+             * Encodes the specified RefreshTokenRequest message. Does not implicitly {@link graphwiz.auth.RefreshTokenRequest.verify|verify} messages.
+             * @param message RefreshTokenRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IRefreshTokenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RefreshTokenRequest message, length delimited. Does not implicitly {@link graphwiz.auth.RefreshTokenRequest.verify|verify} messages.
+             * @param message RefreshTokenRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IRefreshTokenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RefreshTokenRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RefreshTokenRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.RefreshTokenRequest;
+
+            /**
+             * Decodes a RefreshTokenRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RefreshTokenRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.RefreshTokenRequest;
+
+            /**
+             * Verifies a RefreshTokenRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RefreshTokenRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RefreshTokenRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.RefreshTokenRequest;
+
+            /**
+             * Creates a plain object from a RefreshTokenRequest message. Also converts values to other types if specified.
+             * @param message RefreshTokenRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.RefreshTokenRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RefreshTokenRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RefreshTokenRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a GetActiveSessionsRequest. */
+        interface IGetActiveSessionsRequest {
+
+            /** GetActiveSessionsRequest limit */
+            limit?: (number|null);
+
+            /** GetActiveSessionsRequest offset */
+            offset?: (number|null);
+        }
+
+        /** Represents a GetActiveSessionsRequest. */
+        class GetActiveSessionsRequest implements IGetActiveSessionsRequest {
+
+            /**
+             * Constructs a new GetActiveSessionsRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IGetActiveSessionsRequest);
+
+            /** GetActiveSessionsRequest limit. */
+            public limit: number;
+
+            /** GetActiveSessionsRequest offset. */
+            public offset: number;
+
+            /**
+             * Creates a new GetActiveSessionsRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns GetActiveSessionsRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IGetActiveSessionsRequest): graphwiz.auth.GetActiveSessionsRequest;
+
+            /**
+             * Encodes the specified GetActiveSessionsRequest message. Does not implicitly {@link graphwiz.auth.GetActiveSessionsRequest.verify|verify} messages.
+             * @param message GetActiveSessionsRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IGetActiveSessionsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified GetActiveSessionsRequest message, length delimited. Does not implicitly {@link graphwiz.auth.GetActiveSessionsRequest.verify|verify} messages.
+             * @param message GetActiveSessionsRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IGetActiveSessionsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a GetActiveSessionsRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns GetActiveSessionsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.GetActiveSessionsRequest;
+
+            /**
+             * Decodes a GetActiveSessionsRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns GetActiveSessionsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.GetActiveSessionsRequest;
+
+            /**
+             * Verifies a GetActiveSessionsRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a GetActiveSessionsRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns GetActiveSessionsRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.GetActiveSessionsRequest;
+
+            /**
+             * Creates a plain object from a GetActiveSessionsRequest message. Also converts values to other types if specified.
+             * @param message GetActiveSessionsRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.GetActiveSessionsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this GetActiveSessionsRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GetActiveSessionsRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a Session. */
+        interface ISession {
+
+            /** Session sessionId */
+            sessionId?: (string|null);
+
+            /** Session deviceInfo */
+            deviceInfo?: (string|null);
+
+            /** Session ipAddress */
+            ipAddress?: (string|null);
+
+            /** Session createdAt */
+            createdAt?: (number|Long|null);
+
+            /** Session lastActive */
+            lastActive?: (number|Long|null);
+
+            /** Session isCurrent */
+            isCurrent?: (boolean|null);
+        }
+
+        /** Represents a Session. */
+        class Session implements ISession {
+
+            /**
+             * Constructs a new Session.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.ISession);
+
+            /** Session sessionId. */
+            public sessionId: string;
+
+            /** Session deviceInfo. */
+            public deviceInfo: string;
+
+            /** Session ipAddress. */
+            public ipAddress: string;
+
+            /** Session createdAt. */
+            public createdAt: (number|Long);
+
+            /** Session lastActive. */
+            public lastActive: (number|Long);
+
+            /** Session isCurrent. */
+            public isCurrent: boolean;
+
+            /**
+             * Creates a new Session instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Session instance
+             */
+            public static create(properties?: graphwiz.auth.ISession): graphwiz.auth.Session;
+
+            /**
+             * Encodes the specified Session message. Does not implicitly {@link graphwiz.auth.Session.verify|verify} messages.
+             * @param message Session message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.ISession, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Session message, length delimited. Does not implicitly {@link graphwiz.auth.Session.verify|verify} messages.
+             * @param message Session message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.ISession, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Session message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Session
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.Session;
+
+            /**
+             * Decodes a Session message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Session
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.Session;
+
+            /**
+             * Verifies a Session message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Session message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Session
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.Session;
+
+            /**
+             * Creates a plain object from a Session message. Also converts values to other types if specified.
+             * @param message Session
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.Session, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Session to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Session
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a GetActiveSessionsResponse. */
+        interface IGetActiveSessionsResponse {
+
+            /** GetActiveSessionsResponse sessions */
+            sessions?: (graphwiz.auth.ISession[]|null);
+
+            /** GetActiveSessionsResponse total */
+            total?: (number|null);
+        }
+
+        /** Represents a GetActiveSessionsResponse. */
+        class GetActiveSessionsResponse implements IGetActiveSessionsResponse {
+
+            /**
+             * Constructs a new GetActiveSessionsResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IGetActiveSessionsResponse);
+
+            /** GetActiveSessionsResponse sessions. */
+            public sessions: graphwiz.auth.ISession[];
+
+            /** GetActiveSessionsResponse total. */
+            public total: number;
+
+            /**
+             * Creates a new GetActiveSessionsResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns GetActiveSessionsResponse instance
+             */
+            public static create(properties?: graphwiz.auth.IGetActiveSessionsResponse): graphwiz.auth.GetActiveSessionsResponse;
+
+            /**
+             * Encodes the specified GetActiveSessionsResponse message. Does not implicitly {@link graphwiz.auth.GetActiveSessionsResponse.verify|verify} messages.
+             * @param message GetActiveSessionsResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IGetActiveSessionsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified GetActiveSessionsResponse message, length delimited. Does not implicitly {@link graphwiz.auth.GetActiveSessionsResponse.verify|verify} messages.
+             * @param message GetActiveSessionsResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IGetActiveSessionsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a GetActiveSessionsResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns GetActiveSessionsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.GetActiveSessionsResponse;
+
+            /**
+             * Decodes a GetActiveSessionsResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns GetActiveSessionsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.GetActiveSessionsResponse;
+
+            /**
+             * Verifies a GetActiveSessionsResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a GetActiveSessionsResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns GetActiveSessionsResponse
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.GetActiveSessionsResponse;
+
+            /**
+             * Creates a plain object from a GetActiveSessionsResponse message. Also converts values to other types if specified.
+             * @param message GetActiveSessionsResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.GetActiveSessionsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this GetActiveSessionsResponse to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GetActiveSessionsResponse
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RevokeSessionRequest. */
+        interface IRevokeSessionRequest {
+
+            /** RevokeSessionRequest sessionId */
+            sessionId?: (string|null);
+        }
+
+        /** Represents a RevokeSessionRequest. */
+        class RevokeSessionRequest implements IRevokeSessionRequest {
+
+            /**
+             * Constructs a new RevokeSessionRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IRevokeSessionRequest);
+
+            /** RevokeSessionRequest sessionId. */
+            public sessionId: string;
+
+            /**
+             * Creates a new RevokeSessionRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RevokeSessionRequest instance
+             */
+            public static create(properties?: graphwiz.auth.IRevokeSessionRequest): graphwiz.auth.RevokeSessionRequest;
+
+            /**
+             * Encodes the specified RevokeSessionRequest message. Does not implicitly {@link graphwiz.auth.RevokeSessionRequest.verify|verify} messages.
+             * @param message RevokeSessionRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IRevokeSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RevokeSessionRequest message, length delimited. Does not implicitly {@link graphwiz.auth.RevokeSessionRequest.verify|verify} messages.
+             * @param message RevokeSessionRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IRevokeSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RevokeSessionRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RevokeSessionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.RevokeSessionRequest;
+
+            /**
+             * Decodes a RevokeSessionRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RevokeSessionRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.RevokeSessionRequest;
+
+            /**
+             * Verifies a RevokeSessionRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RevokeSessionRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RevokeSessionRequest
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.RevokeSessionRequest;
+
+            /**
+             * Creates a plain object from a RevokeSessionRequest message. Also converts values to other types if specified.
+             * @param message RevokeSessionRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.RevokeSessionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RevokeSessionRequest to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RevokeSessionRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of an AuthResponse. */
+        interface IAuthResponse {
+
+            /** AuthResponse user */
+            user?: (graphwiz.auth.IUser|null);
+
+            /** AuthResponse accessToken */
+            accessToken?: (string|null);
+
+            /** AuthResponse refreshToken */
+            refreshToken?: (string|null);
+
+            /** AuthResponse expiresAt */
+            expiresAt?: (number|Long|null);
+        }
+
+        /** Represents an AuthResponse. */
+        class AuthResponse implements IAuthResponse {
+
+            /**
+             * Constructs a new AuthResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IAuthResponse);
+
+            /** AuthResponse user. */
+            public user?: (graphwiz.auth.IUser|null);
+
+            /** AuthResponse accessToken. */
+            public accessToken: string;
+
+            /** AuthResponse refreshToken. */
+            public refreshToken: string;
+
+            /** AuthResponse expiresAt. */
+            public expiresAt: (number|Long);
+
+            /**
+             * Creates a new AuthResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns AuthResponse instance
+             */
+            public static create(properties?: graphwiz.auth.IAuthResponse): graphwiz.auth.AuthResponse;
+
+            /**
+             * Encodes the specified AuthResponse message. Does not implicitly {@link graphwiz.auth.AuthResponse.verify|verify} messages.
+             * @param message AuthResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IAuthResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified AuthResponse message, length delimited. Does not implicitly {@link graphwiz.auth.AuthResponse.verify|verify} messages.
+             * @param message AuthResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IAuthResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an AuthResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns AuthResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.AuthResponse;
+
+            /**
+             * Decodes an AuthResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns AuthResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.AuthResponse;
+
+            /**
+             * Verifies an AuthResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an AuthResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns AuthResponse
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.AuthResponse;
+
+            /**
+             * Creates a plain object from an AuthResponse message. Also converts values to other types if specified.
+             * @param message AuthResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.AuthResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this AuthResponse to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for AuthResponse
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a User. */
+        interface IUser {
+
+            /** User id */
+            id?: (string|null);
+
+            /** User email */
+            email?: (string|null);
+
+            /** User displayName */
+            displayName?: (string|null);
+
+            /** User username */
+            username?: (string|null);
+
+            /** User avatarUrl */
+            avatarUrl?: (string|null);
+
+            /** User bio */
+            bio?: (string|null);
+
+            /** User role */
+            role?: (graphwiz.auth.Role|null);
+
+            /** User createdAt */
+            createdAt?: (number|Long|null);
+
+            /** User updatedAt */
+            updatedAt?: (number|Long|null);
+
+            /** User isActive */
+            isActive?: (boolean|null);
+
+            /** User metadata */
+            metadata?: ({ [k: string]: string }|null);
+        }
+
+        /** Represents a User. */
+        class User implements IUser {
+
+            /**
+             * Constructs a new User.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IUser);
+
+            /** User id. */
+            public id: string;
+
+            /** User email. */
+            public email: string;
+
+            /** User displayName. */
+            public displayName: string;
+
+            /** User username. */
+            public username: string;
+
+            /** User avatarUrl. */
+            public avatarUrl: string;
+
+            /** User bio. */
+            public bio: string;
+
+            /** User role. */
+            public role: graphwiz.auth.Role;
+
+            /** User createdAt. */
+            public createdAt: (number|Long);
+
+            /** User updatedAt. */
+            public updatedAt: (number|Long);
+
+            /** User isActive. */
+            public isActive: boolean;
+
+            /** User metadata. */
+            public metadata: { [k: string]: string };
+
+            /**
+             * Creates a new User instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns User instance
+             */
+            public static create(properties?: graphwiz.auth.IUser): graphwiz.auth.User;
+
+            /**
+             * Encodes the specified User message. Does not implicitly {@link graphwiz.auth.User.verify|verify} messages.
+             * @param message User message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IUser, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified User message, length delimited. Does not implicitly {@link graphwiz.auth.User.verify|verify} messages.
+             * @param message User message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IUser, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a User message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns User
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.User;
+
+            /**
+             * Decodes a User message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns User
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.User;
+
+            /**
+             * Verifies a User message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a User message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns User
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.User;
+
+            /**
+             * Creates a plain object from a User message. Also converts values to other types if specified.
+             * @param message User
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.User, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this User to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for User
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of an Empty. */
+        interface IEmpty {
+        }
+
+        /** Represents an Empty. */
+        class Empty implements IEmpty {
+
+            /**
+             * Constructs a new Empty.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.auth.IEmpty);
+
+            /**
+             * Creates a new Empty instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Empty instance
+             */
+            public static create(properties?: graphwiz.auth.IEmpty): graphwiz.auth.Empty;
+
+            /**
+             * Encodes the specified Empty message. Does not implicitly {@link graphwiz.auth.Empty.verify|verify} messages.
+             * @param message Empty message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.auth.IEmpty, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Empty message, length delimited. Does not implicitly {@link graphwiz.auth.Empty.verify|verify} messages.
+             * @param message Empty message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.auth.IEmpty, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.auth.Empty;
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.auth.Empty;
+
+            /**
+             * Verifies an Empty message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Empty message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Empty
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.auth.Empty;
+
+            /**
+             * Creates a plain object from an Empty message. Also converts values to other types if specified.
+             * @param message Empty
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.auth.Empty, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Empty to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Empty
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+    }
 }

@@ -2,44 +2,69 @@
 # Multi-stage build for optimized production image
 
 # Stage 1: Build
-FROM rust:1.75-alpine AS builder
+FROM debian:bookworm-slim AS builder
 
-# Install build dependencies
-RUN apk add --no-cache \
-    musl-dev \
-    postgresql-client \
-    pkgconfig \
-    openssl-dev
+# Install build dependencies including curl for rustup
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    protobuf-compiler \
+    curl \
+    ca-certificates \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install nightly Rust for edition2024 support
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Set PROTOC environment variable at build time (must be set before cargo runs)
+ENV PROTOC=/usr/bin/protoc
+
+# Verify installation
+RUN rustc --version && cargo --version && protoc --version
+
+# Debug: check protoc location
+RUN which protoc && ls -la $(which protoc) && echo $PATH
 
 WORKDIR /build
 
-# Copy Cargo files
-COPY Cargo.toml Cargo.lock ./
+# Copy Cargo.toml
+COPY Cargo.toml ./
+
+# Copy source code
 COPY packages/shared/protocol packages/shared/protocol
 COPY packages/services/reticulum/core packages/services/reticulum/core
+COPY packages/services/reticulum/auth packages/services/reticulum/auth
+COPY packages/services/reticulum/hub packages/services/reticulum/hub
+COPY packages/services/reticulum/sfu packages/services/reticulum/sfu
 COPY packages/services/reticulum/presence packages/services/reticulum/presence
 
 # Build the presence service binary
-RUN cargo build --release -p reticulum-presence
+RUN echo "Building with PROTOC=$PROTOC" && \
+    protoc --version && \
+    cargo build --release -p reticulum-presence
 
 # Stage 2: Runtime
-FROM alpine:3.19
+FROM debian:bookworm-slim
 
 # Install runtime dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     ca-certificates \
-    libgcc
+    libssl3 \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
-RUN addgroup -g 1000 graphwiz && \
-    adduser -D -u 1000 -G graphwiz graphwiz
+RUN groupadd -g 1000 graphwiz && \
+    useradd -r -u 1000 -g graphwiz graphwiz
 
 WORKDIR /app
 
 # Copy binary from builder
 COPY --from=builder /build/target/release/reticulum-presence /app/
 
-# Chown binary
+# Set ownership
 RUN chown -R graphwiz:graphwiz /app
 
 USER graphwiz
@@ -49,7 +74,7 @@ EXPOSE 8003
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8003/api/v1/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8003/health || exit 1
 
 # Run the service
 CMD ["./reticulum-presence"]

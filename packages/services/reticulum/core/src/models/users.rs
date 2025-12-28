@@ -97,4 +97,21 @@ impl UserModel {
         let result = model.insert(db).await?;
         Ok(User::from(result))
     }
+
+    pub async fn update_avatar(
+        db: &DatabaseConnection,
+        user_id: i32,
+        avatar_url: String,
+    ) -> crate::Result<User> {
+        let now = chrono::Utc::now().naive_utc();
+        let model = ActiveModel {
+            id: Set(user_id),
+            avatar_url: Set(Some(avatar_url)),
+            updated_at: Set(now),
+            ..Default::default()
+        };
+
+        let result = model.update(db).await?;
+        Ok(User::from(result))
+    }
 }

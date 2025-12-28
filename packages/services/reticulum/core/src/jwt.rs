@@ -16,7 +16,7 @@ pub struct Claims {
     pub token_type: TokenType,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum TokenType {
     Access,

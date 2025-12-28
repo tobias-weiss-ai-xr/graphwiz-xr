@@ -74,24 +74,38 @@ export class MessageParser {
   }
 
   private static parsePayload(
-    _view: DataView,
-    _type: number,
-    _offset: number,
-    _length: number
+    view: DataView,
+    type: number,
+    offset: number,
+    length: number
   ): Message['payload'] {
-    // Payload parsing implementation based on message type
-    // This is a simplified version - full implementation would handle all types
-    return {} as Message['payload'];
+    // For now, we'll use JSON for complex payloads
+    // In production, this would use proper binary serialization (protobuf)
+    if (length === 0) {
+      return {} as Message['payload'];
+    }
+
+    const bytes = new Uint8Array(view.buffer, view.byteOffset + offset, length);
+    const json = new TextDecoder().decode(bytes);
+
+    try {
+      return JSON.parse(json);
+    } catch {
+      return {} as Message['payload'];
+    }
   }
 
-  private static calculatePayloadSize(_payload: Message['payload']): number {
-    // Calculate payload size for serialization
-    return 0; // Placeholder
+  private static calculatePayloadSize(payload: Message['payload']): number {
+    // Calculate JSON size for payload
+    const json = JSON.stringify(payload);
+    return new TextEncoder().encode(json).length;
   }
 
-  private static writePayload(_view: DataView, _offset: number, _payload: Message['payload']): void {
-    // Write payload data
-    // Implementation depends on payload type
+  private static writePayload(view: DataView, offset: number, payload: Message['payload']): void {
+    // Write payload as JSON
+    const json = JSON.stringify(payload);
+    const bytes = new TextEncoder().encode(json);
+    new Uint8Array(view.buffer, view.byteOffset + offset, bytes.length).set(bytes);
   }
 }
 

@@ -11,6 +11,7 @@ use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;
 
 use routes::configure_routes;
+use room::RoomManager;
 
 pub struct HubService {
     config: Config,
@@ -28,9 +29,13 @@ impl HubService {
 
         log::info!("Starting hub service on {}:{}", host, port);
 
+        // Create shared room manager
+        let room_manager = RoomManager::new();
+
         HttpServer::new(move || {
             App::new()
                 .app_data(web::Data::new(self.config.clone()))
+                .app_data(web::Data::new(room_manager.clone()))
                 .wrap(actix_cors::Cors::permissive())
                 .wrap(reticulum_core::middleware::LoggingMiddleware)
                 .configure(configure_routes)

@@ -10,6 +10,8 @@ pub struct Config {
     pub database: DatabaseConfig,
     pub auth: AuthConfig,
     pub tracing: TracingConfig,
+    #[serde(default)]
+    pub redis: Option<RedisConfig>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -37,6 +39,12 @@ pub struct AuthConfig {
 pub struct TracingConfig {
     pub level: String,
     pub format: String, // "json" or "pretty"
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct RedisConfig {
+    pub url: String,
+    pub max_connections: Option<u32>,
 }
 
 impl Config {
@@ -77,6 +85,7 @@ impl Config {
                 level: "info".to_string(),
                 format: "pretty".to_string(),
             },
+            redis: None,
         });
 
         // Override with environment variables if present

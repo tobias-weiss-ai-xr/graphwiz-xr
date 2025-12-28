@@ -25,6 +25,21 @@ log.workspace = true
 jsonwebtoken.workspace = true
 argon2.workspace = true
 
+# OAuth
+oauth2 = "4.4"
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
+
+# Email
+lettre = { version = "0.11", features = ["builder", "smtp-transport", "rustls-tls"], default-features = false }
+
+# Random token generation
+rand = "0.8"
+hex = "0.4"
+urlencoding = "2.1"
+
+# Redis for session management
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
+
 # Validation
 validator = { version = "0.16", features = ["derive"] }
 

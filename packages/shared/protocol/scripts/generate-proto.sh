@@ -19,7 +19,7 @@ if [ -f "/home/weiss/tmp/protoc/bin/protoc" ]; then
 fi
 
 # Generate static JavaScript from proto files
-pbjs -t static-module -w commonjs -o src/generated/proto.js proto/core.proto proto/networking.proto proto/room.proto proto/media.proto
+pbjs -t static-module -w commonjs -o src/generated/proto.js proto/core.proto proto/networking.proto proto/room.proto proto/media.proto proto/auth.proto
 
 # Generate TypeScript definitions
 pbts -o src/generated/proto.d.ts src/generated/proto.js

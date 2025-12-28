@@ -1,0 +1,327 @@
+/**
+ * Cannon Physics System
+ *
+ * ECS system that integrates Cannon.js physics engine with entities.
+ * (Renamed from PhysicsSystem to avoid conflict with placeholder physics)
+ */
+
+import { System } from '../ecs';
+import { PhysicsWorld } from './physics-world';
+import { PhysicsBodyComponent } from './physics-body-component';
+import { TransformComponent } from '../ecs';
+
+export interface CannonPhysicsSystemConfig {
+  gravity?: { x: number; y: number; z: number };
+  solverIterations?: number;
+  broadphase?: 'Naive' | 'SAP';
+  allowSleep?: boolean;
+  autoSync?: boolean;
+}
+
+export class CannonPhysicsSystem extends System {
+  private readonly physicsWorld: PhysicsWorld;
+  private readonly autoSync: boolean;
+  private bodyEntities: Map<string, { body: CANNON.Body; entityId: string }> = new Map();
+
+  constructor(config: CannonPhysicsSystemConfig = {}) {
+    super('CannonPhysicsSystem');
+
+    const {
+      gravity,
+      solverIterations,
+      broadphase,
+      allowSleep,
+      autoSync = true,
+    } = config;
+
+    this.physicsWorld = new PhysicsWorld({
+      gravity,
+      solverIterations,
+      broadphase,
+      allowSleep,
+    });
+
+    this.autoSync = autoSync;
+
+    // Setup default materials
+    this.setupDefaultMaterials();
+
+    console.log('[CannonPhysicsSystem] Initialized', config);
+  }
+
+  /**
+   * Setup default physics materials
+   */
+  private setupDefaultMaterials(): void {
+    const defaultMat = this.physicsWorld.createMaterial('default', 0.3, 0.3);
+    const slipperyMat = this.physicsWorld.createMaterial('slippery', 0.1, 0.1);
+    const bouncyMat = this.physicsWorld.createMaterial('bouncy', 0.5, 0.9);
+
+    // Create contact materials
+    this.physicsWorld.createContactMaterial('default', 'default', 0.3, 0.3);
+    this.physicsWorld.createContactMaterial('slippery', 'slippery', 0.1, 0.1);
+    this.physicsWorld.createContactMaterial('bouncy', 'bouncy', 0.5, 0.9);
+    this.physicsWorld.createContactMaterial('default', 'slippery', 0.2, 0.2);
+    this.physicsWorld.createContactMaterial('default', 'bouncy', 0.4, 0.6);
+  }
+
+  /**
+   * Update physics simulation
+   */
+  override update(deltaTime: number): void {
+    // Step physics world
+    this.physicsWorld.step(deltaTime);
+
+    // Sync transforms if auto-sync is enabled
+    if (this.autoSync) {
+      this.syncTransforms();
+    }
+  }
+
+  /**
+   * Sync physics bodies to entity transforms
+   */
+  private syncTransforms(): void {
+    if (!this.world) return;
+
+    const entities = this.world.getEntitiesWithComponents(
+      PhysicsBodyComponent,
+      TransformComponent
+    );
+
+    for (const entity of entities) {
+      const physicsBody = entity.getComponent(PhysicsBodyComponent) as PhysicsBodyComponent;
+      const transform = entity.getComponent(TransformComponent) as TransformComponent;
+
+      if (physicsBody && transform) {
+        // Sync physics body -> transform
+        physicsBody.syncToTransform();
+      }
+    }
+  }
+
+  /**
+   * Sync initial transform to physics body
+   */
+  syncEntityToPhysics(entityId: string): void {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) return;
+
+    const physicsBody = entity.getComponent(PhysicsBodyComponent);
+    const transform = entity.getComponent(TransformComponent);
+
+    if (physicsBody && transform) {
+      physicsBody.syncFromTransform();
+    }
+  }
+
+  /**
+   * Add a physics body component to entity
+   */
+  addPhysicsBody(entityId: string, physicsBody: PhysicsBodyComponent): void {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) {
+      console.error(`[CannonPhysicsSystem] Entity not found: ${entityId}`);
+      return;
+    }
+
+    // Add component to entity
+    entity.addComponent(PhysicsBodyComponent, physicsBody);
+
+    // Link with transform if available
+    const transform = entity.getComponent(TransformComponent);
+    if (transform) {
+      physicsBody.linkTransform(transform);
+      physicsBody.syncFromTransform();
+    }
+
+    // Add body to physics world
+    this.physicsWorld.addBody(physicsBody.body);
+
+    // Track entity
+    this.bodyEntities.set(physicsBody.body.id, { body: physicsBody.body, entityId });
+
+    console.log(`[CannonPhysicsSystem] Added physics body to entity: ${entityId}`);
+  }
+
+  /**
+   * Remove physics body from entity
+   */
+  removePhysicsBody(entityId: string): void {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) return;
+
+    const physicsBody = entity.getComponent(PhysicsBodyComponent);
+    if (!physicsBody) return;
+
+    // Remove from physics world
+    this.physicsWorld.removeBody(physicsBody.body);
+
+    // Remove from tracking
+    this.bodyEntities.delete(physicsBody.body.id);
+
+    // Remove component from entity
+    entity.removeComponent(PhysicsBodyComponent);
+
+    console.log(`[CannonPhysicsSystem] Removed physics body from entity: ${entityId}`);
+  }
+
+  /**
+   * Apply force to entity
+   */
+  applyForce(entityId: string, force: { x: number; y: number; z: number }, worldPoint?: { x: number; y: number; z: number }): void {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) return;
+
+    const physicsBody = entity.getComponent(PhysicsBodyComponent);
+    if (!physicsBody) return;
+
+    physicsBody.applyForce(force, worldPoint);
+  }
+
+  /**
+   * Apply impulse to entity
+   */
+  applyImpulse(entityId: string, impulse: { x: number; y: number; z: number }, worldPoint?: { x: number; y: number; z: number }): void {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) return;
+
+    const physicsBody = entity.getComponent(PhysicsBodyComponent);
+    if (!physicsBody) return;
+
+    physicsBody.applyImpulse(impulse, worldPoint);
+  }
+
+  /**
+   * Set entity velocity
+   */
+  setVelocity(entityId: string, velocity: { x: number; y: number; z: number }): void {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) return;
+
+    const physicsBody = entity.getComponent(PhysicsBodyComponent);
+    if (!physicsBody) return;
+
+    physicsBody.setVelocity(velocity);
+  }
+
+  /**
+   * Get entity velocity
+   */
+  getVelocity(entityId: string): { x: number; y: number; z: number } | null {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) return null;
+
+    const physicsBody = entity.getComponent(PhysicsBodyComponent);
+    if (!physicsBody) return null;
+
+    const vel = physicsBody.getVelocity();
+    return { x: vel.x, y: vel.y, z: vel.z };
+  }
+
+  /**
+   * Wake up entity
+   */
+  wakeUp(entityId: string): void {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) return;
+
+    const physicsBody = entity.getComponent(PhysicsBodyComponent);
+    if (!physicsBody) return;
+
+    physicsBody.wakeUp();
+  }
+
+  /**
+   * Put entity to sleep
+   */
+  sleep(entityId: string): void {
+    const entity = this.world.getEntity(entityId);
+    if (!entity) return;
+
+    const physicsBody = entity.getComponent(PhysicsBodyComponent);
+    if (!physicsBody) return;
+
+    physicsBody.sleep();
+  }
+
+  /**
+   * Raycast for collision detection
+   */
+  raycast(
+    from: { x: number; y: number; z: number },
+    to: { x: number; y: number; z: number }
+  ): { hasHit: boolean; body?: CANNON.Body; point?: { x: number; y: number; z: number } } {
+    const fromVec = new CANNON.Vec3(from.x, from.y, from.z);
+    const toVec = new CANNON.Vec3(to.x, to.y, to.z);
+
+    const result = this.physicsWorld.raycast(fromVec, toVec);
+
+    if (result.hasHit) {
+      return {
+        hasHit: true,
+        body: result.body,
+        point: {
+          x: result.hitPointWorld.x,
+          y: result.hitPointWorld.y,
+          z: result.hitPointWorld.z,
+        },
+      };
+    }
+
+    return { hasHit: false };
+  }
+
+  /**
+   * Get entity by physics body ID
+   */
+  getEntityByBodyId(bodyId: number): string | null {
+    const tracked = this.bodyEntities.get(bodyId);
+    return tracked?.entityId || null;
+  }
+
+  /**
+   * Access to physics world for advanced usage
+   */
+  getPhysicsWorld(): PhysicsWorld {
+    return this.physicsWorld;
+  }
+
+  /**
+   * Get physics statistics
+   */
+  getStats(): {
+    bodies: number;
+    entities: number;
+    constraints: number;
+    contactMaterials: number;
+  } {
+    const worldStats = this.physicsWorld.getStats();
+
+    return {
+      ...worldStats,
+      entities: this.bodyEntities.size,
+    };
+  }
+
+  /**
+   * Clean up system
+   */
+  override dispose(): void {
+    // Remove all physics bodies from entities
+    if (this.world) {
+      const entities = this.world.getEntitiesWithComponents(PhysicsBodyComponent);
+      for (const entity of entities) {
+        this.removePhysicsBody(entity.id);
+      }
+    }
+
+    // Dispose physics world
+    this.physicsWorld.dispose();
+
+    // Clear tracking
+    this.bodyEntities.clear();
+
+    console.log('[CannonPhysicsSystem] Disposed');
+  }
+}

@@ -23,6 +23,7 @@ fn main() -> Result<()> {
                 proto_dir.join("networking.proto"),
                 proto_dir.join("room.proto"),
                 proto_dir.join("media.proto"),
+                proto_dir.join("auth.proto"),
             ],
             &[proto_dir],
         )?;
@@ -31,6 +32,7 @@ fn main() -> Result<()> {
     println!("cargo:rerun-if-changed=proto/networking.proto");
     println!("cargo:rerun-if-changed=proto/room.proto");
     println!("cargo:rerun-if-changed=proto/media.proto");
+    println!("cargo:rerun-if-changed=proto/auth.proto");
 
     Ok(())
 }

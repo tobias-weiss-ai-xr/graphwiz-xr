@@ -4,6 +4,10 @@ mod m20250101_000001_create_users;
 mod m20250101_000002_create_rooms;
 mod m20250101_000003_create_sessions;
 mod m20250101_000004_create_entities;
+mod m20250101_000005_add_oauth_and_sessions;
+mod m20250101_000006_add_profile_settings;
+
+pub mod runner;
 
 pub struct Migrator;
 
@@ -15,6 +19,8 @@ impl MigratorTrait for Migrator {
             Box::new(m20250101_000002_create_rooms::Migration),
             Box::new(m20250101_000003_create_sessions::Migration),
             Box::new(m20250101_000004_create_entities::Migration),
+            Box::new(m20250101_000005_add_oauth_and_sessions::Migration),
+            Box::new(m20250101_000006_add_profile_settings::Migration),
         ]
     }
 }

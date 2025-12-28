@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphWiz-XR WebSocket Test Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .status.disconnected {
+            background: #f44336;
+        }
+
+        .status.connected {
+            background: #4CAF50;
+        }
+
+        .controls {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        button {
+            background: #4CAF50;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        button.disconnect {
+            background: #f44336;
+        }
+
+        button.disconnect:hover {
+            background: #da190b;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .panel {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .panel h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        #messages, #logs {
+            height: 300px;
+            overflow-y: auto;
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .message, .log {
+            padding: 5px;
+            margin-bottom: 5px;
+            border-left: 3px solid #4CAF50;
+            padding-left: 10px;
+        }
+
+        .message.sent {
+            border-left-color: #2196F3;
+        }
+
+        .message.error {
+            border-left-color: #f44336;
+            color: #f44336;
+        }
+
+        .log {
+            border-left-color: #FF9800;
+        }
+
+        .timestamp {
+            color: #888;
+            font-size: 11px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+            min-height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🟢 GraphWiz-XR WebSocket Test Client</h1>
+
+        <div id="status" class="status disconnected">
+            Status: Disconnected
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="wsUrl">WebSocket URL</label>
+                <input type="text" id="wsUrl" value="ws://localhost:8083/ws/test-room?user_id=test-user&client_id=test-client">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button id="connectBtn" onclick="connect()">Connect</button>
+                <button id="disconnectBtn" class="disconnect" onclick="disconnect()" disabled>Disconnect</button>
+            </div>
+
+            <div class="control-group" style="margin-top: 15px;">
+                <label for="messageInput">Send Message (JSON)</label>
+                <textarea id="messageInput" placeholder='{"type":"CHAT_MESSAGE","text":"Hello everyone!"}'></textarea>
+                <button onclick="sendMessage()" style="margin-top: 10px;" id="sendBtn" disabled>Send Message</button>
+            </div>
+
+            <div class="control-group" style="margin-top: 10px;">
+                <button onclick="getStats()" id="statsBtn" disabled>Get Room Stats</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="panel">
+                <h2>Messages</h2>
+                <div id="messages"></div>
+            </div>
+
+            <div class="panel">
+                <h2>Logs</h2>
+                <div id="logs"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+
+        function connect() {
+            const url = document.getElementById('wsUrl').value;
+            log('Connecting to ' + url + '...');
+
+            ws = new WebSocket(url);
+
+            ws.onopen = () => {
+                log('Connected to WebSocket');
+                updateStatus(true);
+            };
+
+            ws.onmessage = (event) => {
+                log('Received message', 'info');
+                addMessage(event.data, 'received');
+            };
+
+            ws.onerror = (error) => {
+                log('WebSocket error: ' + error, 'error');
+                addMessage('Connection error', 'error');
+            };
+
+            ws.onclose = () => {
+                log('Disconnected from WebSocket');
+                updateStatus(false);
+            };
+        }
+
+        function disconnect() {
+            if (ws) {
+                log('Disconnecting...');
+                ws.close();
+                ws = null;
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                alert('Not connected to WebSocket');
+                return;
+            }
+
+            try {
+                // Try to parse as JSON for pretty printing
+                const json = JSON.parse(message);
+                ws.send(JSON.stringify(json));
+                log('Sent: ' + JSON.stringify(json));
+                addMessage(JSON.stringify(json), 'sent');
+            } catch (e) {
+                // Send as plain text if not valid JSON
+                ws.send(message);
+                log('Sent: ' + message);
+                addMessage(message, 'sent');
+            }
+        }
+
+        function getStats() {
+            const url = new URL(document.getElementById('wsUrl').value);
+            const roomId = url.pathname.split('/').pop();
+            const statsUrl = `http://localhost:8083/ws/${roomId}/stats`;
+
+            log('Fetching stats from ' + statsUrl);
+
+            fetch(statsUrl)
+                .then(response => response.json())
+                .then(data => {
+                    log('Room stats: ' + JSON.stringify(data, null, 2));
+                    addMessage('Stats: ' + data.connection_count + ' connections', 'log');
+                })
+                .catch(error => {
+                    log('Error fetching stats: ' + error, 'error');
+                });
+        }
+
+        function updateStatus(connected) {
+            const statusEl = document.getElementById('status');
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            const sendBtn = document.getElementById('sendBtn');
+            const statsBtn = document.getElementById('statsBtn');
+
+            if (connected) {
+                statusEl.textContent = 'Status: Connected';
+                statusEl.className = 'status connected';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+                sendBtn.disabled = false;
+                statsBtn.disabled = false;
+            } else {
+                statusEl.textContent = 'Status: Disconnected';
+                statusEl.className = 'status disconnected';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+                sendBtn.disabled = true;
+                statsBtn.disabled = true;
+            }
+        }
+
+        function addMessage(content, type = 'received') {
+            const messagesEl = document.getElementById('messages');
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'message ' + type;
+
+            let displayContent = content;
+            try {
+                const json = JSON.parse(content);
+                displayContent = JSON.stringify(json, null, 2);
+            } catch (e) {
+                // Keep original content if not JSON
+            }
+
+            div.innerHTML = `<span class="timestamp">[${timestamp}]</span> <div style="white-space: pre-wrap; word-break: break-all;">${escapeHtml(displayContent)}</div>`;
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function log(message, type = 'info') {
+            const logsEl = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'log ' + type;
+            div.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${escapeHtml(message)}`;
+            logsEl.appendChild(div);
+            logsEl.scrollTop = logsEl.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Handle Enter key in message input
+        document.getElementById('messageInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

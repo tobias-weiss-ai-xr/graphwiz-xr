@@ -5,8 +5,11 @@
 pub mod config;
 pub mod handlers;
 pub mod jwt;
+pub mod magic_link;
 pub mod models;
+pub mod oauth;
 pub mod routes;
+pub mod session;
 
 use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;

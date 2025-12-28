@@ -1,0 +1,105 @@
+name: Quality Assurance
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run QA checks weekly on Sundays at 3 AM UTC
+    - cron: '0 3 * * 0'
+
+jobs:
+  # Mutation testing
+  mutation-test:
+    name: Mutation Testing
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[mutation-test]')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./packages/clients/hub-client
+
+      - name: Run mutation tests
+        run: node .qa/run-all-mutation-tests.cjs
+        working-directory: ./packages/clients/hub-client
+        continue-on-error: true
+
+      - name: Upload mutation test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-test-results
+          path: packages/clients/hub-client/.qa/mutation-reports/
+          retention-days: 7
+
+  # Security audit
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Run security audit
+        run: pnpm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  # Dependency check
+  dependencies:
+    name: Dependency Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: Check for outdated dependencies
+        run: pnpm outdated
+        working-directory: ./packages/clients/hub-client
+        continue-on-error: true
+
+      - name: Check for security vulnerabilities
+        run: pnpm audit
+        working-directory: ./packages/clients/hub-client
+        continue-on-error: true

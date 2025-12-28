@@ -26,6 +26,9 @@ describe('WebTransportClient', () => {
   let client: WebTransportClient;
 
   beforeEach(() => {
+    // Reset the ready promise to resolved state for each test
+    mockWebTransport.ready = Promise.resolve(undefined);
+
     client = new WebTransportClient({
       serverUrl: 'https://test.example.com',
       roomId: 'test-room',

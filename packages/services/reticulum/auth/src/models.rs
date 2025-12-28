@@ -27,9 +27,10 @@ pub struct AuthResponse {
     pub refresh_token: String,
     pub expires_in: u64,
     pub user: UserInfo,
+    pub session_id: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserInfo {
     pub id: i32,
     pub display_name: String,

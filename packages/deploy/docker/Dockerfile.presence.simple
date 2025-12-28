@@ -1,0 +1,44 @@
+# Dockerfile for Reticulum Presence Service (Simple version with pre-built binary)
+# This Dockerfile assumes you've already built the binary locally using Rust nightly
+#
+# Build instructions:
+# 1. rustup override set nightly
+# 2. cargo build --release -p reticulum-presence
+# 3. docker build -f Dockerfile.presence.simple -t graphwiz-presence:test .
+
+FROM debian:bookworm-slim
+
+LABEL description="GraphWiz-XR Presence Service with WebSocket support"
+LABEL version="0.1.0"
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libssl3 \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -g 1000 graphwiz && \
+    useradd -r -u 1000 -g graphwiz graphwiz
+
+WORKDIR /app
+
+# Copy pre-built binary from local build
+# Ensure you've run: cargo build --release -p reticulum-presence
+COPY target/release/reticulum-presence /app/
+
+# Set ownership
+RUN chown -R graphwiz:graphwiz /app
+
+USER graphwiz
+
+# Expose port
+EXPOSE 8003
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8003/health || exit 1
+
+# Run the service
+CMD ["./reticulum-presence"]

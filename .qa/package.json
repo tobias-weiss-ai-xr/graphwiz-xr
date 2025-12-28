@@ -1,0 +1,30 @@
+{
+  "name": "@graphwiz/qa-framework",
+  "version": "1.0.0",
+  "description": "Cognitive Quality Assurance Framework for GraphWiz-XR",
+  "type": "module",
+  "scripts": {
+    "qa:plan": "node .qa/agents/qa-agent.ts plan",
+    "qa:generate": "node .qa/agents/qa-agent.ts generate",
+    "qa:validate": "node .qa/agents/qa-agent.ts validate",
+    "qa:rag:init": "node .qa/rag/requirement-indexer.ts init",
+    "qa:rag:generate": "node .qa/rag/requirement-indexer.ts generate",
+    "qa:mutation": "node .qa/validators/mutation-tester.ts test",
+    "qa:validation": "node .qa/validators/validation-pipeline.ts validate",
+    "qa:all": "npm run qa:validation && npm run qa:mutation"
+  },
+  "keywords": [
+    "qa",
+    "testing",
+    "cognitive-qa",
+    "mutation-testing",
+    "rag",
+    "ai-testing"
+  ],
+  "author": "GraphWiz-XR Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  }
+}

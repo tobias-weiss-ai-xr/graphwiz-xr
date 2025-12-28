@@ -5,8 +5,11 @@
  * Do not edit manually - run `pnpm build:proto` to regenerate
  */
 
-// Re-export generated types
-export type { Vector3, Quaternion } from './generated/core.js';
+// Re-export generated proto module
+export * from './generated/proto.js';
+
+// Re-export commonly used types for convenience
+export type { graphwiz } from './generated/proto.js';
 
 // Re-export utility functions
 export { MessageBuilder } from './builder.js';
@@ -26,14 +29,3 @@ export {
   SessionDescriptionType,
   VideoCodecType
 } from './types.js';
-
-// Re-export all networking types
-export type * from './generated/networking.js';
-
-// Re-export room types (avoiding duplicates with types.ts)
-export type {
-  RoomPermissions
-} from './types.js';
-
-// Re-export media types (avoiding duplicates with types.ts)
-// All media types are already exported from types.ts

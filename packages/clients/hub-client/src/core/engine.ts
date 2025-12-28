@@ -6,7 +6,12 @@
  */
 
 import { TransformSystem } from '../ecs/systems/transform-system';
+import { AnimationSystem } from '../ecs/systems/animation-system';
+import { AudioSystem } from '../ecs/systems/audio-system';
+import { PhysicsSystem } from '../ecs/systems/physics-system';
+import { BillboardSystem } from '../ecs/systems/billboard-system';
 import { World } from '../ecs/world';
+import { assetLoader } from './assets';
 
 import type { EngineConfig } from './config';
 
@@ -15,26 +20,37 @@ export class Engine {
   private isRunning = false;
   private animationFrameId: number | null = null;
   private lastTime = 0;
+  private audioSystem: AudioSystem;
+  private billboardSystem: BillboardSystem;
 
   constructor(config: Partial<EngineConfig> = {}) {
     void config; // Unused for now
     this.world = new World();
+    this.audioSystem = new AudioSystem();
+    this.billboardSystem = new BillboardSystem();
     this.initializeSystems();
   }
 
   private initializeSystems(): void {
-    // Core systems
+    // Core systems - order matters!
     this.world.addSystem(new TransformSystem());
+    this.world.addSystem(new PhysicsSystem());
+    this.world.addSystem(new AnimationSystem());
+    this.world.addSystem(this.audioSystem);
+    this.world.addSystem(this.billboardSystem);
   }
 
   /**
    * Start the engine
    */
-  start(): void {
+  async start(): Promise<void> {
     if (this.isRunning) {
       console.warn('[Engine] Already running');
       return;
     }
+
+    // Initialize audio
+    this.audioSystem.initializeAudio();
 
     this.isRunning = true;
     this.lastTime = performance.now();
@@ -77,13 +93,34 @@ export class Engine {
 
     // Schedule next frame
     this.animationFrameId = requestAnimationFrame(this.tick);
-  }
+  };
 
   /**
    * Get the ECS world
    */
   getWorld(): World {
     return this.world;
+  }
+
+  /**
+   * Get the audio system
+   */
+  getAudioSystem(): AudioSystem {
+    return this.audioSystem;
+  }
+
+  /**
+   * Get the billboard system
+   */
+  getBillboardSystem(): BillboardSystem {
+    return this.billboardSystem;
+  }
+
+  /**
+   * Get the asset loader
+   */
+  getAssetLoader(): typeof assetLoader {
+    return assetLoader;
   }
 
   /**
@@ -99,6 +136,6 @@ export class Engine {
   dispose(): void {
     this.stop();
     this.world.dispose();
+    assetLoader.clearCache();
   }
 }
-
