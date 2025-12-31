@@ -38,10 +38,10 @@ export class XRInputManager extends EventEmitter {
   private inputSources: Map<string, XRInputSource> = new Map();
   private controllerStates: Map<string, ControllerState> = new Map();
   private referenceSpace: XRReferenceSpace | null = null;
-  private tempMatrix = new THREE.Matrix4();
-  private tempPosition = new THREE.Vector3();
-  private tempQuaternion = new THREE.Quaternion();
-  private config: XRInputManagerConfig;
+  private _tempMatrix = new THREE.Matrix4();
+  private _tempPosition = new THREE.Vector3();
+  private _tempQuaternion = new THREE.Quaternion();
+  private _config: XRInputManagerConfig;
 
   // Button mappings for common controllers
   private buttonMappings: Map<string, string[]> = new Map([
@@ -52,7 +52,7 @@ export class XRInputManager extends EventEmitter {
 
   constructor(config: XRInputManagerConfig = {}) {
     super();
-    this.config = {
+    this._config = {
       autoEnable: true,
       controllerProfiles: ['oculus-touch', 'valve-index', 'htc-vive'],
       ...config,
@@ -76,7 +76,9 @@ export class XRInputManager extends EventEmitter {
       this.handleInputSourcesChange(event);
     });
 
-    console.log('[XRInputManager] Initialized with session:', session.mode);
+    // XRSession doesn't have a mode property, we can check if it's immersive
+    const isImmersive = session.enabledFeatures?.includes('immersive-vr') || session.enabledFeatures?.includes('immersive-ar');
+    console.log('[XRInputManager] Initialized with immersive session:', isImmersive);
 
     this.emit('initialized');
   }
@@ -94,9 +96,13 @@ export class XRInputManager extends EventEmitter {
 
       const gamepad = inputSource.gamepad;
 
-      // Get controller pose
-      const gripPose = frame.getPose(inputSource.gripSpace, referenceSpace);
-      const aimPose = frame.getPose(inputSource.targetRaySpace, referenceSpace);
+      // Get controller pose (check for undefined spaces)
+      const gripSpace = inputSource.gripSpace;
+      const targetRaySpace = inputSource.targetRaySpace;
+      if (!gripSpace || !targetRaySpace) continue;
+
+      const gripPose = frame.getPose(gripSpace, referenceSpace);
+      const aimPose = frame.getPose(targetRaySpace, referenceSpace);
 
       if (gripPose) {
         state.gripMatrix.fromArray(gripPose.transform.matrix);
@@ -130,7 +136,6 @@ export class XRInputManager extends EventEmitter {
    * Update button states
    */
   private updateButtons(state: ControllerState, gamepad: Gamepad): void {
-    const previousButtons = new Map(state.buttons);
 
     // Map gamepad buttons to named buttons
     const buttonMap = this.getButtonMapping(gamepad.id);
@@ -296,7 +301,7 @@ export class XRInputManager extends EventEmitter {
    * Get left controller state
    */
   getLeftController(): ControllerState | undefined {
-    for (const [id, state] of this.controllerStates) {
+    for (const [, state] of this.controllerStates) {
       if (state.handedness === 'left') {
         return state;
       }
@@ -308,7 +313,7 @@ export class XRInputManager extends EventEmitter {
    * Get right controller state
    */
   getRightController(): ControllerState | undefined {
-    for (const [id, state] of this.controllerStates) {
+    for (const [, state] of this.controllerStates) {
       if (state.handedness === 'right') {
         return state;
       }
@@ -337,7 +342,7 @@ export class XRInputManager extends EventEmitter {
     controllerId: string,
     value: number,
     duration: number,
-    forceHaptic?: boolean
+    _forceHaptic?: boolean
   ): void {
     const inputSource = this.inputSources.get(controllerId);
     if (!inputSource || !inputSource.gamepad || !this.session) {

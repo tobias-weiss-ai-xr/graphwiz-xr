@@ -501,6 +501,3 @@ export class XRInputSystem extends System {
     return undefined;
   }
 }
-
-// Export components
-export { XRControllerComponent, VRInteractableComponent };
