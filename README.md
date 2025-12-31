@@ -127,6 +127,26 @@ pnpm check
 pnpm build
 ```
 
+## 📚 Documentation & Planning
+
+### Development Planning
+- **[NEXT_STEPS.md](./NEXT_STEPS.md)** - Detailed immediate action items, quick wins, and task breakdowns
+- **[ROADMAP.md](./ROADMAP.md)** - Long-term development roadmap and feature planning
+- **[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)** - Detailed implementation progress tracking
+
+### Architecture Documentation
+- **[docs/arc42.md](./docs/arc42.md)** - Architecture documentation (arc42 template)
+- **[docs/INTENTION.md](./docs/INTENTION.md)** - Project intentions and design principles
+
+### Quick Reference Guides
+- **[NETWORKING_IMPLEMENTATION_SUMMARY.md](./NETWORKING_IMPLEMENTATION_SUMMARY.md)** - WebSocket implementation details
+- **[PHYSICS_ENGINE_INTEGRATION.md](./PHYSICS_ENGINE_INTEGRATION.md)** - Physics system documentation
+- **[VOICE_CHAT_IMPLEMENTATION_SUMMARY.md](./VOICE_CHAT_IMPLEMENTATION_SUMMARY.md)** - Voice chat system
+
+### Test Reports
+- **[PHYSICS_TEST_REPORT.md](./PHYSICS_TEST_REPORT.md)** - Physics system test results
+- **[FULL_STACK_INTEGRATION_TEST_REPORT.md](./FULL_STACK_INTEGRATION_TEST_REPORT.md)** - Integration test results
+
 ## Architecture
 
 ### Components
