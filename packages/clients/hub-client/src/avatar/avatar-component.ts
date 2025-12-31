@@ -5,7 +5,7 @@
  * Supports customization, VR tracking, and network synchronization.
  */
 
-import { Vector3, Euler, Color } from 'three';
+import { Vector3, Euler } from 'three';
 
 export type AvatarBodyPart = 'head' | 'torso' | 'leftArm' | 'rightArm' | 'leftHand' | 'rightHand' | 'leftLeg' | 'rightLeg';
 
@@ -184,10 +184,10 @@ export class AvatarComponent {
       userId: this.userId,
       displayName: this.displayName,
       customization: this.customization,
-      headPosition: this.headPosition.toJSON(),
-      headRotation: this.headRotation.toJSON(),
-      leftHandPosition: this.leftHandPosition.toJSON(),
-      rightHandPosition: this.rightHandPosition.toJSON(),
+      headPosition: { x: this.headPosition.x, y: this.headPosition.y, z: this.headPosition.z },
+      headRotation: { x: this.headRotation.x, y: this.headRotation.y, z: this.headRotation.z },
+      leftHandPosition: { x: this.leftHandPosition.x, y: this.leftHandPosition.y, z: this.leftHandPosition.z },
+      rightHandPosition: { x: this.rightHandPosition.x, y: this.rightHandPosition.y, z: this.rightHandPosition.z },
       isMoving: this.isMoving,
       isSpeaking: this.isSpeaking,
       isEmoting: this.isEmoting,

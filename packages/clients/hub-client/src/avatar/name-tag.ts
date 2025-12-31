@@ -4,7 +4,7 @@
  * Floating name tag above avatar showing user info and status.
  */
 
-import { Vector3, Color, SpriteMaterial, Sprite, Texture, CanvasTexture } from 'three';
+import { Vector3, SpriteMaterial, Sprite, CanvasTexture } from 'three';
 
 export interface NameTagConfig {
   showUserId?: boolean;
@@ -21,7 +21,6 @@ export class AvatarNameTag {
   public readonly canvas: HTMLCanvasElement;
   public readonly ctx: CanvasRenderingContext2D;
   public readonly texture: CanvasTexture;
-  private needsUpdate = false;
 
   constructor(
     displayName: string,
@@ -55,7 +54,7 @@ export class AvatarNameTag {
     });
 
     this.sprite = new Sprite(material);
-    this.sprite.scale.set(2, 0.5);
+    this.sprite.scale.set(2, 0.5, 1);
 
     // Store config
     (this.sprite as any).config = { showUserId, showStatus, backgroundColor, textColor, fontSize, padding, borderRadius };
@@ -70,13 +69,13 @@ export class AvatarNameTag {
    */
   update(displayName: string, status?: string, isSpeaking?: boolean): void {
     (this.sprite as any).displayName = displayName;
-    this.render(displayName, status, isSpeaking);
+    this.render(displayName, status || '', isSpeaking || false);
   }
 
   /**
    * Render name tag to canvas
    */
-  private render(displayName: string, status: string, isSpeaking: boolean): void {
+  private render(displayName: string, _status: string, isSpeaking: boolean): void {
     const { ctx, canvas } = this;
     const config = (this.sprite as any).config as NameTagConfig;
 
@@ -155,7 +154,7 @@ export class AvatarNameTag {
   /**
    * Update for camera
    */
-  update(): void {
+  updateForCamera(): void {
     // Billboard - always face camera
     this.sprite.material.rotation = 0;
   }

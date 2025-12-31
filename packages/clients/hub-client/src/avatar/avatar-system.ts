@@ -10,6 +10,8 @@ import { AvatarRenderer } from './avatar-renderer';
 import { TransformComponent } from '../ecs/entity';
 import { XRInputManager } from '../xr/xr-input-manager';
 import type { NetworkClient } from '../network/client';
+import { MessageType } from '@graphwiz/protocol';
+import * as THREE from 'three';
 
 export interface AvatarSystemConfig {
   updateRate?: number; // Position update rate in Hz
@@ -39,7 +41,7 @@ export class AvatarSystem extends System {
   }> = new Map();
 
   constructor(config: AvatarSystemConfig = {}) {
-    super('AvatarSystem');
+    super();
 
     this.config = {
       updateRate: 30,
@@ -59,15 +61,15 @@ export class AvatarSystem extends System {
     this.networkClient = networkClient;
 
     // Listen for remote user updates
-    networkClient.on('user_joined', (data: any) => {
+    networkClient.on(MessageType.PRESENCE_JOIN, (data: any) => {
       this.handleRemoteUserJoined(data);
     });
 
-    networkClient.on('user_left', (data: any) => {
+    networkClient.on(MessageType.PRESENCE_LEAVE, (data: any) => {
       this.handleRemoteUserLeft(data);
     });
 
-    networkClient.on('avatar_update', (data: any) => {
+    networkClient.on(MessageType.ENTITY_UPDATE, (data: any) => {
       this.handleRemoteAvatarUpdate(data);
     });
   }
@@ -172,7 +174,7 @@ export class AvatarSystem extends System {
   /**
    * Update local avatar from VR input
    */
-  updateLocalAvatar(deltaTime: number): void {
+  updateLocalAvatar(_deltaTime: number): void {
     if (!this.localAvatarId || !this.xrInputManager) return;
 
     const entity = this.world!.getEntity(this.localAvatarId);
@@ -196,11 +198,13 @@ export class AvatarSystem extends System {
     const rightController = this.xrInputManager.getControllerState('right');
 
     if (leftController) {
-      avatar.updateHand('left', leftController.gripPosition, leftController.gripRotation);
+      const leftEuler = new THREE.Euler().setFromQuaternion(leftController.gripRotation);
+      avatar.updateHand('left', leftController.gripPosition, leftEuler);
     }
 
     if (rightController) {
-      avatar.updateHand('right', rightController.gripPosition, rightController.gripRotation);
+      const rightEuler = new THREE.Euler().setFromQuaternion(rightController.gripRotation);
+      avatar.updateHand('right', rightController.gripPosition, rightEuler);
     }
 
     // Broadcast over network
@@ -387,7 +391,7 @@ export class AvatarSystem extends System {
   /**
    * Dispose of system
    */
-  override dispose(): void {
+  dispose(): void {
     // Remove all renderers
     for (const [entityId, renderer] of this.renderers) {
       renderer.dispose();

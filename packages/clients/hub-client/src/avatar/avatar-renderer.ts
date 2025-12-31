@@ -15,7 +15,7 @@ export class AvatarRenderer {
   private readonly nameTag: AvatarNameTag;
 
   constructor(
-    private readonly avatar: AvatarComponent,
+    public readonly avatar: AvatarComponent,
     private readonly scene: THREE.Scene
   ) {
     this.root = new Group();
