@@ -1,12 +1,11 @@
 /* eslint-disable react/no-unknown-property */
-import type { EntitySpawn } from '@graphwiz/protocol';
 import { OrbitControls, Grid, PerspectiveCamera, Text } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { useState, useCallback, useEffect } from 'react';
 
 import { WebSocketClient } from './network/websocket-client';
-import type { Message, PresenceEvent, MessageType } from '@graphwiz/protocol';
-import { AssetBrowser, AssetUploader, storageApi, Asset } from './storage';
+import { MessageType } from '@graphwiz/protocol';
+import { AssetBrowser, AssetUploader, Asset } from './storage';
 
 interface Entity {
   id: string;
@@ -55,7 +54,7 @@ function App() {
   const [myClientId, setMyClientId] = useState<string | null>(null);
 
   // Network data
-  const [presenceEvents, setPresenceEvents] = useState<PresenceEvent[]>([]);
+  const [presenceEvents, setPresenceEvents] = useState<Array<any>>([]);
   const [messages, setMessages] = useState<Array<{ from: string; message: string }>>([]);
 
   const [localEntities, setLocalEntities] = useState<Map<string, Entity>>(new Map());
@@ -94,28 +93,28 @@ function App() {
       })
       .catch((err) => {
         console.error('[App] Failed to connect:', err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : String(err));
         setConnecting(false);
       });
 
     // Set up message handlers
-    const unsubscribePresence = wsClient.on(3, (message: Message) => { // MessageType.PRESENCE_EVENT
-      if (message.presenceEvent) {
+    const unsubscribePresence = wsClient.on(MessageType.PRESENCE_JOIN, (message: any) => {
+      if (message.payload) {
         setPresenceEvents((prev) => {
-          const filtered = prev.filter((e) => e.clientId !== message.presenceEvent!.clientId);
-          if (message.presenceEvent!.eventType === 1) { // Leave
+          const filtered = prev.filter((e) => e.clientId !== message.payload.clientId);
+          if (message.payload.eventType === 1) { // Leave
             return filtered;
           }
-          return [...filtered, message.presenceEvent!];
+          return [...filtered, message.payload];
         });
       }
     });
 
-    const unsubscribeChat = wsClient.on(6, (message: Message) => { // MessageType.CHAT_MESSAGE
-      if (message.chatMessage) {
+    const unsubscribeChat = wsClient.on(MessageType.CHAT_MESSAGE, (message: any) => {
+      if (message.payload) {
         setMessages((prev) => [...prev, {
-          from: message.chatMessage!.fromClientId,
-          message: message.chatMessage!.message,
+          from: message.payload.fromClientId || 'Unknown',
+          message: message.payload.message || '',
         }]);
       }
     });
@@ -157,21 +156,14 @@ function App() {
 
   const handleSendChat = useCallback(() => {
     if (chatInput.trim() && client) {
-      client.send({
-        type: 6, // MessageType.CHAT_MESSAGE
-        chatMessage: {
-          fromClientId: myClientId || 'unknown',
-          message: chatInput.trim(),
-          messageType: 0,
-        },
-      });
+      client.sendChatMessage(chatInput.trim());
       setMessages((prev) => [...prev, {
         from: 'You',
         message: chatInput.trim(),
       }]);
       setChatInput('');
     }
-  }, [chatInput, client, myClientId]);
+  }, [chatInput, client]);
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -214,7 +206,7 @@ function App() {
         )}
         {error && (
           <p style={{ margin: 0, fontSize: 11, color: '#f44336' }}>
-            {error.message}
+            {error}
           </p>
         )}
         <p style={{ margin: '8px 0 0 0', fontSize: 12, opacity: 0.8 }}>
