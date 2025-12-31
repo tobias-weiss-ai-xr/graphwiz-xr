@@ -4,7 +4,7 @@
  * Simulates the WebSocket presence service for development/testing.
  */
 
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import { randomUUID } from 'crypto';
 
 const PORT = 8013;
@@ -111,10 +111,10 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-function broadcast(message: ServerMessage, exclude?: WebSocket) {
+function broadcast(message: ServerMessage, excludeWs?: WebSocket) {
   const data = JSON.stringify(message);
-  wss.clients.forEach((client) => {
-    if (client !== exclude && client.readyState === 1) { // OPEN = 1
+  wss.clients.forEach((client: any) => {
+    if (client !== excludeWs && client.readyState === 1) { // OPEN = 1
       client.send(data);
     }
   });

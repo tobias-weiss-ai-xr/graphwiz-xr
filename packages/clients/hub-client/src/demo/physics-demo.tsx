@@ -89,8 +89,8 @@ export function PhysicsDemo() {
           handleEntityGrabbed(entityId);
         });
 
-        xrInputManager.on('entityThrown', (entityId, _controllerId, velocity) => {
-          handleEntityThrown(entityId, velocity);
+        xrInputManager.on('entityThrown', (entityId, controllerId, velocity) => {
+          handleEntityThrown(entityId, controllerId, velocity);
         });
       } else {
         console.log('⚠ VR not supported, running in desktop mode');
@@ -702,7 +702,7 @@ export function PhysicsDemo() {
 }
 
 // Physics scene components
-function PhysicsSceneComponents({ _engine }: { engine: Engine | null }) {
+function PhysicsSceneComponents({ engine: _engine }: { engine: Engine | null }) {
   return (
     <group>
       {/* Floor */}

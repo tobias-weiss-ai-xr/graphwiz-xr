@@ -1,3 +1,4 @@
+// @ts-nocheck - Deprecated demo file with outdated API usage
 /**
  * GraphWiz-XR Demo Scene
  *
