@@ -1,10 +1,24 @@
 # GraphWiz-XR
 
+![GraphWiz-XR Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)
+![Rust](https://img.shields.io/badge/Rust-1.83-orange.svg)
+![React](https://img.shields.io/badge/React-18-cyan.svg)
+![Three.js](https://img.shields.io/badge/Three.js-160-black.svg)
+![Vite](https://img.shields.io/badge/Vite-6.0-purple.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+
 Modern VR/Social platform - A complete rewrite of the Hubs ecosystem using TypeScript + Rust.
 
 ## Vision
 
 GraphWiz-XR delivers high-fidelity, browser-based virtual reality without installation barriers. Built with modern technologies for maximum performance and scalability.
+
+## Screenshot
+
+![GraphWiz-XR Hub Client](./docs/hub-client-screenshot.png)
+
+*The Hub Client - Your gateway to immersive VR experiences*
 
 ## Technology Stack
 

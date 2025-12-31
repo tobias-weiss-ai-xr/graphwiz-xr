@@ -75,7 +75,7 @@ export class MessageParser {
 
   private static parsePayload(
     view: DataView,
-    type: number,
+    _type: number,
     offset: number,
     length: number
   ): Message['payload'] {
