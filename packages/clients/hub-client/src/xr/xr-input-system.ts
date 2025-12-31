@@ -5,8 +5,9 @@
  */
 
 import { System } from '../ecs/system';
-import { TransformComponent } from '../ecs/entity';
+import { TransformComponent, PhysicsComponent } from '../ecs/entity';
 import { XRInputManager, ControllerState } from './xr-input-manager';
+import { EventEmitter } from 'events';
 import * as THREE from 'three';
 
 export interface XRInputSystemConfig {
@@ -65,6 +66,7 @@ export class XRInputSystem extends System {
   private previousTriggerValues = new Map<string, number>();
   private lastPositions = new Map<string, THREE.Vector3>();
   private velocities = new Map<string, THREE.Vector3>();
+  private eventEmitter = new EventEmitter();
 
   // Raycaster for interaction detection
   private raycaster = new THREE.Raycaster();
@@ -99,29 +101,31 @@ export class XRInputSystem extends System {
   /**
    * Update individual controller
    */
-  private updateController(controllerId: string, state: ControllerState, deltaTime: number): void {
+  private updateController(controllerId: string, state: ControllerState, _deltaTime: number): void {
     // Update grip entity transform
     const gripEntityId = this.gripEntities.get(controllerId);
-    if (gripEntityId) {
+    if (gripEntityId && this.world) {
       const entity = this.world.getEntity(gripEntityId);
       if (entity) {
         const transform = entity.getComponent(TransformComponent);
         if (transform) {
           transform.position.copy(state.gripPosition);
-          transform.rotation.copy(state.gripRotation);
+          const euler = new THREE.Euler().setFromQuaternion(state.gripRotation);
+          transform.rotation.copy(euler);
         }
       }
     }
 
     // Update aim entity transform
     const aimEntityId = this.aimEntities.get(controllerId);
-    if (aimEntityId) {
+    if (aimEntityId && this.world) {
       const entity = this.world.getEntity(aimEntityId);
       if (entity) {
         const transform = entity.getComponent(TransformComponent);
         if (transform) {
           transform.position.copy(state.aimPosition);
-          transform.rotation.copy(state.aimRotation);
+          const euler = new THREE.Euler().setFromQuaternion(state.aimRotation);
+          transform.rotation.copy(euler);
         }
       }
     }
@@ -153,7 +157,7 @@ export class XRInputSystem extends System {
   /**
    * Handle trigger press
    */
-  private handleTriggerPress(controllerId: string, state: ControllerState): void {
+  private handleTriggerPress(_controllerId: string, state: ControllerState): void {
     // Raycast for interactable entities
     const hitResult = this.raycast(state.aimPosition, state.aimRotation);
 
@@ -169,7 +173,7 @@ export class XRInputSystem extends System {
 
           // Trigger haptic feedback
           if (this.config.enableHapticFeedback) {
-            this.xrInputManager.triggerHapticPulse(controllerId, this.config.hapticStrength * 0.3);
+            this.xrInputManager.triggerHapticPulse(_controllerId, (this.config.hapticStrength ?? 0.5) * 0.3);
           }
         }
       }
@@ -179,7 +183,7 @@ export class XRInputSystem extends System {
   /**
    * Handle trigger release
    */
-  private handleTriggerRelease(controllerId: string, state: ControllerState): void {
+  private handleTriggerRelease(_controllerId: string, _state: ControllerState): void {
     // Clear all highlights
     this.clearHighlights();
   }
@@ -208,10 +212,10 @@ export class XRInputSystem extends System {
   /**
    * Handle grip/grab release
    */
-  private handleGripRelease(controllerId: string, state: ControllerState): void {
+  private handleGripRelease(controllerId: string, _state: ControllerState): void {
     const grabbedEntityId = this.grabbedEntities.get(controllerId);
 
-    if (grabbedEntityId) {
+    if (grabbedEntityId && this.world) {
       const entity = this.world.getEntity(grabbedEntityId);
       if (entity) {
         const interactable = entity.getComponent(VRInteractableComponent);
@@ -231,6 +235,8 @@ export class XRInputSystem extends System {
    * Grab an entity
    */
   private grabEntity(controllerId: string, entityId: string, state: ControllerState): void {
+    if (!this.world) return;
+
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
@@ -245,22 +251,22 @@ export class XRInputSystem extends System {
 
     // Calculate offset from controller to entity
     interactable.grabOffset.copy(transform.position).sub(state.gripPosition);
-    interactable.grabRotation.copy(transform.rotation);
+    interactable.grabRotation.setFromEuler(transform.rotation);
 
     // Store grabbed entity
     this.grabbedEntities.set(controllerId, entityId);
 
     // Trigger haptic feedback
     if (this.config.enableHapticFeedback) {
-      this.xrInputManager.triggerHapticPulse(controllerId, this.config.hapticStrength);
+      this.xrInputManager.triggerHapticPulse(controllerId, this.config.hapticStrength ?? 0.5);
     }
 
     this.emit('entityGrabbed', entityId, controllerId);
 
     // Disable physics while grabbing
-    const physics = entity.getComponent('PhysicsComponent');
+    const physics = entity.getComponent(PhysicsComponent);
     if (physics) {
-      (physics as any).enabled = false;
+      physics.isKinematic = true;
     }
   }
 
@@ -268,6 +274,8 @@ export class XRInputSystem extends System {
    * Release an entity
    */
   private releaseEntity(controllerId: string, entityId: string): void {
+    if (!this.world) return;
+
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
@@ -283,9 +291,9 @@ export class XRInputSystem extends System {
     this.grabbedEntities.delete(controllerId);
 
     // Re-enable physics
-    const physics = entity.getComponent('PhysicsComponent');
+    const physics = entity.getComponent(PhysicsComponent);
     if (physics) {
-      (physics as any).enabled = true;
+      physics.isKinematic = false;
     }
 
     this.emit('entityReleased', entityId, controllerId);
@@ -295,12 +303,14 @@ export class XRInputSystem extends System {
    * Throw an entity with velocity
    */
   private throwEntity(controllerId: string, entityId: string): void {
+    if (!this.world) return;
+
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
     const interactable = entity.getComponent(VRInteractableComponent);
     const transform = entity.getComponent(TransformComponent);
-    const physics = entity.getComponent('PhysicsComponent');
+    const physics = entity.getComponent(PhysicsComponent);
 
     if (!interactable || !transform || !physics) return;
 
@@ -312,15 +322,15 @@ export class XRInputSystem extends System {
     }
 
     // Apply velocity to physics
-    (physics as any).velocity = velocity.clone();
-    (physics as any).enabled = true;
+    physics.velocity.copy(velocity);
+    physics.isKinematic = false;
 
     // Release entity
     this.releaseEntity(controllerId, entityId);
 
     // Trigger haptic feedback
     if (this.config.enableHapticFeedback) {
-      this.xrInputManager.triggerHapticPulse(controllerId, this.config.hapticStrength * 0.7);
+      this.xrInputManager.triggerHapticPulse(controllerId, (this.config.hapticStrength ?? 0.5) * 0.7);
     }
 
     this.emit('entityThrown', entityId, controllerId, velocity);
@@ -368,7 +378,7 @@ export class XRInputSystem extends System {
     // Sort by distance and return closest
     if (interactables.length > 0) {
       interactables.sort((a, b) => a.distance - b.distance);
-      return interactables[0];
+      return interactables[0]!;
     }
 
     return null;
@@ -431,11 +441,15 @@ export class XRInputSystem extends System {
   private onControllerConnected(controllerId: string, state: ControllerState): void {
     if (!this.world) return;
 
+    // Only create entities for left/right controllers
+    if (state.handedness === 'none') return;
+
     // Create grip entity
     const gripEntity = this.world.createEntity();
     const gripTransform = new TransformComponent();
     gripTransform.position.copy(state.gripPosition);
-    gripTransform.rotation.copy(state.gripRotation);
+    const gripEuler = new THREE.Euler().setFromQuaternion(state.gripRotation);
+    gripTransform.rotation.copy(gripEuler);
     gripEntity.addComponent(TransformComponent, gripTransform);
 
     const controllerComponent = new XRControllerComponent(state.handedness);
@@ -499,5 +513,26 @@ export class XRInputSystem extends System {
       }
     }
     return undefined;
+  }
+
+  /**
+   * Register event listener
+   */
+  on(event: string, listener: (...args: any[]) => void): void {
+    this.eventEmitter.on(event, listener);
+  }
+
+  /**
+   * Emit event
+   */
+  private emit(event: string, ...args: any[]): void {
+    this.eventEmitter.emit(event, ...args);
+  }
+
+  /**
+   * Remove all listeners
+   */
+  removeAllListeners(): void {
+    this.eventEmitter.removeAllListeners();
   }
 }

@@ -37,11 +37,6 @@ export class XRInputManager extends EventEmitter {
   private session: XRSession | null = null;
   private inputSources: Map<string, XRInputSource> = new Map();
   private controllerStates: Map<string, ControllerState> = new Map();
-  private referenceSpace: XRReferenceSpace | null = null;
-  private _tempMatrix = new THREE.Matrix4();
-  private _tempPosition = new THREE.Vector3();
-  private _tempQuaternion = new THREE.Quaternion();
-  private _config: XRInputManagerConfig;
 
   // Button mappings for common controllers
   private buttonMappings: Map<string, string[]> = new Map([
@@ -52,19 +47,15 @@ export class XRInputManager extends EventEmitter {
 
   constructor(config: XRInputManagerConfig = {}) {
     super();
-    this._config = {
-      autoEnable: true,
-      controllerProfiles: ['oculus-touch', 'valve-index', 'htc-vive'],
-      ...config,
-    };
+    // Config stored but not currently used
+    void config;
   }
 
   /**
    * Initialize XR session and input
    */
-  async initialize(session: XRSession, referenceSpace: XRReferenceSpace): Promise<void> {
+  async initialize(session: XRSession, _referenceSpace: XRReferenceSpace): Promise<void> {
     this.session = session;
-    this.referenceSpace = referenceSpace;
 
     // Get initial input sources
     for (const inputSource of session.inputSources) {
@@ -382,7 +373,6 @@ export class XRInputManager extends EventEmitter {
     this.inputSources.clear();
     this.controllerStates.clear();
     this.session = null;
-    this.referenceSpace = null;
     this.removeAllListeners();
   }
 }
