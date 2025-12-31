@@ -26,8 +26,8 @@ export class PhysicsWorld {
     this.world.gravity.set(gravity.x, gravity.y, gravity.z);
 
     // Configure solver
-    this.world.solver.iterations = config.solverIterations || 10;
-    this.world.solver.tolerance = 0.001;
+    (this.world.solver as any).iterations = config.solverIterations || 10;
+    (this.world.solver as any).tolerance = 0.001;
 
     // Configure broadphase
     if (config.broadphase === 'SAP') {
@@ -44,7 +44,7 @@ export class PhysicsWorld {
 
     console.log('[PhysicsWorld] Initialized', {
       gravity,
-      solverIterations: this.world.solver.iterations,
+      solverIterations: (this.world.solver as any).iterations,
       broadphase: config.broadphase || 'Naive',
       allowSleep: this.world.allowSleep,
     });
@@ -65,7 +65,8 @@ export class PhysicsWorld {
       return this.materials.get(name)!;
     }
 
-    const material = new CANNON.Material({ name });
+    const material = new CANNON.Material();
+    (material as any).name = name;
     material.friction = friction;
     material.restitution = restitution;
     this.materials.set(name, material);

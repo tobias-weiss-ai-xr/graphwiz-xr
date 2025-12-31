@@ -38,12 +38,12 @@ export class VoiceChatClient extends EventEmitter {
   localStream: MediaStream | null = null;
   remoteStreams: Map<string, MediaStream> = new Map();
   private audioContext: AudioContext | null = null;
-  private remoteSources: Map<string, AudioScheduledSourceNode> = new Map();
+  private remoteSources: Map<string, AudioNode> = new Map();
   private gainNodes: Map<string, GainNode> = new Map();
   private pannerNodes: Map<string, PannerNode> = new Map();
   private analyser: AnalyserNode | null = null;
-  private isMuted = false;
-  private audioWorklet: AudioWorkletNode | null = null;
+  private muted = false;
+  // private audioWorklet: AudioWorkletNode | null = null; // TODO: Implement audio worklet
   private voiceActivityThreshold = 0.01; // Audio level threshold for VAD
   private isSpeaking = false;
   private stats: VoiceChatStats = {
@@ -193,9 +193,9 @@ export class VoiceChatClient extends EventEmitter {
     console.log('[VoiceChat] Disconnecting');
 
     // Stop all remote audio
-    for (const [userId, source] of this.remoteSources) {
+    for (const [_userId, source] of this.remoteSources) {
       try {
-        source.stop();
+        source.disconnect();
       } catch (e) {
         // Ignore errors
       }
@@ -227,7 +227,7 @@ export class VoiceChatClient extends EventEmitter {
    * Mute/unmute microphone
    */
   setMuted(muted: boolean): void {
-    this.isMuted = muted;
+    this.muted = muted;
     this.stats.isMuted = muted;
 
     if (this.localStream) {
@@ -243,7 +243,7 @@ export class VoiceChatClient extends EventEmitter {
    * Toggle mute state
    */
   toggleMute(): boolean {
-    const newMutedState = !this.isMuted;
+    const newMutedState = !this.muted;
     this.setMuted(newMutedState);
     return newMutedState;
   }
@@ -465,7 +465,7 @@ export class VoiceChatClient extends EventEmitter {
    * Check if muted
    */
   isMuted(): boolean {
-    return this.isMuted;
+    return this.muted;
   }
 
   /**

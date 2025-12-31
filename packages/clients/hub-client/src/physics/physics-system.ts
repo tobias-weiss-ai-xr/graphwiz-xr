@@ -5,6 +5,8 @@
  * (Renamed from PhysicsSystem to avoid conflict with placeholder physics)
  */
 
+import * as CANNON from 'cannon-es';
+import { Vector3 } from 'three';
 import { System } from '../ecs';
 import { PhysicsWorld } from './physics-world';
 import { PhysicsBodyComponent } from './physics-body-component';
@@ -21,10 +23,10 @@ export interface CannonPhysicsSystemConfig {
 export class CannonPhysicsSystem extends System {
   private readonly physicsWorld: PhysicsWorld;
   private readonly autoSync: boolean;
-  private bodyEntities: Map<string, { body: CANNON.Body; entityId: string }> = new Map();
+  private bodyEntities: Map<number, { body: CANNON.Body; entityId: string }> = new Map();
 
   constructor(config: CannonPhysicsSystemConfig = {}) {
-    super('CannonPhysicsSystem');
+    super();
 
     const {
       gravity,
@@ -53,9 +55,9 @@ export class CannonPhysicsSystem extends System {
    * Setup default physics materials
    */
   private setupDefaultMaterials(): void {
-    const defaultMat = this.physicsWorld.createMaterial('default', 0.3, 0.3);
-    const slipperyMat = this.physicsWorld.createMaterial('slippery', 0.1, 0.1);
-    const bouncyMat = this.physicsWorld.createMaterial('bouncy', 0.5, 0.9);
+    this.physicsWorld.createMaterial('default', 0.3, 0.3);
+    this.physicsWorld.createMaterial('slippery', 0.1, 0.1);
+    this.physicsWorld.createMaterial('bouncy', 0.5, 0.9);
 
     // Create contact materials
     this.physicsWorld.createContactMaterial('default', 'default', 0.3, 0.3);
@@ -68,7 +70,7 @@ export class CannonPhysicsSystem extends System {
   /**
    * Update physics simulation
    */
-  override update(deltaTime: number): void {
+  update(deltaTime: number): void {
     // Step physics world
     this.physicsWorld.step(deltaTime);
 
@@ -104,6 +106,7 @@ export class CannonPhysicsSystem extends System {
    * Sync initial transform to physics body
    */
   syncEntityToPhysics(entityId: string): void {
+    if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
@@ -119,6 +122,7 @@ export class CannonPhysicsSystem extends System {
    * Add a physics body component to entity
    */
   addPhysicsBody(entityId: string, physicsBody: PhysicsBodyComponent): void {
+    if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) {
       console.error(`[CannonPhysicsSystem] Entity not found: ${entityId}`);
@@ -148,6 +152,7 @@ export class CannonPhysicsSystem extends System {
    * Remove physics body from entity
    */
   removePhysicsBody(entityId: string): void {
+    if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
@@ -170,45 +175,54 @@ export class CannonPhysicsSystem extends System {
    * Apply force to entity
    */
   applyForce(entityId: string, force: { x: number; y: number; z: number }, worldPoint?: { x: number; y: number; z: number }): void {
+    if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
     const physicsBody = entity.getComponent(PhysicsBodyComponent);
     if (!physicsBody) return;
 
-    physicsBody.applyForce(force, worldPoint);
+    const forceVec = new Vector3(force.x, force.y, force.z);
+    const worldPointVec = worldPoint ? new Vector3(worldPoint.x, worldPoint.y, worldPoint.z) : undefined;
+    physicsBody.applyForce(forceVec, worldPointVec);
   }
 
   /**
    * Apply impulse to entity
    */
   applyImpulse(entityId: string, impulse: { x: number; y: number; z: number }, worldPoint?: { x: number; y: number; z: number }): void {
+    if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
     const physicsBody = entity.getComponent(PhysicsBodyComponent);
     if (!physicsBody) return;
 
-    physicsBody.applyImpulse(impulse, worldPoint);
+    const impulseVec = new Vector3(impulse.x, impulse.y, impulse.z);
+    const worldPointVec = worldPoint ? new Vector3(worldPoint.x, worldPoint.y, worldPoint.z) : undefined;
+    physicsBody.applyImpulse(impulseVec, worldPointVec);
   }
 
   /**
    * Set entity velocity
    */
   setVelocity(entityId: string, velocity: { x: number; y: number; z: number }): void {
+    if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
     const physicsBody = entity.getComponent(PhysicsBodyComponent);
     if (!physicsBody) return;
 
-    physicsBody.setVelocity(velocity);
+    const velocityVec = new Vector3(velocity.x, velocity.y, velocity.z);
+    physicsBody.setVelocity(velocityVec);
   }
 
   /**
    * Get entity velocity
    */
   getVelocity(entityId: string): { x: number; y: number; z: number } | null {
+    if (!this.world) return null;
     const entity = this.world.getEntity(entityId);
     if (!entity) return null;
 
@@ -223,6 +237,7 @@ export class CannonPhysicsSystem extends System {
    * Wake up entity
    */
   wakeUp(entityId: string): void {
+    if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
@@ -236,6 +251,7 @@ export class CannonPhysicsSystem extends System {
    * Put entity to sleep
    */
   sleep(entityId: string): void {
+    if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) return;
 
@@ -260,7 +276,7 @@ export class CannonPhysicsSystem extends System {
     if (result.hasHit) {
       return {
         hasHit: true,
-        body: result.body,
+        body: result.body || undefined,
         point: {
           x: result.hitPointWorld.x,
           y: result.hitPointWorld.y,
@@ -307,7 +323,7 @@ export class CannonPhysicsSystem extends System {
   /**
    * Clean up system
    */
-  override dispose(): void {
+  dispose(): void {
     // Remove all physics bodies from entities
     if (this.world) {
       const entities = this.world.getEntitiesWithComponents(PhysicsBodyComponent);

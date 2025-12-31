@@ -45,7 +45,7 @@ export class PhysicsBodyComponent {
       size = new Vector3(1, 1, 1),
       radius = 0.5,
       height = 1,
-      material = 'default',
+      material: _material = 'default',
       friction = 0.3,
       restitution = 0.3,
       linearDamping = 0.01,

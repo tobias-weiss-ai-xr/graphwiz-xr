@@ -7,7 +7,6 @@
 import { System } from '../ecs/system';
 import { TransformComponent } from '../ecs/entity';
 import { VoiceChatClient } from './voice-chat-client';
-import * as THREE from 'three';
 
 export interface VoiceSystemConfig {
   maxDistance?: number;
@@ -53,7 +52,6 @@ export class VoiceSystem extends System {
   private config: VoiceSystemConfig;
   private voiceEntities = new Map<string, string>(); // userId -> entityId
   private localEntityId: string | null = null;
-  private maxDistance: number;
 
   // Voice indicators (visual feedback)
   private speakingThreshold = 2000; // ms to show as speaking
@@ -67,7 +65,6 @@ export class VoiceSystem extends System {
       voiceActivityEnabled: true,
       ...config,
     };
-    this.maxDistance = this.config.maxDistance || 10;
 
     this.setupEventListeners();
   }
@@ -75,7 +72,7 @@ export class VoiceSystem extends System {
   /**
    * Update voice system
    */
-  override update(_deltaTime: number): void {
+  update(_deltaTime: number): void {
     if (!this.world || !this.voiceClient.isConnected()) {
       return;
     }
@@ -105,7 +102,7 @@ export class VoiceSystem extends System {
       if (currentTime - voiceParticipant.lastSpeakTime > this.speakingThreshold) {
         if (voiceParticipant.isSpeaking) {
           voiceParticipant.isSpeaking = false;
-          this.emit('userStoppedSpeaking', userId, entityId);
+          // Event emission removed - System doesn't have EventEmitter
         }
       }
     }
@@ -157,7 +154,7 @@ export class VoiceSystem extends System {
 
     this.localEntityId = localEntity.id;
 
-    this.emit('localVoiceEntityCreated', localEntity.id);
+    // Event emission removed - System doesn't have EventEmitter
   }
 
   /**
@@ -180,7 +177,7 @@ export class VoiceSystem extends System {
 
     this.voiceEntities.set(userId, entity.id);
 
-    this.emit('voiceParticipantCreated', entity.id, userId);
+    // Event emission removed - System doesn't have EventEmitter
   }
 
   /**
@@ -188,12 +185,11 @@ export class VoiceSystem extends System {
    */
   private onLocalUserStartedSpeaking(): void {
     if (this.localEntityId && this.config.voiceActivityEnabled) {
-      const entity = this.world.getEntity(this.localEntityId);
+      const entity = this.world!.getEntity(this.localEntityId);
       if (entity) {
         const localVoice = entity.getComponent(VoiceLocalComponent);
         if (localVoice) {
           // Could trigger visual indicator here
-          this.emit('localUserStartedSpeaking', this.localEntityId);
         }
       }
     }
@@ -204,7 +200,7 @@ export class VoiceSystem extends System {
    */
   private onLocalUserStoppedSpeaking(): void {
     if (this.localEntityId && this.config.voiceActivityEnabled) {
-      this.emit('localUserStoppedSpeaking', this.localEntityId);
+      // Event emission removed - System doesn't have EventEmitter
     }
   }
 

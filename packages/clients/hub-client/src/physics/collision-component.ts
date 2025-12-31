@@ -4,7 +4,6 @@
  * Components for collision detection and response.
  */
 
-import { ComponentClass } from '../ecs/entity';
 import { Vector3 } from 'three';
 
 /**
