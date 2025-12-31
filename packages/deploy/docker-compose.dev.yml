@@ -2,11 +2,9 @@
 # Hot-reload enabled setup for local development
 #
 # Usage:
-#   docker-compose -f docker-compose.dev.yml up -d
-#   docker-compose -f docker-compose.dev.yml logs -f hub-client core-api
-#   docker-compose -f docker-compose.dev.yml down
-
-version: "3.9"
+#   docker compose -f docker-compose.dev.yml up -d
+#   docker compose -f docker-compose.dev.yml logs -f hub-client core-api
+#   docker compose -f docker-compose.dev.yml down
 
 services:
   # PostgreSQL Database
@@ -81,11 +79,12 @@ services:
       SERVER_PORT: 8000
       JWT_SECRET: ${JWT_SECRET:-graphwiz_dev_secret_change_in_production}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400}
+      PROTOC: /usr/bin/protoc
     ports:
       - "8000:8000"
+      - "4000:4000"
     volumes:
       - ../../packages/services/reticulum:/app/packages/services/reticulum:cached
-      - ../../packages/shared/protocol:/app/packages/shared/protocol:cached
       - cargo_registry:/usr/local/cargo/registry
       - cargo_git:/usr/local/cargo/git
       - target_cache:/app/target
@@ -98,6 +97,41 @@ services:
       - graphwiz-dev-network
     privileged: true
 
+  # Storage Service (Rust with hot reload)
+  storage-service:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/Dockerfile.core-dev
+    container_name: graphwiz-storage-dev
+    restart: unless-stopped
+    environment:
+      RUST_LOG: ${RUST_LOG:-debug}
+      DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
+      REDIS_URL: redis://redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8005
+      JWT_SECRET: ${JWT_SECRET:-graphwiz_dev_secret_change_in_production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400}
+      STORAGE_BASE_PATH: /storage
+      PROTOC: /usr/bin/protoc
+    ports:
+      - "8005:8005"
+    volumes:
+      - ../../packages/services/reticulum:/app/packages/services/reticulum:cached
+      - storage_data:/storage
+      - cargo_registry:/usr/local/cargo/registry
+      - cargo_git:/usr/local/cargo/git
+      - target_cache:/app/target
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - graphwiz-dev-network
+    privileged: true
+    command: ["cargo", "watch", "-x", "run -p reticulum-storage --bin reticulum-storage"]
+
   # Hub Client (Vite dev server with hot reload)
   hub-client:
     build:
@@ -108,15 +142,16 @@ services:
     environment:
       VITE_API_BASE_URL: http://localhost:8000
       VITE_HUB_API_URL: http://localhost:8002
-      VITE_PRESENCE_WS_URL: ws://localhost:8003
+      VITE_PRESENCE_WS_URL: ws://localhost:4000
       VITE_SFU_URL: http://localhost:8004
+      VITE_STORAGE_API_URL: http://localhost:8005
       NODE_ENV: development
     ports:
       - "${HUB_CLIENT_PORT:-5173}:5173"
     volumes:
-      - ../../packages/clients/hub-client:/app:cached
-      - hub_client_node_modules:/app/node_modules
-      - /app/.turbo
+      - ../../packages/clients/hub-client:/app/packages/clients/hub-client:cached
+      - ../../packages/shared/protocol:/app/packages/shared/protocol:cached
+      - ../../packages/shared/types:/app/packages/shared/types:cached
     depends_on:
       - core-api
     networks:
@@ -134,6 +169,8 @@ volumes:
   target_cache:
     driver: local
   hub_client_node_modules:
+    driver: local
+  storage_data:
     driver: local
 
 networks:

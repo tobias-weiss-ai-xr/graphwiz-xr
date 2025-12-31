@@ -1,7 +1,7 @@
 # Dockerfile for Core API Development with Hot Reload
 # Uses cargo-watch for automatic recompilation on file changes
 
-FROM rust:1.75-slim
+FROM rust:latest
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     postgresql-client \
     curl \
+    protobuf-compiler \
     && rm -rf /var/lib/apt/lists/*
 
 # Install cargo-watch for hot reload
@@ -20,7 +21,7 @@ RUN cargo install sqlx-cli --no-default-features --features postgres
 WORKDIR /app
 
 # Copy Cargo workspace files
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml ./
 COPY packages/shared/protocol packages/shared/protocol
 COPY packages/services/reticulum packages/services/reticulum
 
@@ -29,10 +30,12 @@ RUN mkdir -p packages/services/reticulum/core/src && \
     echo "fn main() {}" > packages/services/reticulum/core/src/main.rs && \
     echo "fn main() {}" > packages/services/reticulum/auth/src/main.rs && \
     echo "fn main() {}" > packages/services/reticulum/hub/src/main.rs && \
-    echo "fn main() {}" > packages/services/reticulum/presence/src/main.rs
+    echo "fn main() {}" > packages/services/reticulum/presence/src/main.rs && \
+    echo "fn main() {}" > packages/services/reticulum/storage/src/main.rs
 
 # Build dependencies (cache this layer)
-RUN cargo build --bin reticulum-core
+RUN cargo build --bin reticulum-core && \
+    cargo build --bin reticulum-storage
 
 # Remove dummy files
 RUN rm -rf packages/services/reticulum/*/src/*.rs
@@ -42,10 +45,11 @@ COPY packages/services/reticulum/core packages/services/reticulum/core
 COPY packages/services/reticulum/auth packages/services/reticulum/auth
 COPY packages/services/reticulum/hub packages/services/reticulum/hub
 COPY packages/services/reticulum/presence packages/services/reticulum/presence
+COPY packages/services/reticulum/storage packages/services/reticulum/storage
 
 # Expose port
 EXPOSE 8000
 
 # Run with cargo-watch for hot reload
-# Run all reticulum services
-CMD ["cargo", "watch", "-x", "run -p reticulum-core --bin reticulum-core"]
+# Run presence service (currently the only service with a main.rs)
+CMD ["cargo", "watch", "-x", "run -p reticulum-presence --bin reticulum-presence"]
