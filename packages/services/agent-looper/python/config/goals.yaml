@@ -1,0 +1,111 @@
+# GraphWiz-XR Optimization Goals
+
+goals:
+  # Performance Goals
+  - name: webrtc_latency
+    category: performance
+    description: Reduce WebRTC end-to-end latency for smooth voice/video
+    target_value: 50
+    current_value: 100
+    unit: ms
+    metadata:
+      priority: high
+      service: reticulum/sfu
+      measurement_method: "average over 100 sessions"
+
+  - name: rendering_fps
+    category: performance
+    description: Achieve 90 FPS on Meta Quest 2 for smooth VR experience
+    target_value: 90
+    current_value: 60
+    unit: fps
+    metadata:
+      priority: high
+      service: hub-client
+      measurement_method: "average frame rate in complex scene"
+
+  - name: loading_time
+    category: performance
+    description: Reduce room loading time to under 3 seconds
+    target_value: 3
+    current_value: 5
+    unit: seconds
+    metadata:
+      priority: medium
+      service: hub-client
+      measurement_method: "time from click to render"
+
+  - name: concurrent_users
+    category: performance
+    description: Support 100 concurrent users in a single room
+    target_value: 100
+    current_value: 50
+    unit: users
+    metadata:
+      priority: high
+      service: reticulum/hub
+      measurement_method: "stable users with < 100ms latency"
+
+  # Code Quality Goals
+  - name: test_coverage
+    category: code_quality
+    description: Increase test coverage to 80%
+    target_value: 80
+    current_value: 40
+    unit: percentage
+    metadata:
+      priority: medium
+      measurement_method: "cargo-llvm-cov + pnpm coverage"
+
+  - name: documentation_coverage
+    category: code_quality
+    description: Document 100% of public APIs
+    target_value: 100
+    current_value: 60
+    unit: percentage
+    metadata:
+      priority: low
+      measurement_method: "rustdoc + typedoc coverage"
+
+  # Security Goals
+  - name: critical_vulnerabilities
+    category: security
+    description: Zero critical security vulnerabilities
+    target_value: 0
+    current_value: 0
+    unit: count
+    metadata:
+      priority: high
+      measurement_method: "cargo audit + npm audit"
+
+  - name: dependency_updates
+    category: security
+    description: Keep dependencies up to date (within 30 days)
+    target_value: 30
+    current_value: 45
+    unit: days
+    metadata:
+      priority: medium
+      measurement_method: "cargo-outdated + npm outdated"
+
+  # User Experience Goals
+  - name: interaction_smoothness
+    category: user_experience
+    description: Eliminate noticeable lag in user interactions
+    target_value: 16
+    current_value: 50
+    unit: ms
+    metadata:
+      priority: high
+      service: hub-client
+      measurement_method: "input-to-render latency"
+
+  - name: crash_rate
+    category: user_experience
+    description: Reduce crash rate to less than 0.1%
+    target_value: 0.1
+    current_value: 0.5
+    unit: percentage
+    metadata:
+      priority: high
+      measurement_method: "crashes per 1000 sessions"

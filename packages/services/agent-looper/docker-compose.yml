@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  agent-looper:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    container_name: graphwiz-agent-looper
+    ports:
+      - "50051:50051"
+    environment:
+      - SAIA_API_KEYS=${SAIA_API_KEYS}
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ../../:/opt/git/graphwiz-xr:ro
+      - ./python/logs:/app/logs
+    networks:
+      - graphwiz-xr_graphwiz-internal
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:50051/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  graphwiz-xr_graphwiz-internal:
+    external: true

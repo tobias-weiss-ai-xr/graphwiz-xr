@@ -58,3 +58,22 @@ coverage/
 *.tmp
 *.temp
 /tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Keys and secrets
+*.pem
+*.key
+.saia-keys/
