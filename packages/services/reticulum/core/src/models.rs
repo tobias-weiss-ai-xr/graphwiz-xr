@@ -13,5 +13,5 @@ pub use rooms::{Room, RoomModel};
 pub use sessions::{Session, SessionModel};
 pub use entities::{EntityData, EntityModel, Vector3, Quaternion};
 pub use oauth_accounts::{OAuthAccountModel, OAuthProvider};
-pub use magic_link_tokens::{MagicLinkTokenModel};
+pub use magic_link_tokens::{MagicLinkTokenModel, Entity as MagicLinkTokenEntity, ActiveModel as MagicLinkTokenActiveModel, Model as MagicLinkToken};
 pub use assets::{Asset, AssetModel, AssetType};

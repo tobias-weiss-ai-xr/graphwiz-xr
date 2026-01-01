@@ -6,6 +6,7 @@ pub mod room;
 pub mod entity;
 pub mod handlers;
 pub mod routes;
+pub mod optimization;
 
 use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;
@@ -15,11 +16,25 @@ use room::RoomManager;
 
 pub struct HubService {
     config: Config,
+    optimization: optimization::OptimizationManager,
 }
 
 impl HubService {
     pub fn new(config: Config) -> Self {
-        Self { config }
+        let mut optimization = optimization::OptimizationManager::new();
+
+        // Initialize optimization if Agent Looper URL is configured
+        if let Ok(agent_url) = std::env::var("AGENT_LOOPER_URL") {
+            log::info!("Agent Looper URL configured: {}", agent_url);
+            if let Err(e) = optimization.init(agent_url) {
+                log::warn!("Failed to initialize optimization: {}", e);
+            }
+        }
+
+        Self {
+            config,
+            optimization,
+        }
     }
 
     pub async fn run(self) -> std::io::Result<()> {
@@ -29,6 +44,10 @@ impl HubService {
 
         log::info!("Starting hub service on {}:{}", host, port);
 
+        if self.optimization.is_enabled() {
+            log::info!("Optimization enabled: Agent Looper integration active");
+        }
+
         // Create shared room manager
         let room_manager = RoomManager::new();
 
@@ -36,6 +55,7 @@ impl HubService {
             App::new()
                 .app_data(web::Data::new(self.config.clone()))
                 .app_data(web::Data::new(room_manager.clone()))
+                .app_data(web::Data::new(self.optimization.clone()))
                 .wrap(actix_cors::Cors::permissive())
                 .wrap(reticulum_core::middleware::LoggingMiddleware)
                 .configure(configure_routes)

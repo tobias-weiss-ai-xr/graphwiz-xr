@@ -277,7 +277,7 @@ pub async fn link_or_create_user(
         None
     };
 
-    let user = if let Some(mut existing_user) = existing_user {
+    let user = if let Some(existing_user) = existing_user {
         // Link OAuth account to existing user
         if let Err(e) = core_models::OAuthAccountModel::create(
             db,

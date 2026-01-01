@@ -22,6 +22,9 @@ pub enum Relation {}
 
 impl ActiveModelBehavior for ActiveModel {}
 
+// Re-export commonly used types from the generated entity
+pub use Entity as MagicLinkTokenEntity;
+
 pub struct MagicLinkTokenModel;
 
 impl MagicLinkTokenModel {

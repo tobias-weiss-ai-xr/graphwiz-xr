@@ -12,6 +12,9 @@ path = "src/bin/main.rs"
 reticulum-core = { path = "../core" }
 graphwiz-protocol = { path = "../../../shared/protocol" }
 
+# Agent Looper (optional)
+agent-looper-client = { path = "../agent-looper/rust", optional = true }
+
 # Workspace
 tokio.workspace = true
 actix-web.workspace = true
@@ -42,3 +45,7 @@ prost.workspace = true
 
 [dev-dependencies]
 tokio-test = "0.4"
+
+[features]
+default = []
+optimization = ["agent-looper-client"]

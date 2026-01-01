@@ -7,6 +7,9 @@ edition.workspace = true
 # Core
 reticulum-core = { path = "../core" }
 
+# Agent Looper (optional)
+agent-looper-client = { path = "../agent-looper/rust", optional = true }
+
 # Workspace
 tokio.workspace = true
 actix-web.workspace = true
@@ -22,6 +25,10 @@ validator.workspace = true
 
 # Async
 async-trait.workspace = true
+
+[features]
+default = []
+optimization = ["agent-looper-client"]
 
 [dev-dependencies]
 tokio-test = "0.4"
