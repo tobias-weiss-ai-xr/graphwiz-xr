@@ -171,6 +171,7 @@ impl WebSocketManager {
         let conn_ids = self.get_room_connections(room_id).await;
         let connections = self.connections.read().await;
 
+        let mut sent_count = 0;
         for conn_id in conn_ids {
             // Skip excluded connection
             if let Some(exclude_id) = exclude {
@@ -180,9 +181,14 @@ impl WebSocketManager {
             }
 
             if let Some(tx) = connections.get(&conn_id) {
-                let _ = tx.send(WsMessage::Binary(message.to_vec()));
+                match tx.send(WsMessage::Binary(message.to_vec())) {
+                    Ok(_) => sent_count += 1,
+                    Err(e) => log::warn!("Failed to send to {}: {}", conn_id, e),
+                }
             }
         }
+
+        log::info!("Broadcast to {} clients in room {}", sent_count, room_id);
     }
 
     /// Send message to specific connection
@@ -276,7 +282,7 @@ pub async fn websocket_handler(
                         Some(Ok(msg)) => {
                             match msg {
                                 Message::Binary(bytes) => {
-                                    log::debug!("Received {} bytes from {}", bytes.len(), conn_id_clone);
+                                    log::info!("Received {} bytes from {} in room {}", bytes.len(), conn_id_clone, room_id_clone);
                                     // Handle client message and broadcast to room
                                     if let Err(e) =
                                         handle_client_message(&ws_manager_clone, &room_id_clone, &conn_id_clone, &bytes)
@@ -382,12 +388,15 @@ async fn handle_client_message(
 
     // Broadcast message to room (excluding sender)
     // Note: Protobuf parsing disabled for now, treats all messages as binary
-    log::debug!(
-        "Broadcasting {} bytes from {} in room {}",
+    let room_connections = ws_manager.get_room_connections(room_id).await;
+    log::info!(
+        "Broadcasting {} bytes from {} in room {} to {} other clients",
         message.len(),
         sender_id,
-        room_id
+        room_id,
+        room_connections.len().saturating_sub(1)
     );
+
     ws_manager
         .broadcast_to_room(room_id, message, Some(sender_id))
         .await;
