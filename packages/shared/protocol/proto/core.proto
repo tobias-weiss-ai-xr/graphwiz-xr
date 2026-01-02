@@ -127,6 +127,25 @@ message PresenceData {
   string avatar_url = 2;
   Vector3 position = 3;
   Quaternion rotation = 4;
+  AvatarConfig avatar_config = 5;
+}
+
+message PlayerSnapshot {
+  string client_id = 1;
+  string display_name = 2;
+  string avatar_url = 3;
+  Vector3 position = 4;
+  Quaternion rotation = 5;
+  AvatarConfig avatar_config = 6;
+}
+
+// Avatar configuration for networked avatar sync
+message AvatarConfig {
+  string body_type = 1;      // "human", "robot", "alien", "animal", "abstract"
+  string primary_color = 2;   // Hex color #RRGGBB
+  string secondary_color = 3; // Hex color #RRGGBB
+  float height = 4;           // Height in meters (0.5 - 3.0)
+  string custom_model_url = 5; // Optional custom 3D model URL
 }
 
 // Connection lifecycle messages
@@ -156,14 +175,6 @@ message EntitySnapshot {
   Vector3 position = 3;
   Quaternion rotation = 4;
   map<string, string> components = 5;
-}
-
-message PlayerSnapshot {
-  string client_id = 1;
-  string display_name = 2;
-  string avatar_url = 3;
-  Vector3 position = 4;
-  Quaternion rotation = 5;
 }
 
 // Room information

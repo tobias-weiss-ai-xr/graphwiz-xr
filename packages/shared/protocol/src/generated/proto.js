@@ -1,22 +1,20 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
-"use strict";
-
-var $protobuf = require("protobufjs/minimal");
+import * as $protobuf from "protobufjs/minimal";
 
 // Common aliases
-var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
 // Exported root namespace
-var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-$root.graphwiz = (function() {
+export const graphwiz = $root.graphwiz = (() => {
 
     /**
      * Namespace graphwiz.
      * @exports graphwiz
      * @namespace
      */
-    var graphwiz = {};
+    const graphwiz = {};
 
     graphwiz.core = (function() {
 
@@ -25,7 +23,7 @@ $root.graphwiz = (function() {
          * @memberof graphwiz
          * @namespace
          */
-        var core = {};
+        const core = {};
 
         core.Message = (function() {
 
@@ -57,7 +55,7 @@ $root.graphwiz = (function() {
              */
             function Message(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -159,7 +157,7 @@ $root.graphwiz = (function() {
             Message.prototype.presenceEvent = null;
 
             // OneOf field names bound to virtual getters and setters
-            var $oneOfFields;
+            let $oneOfFields;
 
             /**
              * Message payload.
@@ -250,9 +248,9 @@ $root.graphwiz = (function() {
             Message.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Message();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Message();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -339,7 +337,7 @@ $root.graphwiz = (function() {
             Message.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                var properties = {};
+                let properties = {};
                 if (message.messageId != null && message.hasOwnProperty("messageId"))
                     if (!$util.isString(message.messageId))
                         return "messageId: string expected";
@@ -367,7 +365,7 @@ $root.graphwiz = (function() {
                 if (message.clientHello != null && message.hasOwnProperty("clientHello")) {
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.ClientHello.verify(message.clientHello);
+                        let error = $root.graphwiz.core.ClientHello.verify(message.clientHello);
                         if (error)
                             return "clientHello." + error;
                     }
@@ -377,7 +375,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.ServerHello.verify(message.serverHello);
+                        let error = $root.graphwiz.core.ServerHello.verify(message.serverHello);
                         if (error)
                             return "serverHello." + error;
                     }
@@ -387,7 +385,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.PositionUpdate.verify(message.positionUpdate);
+                        let error = $root.graphwiz.core.PositionUpdate.verify(message.positionUpdate);
                         if (error)
                             return "positionUpdate." + error;
                     }
@@ -397,7 +395,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.VoiceData.verify(message.voiceData);
+                        let error = $root.graphwiz.core.VoiceData.verify(message.voiceData);
                         if (error)
                             return "voiceData." + error;
                     }
@@ -407,7 +405,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.EntitySpawn.verify(message.entitySpawn);
+                        let error = $root.graphwiz.core.EntitySpawn.verify(message.entitySpawn);
                         if (error)
                             return "entitySpawn." + error;
                     }
@@ -417,7 +415,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.EntityUpdate.verify(message.entityUpdate);
+                        let error = $root.graphwiz.core.EntityUpdate.verify(message.entityUpdate);
                         if (error)
                             return "entityUpdate." + error;
                     }
@@ -427,7 +425,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.EntityDespawn.verify(message.entityDespawn);
+                        let error = $root.graphwiz.core.EntityDespawn.verify(message.entityDespawn);
                         if (error)
                             return "entityDespawn." + error;
                     }
@@ -437,7 +435,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.ChatMessage.verify(message.chatMessage);
+                        let error = $root.graphwiz.core.ChatMessage.verify(message.chatMessage);
                         if (error)
                             return "chatMessage." + error;
                     }
@@ -447,7 +445,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.PresenceEvent.verify(message.presenceEvent);
+                        let error = $root.graphwiz.core.PresenceEvent.verify(message.presenceEvent);
                         if (error)
                             return "presenceEvent." + error;
                     }
@@ -466,7 +464,7 @@ $root.graphwiz = (function() {
             Message.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.Message)
                     return object;
-                var message = new $root.graphwiz.core.Message();
+                let message = new $root.graphwiz.core.Message();
                 if (object.messageId != null)
                     message.messageId = String(object.messageId);
                 if (object.timestamp != null)
@@ -594,11 +592,11 @@ $root.graphwiz = (function() {
             Message.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.messageId = "";
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.timestamp = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.timestamp = options.longs === String ? "0" : 0;
@@ -708,7 +706,7 @@ $root.graphwiz = (function() {
          * @property {number} PRESENCE_UPDATE=42 PRESENCE_UPDATE value
          */
         core.MessageType = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "CLIENT_HELLO"] = 1;
             values[valuesById[2] = "SERVER_HELLO"] = 2;
@@ -745,7 +743,7 @@ $root.graphwiz = (function() {
              */
             function Vector3(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -834,9 +832,9 @@ $root.graphwiz = (function() {
             Vector3.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Vector3();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Vector3();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -910,7 +908,7 @@ $root.graphwiz = (function() {
             Vector3.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.Vector3)
                     return object;
-                var message = new $root.graphwiz.core.Vector3();
+                let message = new $root.graphwiz.core.Vector3();
                 if (object.x != null)
                     message.x = Number(object.x);
                 if (object.y != null)
@@ -932,7 +930,7 @@ $root.graphwiz = (function() {
             Vector3.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.x = 0;
                     object.y = 0;
@@ -998,7 +996,7 @@ $root.graphwiz = (function() {
              */
             function Quaternion(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -1097,9 +1095,9 @@ $root.graphwiz = (function() {
             Quaternion.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Quaternion();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Quaternion();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -1180,7 +1178,7 @@ $root.graphwiz = (function() {
             Quaternion.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.Quaternion)
                     return object;
-                var message = new $root.graphwiz.core.Quaternion();
+                let message = new $root.graphwiz.core.Quaternion();
                 if (object.x != null)
                     message.x = Number(object.x);
                 if (object.y != null)
@@ -1204,7 +1202,7 @@ $root.graphwiz = (function() {
             Quaternion.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.x = 0;
                     object.y = 0;
@@ -1273,7 +1271,7 @@ $root.graphwiz = (function() {
              */
             function PositionUpdate(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -1372,9 +1370,9 @@ $root.graphwiz = (function() {
             PositionUpdate.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.PositionUpdate();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.PositionUpdate();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -1433,12 +1431,12 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.entityId))
                         return "entityId: string expected";
                 if (message.position != null && message.hasOwnProperty("position")) {
-                    var error = $root.graphwiz.core.Vector3.verify(message.position);
+                    let error = $root.graphwiz.core.Vector3.verify(message.position);
                     if (error)
                         return "position." + error;
                 }
                 if (message.rotation != null && message.hasOwnProperty("rotation")) {
-                    var error = $root.graphwiz.core.Quaternion.verify(message.rotation);
+                    let error = $root.graphwiz.core.Quaternion.verify(message.rotation);
                     if (error)
                         return "rotation." + error;
                 }
@@ -1459,7 +1457,7 @@ $root.graphwiz = (function() {
             PositionUpdate.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.PositionUpdate)
                     return object;
-                var message = new $root.graphwiz.core.PositionUpdate();
+                let message = new $root.graphwiz.core.PositionUpdate();
                 if (object.entityId != null)
                     message.entityId = String(object.entityId);
                 if (object.position != null) {
@@ -1489,7 +1487,7 @@ $root.graphwiz = (function() {
             PositionUpdate.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.entityId = "";
                     object.position = null;
@@ -1558,7 +1556,7 @@ $root.graphwiz = (function() {
              */
             function VoiceData(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -1657,9 +1655,9 @@ $root.graphwiz = (function() {
             VoiceData.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.VoiceData();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.VoiceData();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -1746,7 +1744,7 @@ $root.graphwiz = (function() {
             VoiceData.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.VoiceData)
                     return object;
-                var message = new $root.graphwiz.core.VoiceData();
+                let message = new $root.graphwiz.core.VoiceData();
                 if (object.fromClientId != null)
                     message.fromClientId = String(object.fromClientId);
                 if (object.audioData != null)
@@ -1791,7 +1789,7 @@ $root.graphwiz = (function() {
             VoiceData.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.fromClientId = "";
                     if (options.bytes === String)
@@ -1853,7 +1851,7 @@ $root.graphwiz = (function() {
          * @property {number} PCMA=2 PCMA value
          */
         core.VoiceCodec = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "OPUS"] = 0;
             values[valuesById[1] = "PCMU"] = 1;
             values[valuesById[2] = "PCMA"] = 2;
@@ -1883,7 +1881,7 @@ $root.graphwiz = (function() {
             function EntitySpawn(properties) {
                 this.components = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -1951,7 +1949,7 @@ $root.graphwiz = (function() {
                 if (message.ownerId != null && Object.hasOwnProperty.call(message, "ownerId"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.ownerId);
                 if (message.components != null && Object.hasOwnProperty.call(message, "components"))
-                    for (var keys = Object.keys(message.components), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.components), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.components[keys[i]]).ldelim();
                 return writer;
             };
@@ -1983,9 +1981,9 @@ $root.graphwiz = (function() {
             EntitySpawn.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.EntitySpawn(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.EntitySpawn(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -2004,11 +2002,11 @@ $root.graphwiz = (function() {
                     case 4: {
                             if (message.components === $util.emptyObject)
                                 message.components = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -2071,8 +2069,8 @@ $root.graphwiz = (function() {
                 if (message.components != null && message.hasOwnProperty("components")) {
                     if (!$util.isObject(message.components))
                         return "components: object expected";
-                    var key = Object.keys(message.components);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.components);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.components[key[i]]))
                             return "components: string{k:string} expected";
                 }
@@ -2090,7 +2088,7 @@ $root.graphwiz = (function() {
             EntitySpawn.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.EntitySpawn)
                     return object;
-                var message = new $root.graphwiz.core.EntitySpawn();
+                let message = new $root.graphwiz.core.EntitySpawn();
                 if (object.entityId != null)
                     message.entityId = String(object.entityId);
                 if (object.templateId != null)
@@ -2101,7 +2099,7 @@ $root.graphwiz = (function() {
                     if (typeof object.components !== "object")
                         throw TypeError(".graphwiz.core.EntitySpawn.components: object expected");
                     message.components = {};
-                    for (var keys = Object.keys(object.components), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.components), i = 0; i < keys.length; ++i)
                         message.components[keys[i]] = String(object.components[keys[i]]);
                 }
                 return message;
@@ -2119,7 +2117,7 @@ $root.graphwiz = (function() {
             EntitySpawn.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.components = {};
                 if (options.defaults) {
@@ -2133,10 +2131,10 @@ $root.graphwiz = (function() {
                     object.templateId = message.templateId;
                 if (message.ownerId != null && message.hasOwnProperty("ownerId"))
                     object.ownerId = message.ownerId;
-                var keys2;
+                let keys2;
                 if (message.components && (keys2 = Object.keys(message.components)).length) {
                     object.components = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.components[keys2[j]] = message.components[keys2[j]];
                 }
                 return object;
@@ -2192,7 +2190,7 @@ $root.graphwiz = (function() {
             function EntityUpdate(properties) {
                 this.components = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -2240,7 +2238,7 @@ $root.graphwiz = (function() {
                 if (message.entityId != null && Object.hasOwnProperty.call(message, "entityId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.entityId);
                 if (message.components != null && Object.hasOwnProperty.call(message, "components"))
-                    for (var keys = Object.keys(message.components), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.components), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).bytes(message.components[keys[i]]).ldelim();
                 return writer;
             };
@@ -2272,9 +2270,9 @@ $root.graphwiz = (function() {
             EntityUpdate.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.EntityUpdate(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.EntityUpdate(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -2285,11 +2283,11 @@ $root.graphwiz = (function() {
                     case 2: {
                             if (message.components === $util.emptyObject)
                                 message.components = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = [];
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -2346,8 +2344,8 @@ $root.graphwiz = (function() {
                 if (message.components != null && message.hasOwnProperty("components")) {
                     if (!$util.isObject(message.components))
                         return "components: object expected";
-                    var key = Object.keys(message.components);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.components);
+                    for (let i = 0; i < key.length; ++i)
                         if (!(message.components[key[i]] && typeof message.components[key[i]].length === "number" || $util.isString(message.components[key[i]])))
                             return "components: buffer{k:string} expected";
                 }
@@ -2365,14 +2363,14 @@ $root.graphwiz = (function() {
             EntityUpdate.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.EntityUpdate)
                     return object;
-                var message = new $root.graphwiz.core.EntityUpdate();
+                let message = new $root.graphwiz.core.EntityUpdate();
                 if (object.entityId != null)
                     message.entityId = String(object.entityId);
                 if (object.components) {
                     if (typeof object.components !== "object")
                         throw TypeError(".graphwiz.core.EntityUpdate.components: object expected");
                     message.components = {};
-                    for (var keys = Object.keys(object.components), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.components), i = 0; i < keys.length; ++i)
                         if (typeof object.components[keys[i]] === "string")
                             $util.base64.decode(object.components[keys[i]], message.components[keys[i]] = $util.newBuffer($util.base64.length(object.components[keys[i]])), 0);
                         else if (object.components[keys[i]].length >= 0)
@@ -2393,17 +2391,17 @@ $root.graphwiz = (function() {
             EntityUpdate.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.components = {};
                 if (options.defaults)
                     object.entityId = "";
                 if (message.entityId != null && message.hasOwnProperty("entityId"))
                     object.entityId = message.entityId;
-                var keys2;
+                let keys2;
                 if (message.components && (keys2 = Object.keys(message.components)).length) {
                     object.components = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.components[keys2[j]] = options.bytes === String ? $util.base64.encode(message.components[keys2[j]], 0, message.components[keys2[j]].length) : options.bytes === Array ? Array.prototype.slice.call(message.components[keys2[j]]) : message.components[keys2[j]];
                 }
                 return object;
@@ -2457,7 +2455,7 @@ $root.graphwiz = (function() {
              */
             function EntityDespawn(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -2526,9 +2524,9 @@ $root.graphwiz = (function() {
             EntityDespawn.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.EntityDespawn();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.EntityDespawn();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -2588,7 +2586,7 @@ $root.graphwiz = (function() {
             EntityDespawn.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.EntityDespawn)
                     return object;
-                var message = new $root.graphwiz.core.EntityDespawn();
+                let message = new $root.graphwiz.core.EntityDespawn();
                 if (object.entityId != null)
                     message.entityId = String(object.entityId);
                 return message;
@@ -2606,7 +2604,7 @@ $root.graphwiz = (function() {
             EntityDespawn.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.entityId = "";
                 if (message.entityId != null && message.hasOwnProperty("entityId"))
@@ -2665,7 +2663,7 @@ $root.graphwiz = (function() {
              */
             function ChatMessage(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -2764,9 +2762,9 @@ $root.graphwiz = (function() {
             ChatMessage.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.ChatMessage();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.ChatMessage();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -2853,7 +2851,7 @@ $root.graphwiz = (function() {
             ChatMessage.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.ChatMessage)
                     return object;
-                var message = new $root.graphwiz.core.ChatMessage();
+                let message = new $root.graphwiz.core.ChatMessage();
                 if (object.fromClientId != null)
                     message.fromClientId = String(object.fromClientId);
                 if (object.message != null)
@@ -2902,12 +2900,12 @@ $root.graphwiz = (function() {
             ChatMessage.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.fromClientId = "";
                     object.message = "";
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.timestamp = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.timestamp = options.longs === String ? "0" : 0;
@@ -2965,7 +2963,7 @@ $root.graphwiz = (function() {
          * @property {number} SHOUT=2 SHOUT value
          */
         core.ChatMessageType = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NORMAL"] = 0;
             values[valuesById[1] = "WHISPER"] = 1;
             values[valuesById[2] = "SHOUT"] = 2;
@@ -2993,7 +2991,7 @@ $root.graphwiz = (function() {
              */
             function PresenceEvent(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -3082,9 +3080,9 @@ $root.graphwiz = (function() {
             PresenceEvent.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.PresenceEvent();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.PresenceEvent();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -3148,7 +3146,7 @@ $root.graphwiz = (function() {
                         break;
                     }
                 if (message.data != null && message.hasOwnProperty("data")) {
-                    var error = $root.graphwiz.core.PresenceData.verify(message.data);
+                    let error = $root.graphwiz.core.PresenceData.verify(message.data);
                     if (error)
                         return "data." + error;
                 }
@@ -3166,7 +3164,7 @@ $root.graphwiz = (function() {
             PresenceEvent.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.PresenceEvent)
                     return object;
-                var message = new $root.graphwiz.core.PresenceEvent();
+                let message = new $root.graphwiz.core.PresenceEvent();
                 if (object.clientId != null)
                     message.clientId = String(object.clientId);
                 switch (object.eventType) {
@@ -3209,7 +3207,7 @@ $root.graphwiz = (function() {
             PresenceEvent.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.clientId = "";
                     object.eventType = options.enums === String ? "JOIN" : 0;
@@ -3262,7 +3260,7 @@ $root.graphwiz = (function() {
          * @property {number} UPDATE=2 UPDATE value
          */
         core.PresenceEventType = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "JOIN"] = 0;
             values[valuesById[1] = "LEAVE"] = 1;
             values[valuesById[2] = "UPDATE"] = 2;
@@ -3279,6 +3277,7 @@ $root.graphwiz = (function() {
              * @property {string|null} [avatarUrl] PresenceData avatarUrl
              * @property {graphwiz.core.IVector3|null} [position] PresenceData position
              * @property {graphwiz.core.IQuaternion|null} [rotation] PresenceData rotation
+             * @property {graphwiz.core.IAvatarConfig|null} [avatarConfig] PresenceData avatarConfig
              */
 
             /**
@@ -3291,7 +3290,7 @@ $root.graphwiz = (function() {
              */
             function PresenceData(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -3329,6 +3328,14 @@ $root.graphwiz = (function() {
             PresenceData.prototype.rotation = null;
 
             /**
+             * PresenceData avatarConfig.
+             * @member {graphwiz.core.IAvatarConfig|null|undefined} avatarConfig
+             * @memberof graphwiz.core.PresenceData
+             * @instance
+             */
+            PresenceData.prototype.avatarConfig = null;
+
+            /**
              * Creates a new PresenceData instance using the specified properties.
              * @function create
              * @memberof graphwiz.core.PresenceData
@@ -3360,6 +3367,8 @@ $root.graphwiz = (function() {
                     $root.graphwiz.core.Vector3.encode(message.position, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                 if (message.rotation != null && Object.hasOwnProperty.call(message, "rotation"))
                     $root.graphwiz.core.Quaternion.encode(message.rotation, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.avatarConfig != null && Object.hasOwnProperty.call(message, "avatarConfig"))
+                    $root.graphwiz.core.AvatarConfig.encode(message.avatarConfig, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
                 return writer;
             };
 
@@ -3390,9 +3399,9 @@ $root.graphwiz = (function() {
             PresenceData.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.PresenceData();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.PresenceData();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -3410,6 +3419,10 @@ $root.graphwiz = (function() {
                         }
                     case 4: {
                             message.rotation = $root.graphwiz.core.Quaternion.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.avatarConfig = $root.graphwiz.core.AvatarConfig.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -3454,14 +3467,19 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.avatarUrl))
                         return "avatarUrl: string expected";
                 if (message.position != null && message.hasOwnProperty("position")) {
-                    var error = $root.graphwiz.core.Vector3.verify(message.position);
+                    let error = $root.graphwiz.core.Vector3.verify(message.position);
                     if (error)
                         return "position." + error;
                 }
                 if (message.rotation != null && message.hasOwnProperty("rotation")) {
-                    var error = $root.graphwiz.core.Quaternion.verify(message.rotation);
+                    let error = $root.graphwiz.core.Quaternion.verify(message.rotation);
                     if (error)
                         return "rotation." + error;
+                }
+                if (message.avatarConfig != null && message.hasOwnProperty("avatarConfig")) {
+                    let error = $root.graphwiz.core.AvatarConfig.verify(message.avatarConfig);
+                    if (error)
+                        return "avatarConfig." + error;
                 }
                 return null;
             };
@@ -3477,7 +3495,7 @@ $root.graphwiz = (function() {
             PresenceData.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.PresenceData)
                     return object;
-                var message = new $root.graphwiz.core.PresenceData();
+                let message = new $root.graphwiz.core.PresenceData();
                 if (object.displayName != null)
                     message.displayName = String(object.displayName);
                 if (object.avatarUrl != null)
@@ -3491,6 +3509,11 @@ $root.graphwiz = (function() {
                     if (typeof object.rotation !== "object")
                         throw TypeError(".graphwiz.core.PresenceData.rotation: object expected");
                     message.rotation = $root.graphwiz.core.Quaternion.fromObject(object.rotation);
+                }
+                if (object.avatarConfig != null) {
+                    if (typeof object.avatarConfig !== "object")
+                        throw TypeError(".graphwiz.core.PresenceData.avatarConfig: object expected");
+                    message.avatarConfig = $root.graphwiz.core.AvatarConfig.fromObject(object.avatarConfig);
                 }
                 return message;
             };
@@ -3507,12 +3530,13 @@ $root.graphwiz = (function() {
             PresenceData.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.displayName = "";
                     object.avatarUrl = "";
                     object.position = null;
                     object.rotation = null;
+                    object.avatarConfig = null;
                 }
                 if (message.displayName != null && message.hasOwnProperty("displayName"))
                     object.displayName = message.displayName;
@@ -3522,6 +3546,8 @@ $root.graphwiz = (function() {
                     object.position = $root.graphwiz.core.Vector3.toObject(message.position, options);
                 if (message.rotation != null && message.hasOwnProperty("rotation"))
                     object.rotation = $root.graphwiz.core.Quaternion.toObject(message.rotation, options);
+                if (message.avatarConfig != null && message.hasOwnProperty("avatarConfig"))
+                    object.avatarConfig = $root.graphwiz.core.AvatarConfig.toObject(message.avatarConfig, options);
                 return object;
             };
 
@@ -3554,6 +3580,640 @@ $root.graphwiz = (function() {
             return PresenceData;
         })();
 
+        core.PlayerSnapshot = (function() {
+
+            /**
+             * Properties of a PlayerSnapshot.
+             * @memberof graphwiz.core
+             * @interface IPlayerSnapshot
+             * @property {string|null} [clientId] PlayerSnapshot clientId
+             * @property {string|null} [displayName] PlayerSnapshot displayName
+             * @property {string|null} [avatarUrl] PlayerSnapshot avatarUrl
+             * @property {graphwiz.core.IVector3|null} [position] PlayerSnapshot position
+             * @property {graphwiz.core.IQuaternion|null} [rotation] PlayerSnapshot rotation
+             * @property {graphwiz.core.IAvatarConfig|null} [avatarConfig] PlayerSnapshot avatarConfig
+             */
+
+            /**
+             * Constructs a new PlayerSnapshot.
+             * @memberof graphwiz.core
+             * @classdesc Represents a PlayerSnapshot.
+             * @implements IPlayerSnapshot
+             * @constructor
+             * @param {graphwiz.core.IPlayerSnapshot=} [properties] Properties to set
+             */
+            function PlayerSnapshot(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * PlayerSnapshot clientId.
+             * @member {string} clientId
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @instance
+             */
+            PlayerSnapshot.prototype.clientId = "";
+
+            /**
+             * PlayerSnapshot displayName.
+             * @member {string} displayName
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @instance
+             */
+            PlayerSnapshot.prototype.displayName = "";
+
+            /**
+             * PlayerSnapshot avatarUrl.
+             * @member {string} avatarUrl
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @instance
+             */
+            PlayerSnapshot.prototype.avatarUrl = "";
+
+            /**
+             * PlayerSnapshot position.
+             * @member {graphwiz.core.IVector3|null|undefined} position
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @instance
+             */
+            PlayerSnapshot.prototype.position = null;
+
+            /**
+             * PlayerSnapshot rotation.
+             * @member {graphwiz.core.IQuaternion|null|undefined} rotation
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @instance
+             */
+            PlayerSnapshot.prototype.rotation = null;
+
+            /**
+             * PlayerSnapshot avatarConfig.
+             * @member {graphwiz.core.IAvatarConfig|null|undefined} avatarConfig
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @instance
+             */
+            PlayerSnapshot.prototype.avatarConfig = null;
+
+            /**
+             * Creates a new PlayerSnapshot instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {graphwiz.core.IPlayerSnapshot=} [properties] Properties to set
+             * @returns {graphwiz.core.PlayerSnapshot} PlayerSnapshot instance
+             */
+            PlayerSnapshot.create = function create(properties) {
+                return new PlayerSnapshot(properties);
+            };
+
+            /**
+             * Encodes the specified PlayerSnapshot message. Does not implicitly {@link graphwiz.core.PlayerSnapshot.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {graphwiz.core.IPlayerSnapshot} message PlayerSnapshot message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            PlayerSnapshot.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientId);
+                if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.displayName);
+                if (message.avatarUrl != null && Object.hasOwnProperty.call(message, "avatarUrl"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.avatarUrl);
+                if (message.position != null && Object.hasOwnProperty.call(message, "position"))
+                    $root.graphwiz.core.Vector3.encode(message.position, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.rotation != null && Object.hasOwnProperty.call(message, "rotation"))
+                    $root.graphwiz.core.Quaternion.encode(message.rotation, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                if (message.avatarConfig != null && Object.hasOwnProperty.call(message, "avatarConfig"))
+                    $root.graphwiz.core.AvatarConfig.encode(message.avatarConfig, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified PlayerSnapshot message, length delimited. Does not implicitly {@link graphwiz.core.PlayerSnapshot.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {graphwiz.core.IPlayerSnapshot} message PlayerSnapshot message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            PlayerSnapshot.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a PlayerSnapshot message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.core.PlayerSnapshot} PlayerSnapshot
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            PlayerSnapshot.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.PlayerSnapshot();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.clientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.displayName = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.avatarUrl = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.position = $root.graphwiz.core.Vector3.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.rotation = $root.graphwiz.core.Quaternion.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 6: {
+                            message.avatarConfig = $root.graphwiz.core.AvatarConfig.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a PlayerSnapshot message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.core.PlayerSnapshot} PlayerSnapshot
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            PlayerSnapshot.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a PlayerSnapshot message.
+             * @function verify
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            PlayerSnapshot.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    if (!$util.isString(message.clientId))
+                        return "clientId: string expected";
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    if (!$util.isString(message.displayName))
+                        return "displayName: string expected";
+                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
+                    if (!$util.isString(message.avatarUrl))
+                        return "avatarUrl: string expected";
+                if (message.position != null && message.hasOwnProperty("position")) {
+                    let error = $root.graphwiz.core.Vector3.verify(message.position);
+                    if (error)
+                        return "position." + error;
+                }
+                if (message.rotation != null && message.hasOwnProperty("rotation")) {
+                    let error = $root.graphwiz.core.Quaternion.verify(message.rotation);
+                    if (error)
+                        return "rotation." + error;
+                }
+                if (message.avatarConfig != null && message.hasOwnProperty("avatarConfig")) {
+                    let error = $root.graphwiz.core.AvatarConfig.verify(message.avatarConfig);
+                    if (error)
+                        return "avatarConfig." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates a PlayerSnapshot message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.core.PlayerSnapshot} PlayerSnapshot
+             */
+            PlayerSnapshot.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.core.PlayerSnapshot)
+                    return object;
+                let message = new $root.graphwiz.core.PlayerSnapshot();
+                if (object.clientId != null)
+                    message.clientId = String(object.clientId);
+                if (object.displayName != null)
+                    message.displayName = String(object.displayName);
+                if (object.avatarUrl != null)
+                    message.avatarUrl = String(object.avatarUrl);
+                if (object.position != null) {
+                    if (typeof object.position !== "object")
+                        throw TypeError(".graphwiz.core.PlayerSnapshot.position: object expected");
+                    message.position = $root.graphwiz.core.Vector3.fromObject(object.position);
+                }
+                if (object.rotation != null) {
+                    if (typeof object.rotation !== "object")
+                        throw TypeError(".graphwiz.core.PlayerSnapshot.rotation: object expected");
+                    message.rotation = $root.graphwiz.core.Quaternion.fromObject(object.rotation);
+                }
+                if (object.avatarConfig != null) {
+                    if (typeof object.avatarConfig !== "object")
+                        throw TypeError(".graphwiz.core.PlayerSnapshot.avatarConfig: object expected");
+                    message.avatarConfig = $root.graphwiz.core.AvatarConfig.fromObject(object.avatarConfig);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a PlayerSnapshot message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {graphwiz.core.PlayerSnapshot} message PlayerSnapshot
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            PlayerSnapshot.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.clientId = "";
+                    object.displayName = "";
+                    object.avatarUrl = "";
+                    object.position = null;
+                    object.rotation = null;
+                    object.avatarConfig = null;
+                }
+                if (message.clientId != null && message.hasOwnProperty("clientId"))
+                    object.clientId = message.clientId;
+                if (message.displayName != null && message.hasOwnProperty("displayName"))
+                    object.displayName = message.displayName;
+                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
+                    object.avatarUrl = message.avatarUrl;
+                if (message.position != null && message.hasOwnProperty("position"))
+                    object.position = $root.graphwiz.core.Vector3.toObject(message.position, options);
+                if (message.rotation != null && message.hasOwnProperty("rotation"))
+                    object.rotation = $root.graphwiz.core.Quaternion.toObject(message.rotation, options);
+                if (message.avatarConfig != null && message.hasOwnProperty("avatarConfig"))
+                    object.avatarConfig = $root.graphwiz.core.AvatarConfig.toObject(message.avatarConfig, options);
+                return object;
+            };
+
+            /**
+             * Converts this PlayerSnapshot to JSON.
+             * @function toJSON
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            PlayerSnapshot.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for PlayerSnapshot
+             * @function getTypeUrl
+             * @memberof graphwiz.core.PlayerSnapshot
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            PlayerSnapshot.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.core.PlayerSnapshot";
+            };
+
+            return PlayerSnapshot;
+        })();
+
+        core.AvatarConfig = (function() {
+
+            /**
+             * Properties of an AvatarConfig.
+             * @memberof graphwiz.core
+             * @interface IAvatarConfig
+             * @property {string|null} [bodyType] AvatarConfig bodyType
+             * @property {string|null} [primaryColor] AvatarConfig primaryColor
+             * @property {string|null} [secondaryColor] AvatarConfig secondaryColor
+             * @property {number|null} [height] AvatarConfig height
+             * @property {string|null} [customModelUrl] AvatarConfig customModelUrl
+             */
+
+            /**
+             * Constructs a new AvatarConfig.
+             * @memberof graphwiz.core
+             * @classdesc Represents an AvatarConfig.
+             * @implements IAvatarConfig
+             * @constructor
+             * @param {graphwiz.core.IAvatarConfig=} [properties] Properties to set
+             */
+            function AvatarConfig(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * AvatarConfig bodyType.
+             * @member {string} bodyType
+             * @memberof graphwiz.core.AvatarConfig
+             * @instance
+             */
+            AvatarConfig.prototype.bodyType = "";
+
+            /**
+             * AvatarConfig primaryColor.
+             * @member {string} primaryColor
+             * @memberof graphwiz.core.AvatarConfig
+             * @instance
+             */
+            AvatarConfig.prototype.primaryColor = "";
+
+            /**
+             * AvatarConfig secondaryColor.
+             * @member {string} secondaryColor
+             * @memberof graphwiz.core.AvatarConfig
+             * @instance
+             */
+            AvatarConfig.prototype.secondaryColor = "";
+
+            /**
+             * AvatarConfig height.
+             * @member {number} height
+             * @memberof graphwiz.core.AvatarConfig
+             * @instance
+             */
+            AvatarConfig.prototype.height = 0;
+
+            /**
+             * AvatarConfig customModelUrl.
+             * @member {string} customModelUrl
+             * @memberof graphwiz.core.AvatarConfig
+             * @instance
+             */
+            AvatarConfig.prototype.customModelUrl = "";
+
+            /**
+             * Creates a new AvatarConfig instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {graphwiz.core.IAvatarConfig=} [properties] Properties to set
+             * @returns {graphwiz.core.AvatarConfig} AvatarConfig instance
+             */
+            AvatarConfig.create = function create(properties) {
+                return new AvatarConfig(properties);
+            };
+
+            /**
+             * Encodes the specified AvatarConfig message. Does not implicitly {@link graphwiz.core.AvatarConfig.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {graphwiz.core.IAvatarConfig} message AvatarConfig message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AvatarConfig.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.bodyType != null && Object.hasOwnProperty.call(message, "bodyType"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.bodyType);
+                if (message.primaryColor != null && Object.hasOwnProperty.call(message, "primaryColor"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.primaryColor);
+                if (message.secondaryColor != null && Object.hasOwnProperty.call(message, "secondaryColor"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.secondaryColor);
+                if (message.height != null && Object.hasOwnProperty.call(message, "height"))
+                    writer.uint32(/* id 4, wireType 5 =*/37).float(message.height);
+                if (message.customModelUrl != null && Object.hasOwnProperty.call(message, "customModelUrl"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.customModelUrl);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified AvatarConfig message, length delimited. Does not implicitly {@link graphwiz.core.AvatarConfig.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {graphwiz.core.IAvatarConfig} message AvatarConfig message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            AvatarConfig.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an AvatarConfig message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.core.AvatarConfig} AvatarConfig
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AvatarConfig.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.AvatarConfig();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.bodyType = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.primaryColor = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.secondaryColor = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.height = reader.float();
+                            break;
+                        }
+                    case 5: {
+                            message.customModelUrl = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an AvatarConfig message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.core.AvatarConfig} AvatarConfig
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            AvatarConfig.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an AvatarConfig message.
+             * @function verify
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            AvatarConfig.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.bodyType != null && message.hasOwnProperty("bodyType"))
+                    if (!$util.isString(message.bodyType))
+                        return "bodyType: string expected";
+                if (message.primaryColor != null && message.hasOwnProperty("primaryColor"))
+                    if (!$util.isString(message.primaryColor))
+                        return "primaryColor: string expected";
+                if (message.secondaryColor != null && message.hasOwnProperty("secondaryColor"))
+                    if (!$util.isString(message.secondaryColor))
+                        return "secondaryColor: string expected";
+                if (message.height != null && message.hasOwnProperty("height"))
+                    if (typeof message.height !== "number")
+                        return "height: number expected";
+                if (message.customModelUrl != null && message.hasOwnProperty("customModelUrl"))
+                    if (!$util.isString(message.customModelUrl))
+                        return "customModelUrl: string expected";
+                return null;
+            };
+
+            /**
+             * Creates an AvatarConfig message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.core.AvatarConfig} AvatarConfig
+             */
+            AvatarConfig.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.core.AvatarConfig)
+                    return object;
+                let message = new $root.graphwiz.core.AvatarConfig();
+                if (object.bodyType != null)
+                    message.bodyType = String(object.bodyType);
+                if (object.primaryColor != null)
+                    message.primaryColor = String(object.primaryColor);
+                if (object.secondaryColor != null)
+                    message.secondaryColor = String(object.secondaryColor);
+                if (object.height != null)
+                    message.height = Number(object.height);
+                if (object.customModelUrl != null)
+                    message.customModelUrl = String(object.customModelUrl);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an AvatarConfig message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {graphwiz.core.AvatarConfig} message AvatarConfig
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            AvatarConfig.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.bodyType = "";
+                    object.primaryColor = "";
+                    object.secondaryColor = "";
+                    object.height = 0;
+                    object.customModelUrl = "";
+                }
+                if (message.bodyType != null && message.hasOwnProperty("bodyType"))
+                    object.bodyType = message.bodyType;
+                if (message.primaryColor != null && message.hasOwnProperty("primaryColor"))
+                    object.primaryColor = message.primaryColor;
+                if (message.secondaryColor != null && message.hasOwnProperty("secondaryColor"))
+                    object.secondaryColor = message.secondaryColor;
+                if (message.height != null && message.hasOwnProperty("height"))
+                    object.height = options.json && !isFinite(message.height) ? String(message.height) : message.height;
+                if (message.customModelUrl != null && message.hasOwnProperty("customModelUrl"))
+                    object.customModelUrl = message.customModelUrl;
+                return object;
+            };
+
+            /**
+             * Converts this AvatarConfig to JSON.
+             * @function toJSON
+             * @memberof graphwiz.core.AvatarConfig
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            AvatarConfig.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for AvatarConfig
+             * @function getTypeUrl
+             * @memberof graphwiz.core.AvatarConfig
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            AvatarConfig.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.core.AvatarConfig";
+            };
+
+            return AvatarConfig;
+        })();
+
         core.ClientHello = (function() {
 
             /**
@@ -3576,7 +4236,7 @@ $root.graphwiz = (function() {
              */
             function ClientHello(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -3675,9 +4335,9 @@ $root.graphwiz = (function() {
             ClientHello.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.ClientHello();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.ClientHello();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -3758,7 +4418,7 @@ $root.graphwiz = (function() {
             ClientHello.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.ClientHello)
                     return object;
-                var message = new $root.graphwiz.core.ClientHello();
+                let message = new $root.graphwiz.core.ClientHello();
                 if (object.clientId != null)
                     message.clientId = String(object.clientId);
                 if (object.displayName != null)
@@ -3782,7 +4442,7 @@ $root.graphwiz = (function() {
             ClientHello.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.clientId = "";
                     object.displayName = "";
@@ -3851,7 +4511,7 @@ $root.graphwiz = (function() {
              */
             function ServerHello(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -3950,9 +4610,9 @@ $root.graphwiz = (function() {
             ServerHello.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.ServerHello();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.ServerHello();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -4017,7 +4677,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.roomId))
                         return "roomId: string expected";
                 if (message.initialState != null && message.hasOwnProperty("initialState")) {
-                    var error = $root.graphwiz.core.WorldState.verify(message.initialState);
+                    let error = $root.graphwiz.core.WorldState.verify(message.initialState);
                     if (error)
                         return "initialState." + error;
                 }
@@ -4035,7 +4695,7 @@ $root.graphwiz = (function() {
             ServerHello.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.ServerHello)
                     return object;
-                var message = new $root.graphwiz.core.ServerHello();
+                let message = new $root.graphwiz.core.ServerHello();
                 if (object.serverVersion != null)
                     message.serverVersion = String(object.serverVersion);
                 if (object.assignedClientId != null)
@@ -4062,7 +4722,7 @@ $root.graphwiz = (function() {
             ServerHello.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.serverVersion = "";
                     object.assignedClientId = "";
@@ -4132,7 +4792,7 @@ $root.graphwiz = (function() {
                 this.entities = [];
                 this.players = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -4186,10 +4846,10 @@ $root.graphwiz = (function() {
                 if (!writer)
                     writer = $Writer.create();
                 if (message.entities != null && message.entities.length)
-                    for (var i = 0; i < message.entities.length; ++i)
+                    for (let i = 0; i < message.entities.length; ++i)
                         $root.graphwiz.core.EntitySnapshot.encode(message.entities[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                 if (message.players != null && message.players.length)
-                    for (var i = 0; i < message.players.length; ++i)
+                    for (let i = 0; i < message.players.length; ++i)
                         $root.graphwiz.core.PlayerSnapshot.encode(message.players[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 if (message.lastUpdate != null && Object.hasOwnProperty.call(message, "lastUpdate"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int64(message.lastUpdate);
@@ -4223,9 +4883,9 @@ $root.graphwiz = (function() {
             WorldState.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.WorldState();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.WorldState();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -4283,8 +4943,8 @@ $root.graphwiz = (function() {
                 if (message.entities != null && message.hasOwnProperty("entities")) {
                     if (!Array.isArray(message.entities))
                         return "entities: array expected";
-                    for (var i = 0; i < message.entities.length; ++i) {
-                        var error = $root.graphwiz.core.EntitySnapshot.verify(message.entities[i]);
+                    for (let i = 0; i < message.entities.length; ++i) {
+                        let error = $root.graphwiz.core.EntitySnapshot.verify(message.entities[i]);
                         if (error)
                             return "entities." + error;
                     }
@@ -4292,8 +4952,8 @@ $root.graphwiz = (function() {
                 if (message.players != null && message.hasOwnProperty("players")) {
                     if (!Array.isArray(message.players))
                         return "players: array expected";
-                    for (var i = 0; i < message.players.length; ++i) {
-                        var error = $root.graphwiz.core.PlayerSnapshot.verify(message.players[i]);
+                    for (let i = 0; i < message.players.length; ++i) {
+                        let error = $root.graphwiz.core.PlayerSnapshot.verify(message.players[i]);
                         if (error)
                             return "players." + error;
                     }
@@ -4315,12 +4975,12 @@ $root.graphwiz = (function() {
             WorldState.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.WorldState)
                     return object;
-                var message = new $root.graphwiz.core.WorldState();
+                let message = new $root.graphwiz.core.WorldState();
                 if (object.entities) {
                     if (!Array.isArray(object.entities))
                         throw TypeError(".graphwiz.core.WorldState.entities: array expected");
                     message.entities = [];
-                    for (var i = 0; i < object.entities.length; ++i) {
+                    for (let i = 0; i < object.entities.length; ++i) {
                         if (typeof object.entities[i] !== "object")
                             throw TypeError(".graphwiz.core.WorldState.entities: object expected");
                         message.entities[i] = $root.graphwiz.core.EntitySnapshot.fromObject(object.entities[i]);
@@ -4330,7 +4990,7 @@ $root.graphwiz = (function() {
                     if (!Array.isArray(object.players))
                         throw TypeError(".graphwiz.core.WorldState.players: array expected");
                     message.players = [];
-                    for (var i = 0; i < object.players.length; ++i) {
+                    for (let i = 0; i < object.players.length; ++i) {
                         if (typeof object.players[i] !== "object")
                             throw TypeError(".graphwiz.core.WorldState.players: object expected");
                         message.players[i] = $root.graphwiz.core.PlayerSnapshot.fromObject(object.players[i]);
@@ -4360,25 +5020,25 @@ $root.graphwiz = (function() {
             WorldState.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults) {
                     object.entities = [];
                     object.players = [];
                 }
                 if (options.defaults)
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.lastUpdate = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.lastUpdate = options.longs === String ? "0" : 0;
                 if (message.entities && message.entities.length) {
                     object.entities = [];
-                    for (var j = 0; j < message.entities.length; ++j)
+                    for (let j = 0; j < message.entities.length; ++j)
                         object.entities[j] = $root.graphwiz.core.EntitySnapshot.toObject(message.entities[j], options);
                 }
                 if (message.players && message.players.length) {
                     object.players = [];
-                    for (var j = 0; j < message.players.length; ++j)
+                    for (let j = 0; j < message.players.length; ++j)
                         object.players[j] = $root.graphwiz.core.PlayerSnapshot.toObject(message.players[j], options);
                 }
                 if (message.lastUpdate != null && message.hasOwnProperty("lastUpdate"))
@@ -4442,7 +5102,7 @@ $root.graphwiz = (function() {
             function EntitySnapshot(properties) {
                 this.components = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -4520,7 +5180,7 @@ $root.graphwiz = (function() {
                 if (message.rotation != null && Object.hasOwnProperty.call(message, "rotation"))
                     $root.graphwiz.core.Quaternion.encode(message.rotation, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                 if (message.components != null && Object.hasOwnProperty.call(message, "components"))
-                    for (var keys = Object.keys(message.components), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.components), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.components[keys[i]]).ldelim();
                 return writer;
             };
@@ -4552,9 +5212,9 @@ $root.graphwiz = (function() {
             EntitySnapshot.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.EntitySnapshot(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.EntitySnapshot(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -4577,11 +5237,11 @@ $root.graphwiz = (function() {
                     case 5: {
                             if (message.components === $util.emptyObject)
                                 message.components = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -4639,20 +5299,20 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.templateId))
                         return "templateId: string expected";
                 if (message.position != null && message.hasOwnProperty("position")) {
-                    var error = $root.graphwiz.core.Vector3.verify(message.position);
+                    let error = $root.graphwiz.core.Vector3.verify(message.position);
                     if (error)
                         return "position." + error;
                 }
                 if (message.rotation != null && message.hasOwnProperty("rotation")) {
-                    var error = $root.graphwiz.core.Quaternion.verify(message.rotation);
+                    let error = $root.graphwiz.core.Quaternion.verify(message.rotation);
                     if (error)
                         return "rotation." + error;
                 }
                 if (message.components != null && message.hasOwnProperty("components")) {
                     if (!$util.isObject(message.components))
                         return "components: object expected";
-                    var key = Object.keys(message.components);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.components);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.components[key[i]]))
                             return "components: string{k:string} expected";
                 }
@@ -4670,7 +5330,7 @@ $root.graphwiz = (function() {
             EntitySnapshot.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.EntitySnapshot)
                     return object;
-                var message = new $root.graphwiz.core.EntitySnapshot();
+                let message = new $root.graphwiz.core.EntitySnapshot();
                 if (object.id != null)
                     message.id = String(object.id);
                 if (object.templateId != null)
@@ -4689,7 +5349,7 @@ $root.graphwiz = (function() {
                     if (typeof object.components !== "object")
                         throw TypeError(".graphwiz.core.EntitySnapshot.components: object expected");
                     message.components = {};
-                    for (var keys = Object.keys(object.components), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.components), i = 0; i < keys.length; ++i)
                         message.components[keys[i]] = String(object.components[keys[i]]);
                 }
                 return message;
@@ -4707,7 +5367,7 @@ $root.graphwiz = (function() {
             EntitySnapshot.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.components = {};
                 if (options.defaults) {
@@ -4724,10 +5384,10 @@ $root.graphwiz = (function() {
                     object.position = $root.graphwiz.core.Vector3.toObject(message.position, options);
                 if (message.rotation != null && message.hasOwnProperty("rotation"))
                     object.rotation = $root.graphwiz.core.Quaternion.toObject(message.rotation, options);
-                var keys2;
+                let keys2;
                 if (message.components && (keys2 = Object.keys(message.components)).length) {
                     object.components = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.components[keys2[j]] = message.components[keys2[j]];
                 }
                 return object;
@@ -4762,314 +5422,6 @@ $root.graphwiz = (function() {
             return EntitySnapshot;
         })();
 
-        core.PlayerSnapshot = (function() {
-
-            /**
-             * Properties of a PlayerSnapshot.
-             * @memberof graphwiz.core
-             * @interface IPlayerSnapshot
-             * @property {string|null} [clientId] PlayerSnapshot clientId
-             * @property {string|null} [displayName] PlayerSnapshot displayName
-             * @property {string|null} [avatarUrl] PlayerSnapshot avatarUrl
-             * @property {graphwiz.core.IVector3|null} [position] PlayerSnapshot position
-             * @property {graphwiz.core.IQuaternion|null} [rotation] PlayerSnapshot rotation
-             */
-
-            /**
-             * Constructs a new PlayerSnapshot.
-             * @memberof graphwiz.core
-             * @classdesc Represents a PlayerSnapshot.
-             * @implements IPlayerSnapshot
-             * @constructor
-             * @param {graphwiz.core.IPlayerSnapshot=} [properties] Properties to set
-             */
-            function PlayerSnapshot(properties) {
-                if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * PlayerSnapshot clientId.
-             * @member {string} clientId
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @instance
-             */
-            PlayerSnapshot.prototype.clientId = "";
-
-            /**
-             * PlayerSnapshot displayName.
-             * @member {string} displayName
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @instance
-             */
-            PlayerSnapshot.prototype.displayName = "";
-
-            /**
-             * PlayerSnapshot avatarUrl.
-             * @member {string} avatarUrl
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @instance
-             */
-            PlayerSnapshot.prototype.avatarUrl = "";
-
-            /**
-             * PlayerSnapshot position.
-             * @member {graphwiz.core.IVector3|null|undefined} position
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @instance
-             */
-            PlayerSnapshot.prototype.position = null;
-
-            /**
-             * PlayerSnapshot rotation.
-             * @member {graphwiz.core.IQuaternion|null|undefined} rotation
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @instance
-             */
-            PlayerSnapshot.prototype.rotation = null;
-
-            /**
-             * Creates a new PlayerSnapshot instance using the specified properties.
-             * @function create
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {graphwiz.core.IPlayerSnapshot=} [properties] Properties to set
-             * @returns {graphwiz.core.PlayerSnapshot} PlayerSnapshot instance
-             */
-            PlayerSnapshot.create = function create(properties) {
-                return new PlayerSnapshot(properties);
-            };
-
-            /**
-             * Encodes the specified PlayerSnapshot message. Does not implicitly {@link graphwiz.core.PlayerSnapshot.verify|verify} messages.
-             * @function encode
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {graphwiz.core.IPlayerSnapshot} message PlayerSnapshot message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            PlayerSnapshot.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientId);
-                if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.displayName);
-                if (message.avatarUrl != null && Object.hasOwnProperty.call(message, "avatarUrl"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.avatarUrl);
-                if (message.position != null && Object.hasOwnProperty.call(message, "position"))
-                    $root.graphwiz.core.Vector3.encode(message.position, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.rotation != null && Object.hasOwnProperty.call(message, "rotation"))
-                    $root.graphwiz.core.Quaternion.encode(message.rotation, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-                return writer;
-            };
-
-            /**
-             * Encodes the specified PlayerSnapshot message, length delimited. Does not implicitly {@link graphwiz.core.PlayerSnapshot.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {graphwiz.core.IPlayerSnapshot} message PlayerSnapshot message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            PlayerSnapshot.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes a PlayerSnapshot message from the specified reader or buffer.
-             * @function decode
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {graphwiz.core.PlayerSnapshot} PlayerSnapshot
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            PlayerSnapshot.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.PlayerSnapshot();
-                while (reader.pos < end) {
-                    var tag = reader.uint32();
-                    if (tag === error)
-                        break;
-                    switch (tag >>> 3) {
-                    case 1: {
-                            message.clientId = reader.string();
-                            break;
-                        }
-                    case 2: {
-                            message.displayName = reader.string();
-                            break;
-                        }
-                    case 3: {
-                            message.avatarUrl = reader.string();
-                            break;
-                        }
-                    case 4: {
-                            message.position = $root.graphwiz.core.Vector3.decode(reader, reader.uint32());
-                            break;
-                        }
-                    case 5: {
-                            message.rotation = $root.graphwiz.core.Quaternion.decode(reader, reader.uint32());
-                            break;
-                        }
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes a PlayerSnapshot message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {graphwiz.core.PlayerSnapshot} PlayerSnapshot
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            PlayerSnapshot.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies a PlayerSnapshot message.
-             * @function verify
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            PlayerSnapshot.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                if (message.clientId != null && message.hasOwnProperty("clientId"))
-                    if (!$util.isString(message.clientId))
-                        return "clientId: string expected";
-                if (message.displayName != null && message.hasOwnProperty("displayName"))
-                    if (!$util.isString(message.displayName))
-                        return "displayName: string expected";
-                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
-                    if (!$util.isString(message.avatarUrl))
-                        return "avatarUrl: string expected";
-                if (message.position != null && message.hasOwnProperty("position")) {
-                    var error = $root.graphwiz.core.Vector3.verify(message.position);
-                    if (error)
-                        return "position." + error;
-                }
-                if (message.rotation != null && message.hasOwnProperty("rotation")) {
-                    var error = $root.graphwiz.core.Quaternion.verify(message.rotation);
-                    if (error)
-                        return "rotation." + error;
-                }
-                return null;
-            };
-
-            /**
-             * Creates a PlayerSnapshot message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {graphwiz.core.PlayerSnapshot} PlayerSnapshot
-             */
-            PlayerSnapshot.fromObject = function fromObject(object) {
-                if (object instanceof $root.graphwiz.core.PlayerSnapshot)
-                    return object;
-                var message = new $root.graphwiz.core.PlayerSnapshot();
-                if (object.clientId != null)
-                    message.clientId = String(object.clientId);
-                if (object.displayName != null)
-                    message.displayName = String(object.displayName);
-                if (object.avatarUrl != null)
-                    message.avatarUrl = String(object.avatarUrl);
-                if (object.position != null) {
-                    if (typeof object.position !== "object")
-                        throw TypeError(".graphwiz.core.PlayerSnapshot.position: object expected");
-                    message.position = $root.graphwiz.core.Vector3.fromObject(object.position);
-                }
-                if (object.rotation != null) {
-                    if (typeof object.rotation !== "object")
-                        throw TypeError(".graphwiz.core.PlayerSnapshot.rotation: object expected");
-                    message.rotation = $root.graphwiz.core.Quaternion.fromObject(object.rotation);
-                }
-                return message;
-            };
-
-            /**
-             * Creates a plain object from a PlayerSnapshot message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {graphwiz.core.PlayerSnapshot} message PlayerSnapshot
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            PlayerSnapshot.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                var object = {};
-                if (options.defaults) {
-                    object.clientId = "";
-                    object.displayName = "";
-                    object.avatarUrl = "";
-                    object.position = null;
-                    object.rotation = null;
-                }
-                if (message.clientId != null && message.hasOwnProperty("clientId"))
-                    object.clientId = message.clientId;
-                if (message.displayName != null && message.hasOwnProperty("displayName"))
-                    object.displayName = message.displayName;
-                if (message.avatarUrl != null && message.hasOwnProperty("avatarUrl"))
-                    object.avatarUrl = message.avatarUrl;
-                if (message.position != null && message.hasOwnProperty("position"))
-                    object.position = $root.graphwiz.core.Vector3.toObject(message.position, options);
-                if (message.rotation != null && message.hasOwnProperty("rotation"))
-                    object.rotation = $root.graphwiz.core.Quaternion.toObject(message.rotation, options);
-                return object;
-            };
-
-            /**
-             * Converts this PlayerSnapshot to JSON.
-             * @function toJSON
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            PlayerSnapshot.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            /**
-             * Gets the default type url for PlayerSnapshot
-             * @function getTypeUrl
-             * @memberof graphwiz.core.PlayerSnapshot
-             * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
-             */
-            PlayerSnapshot.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/graphwiz.core.PlayerSnapshot";
-            };
-
-            return PlayerSnapshot;
-        })();
-
         core.Room = (function() {
 
             /**
@@ -5100,7 +5452,7 @@ $root.graphwiz = (function() {
                 this.tags = [];
                 this.metadata = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -5226,10 +5578,10 @@ $root.graphwiz = (function() {
                 if (message.currentPlayers != null && Object.hasOwnProperty.call(message, "currentPlayers"))
                     writer.uint32(/* id 8, wireType 0 =*/64).int32(message.currentPlayers);
                 if (message.tags != null && message.tags.length)
-                    for (var i = 0; i < message.tags.length; ++i)
+                    for (let i = 0; i < message.tags.length; ++i)
                         writer.uint32(/* id 9, wireType 2 =*/74).string(message.tags[i]);
                 if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
-                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 10, wireType 2 =*/82).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
                 return writer;
             };
@@ -5261,9 +5613,9 @@ $root.graphwiz = (function() {
             Room.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Room(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.Room(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -5308,11 +5660,11 @@ $root.graphwiz = (function() {
                     case 10: {
                             if (message.metadata === $util.emptyObject)
                                 message.metadata = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -5373,7 +5725,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.description))
                         return "description: string expected";
                 if (message.settings != null && message.hasOwnProperty("settings")) {
-                    var error = $root.graphwiz.core.RoomSettings.verify(message.settings);
+                    let error = $root.graphwiz.core.RoomSettings.verify(message.settings);
                     if (error)
                         return "settings." + error;
                 }
@@ -5392,15 +5744,15 @@ $root.graphwiz = (function() {
                 if (message.tags != null && message.hasOwnProperty("tags")) {
                     if (!Array.isArray(message.tags))
                         return "tags: array expected";
-                    for (var i = 0; i < message.tags.length; ++i)
+                    for (let i = 0; i < message.tags.length; ++i)
                         if (!$util.isString(message.tags[i]))
                             return "tags: string[] expected";
                 }
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
                     if (!$util.isObject(message.metadata))
                         return "metadata: object expected";
-                    var key = Object.keys(message.metadata);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.metadata);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.metadata[key[i]]))
                             return "metadata: string{k:string} expected";
                 }
@@ -5418,7 +5770,7 @@ $root.graphwiz = (function() {
             Room.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.Room)
                     return object;
-                var message = new $root.graphwiz.core.Room();
+                let message = new $root.graphwiz.core.Room();
                 if (object.id != null)
                     message.id = String(object.id);
                 if (object.name != null)
@@ -5456,14 +5808,14 @@ $root.graphwiz = (function() {
                     if (!Array.isArray(object.tags))
                         throw TypeError(".graphwiz.core.Room.tags: array expected");
                     message.tags = [];
-                    for (var i = 0; i < object.tags.length; ++i)
+                    for (let i = 0; i < object.tags.length; ++i)
                         message.tags[i] = String(object.tags[i]);
                 }
                 if (object.metadata) {
                     if (typeof object.metadata !== "object")
                         throw TypeError(".graphwiz.core.Room.metadata: object expected");
                     message.metadata = {};
-                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
                         message.metadata[keys[i]] = String(object.metadata[keys[i]]);
                 }
                 return message;
@@ -5481,7 +5833,7 @@ $root.graphwiz = (function() {
             Room.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults)
                     object.tags = [];
                 if (options.objects || options.defaults)
@@ -5492,12 +5844,12 @@ $root.graphwiz = (function() {
                     object.description = "";
                     object.settings = null;
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.createdAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.createdAt = options.longs === String ? "0" : 0;
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.updatedAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.updatedAt = options.longs === String ? "0" : 0;
@@ -5528,13 +5880,13 @@ $root.graphwiz = (function() {
                     object.currentPlayers = message.currentPlayers;
                 if (message.tags && message.tags.length) {
                     object.tags = [];
-                    for (var j = 0; j < message.tags.length; ++j)
+                    for (let j = 0; j < message.tags.length; ++j)
                         object.tags[j] = message.tags[j];
                 }
-                var keys2;
+                let keys2;
                 if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
                     object.metadata = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.metadata[keys2[j]] = message.metadata[keys2[j]];
                 }
                 return object;
@@ -5594,7 +5946,7 @@ $root.graphwiz = (function() {
              */
             function RoomSettings(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -5723,9 +6075,9 @@ $root.graphwiz = (function() {
             RoomSettings.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.RoomSettings();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.RoomSettings();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -5827,7 +6179,7 @@ $root.graphwiz = (function() {
             RoomSettings.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.RoomSettings)
                     return object;
-                var message = new $root.graphwiz.core.RoomSettings();
+                let message = new $root.graphwiz.core.RoomSettings();
                 if (object.maxPlayers != null)
                     message.maxPlayers = object.maxPlayers | 0;
                 if (object.isPublic != null)
@@ -5857,7 +6209,7 @@ $root.graphwiz = (function() {
             RoomSettings.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.maxPlayers = 0;
                     object.isPublic = false;
@@ -5939,7 +6291,7 @@ $root.graphwiz = (function() {
             function User(properties) {
                 this.metadata = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -6037,7 +6389,7 @@ $root.graphwiz = (function() {
                 if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
                     writer.uint32(/* id 6, wireType 0 =*/48).int64(message.createdAt);
                 if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
-                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 7, wireType 2 =*/58).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
                 return writer;
             };
@@ -6069,9 +6421,9 @@ $root.graphwiz = (function() {
             User.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.User(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.User(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -6102,11 +6454,11 @@ $root.graphwiz = (function() {
                     case 7: {
                             if (message.metadata === $util.emptyObject)
                                 message.metadata = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -6178,8 +6530,8 @@ $root.graphwiz = (function() {
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
                     if (!$util.isObject(message.metadata))
                         return "metadata: object expected";
-                    var key = Object.keys(message.metadata);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.metadata);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.metadata[key[i]]))
                             return "metadata: string{k:string} expected";
                 }
@@ -6197,7 +6549,7 @@ $root.graphwiz = (function() {
             User.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.User)
                     return object;
-                var message = new $root.graphwiz.core.User();
+                let message = new $root.graphwiz.core.User();
                 if (object.id != null)
                     message.id = String(object.id);
                 if (object.username != null)
@@ -6221,7 +6573,7 @@ $root.graphwiz = (function() {
                     if (typeof object.metadata !== "object")
                         throw TypeError(".graphwiz.core.User.metadata: object expected");
                     message.metadata = {};
-                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
                         message.metadata[keys[i]] = String(object.metadata[keys[i]]);
                 }
                 return message;
@@ -6239,7 +6591,7 @@ $root.graphwiz = (function() {
             User.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.metadata = {};
                 if (options.defaults) {
@@ -6249,7 +6601,7 @@ $root.graphwiz = (function() {
                     object.email = "";
                     object.avatarUrl = "";
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.createdAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.createdAt = options.longs === String ? "0" : 0;
@@ -6269,10 +6621,10 @@ $root.graphwiz = (function() {
                         object.createdAt = options.longs === String ? String(message.createdAt) : message.createdAt;
                     else
                         object.createdAt = options.longs === String ? $util.Long.prototype.toString.call(message.createdAt) : options.longs === Number ? new $util.LongBits(message.createdAt.low >>> 0, message.createdAt.high >>> 0).toNumber() : message.createdAt;
-                var keys2;
+                let keys2;
                 if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
                     object.metadata = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.metadata[keys2[j]] = message.metadata[keys2[j]];
                 }
                 return object;
@@ -6330,7 +6682,7 @@ $root.graphwiz = (function() {
             function AuthToken(properties) {
                 this.permissions = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -6398,7 +6750,7 @@ $root.graphwiz = (function() {
                 if (message.expiresAt != null && Object.hasOwnProperty.call(message, "expiresAt"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int64(message.expiresAt);
                 if (message.permissions != null && message.permissions.length)
-                    for (var i = 0; i < message.permissions.length; ++i)
+                    for (let i = 0; i < message.permissions.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).string(message.permissions[i]);
                 return writer;
             };
@@ -6430,9 +6782,9 @@ $root.graphwiz = (function() {
             AuthToken.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.AuthToken();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.core.AuthToken();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -6501,7 +6853,7 @@ $root.graphwiz = (function() {
                 if (message.permissions != null && message.hasOwnProperty("permissions")) {
                     if (!Array.isArray(message.permissions))
                         return "permissions: array expected";
-                    for (var i = 0; i < message.permissions.length; ++i)
+                    for (let i = 0; i < message.permissions.length; ++i)
                         if (!$util.isString(message.permissions[i]))
                             return "permissions: string[] expected";
                 }
@@ -6519,7 +6871,7 @@ $root.graphwiz = (function() {
             AuthToken.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.core.AuthToken)
                     return object;
-                var message = new $root.graphwiz.core.AuthToken();
+                let message = new $root.graphwiz.core.AuthToken();
                 if (object.token != null)
                     message.token = String(object.token);
                 if (object.userId != null)
@@ -6537,7 +6889,7 @@ $root.graphwiz = (function() {
                     if (!Array.isArray(object.permissions))
                         throw TypeError(".graphwiz.core.AuthToken.permissions: array expected");
                     message.permissions = [];
-                    for (var i = 0; i < object.permissions.length; ++i)
+                    for (let i = 0; i < object.permissions.length; ++i)
                         message.permissions[i] = String(object.permissions[i]);
                 }
                 return message;
@@ -6555,14 +6907,14 @@ $root.graphwiz = (function() {
             AuthToken.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults)
                     object.permissions = [];
                 if (options.defaults) {
                     object.token = "";
                     object.userId = "";
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.expiresAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.expiresAt = options.longs === String ? "0" : 0;
@@ -6578,7 +6930,7 @@ $root.graphwiz = (function() {
                         object.expiresAt = options.longs === String ? $util.Long.prototype.toString.call(message.expiresAt) : options.longs === Number ? new $util.LongBits(message.expiresAt.low >>> 0, message.expiresAt.high >>> 0).toNumber() : message.expiresAt;
                 if (message.permissions && message.permissions.length) {
                     object.permissions = [];
-                    for (var j = 0; j < message.permissions.length; ++j)
+                    for (let j = 0; j < message.permissions.length; ++j)
                         object.permissions[j] = message.permissions[j];
                 }
                 return object;
@@ -6623,7 +6975,7 @@ $root.graphwiz = (function() {
          * @memberof graphwiz
          * @namespace
          */
-        var networking = {};
+        const networking = {};
 
         networking.RoomService = (function() {
 
@@ -6814,7 +7166,7 @@ $root.graphwiz = (function() {
              */
             function ClientMessage(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -6852,7 +7204,7 @@ $root.graphwiz = (function() {
             ClientMessage.prototype.chat = null;
 
             // OneOf field names bound to virtual getters and setters
-            var $oneOfFields;
+            let $oneOfFields;
 
             /**
              * ClientMessage payload.
@@ -6927,9 +7279,9 @@ $root.graphwiz = (function() {
             ClientMessage.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.ClientMessage();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.ClientMessage();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -6984,11 +7336,11 @@ $root.graphwiz = (function() {
             ClientMessage.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                var properties = {};
+                let properties = {};
                 if (message.position != null && message.hasOwnProperty("position")) {
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.PositionUpdate.verify(message.position);
+                        let error = $root.graphwiz.core.PositionUpdate.verify(message.position);
                         if (error)
                             return "position." + error;
                     }
@@ -6998,7 +7350,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.VoiceData.verify(message.voice);
+                        let error = $root.graphwiz.core.VoiceData.verify(message.voice);
                         if (error)
                             return "voice." + error;
                     }
@@ -7008,7 +7360,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.EntityUpdate.verify(message.entity);
+                        let error = $root.graphwiz.core.EntityUpdate.verify(message.entity);
                         if (error)
                             return "entity." + error;
                     }
@@ -7018,7 +7370,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.ChatMessage.verify(message.chat);
+                        let error = $root.graphwiz.core.ChatMessage.verify(message.chat);
                         if (error)
                             return "chat." + error;
                     }
@@ -7037,7 +7389,7 @@ $root.graphwiz = (function() {
             ClientMessage.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.networking.ClientMessage)
                     return object;
-                var message = new $root.graphwiz.networking.ClientMessage();
+                let message = new $root.graphwiz.networking.ClientMessage();
                 if (object.position != null) {
                     if (typeof object.position !== "object")
                         throw TypeError(".graphwiz.networking.ClientMessage.position: object expected");
@@ -7073,7 +7425,7 @@ $root.graphwiz = (function() {
             ClientMessage.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (message.position != null && message.hasOwnProperty("position")) {
                     object.position = $root.graphwiz.core.PositionUpdate.toObject(message.position, options);
                     if (options.oneofs)
@@ -7150,7 +7502,7 @@ $root.graphwiz = (function() {
              */
             function ServerMessage(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -7204,7 +7556,7 @@ $root.graphwiz = (function() {
             ServerMessage.prototype.chat = null;
 
             // OneOf field names bound to virtual getters and setters
-            var $oneOfFields;
+            let $oneOfFields;
 
             /**
              * ServerMessage payload.
@@ -7283,9 +7635,9 @@ $root.graphwiz = (function() {
             ServerMessage.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.ServerMessage();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.ServerMessage();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -7348,11 +7700,11 @@ $root.graphwiz = (function() {
             ServerMessage.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                var properties = {};
+                let properties = {};
                 if (message.worldState != null && message.hasOwnProperty("worldState")) {
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.WorldState.verify(message.worldState);
+                        let error = $root.graphwiz.core.WorldState.verify(message.worldState);
                         if (error)
                             return "worldState." + error;
                     }
@@ -7362,7 +7714,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.PresenceEvent.verify(message.presence);
+                        let error = $root.graphwiz.core.PresenceEvent.verify(message.presence);
                         if (error)
                             return "presence." + error;
                     }
@@ -7372,7 +7724,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.EntitySpawn.verify(message.entitySpawn);
+                        let error = $root.graphwiz.core.EntitySpawn.verify(message.entitySpawn);
                         if (error)
                             return "entitySpawn." + error;
                     }
@@ -7382,7 +7734,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.EntityUpdate.verify(message.entityUpdate);
+                        let error = $root.graphwiz.core.EntityUpdate.verify(message.entityUpdate);
                         if (error)
                             return "entityUpdate." + error;
                     }
@@ -7392,7 +7744,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.EntityDespawn.verify(message.entityDespawn);
+                        let error = $root.graphwiz.core.EntityDespawn.verify(message.entityDespawn);
                         if (error)
                             return "entityDespawn." + error;
                     }
@@ -7402,7 +7754,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.core.ChatMessage.verify(message.chat);
+                        let error = $root.graphwiz.core.ChatMessage.verify(message.chat);
                         if (error)
                             return "chat." + error;
                     }
@@ -7421,7 +7773,7 @@ $root.graphwiz = (function() {
             ServerMessage.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.networking.ServerMessage)
                     return object;
-                var message = new $root.graphwiz.networking.ServerMessage();
+                let message = new $root.graphwiz.networking.ServerMessage();
                 if (object.worldState != null) {
                     if (typeof object.worldState !== "object")
                         throw TypeError(".graphwiz.networking.ServerMessage.worldState: object expected");
@@ -7467,7 +7819,7 @@ $root.graphwiz = (function() {
             ServerMessage.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (message.worldState != null && message.hasOwnProperty("worldState")) {
                     object.worldState = $root.graphwiz.core.WorldState.toObject(message.worldState, options);
                     if (options.oneofs)
@@ -7551,7 +7903,7 @@ $root.graphwiz = (function() {
              */
             function JoinRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -7640,9 +7992,9 @@ $root.graphwiz = (function() {
             JoinRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.JoinRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.JoinRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -7716,7 +8068,7 @@ $root.graphwiz = (function() {
             JoinRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.networking.JoinRequest)
                     return object;
-                var message = new $root.graphwiz.networking.JoinRequest();
+                let message = new $root.graphwiz.networking.JoinRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.authToken != null)
@@ -7738,7 +8090,7 @@ $root.graphwiz = (function() {
             JoinRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.authToken = "";
@@ -7804,7 +8156,7 @@ $root.graphwiz = (function() {
              */
             function JoinResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -7903,9 +8255,9 @@ $root.graphwiz = (function() {
             JoinResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.JoinResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.JoinResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -7970,7 +8322,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.assignedClientId))
                         return "assignedClientId: string expected";
                 if (message.initialState != null && message.hasOwnProperty("initialState")) {
-                    var error = $root.graphwiz.core.WorldState.verify(message.initialState);
+                    let error = $root.graphwiz.core.WorldState.verify(message.initialState);
                     if (error)
                         return "initialState." + error;
                 }
@@ -7988,7 +8340,7 @@ $root.graphwiz = (function() {
             JoinResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.networking.JoinResponse)
                     return object;
-                var message = new $root.graphwiz.networking.JoinResponse();
+                let message = new $root.graphwiz.networking.JoinResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.roomId != null)
@@ -8015,7 +8367,7 @@ $root.graphwiz = (function() {
             JoinResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.roomId = "";
@@ -8082,7 +8434,7 @@ $root.graphwiz = (function() {
              */
             function LeaveRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -8161,9 +8513,9 @@ $root.graphwiz = (function() {
             LeaveRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.LeaveRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.LeaveRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -8230,7 +8582,7 @@ $root.graphwiz = (function() {
             LeaveRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.networking.LeaveRequest)
                     return object;
-                var message = new $root.graphwiz.networking.LeaveRequest();
+                let message = new $root.graphwiz.networking.LeaveRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -8250,7 +8602,7 @@ $root.graphwiz = (function() {
             LeaveRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -8310,7 +8662,7 @@ $root.graphwiz = (function() {
              */
             function LeaveResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -8379,9 +8731,9 @@ $root.graphwiz = (function() {
             LeaveResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.LeaveResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.LeaveResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -8441,7 +8793,7 @@ $root.graphwiz = (function() {
             LeaveResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.networking.LeaveResponse)
                     return object;
-                var message = new $root.graphwiz.networking.LeaveResponse();
+                let message = new $root.graphwiz.networking.LeaveResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -8459,7 +8811,7 @@ $root.graphwiz = (function() {
             LeaveResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -8515,7 +8867,7 @@ $root.graphwiz = (function() {
              */
             function PresenceRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -8584,9 +8936,9 @@ $root.graphwiz = (function() {
             PresenceRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.PresenceRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.PresenceRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -8646,7 +8998,7 @@ $root.graphwiz = (function() {
             PresenceRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.networking.PresenceRequest)
                     return object;
-                var message = new $root.graphwiz.networking.PresenceRequest();
+                let message = new $root.graphwiz.networking.PresenceRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 return message;
@@ -8664,7 +9016,7 @@ $root.graphwiz = (function() {
             PresenceRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.roomId = "";
                 if (message.roomId != null && message.hasOwnProperty("roomId"))
@@ -8711,7 +9063,7 @@ $root.graphwiz = (function() {
          * @memberof graphwiz
          * @namespace
          */
-        var room = {};
+        const room = {};
 
         room.RoomService = (function() {
 
@@ -9166,7 +9518,7 @@ $root.graphwiz = (function() {
              */
             function CreateRoomRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -9265,9 +9617,9 @@ $root.graphwiz = (function() {
             CreateRoomRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.CreateRoomRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.CreateRoomRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -9329,7 +9681,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.description))
                         return "description: string expected";
                 if (message.settings != null && message.hasOwnProperty("settings")) {
-                    var error = $root.graphwiz.room.RoomSettings.verify(message.settings);
+                    let error = $root.graphwiz.room.RoomSettings.verify(message.settings);
                     if (error)
                         return "settings." + error;
                 }
@@ -9350,7 +9702,7 @@ $root.graphwiz = (function() {
             CreateRoomRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.CreateRoomRequest)
                     return object;
-                var message = new $root.graphwiz.room.CreateRoomRequest();
+                let message = new $root.graphwiz.room.CreateRoomRequest();
                 if (object.name != null)
                     message.name = String(object.name);
                 if (object.description != null)
@@ -9377,7 +9729,7 @@ $root.graphwiz = (function() {
             CreateRoomRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.name = "";
                     object.description = "";
@@ -9445,7 +9797,7 @@ $root.graphwiz = (function() {
              */
             function CreateRoomResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -9534,9 +9886,9 @@ $root.graphwiz = (function() {
             CreateRoomResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.CreateRoomResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.CreateRoomResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -9594,7 +9946,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.roomId))
                         return "roomId: string expected";
                 if (message.room != null && message.hasOwnProperty("room")) {
-                    var error = $root.graphwiz.core.Room.verify(message.room);
+                    let error = $root.graphwiz.core.Room.verify(message.room);
                     if (error)
                         return "room." + error;
                 }
@@ -9612,7 +9964,7 @@ $root.graphwiz = (function() {
             CreateRoomResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.CreateRoomResponse)
                     return object;
-                var message = new $root.graphwiz.room.CreateRoomResponse();
+                let message = new $root.graphwiz.room.CreateRoomResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.roomId != null)
@@ -9637,7 +9989,7 @@ $root.graphwiz = (function() {
             CreateRoomResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.roomId = "";
@@ -9700,7 +10052,7 @@ $root.graphwiz = (function() {
              */
             function GetRoomRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -9769,9 +10121,9 @@ $root.graphwiz = (function() {
             GetRoomRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetRoomRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetRoomRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -9831,7 +10183,7 @@ $root.graphwiz = (function() {
             GetRoomRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.GetRoomRequest)
                     return object;
-                var message = new $root.graphwiz.room.GetRoomRequest();
+                let message = new $root.graphwiz.room.GetRoomRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 return message;
@@ -9849,7 +10201,7 @@ $root.graphwiz = (function() {
             GetRoomRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.roomId = "";
                 if (message.roomId != null && message.hasOwnProperty("roomId"))
@@ -9906,7 +10258,7 @@ $root.graphwiz = (function() {
              */
             function GetRoomResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -9985,9 +10337,9 @@ $root.graphwiz = (function() {
             GetRoomResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetRoomResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetRoomResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -10038,7 +10390,7 @@ $root.graphwiz = (function() {
                     if (typeof message.success !== "boolean")
                         return "success: boolean expected";
                 if (message.room != null && message.hasOwnProperty("room")) {
-                    var error = $root.graphwiz.core.Room.verify(message.room);
+                    let error = $root.graphwiz.core.Room.verify(message.room);
                     if (error)
                         return "room." + error;
                 }
@@ -10056,7 +10408,7 @@ $root.graphwiz = (function() {
             GetRoomResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.GetRoomResponse)
                     return object;
-                var message = new $root.graphwiz.room.GetRoomResponse();
+                let message = new $root.graphwiz.room.GetRoomResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.room != null) {
@@ -10079,7 +10431,7 @@ $root.graphwiz = (function() {
             GetRoomResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.room = null;
@@ -10142,7 +10494,7 @@ $root.graphwiz = (function() {
              */
             function UpdateRoomRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -10241,9 +10593,9 @@ $root.graphwiz = (function() {
             UpdateRoomRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateRoomRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateRoomRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -10308,7 +10660,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.description))
                         return "description: string expected";
                 if (message.settings != null && message.hasOwnProperty("settings")) {
-                    var error = $root.graphwiz.room.RoomSettings.verify(message.settings);
+                    let error = $root.graphwiz.room.RoomSettings.verify(message.settings);
                     if (error)
                         return "settings." + error;
                 }
@@ -10326,7 +10678,7 @@ $root.graphwiz = (function() {
             UpdateRoomRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.UpdateRoomRequest)
                     return object;
-                var message = new $root.graphwiz.room.UpdateRoomRequest();
+                let message = new $root.graphwiz.room.UpdateRoomRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.name != null)
@@ -10353,7 +10705,7 @@ $root.graphwiz = (function() {
             UpdateRoomRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.name = "";
@@ -10420,7 +10772,7 @@ $root.graphwiz = (function() {
              */
             function UpdateRoomResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -10499,9 +10851,9 @@ $root.graphwiz = (function() {
             UpdateRoomResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateRoomResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateRoomResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -10552,7 +10904,7 @@ $root.graphwiz = (function() {
                     if (typeof message.success !== "boolean")
                         return "success: boolean expected";
                 if (message.room != null && message.hasOwnProperty("room")) {
-                    var error = $root.graphwiz.core.Room.verify(message.room);
+                    let error = $root.graphwiz.core.Room.verify(message.room);
                     if (error)
                         return "room." + error;
                 }
@@ -10570,7 +10922,7 @@ $root.graphwiz = (function() {
             UpdateRoomResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.UpdateRoomResponse)
                     return object;
-                var message = new $root.graphwiz.room.UpdateRoomResponse();
+                let message = new $root.graphwiz.room.UpdateRoomResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.room != null) {
@@ -10593,7 +10945,7 @@ $root.graphwiz = (function() {
             UpdateRoomResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.room = null;
@@ -10654,7 +11006,7 @@ $root.graphwiz = (function() {
              */
             function DeleteRoomRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -10733,9 +11085,9 @@ $root.graphwiz = (function() {
             DeleteRoomRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.DeleteRoomRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.DeleteRoomRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -10802,7 +11154,7 @@ $root.graphwiz = (function() {
             DeleteRoomRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.DeleteRoomRequest)
                     return object;
-                var message = new $root.graphwiz.room.DeleteRoomRequest();
+                let message = new $root.graphwiz.room.DeleteRoomRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.requesterId != null)
@@ -10822,7 +11174,7 @@ $root.graphwiz = (function() {
             DeleteRoomRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.requesterId = "";
@@ -10882,7 +11234,7 @@ $root.graphwiz = (function() {
              */
             function DeleteRoomResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -10951,9 +11303,9 @@ $root.graphwiz = (function() {
             DeleteRoomResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.DeleteRoomResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.DeleteRoomResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -11013,7 +11365,7 @@ $root.graphwiz = (function() {
             DeleteRoomResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.DeleteRoomResponse)
                     return object;
-                var message = new $root.graphwiz.room.DeleteRoomResponse();
+                let message = new $root.graphwiz.room.DeleteRoomResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -11031,7 +11383,7 @@ $root.graphwiz = (function() {
             DeleteRoomResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -11089,7 +11441,7 @@ $root.graphwiz = (function() {
              */
             function ListRoomsRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -11178,9 +11530,9 @@ $root.graphwiz = (function() {
             ListRoomsRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.ListRoomsRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.ListRoomsRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -11238,7 +11590,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.pageToken))
                         return "pageToken: string expected";
                 if (message.filter != null && message.hasOwnProperty("filter")) {
-                    var error = $root.graphwiz.room.RoomFilter.verify(message.filter);
+                    let error = $root.graphwiz.room.RoomFilter.verify(message.filter);
                     if (error)
                         return "filter." + error;
                 }
@@ -11256,7 +11608,7 @@ $root.graphwiz = (function() {
             ListRoomsRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.ListRoomsRequest)
                     return object;
-                var message = new $root.graphwiz.room.ListRoomsRequest();
+                let message = new $root.graphwiz.room.ListRoomsRequest();
                 if (object.pageSize != null)
                     message.pageSize = object.pageSize | 0;
                 if (object.pageToken != null)
@@ -11281,7 +11633,7 @@ $root.graphwiz = (function() {
             ListRoomsRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.pageSize = 0;
                     object.pageToken = "";
@@ -11347,7 +11699,7 @@ $root.graphwiz = (function() {
             function ListRoomsResponse(properties) {
                 this.rooms = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -11401,7 +11753,7 @@ $root.graphwiz = (function() {
                 if (!writer)
                     writer = $Writer.create();
                 if (message.rooms != null && message.rooms.length)
-                    for (var i = 0; i < message.rooms.length; ++i)
+                    for (let i = 0; i < message.rooms.length; ++i)
                         $root.graphwiz.core.Room.encode(message.rooms[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                 if (message.nextPageToken != null && Object.hasOwnProperty.call(message, "nextPageToken"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.nextPageToken);
@@ -11437,9 +11789,9 @@ $root.graphwiz = (function() {
             ListRoomsResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.ListRoomsResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.ListRoomsResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -11495,8 +11847,8 @@ $root.graphwiz = (function() {
                 if (message.rooms != null && message.hasOwnProperty("rooms")) {
                     if (!Array.isArray(message.rooms))
                         return "rooms: array expected";
-                    for (var i = 0; i < message.rooms.length; ++i) {
-                        var error = $root.graphwiz.core.Room.verify(message.rooms[i]);
+                    for (let i = 0; i < message.rooms.length; ++i) {
+                        let error = $root.graphwiz.core.Room.verify(message.rooms[i]);
                         if (error)
                             return "rooms." + error;
                     }
@@ -11521,12 +11873,12 @@ $root.graphwiz = (function() {
             ListRoomsResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.ListRoomsResponse)
                     return object;
-                var message = new $root.graphwiz.room.ListRoomsResponse();
+                let message = new $root.graphwiz.room.ListRoomsResponse();
                 if (object.rooms) {
                     if (!Array.isArray(object.rooms))
                         throw TypeError(".graphwiz.room.ListRoomsResponse.rooms: array expected");
                     message.rooms = [];
-                    for (var i = 0; i < object.rooms.length; ++i) {
+                    for (let i = 0; i < object.rooms.length; ++i) {
                         if (typeof object.rooms[i] !== "object")
                             throw TypeError(".graphwiz.room.ListRoomsResponse.rooms: object expected");
                         message.rooms[i] = $root.graphwiz.core.Room.fromObject(object.rooms[i]);
@@ -11551,7 +11903,7 @@ $root.graphwiz = (function() {
             ListRoomsResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults)
                     object.rooms = [];
                 if (options.defaults) {
@@ -11560,7 +11912,7 @@ $root.graphwiz = (function() {
                 }
                 if (message.rooms && message.rooms.length) {
                     object.rooms = [];
-                    for (var j = 0; j < message.rooms.length; ++j)
+                    for (let j = 0; j < message.rooms.length; ++j)
                         object.rooms[j] = $root.graphwiz.core.Room.toObject(message.rooms[j], options);
                 }
                 if (message.nextPageToken != null && message.hasOwnProperty("nextPageToken"))
@@ -11620,7 +11972,7 @@ $root.graphwiz = (function() {
              */
             function SearchRoomsRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -11709,9 +12061,9 @@ $root.graphwiz = (function() {
             SearchRoomsRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.SearchRoomsRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.SearchRoomsRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -11769,7 +12121,7 @@ $root.graphwiz = (function() {
                     if (!$util.isInteger(message.limit))
                         return "limit: integer expected";
                 if (message.filter != null && message.hasOwnProperty("filter")) {
-                    var error = $root.graphwiz.room.RoomFilter.verify(message.filter);
+                    let error = $root.graphwiz.room.RoomFilter.verify(message.filter);
                     if (error)
                         return "filter." + error;
                 }
@@ -11787,7 +12139,7 @@ $root.graphwiz = (function() {
             SearchRoomsRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.SearchRoomsRequest)
                     return object;
-                var message = new $root.graphwiz.room.SearchRoomsRequest();
+                let message = new $root.graphwiz.room.SearchRoomsRequest();
                 if (object.query != null)
                     message.query = String(object.query);
                 if (object.limit != null)
@@ -11812,7 +12164,7 @@ $root.graphwiz = (function() {
             SearchRoomsRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.query = "";
                     object.limit = 0;
@@ -11877,7 +12229,7 @@ $root.graphwiz = (function() {
             function SearchRoomsResponse(properties) {
                 this.rooms = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -11923,7 +12275,7 @@ $root.graphwiz = (function() {
                 if (!writer)
                     writer = $Writer.create();
                 if (message.rooms != null && message.rooms.length)
-                    for (var i = 0; i < message.rooms.length; ++i)
+                    for (let i = 0; i < message.rooms.length; ++i)
                         $root.graphwiz.core.Room.encode(message.rooms[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                 if (message.totalResults != null && Object.hasOwnProperty.call(message, "totalResults"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.totalResults);
@@ -11957,9 +12309,9 @@ $root.graphwiz = (function() {
             SearchRoomsResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.SearchRoomsResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.SearchRoomsResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -12011,8 +12363,8 @@ $root.graphwiz = (function() {
                 if (message.rooms != null && message.hasOwnProperty("rooms")) {
                     if (!Array.isArray(message.rooms))
                         return "rooms: array expected";
-                    for (var i = 0; i < message.rooms.length; ++i) {
-                        var error = $root.graphwiz.core.Room.verify(message.rooms[i]);
+                    for (let i = 0; i < message.rooms.length; ++i) {
+                        let error = $root.graphwiz.core.Room.verify(message.rooms[i]);
                         if (error)
                             return "rooms." + error;
                     }
@@ -12034,12 +12386,12 @@ $root.graphwiz = (function() {
             SearchRoomsResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.SearchRoomsResponse)
                     return object;
-                var message = new $root.graphwiz.room.SearchRoomsResponse();
+                let message = new $root.graphwiz.room.SearchRoomsResponse();
                 if (object.rooms) {
                     if (!Array.isArray(object.rooms))
                         throw TypeError(".graphwiz.room.SearchRoomsResponse.rooms: array expected");
                     message.rooms = [];
-                    for (var i = 0; i < object.rooms.length; ++i) {
+                    for (let i = 0; i < object.rooms.length; ++i) {
                         if (typeof object.rooms[i] !== "object")
                             throw TypeError(".graphwiz.room.SearchRoomsResponse.rooms: object expected");
                         message.rooms[i] = $root.graphwiz.core.Room.fromObject(object.rooms[i]);
@@ -12062,14 +12414,14 @@ $root.graphwiz = (function() {
             SearchRoomsResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults)
                     object.rooms = [];
                 if (options.defaults)
                     object.totalResults = 0;
                 if (message.rooms && message.rooms.length) {
                     object.rooms = [];
-                    for (var j = 0; j < message.rooms.length; ++j)
+                    for (let j = 0; j < message.rooms.length; ++j)
                         object.rooms[j] = $root.graphwiz.core.Room.toObject(message.rooms[j], options);
                 }
                 if (message.totalResults != null && message.hasOwnProperty("totalResults"))
@@ -12128,7 +12480,7 @@ $root.graphwiz = (function() {
              */
             function JoinRoomRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -12227,9 +12579,9 @@ $root.graphwiz = (function() {
             JoinRoomRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.JoinRoomRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.JoinRoomRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -12310,7 +12662,7 @@ $root.graphwiz = (function() {
             JoinRoomRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.JoinRoomRequest)
                     return object;
-                var message = new $root.graphwiz.room.JoinRoomRequest();
+                let message = new $root.graphwiz.room.JoinRoomRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.userId != null)
@@ -12334,7 +12686,7 @@ $root.graphwiz = (function() {
             JoinRoomRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.userId = "";
@@ -12404,7 +12756,7 @@ $root.graphwiz = (function() {
             function JoinRoomResponse(properties) {
                 this.initialPlayers = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -12472,7 +12824,7 @@ $root.graphwiz = (function() {
                 if (message.room != null && Object.hasOwnProperty.call(message, "room"))
                     $root.graphwiz.core.Room.encode(message.room, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                 if (message.initialPlayers != null && message.initialPlayers.length)
-                    for (var i = 0; i < message.initialPlayers.length; ++i)
+                    for (let i = 0; i < message.initialPlayers.length; ++i)
                         $root.graphwiz.core.PlayerSnapshot.encode(message.initialPlayers[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                 return writer;
             };
@@ -12504,9 +12856,9 @@ $root.graphwiz = (function() {
             JoinRoomResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.JoinRoomResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.JoinRoomResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -12570,15 +12922,15 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.roomId))
                         return "roomId: string expected";
                 if (message.room != null && message.hasOwnProperty("room")) {
-                    var error = $root.graphwiz.core.Room.verify(message.room);
+                    let error = $root.graphwiz.core.Room.verify(message.room);
                     if (error)
                         return "room." + error;
                 }
                 if (message.initialPlayers != null && message.hasOwnProperty("initialPlayers")) {
                     if (!Array.isArray(message.initialPlayers))
                         return "initialPlayers: array expected";
-                    for (var i = 0; i < message.initialPlayers.length; ++i) {
-                        var error = $root.graphwiz.core.PlayerSnapshot.verify(message.initialPlayers[i]);
+                    for (let i = 0; i < message.initialPlayers.length; ++i) {
+                        let error = $root.graphwiz.core.PlayerSnapshot.verify(message.initialPlayers[i]);
                         if (error)
                             return "initialPlayers." + error;
                     }
@@ -12597,7 +12949,7 @@ $root.graphwiz = (function() {
             JoinRoomResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.JoinRoomResponse)
                     return object;
-                var message = new $root.graphwiz.room.JoinRoomResponse();
+                let message = new $root.graphwiz.room.JoinRoomResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.roomId != null)
@@ -12611,7 +12963,7 @@ $root.graphwiz = (function() {
                     if (!Array.isArray(object.initialPlayers))
                         throw TypeError(".graphwiz.room.JoinRoomResponse.initialPlayers: array expected");
                     message.initialPlayers = [];
-                    for (var i = 0; i < object.initialPlayers.length; ++i) {
+                    for (let i = 0; i < object.initialPlayers.length; ++i) {
                         if (typeof object.initialPlayers[i] !== "object")
                             throw TypeError(".graphwiz.room.JoinRoomResponse.initialPlayers: object expected");
                         message.initialPlayers[i] = $root.graphwiz.core.PlayerSnapshot.fromObject(object.initialPlayers[i]);
@@ -12632,7 +12984,7 @@ $root.graphwiz = (function() {
             JoinRoomResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults)
                     object.initialPlayers = [];
                 if (options.defaults) {
@@ -12648,7 +13000,7 @@ $root.graphwiz = (function() {
                     object.room = $root.graphwiz.core.Room.toObject(message.room, options);
                 if (message.initialPlayers && message.initialPlayers.length) {
                     object.initialPlayers = [];
-                    for (var j = 0; j < message.initialPlayers.length; ++j)
+                    for (let j = 0; j < message.initialPlayers.length; ++j)
                         object.initialPlayers[j] = $root.graphwiz.core.PlayerSnapshot.toObject(message.initialPlayers[j], options);
                 }
                 return object;
@@ -12703,7 +13055,7 @@ $root.graphwiz = (function() {
              */
             function LeaveRoomRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -12782,9 +13134,9 @@ $root.graphwiz = (function() {
             LeaveRoomRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.LeaveRoomRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.LeaveRoomRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -12851,7 +13203,7 @@ $root.graphwiz = (function() {
             LeaveRoomRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.LeaveRoomRequest)
                     return object;
-                var message = new $root.graphwiz.room.LeaveRoomRequest();
+                let message = new $root.graphwiz.room.LeaveRoomRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.userId != null)
@@ -12871,7 +13223,7 @@ $root.graphwiz = (function() {
             LeaveRoomRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.userId = "";
@@ -12931,7 +13283,7 @@ $root.graphwiz = (function() {
              */
             function LeaveRoomResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -13000,9 +13352,9 @@ $root.graphwiz = (function() {
             LeaveRoomResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.LeaveRoomResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.LeaveRoomResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -13062,7 +13414,7 @@ $root.graphwiz = (function() {
             LeaveRoomResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.LeaveRoomResponse)
                     return object;
-                var message = new $root.graphwiz.room.LeaveRoomResponse();
+                let message = new $root.graphwiz.room.LeaveRoomResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -13080,7 +13432,7 @@ $root.graphwiz = (function() {
             LeaveRoomResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -13139,7 +13491,7 @@ $root.graphwiz = (function() {
              */
             function KickUserRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -13238,9 +13590,9 @@ $root.graphwiz = (function() {
             KickUserRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.KickUserRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.KickUserRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -13321,7 +13673,7 @@ $root.graphwiz = (function() {
             KickUserRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.KickUserRequest)
                     return object;
-                var message = new $root.graphwiz.room.KickUserRequest();
+                let message = new $root.graphwiz.room.KickUserRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.requesterId != null)
@@ -13345,7 +13697,7 @@ $root.graphwiz = (function() {
             KickUserRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.requesterId = "";
@@ -13411,7 +13763,7 @@ $root.graphwiz = (function() {
              */
             function KickUserResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -13480,9 +13832,9 @@ $root.graphwiz = (function() {
             KickUserResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.KickUserResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.KickUserResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -13542,7 +13894,7 @@ $root.graphwiz = (function() {
             KickUserResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.KickUserResponse)
                     return object;
-                var message = new $root.graphwiz.room.KickUserResponse();
+                let message = new $root.graphwiz.room.KickUserResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -13560,7 +13912,7 @@ $root.graphwiz = (function() {
             KickUserResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -13618,7 +13970,7 @@ $root.graphwiz = (function() {
              */
             function UpdateSettingsRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -13707,9 +14059,9 @@ $root.graphwiz = (function() {
             UpdateSettingsRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateSettingsRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateSettingsRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -13767,7 +14119,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.requesterId))
                         return "requesterId: string expected";
                 if (message.settings != null && message.hasOwnProperty("settings")) {
-                    var error = $root.graphwiz.room.RoomSettings.verify(message.settings);
+                    let error = $root.graphwiz.room.RoomSettings.verify(message.settings);
                     if (error)
                         return "settings." + error;
                 }
@@ -13785,7 +14137,7 @@ $root.graphwiz = (function() {
             UpdateSettingsRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.UpdateSettingsRequest)
                     return object;
-                var message = new $root.graphwiz.room.UpdateSettingsRequest();
+                let message = new $root.graphwiz.room.UpdateSettingsRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.requesterId != null)
@@ -13810,7 +14162,7 @@ $root.graphwiz = (function() {
             UpdateSettingsRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.requesterId = "";
@@ -13874,7 +14226,7 @@ $root.graphwiz = (function() {
              */
             function UpdateSettingsResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -13953,9 +14305,9 @@ $root.graphwiz = (function() {
             UpdateSettingsResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateSettingsResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdateSettingsResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -14006,7 +14358,7 @@ $root.graphwiz = (function() {
                     if (typeof message.success !== "boolean")
                         return "success: boolean expected";
                 if (message.settings != null && message.hasOwnProperty("settings")) {
-                    var error = $root.graphwiz.room.RoomSettings.verify(message.settings);
+                    let error = $root.graphwiz.room.RoomSettings.verify(message.settings);
                     if (error)
                         return "settings." + error;
                 }
@@ -14024,7 +14376,7 @@ $root.graphwiz = (function() {
             UpdateSettingsResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.UpdateSettingsResponse)
                     return object;
-                var message = new $root.graphwiz.room.UpdateSettingsResponse();
+                let message = new $root.graphwiz.room.UpdateSettingsResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.settings != null) {
@@ -14047,7 +14399,7 @@ $root.graphwiz = (function() {
             UpdateSettingsResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.settings = null;
@@ -14108,7 +14460,7 @@ $root.graphwiz = (function() {
              */
             function GetPermissionsRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -14187,9 +14539,9 @@ $root.graphwiz = (function() {
             GetPermissionsRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetPermissionsRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetPermissionsRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -14256,7 +14608,7 @@ $root.graphwiz = (function() {
             GetPermissionsRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.GetPermissionsRequest)
                     return object;
-                var message = new $root.graphwiz.room.GetPermissionsRequest();
+                let message = new $root.graphwiz.room.GetPermissionsRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.userId != null)
@@ -14276,7 +14628,7 @@ $root.graphwiz = (function() {
             GetPermissionsRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.userId = "";
@@ -14337,7 +14689,7 @@ $root.graphwiz = (function() {
              */
             function GetPermissionsResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -14416,9 +14768,9 @@ $root.graphwiz = (function() {
             GetPermissionsResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetPermissionsResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.GetPermissionsResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -14469,7 +14821,7 @@ $root.graphwiz = (function() {
                     if (typeof message.success !== "boolean")
                         return "success: boolean expected";
                 if (message.permissions != null && message.hasOwnProperty("permissions")) {
-                    var error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
+                    let error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
                     if (error)
                         return "permissions." + error;
                 }
@@ -14487,7 +14839,7 @@ $root.graphwiz = (function() {
             GetPermissionsResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.GetPermissionsResponse)
                     return object;
-                var message = new $root.graphwiz.room.GetPermissionsResponse();
+                let message = new $root.graphwiz.room.GetPermissionsResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.permissions != null) {
@@ -14510,7 +14862,7 @@ $root.graphwiz = (function() {
             GetPermissionsResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.permissions = null;
@@ -14572,7 +14924,7 @@ $root.graphwiz = (function() {
              */
             function UpdatePermissionsRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -14661,9 +15013,9 @@ $root.graphwiz = (function() {
             UpdatePermissionsRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdatePermissionsRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdatePermissionsRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -14721,7 +15073,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.requesterId))
                         return "requesterId: string expected";
                 if (message.permissions != null && message.hasOwnProperty("permissions")) {
-                    var error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
+                    let error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
                     if (error)
                         return "permissions." + error;
                 }
@@ -14739,7 +15091,7 @@ $root.graphwiz = (function() {
             UpdatePermissionsRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.UpdatePermissionsRequest)
                     return object;
-                var message = new $root.graphwiz.room.UpdatePermissionsRequest();
+                let message = new $root.graphwiz.room.UpdatePermissionsRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.requesterId != null)
@@ -14764,7 +15116,7 @@ $root.graphwiz = (function() {
             UpdatePermissionsRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.requesterId = "";
@@ -14828,7 +15180,7 @@ $root.graphwiz = (function() {
              */
             function UpdatePermissionsResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -14907,9 +15259,9 @@ $root.graphwiz = (function() {
             UpdatePermissionsResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdatePermissionsResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.UpdatePermissionsResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -14960,7 +15312,7 @@ $root.graphwiz = (function() {
                     if (typeof message.success !== "boolean")
                         return "success: boolean expected";
                 if (message.permissions != null && message.hasOwnProperty("permissions")) {
-                    var error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
+                    let error = $root.graphwiz.room.RoomPermissions.verify(message.permissions);
                     if (error)
                         return "permissions." + error;
                 }
@@ -14978,7 +15330,7 @@ $root.graphwiz = (function() {
             UpdatePermissionsResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.UpdatePermissionsResponse)
                     return object;
-                var message = new $root.graphwiz.room.UpdatePermissionsResponse();
+                let message = new $root.graphwiz.room.UpdatePermissionsResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.permissions != null) {
@@ -15001,7 +15353,7 @@ $root.graphwiz = (function() {
             UpdatePermissionsResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.permissions = null;
@@ -15070,7 +15422,7 @@ $root.graphwiz = (function() {
             function RoomSettings(properties) {
                 this.customSettings = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -15188,7 +15540,7 @@ $root.graphwiz = (function() {
                 if (message.passwordHash != null && Object.hasOwnProperty.call(message, "passwordHash"))
                     writer.uint32(/* id 8, wireType 2 =*/66).string(message.passwordHash);
                 if (message.customSettings != null && Object.hasOwnProperty.call(message, "customSettings"))
-                    for (var keys = Object.keys(message.customSettings), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.customSettings), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 9, wireType 2 =*/74).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.customSettings[keys[i]]).ldelim();
                 return writer;
             };
@@ -15220,9 +15572,9 @@ $root.graphwiz = (function() {
             RoomSettings.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomSettings(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomSettings(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -15261,11 +15613,11 @@ $root.graphwiz = (function() {
                     case 9: {
                             if (message.customSettings === $util.emptyObject)
                                 message.customSettings = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -15343,8 +15695,8 @@ $root.graphwiz = (function() {
                 if (message.customSettings != null && message.hasOwnProperty("customSettings")) {
                     if (!$util.isObject(message.customSettings))
                         return "customSettings: object expected";
-                    var key = Object.keys(message.customSettings);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.customSettings);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.customSettings[key[i]]))
                             return "customSettings: string{k:string} expected";
                 }
@@ -15362,7 +15714,7 @@ $root.graphwiz = (function() {
             RoomSettings.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.RoomSettings)
                     return object;
-                var message = new $root.graphwiz.room.RoomSettings();
+                let message = new $root.graphwiz.room.RoomSettings();
                 if (object.maxPlayers != null)
                     message.maxPlayers = object.maxPlayers | 0;
                 if (object.isPublic != null)
@@ -15383,7 +15735,7 @@ $root.graphwiz = (function() {
                     if (typeof object.customSettings !== "object")
                         throw TypeError(".graphwiz.room.RoomSettings.customSettings: object expected");
                     message.customSettings = {};
-                    for (var keys = Object.keys(object.customSettings), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.customSettings), i = 0; i < keys.length; ++i)
                         message.customSettings[keys[i]] = String(object.customSettings[keys[i]]);
                 }
                 return message;
@@ -15401,7 +15753,7 @@ $root.graphwiz = (function() {
             RoomSettings.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.customSettings = {};
                 if (options.defaults) {
@@ -15430,10 +15782,10 @@ $root.graphwiz = (function() {
                     object.requireApproval = message.requireApproval;
                 if (message.passwordHash != null && message.hasOwnProperty("passwordHash"))
                     object.passwordHash = message.passwordHash;
-                var keys2;
+                let keys2;
                 if (message.customSettings && (keys2 = Object.keys(message.customSettings)).length) {
                     object.customSettings = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.customSettings[keys2[j]] = message.customSettings[keys2[j]];
                 }
                 return object;
@@ -15495,7 +15847,7 @@ $root.graphwiz = (function() {
                 this.bannedUserIds = [];
                 this.allowedUserIds = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -15565,16 +15917,16 @@ $root.graphwiz = (function() {
                 if (!writer)
                     writer = $Writer.create();
                 if (message.ownerIds != null && message.ownerIds.length)
-                    for (var i = 0; i < message.ownerIds.length; ++i)
+                    for (let i = 0; i < message.ownerIds.length; ++i)
                         writer.uint32(/* id 1, wireType 2 =*/10).string(message.ownerIds[i]);
                 if (message.moderatorIds != null && message.moderatorIds.length)
-                    for (var i = 0; i < message.moderatorIds.length; ++i)
+                    for (let i = 0; i < message.moderatorIds.length; ++i)
                         writer.uint32(/* id 2, wireType 2 =*/18).string(message.moderatorIds[i]);
                 if (message.bannedUserIds != null && message.bannedUserIds.length)
-                    for (var i = 0; i < message.bannedUserIds.length; ++i)
+                    for (let i = 0; i < message.bannedUserIds.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).string(message.bannedUserIds[i]);
                 if (message.allowedUserIds != null && message.allowedUserIds.length)
-                    for (var i = 0; i < message.allowedUserIds.length; ++i)
+                    for (let i = 0; i < message.allowedUserIds.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).string(message.allowedUserIds[i]);
                 if (message.defaultPermission != null && Object.hasOwnProperty.call(message, "defaultPermission"))
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.defaultPermission);
@@ -15608,9 +15960,9 @@ $root.graphwiz = (function() {
             RoomPermissions.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomPermissions();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomPermissions();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -15680,28 +16032,28 @@ $root.graphwiz = (function() {
                 if (message.ownerIds != null && message.hasOwnProperty("ownerIds")) {
                     if (!Array.isArray(message.ownerIds))
                         return "ownerIds: array expected";
-                    for (var i = 0; i < message.ownerIds.length; ++i)
+                    for (let i = 0; i < message.ownerIds.length; ++i)
                         if (!$util.isString(message.ownerIds[i]))
                             return "ownerIds: string[] expected";
                 }
                 if (message.moderatorIds != null && message.hasOwnProperty("moderatorIds")) {
                     if (!Array.isArray(message.moderatorIds))
                         return "moderatorIds: array expected";
-                    for (var i = 0; i < message.moderatorIds.length; ++i)
+                    for (let i = 0; i < message.moderatorIds.length; ++i)
                         if (!$util.isString(message.moderatorIds[i]))
                             return "moderatorIds: string[] expected";
                 }
                 if (message.bannedUserIds != null && message.hasOwnProperty("bannedUserIds")) {
                     if (!Array.isArray(message.bannedUserIds))
                         return "bannedUserIds: array expected";
-                    for (var i = 0; i < message.bannedUserIds.length; ++i)
+                    for (let i = 0; i < message.bannedUserIds.length; ++i)
                         if (!$util.isString(message.bannedUserIds[i]))
                             return "bannedUserIds: string[] expected";
                 }
                 if (message.allowedUserIds != null && message.hasOwnProperty("allowedUserIds")) {
                     if (!Array.isArray(message.allowedUserIds))
                         return "allowedUserIds: array expected";
-                    for (var i = 0; i < message.allowedUserIds.length; ++i)
+                    for (let i = 0; i < message.allowedUserIds.length; ++i)
                         if (!$util.isString(message.allowedUserIds[i]))
                             return "allowedUserIds: string[] expected";
                 }
@@ -15730,33 +16082,33 @@ $root.graphwiz = (function() {
             RoomPermissions.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.RoomPermissions)
                     return object;
-                var message = new $root.graphwiz.room.RoomPermissions();
+                let message = new $root.graphwiz.room.RoomPermissions();
                 if (object.ownerIds) {
                     if (!Array.isArray(object.ownerIds))
                         throw TypeError(".graphwiz.room.RoomPermissions.ownerIds: array expected");
                     message.ownerIds = [];
-                    for (var i = 0; i < object.ownerIds.length; ++i)
+                    for (let i = 0; i < object.ownerIds.length; ++i)
                         message.ownerIds[i] = String(object.ownerIds[i]);
                 }
                 if (object.moderatorIds) {
                     if (!Array.isArray(object.moderatorIds))
                         throw TypeError(".graphwiz.room.RoomPermissions.moderatorIds: array expected");
                     message.moderatorIds = [];
-                    for (var i = 0; i < object.moderatorIds.length; ++i)
+                    for (let i = 0; i < object.moderatorIds.length; ++i)
                         message.moderatorIds[i] = String(object.moderatorIds[i]);
                 }
                 if (object.bannedUserIds) {
                     if (!Array.isArray(object.bannedUserIds))
                         throw TypeError(".graphwiz.room.RoomPermissions.bannedUserIds: array expected");
                     message.bannedUserIds = [];
-                    for (var i = 0; i < object.bannedUserIds.length; ++i)
+                    for (let i = 0; i < object.bannedUserIds.length; ++i)
                         message.bannedUserIds[i] = String(object.bannedUserIds[i]);
                 }
                 if (object.allowedUserIds) {
                     if (!Array.isArray(object.allowedUserIds))
                         throw TypeError(".graphwiz.room.RoomPermissions.allowedUserIds: array expected");
                     message.allowedUserIds = [];
-                    for (var i = 0; i < object.allowedUserIds.length; ++i)
+                    for (let i = 0; i < object.allowedUserIds.length; ++i)
                         message.allowedUserIds[i] = String(object.allowedUserIds[i]);
                 }
                 switch (object.defaultPermission) {
@@ -15802,7 +16154,7 @@ $root.graphwiz = (function() {
             RoomPermissions.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults) {
                     object.ownerIds = [];
                     object.moderatorIds = [];
@@ -15813,22 +16165,22 @@ $root.graphwiz = (function() {
                     object.defaultPermission = options.enums === String ? "NONE" : 0;
                 if (message.ownerIds && message.ownerIds.length) {
                     object.ownerIds = [];
-                    for (var j = 0; j < message.ownerIds.length; ++j)
+                    for (let j = 0; j < message.ownerIds.length; ++j)
                         object.ownerIds[j] = message.ownerIds[j];
                 }
                 if (message.moderatorIds && message.moderatorIds.length) {
                     object.moderatorIds = [];
-                    for (var j = 0; j < message.moderatorIds.length; ++j)
+                    for (let j = 0; j < message.moderatorIds.length; ++j)
                         object.moderatorIds[j] = message.moderatorIds[j];
                 }
                 if (message.bannedUserIds && message.bannedUserIds.length) {
                     object.bannedUserIds = [];
-                    for (var j = 0; j < message.bannedUserIds.length; ++j)
+                    for (let j = 0; j < message.bannedUserIds.length; ++j)
                         object.bannedUserIds[j] = message.bannedUserIds[j];
                 }
                 if (message.allowedUserIds && message.allowedUserIds.length) {
                     object.allowedUserIds = [];
-                    for (var j = 0; j < message.allowedUserIds.length; ++j)
+                    for (let j = 0; j < message.allowedUserIds.length; ++j)
                         object.allowedUserIds[j] = message.allowedUserIds[j];
                 }
                 if (message.defaultPermission != null && message.hasOwnProperty("defaultPermission"))
@@ -15876,7 +16228,7 @@ $root.graphwiz = (function() {
          * @property {number} OWNER=4 OWNER value
          */
         room.PermissionLevel = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NONE"] = 0;
             values[valuesById[1] = "VIEWER"] = 1;
             values[valuesById[2] = "PARTICIPANT"] = 2;
@@ -15910,7 +16262,7 @@ $root.graphwiz = (function() {
             function RoomFilter(properties) {
                 this.tags = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -15998,7 +16350,7 @@ $root.graphwiz = (function() {
                 if (message.hasTextChat != null && Object.hasOwnProperty.call(message, "hasTextChat"))
                     writer.uint32(/* id 5, wireType 0 =*/40).bool(message.hasTextChat);
                 if (message.tags != null && message.tags.length)
-                    for (var i = 0; i < message.tags.length; ++i)
+                    for (let i = 0; i < message.tags.length; ++i)
                         writer.uint32(/* id 6, wireType 2 =*/50).string(message.tags[i]);
                 return writer;
             };
@@ -16030,9 +16382,9 @@ $root.graphwiz = (function() {
             RoomFilter.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomFilter();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.room.RoomFilter();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -16115,7 +16467,7 @@ $root.graphwiz = (function() {
                 if (message.tags != null && message.hasOwnProperty("tags")) {
                     if (!Array.isArray(message.tags))
                         return "tags: array expected";
-                    for (var i = 0; i < message.tags.length; ++i)
+                    for (let i = 0; i < message.tags.length; ++i)
                         if (!$util.isString(message.tags[i]))
                             return "tags: string[] expected";
                 }
@@ -16133,7 +16485,7 @@ $root.graphwiz = (function() {
             RoomFilter.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.room.RoomFilter)
                     return object;
-                var message = new $root.graphwiz.room.RoomFilter();
+                let message = new $root.graphwiz.room.RoomFilter();
                 if (object.publicOnly != null)
                     message.publicOnly = Boolean(object.publicOnly);
                 if (object.minPlayers != null)
@@ -16148,7 +16500,7 @@ $root.graphwiz = (function() {
                     if (!Array.isArray(object.tags))
                         throw TypeError(".graphwiz.room.RoomFilter.tags: array expected");
                     message.tags = [];
-                    for (var i = 0; i < object.tags.length; ++i)
+                    for (let i = 0; i < object.tags.length; ++i)
                         message.tags[i] = String(object.tags[i]);
                 }
                 return message;
@@ -16166,7 +16518,7 @@ $root.graphwiz = (function() {
             RoomFilter.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults)
                     object.tags = [];
                 if (options.defaults) {
@@ -16188,7 +16540,7 @@ $root.graphwiz = (function() {
                     object.hasTextChat = message.hasTextChat;
                 if (message.tags && message.tags.length) {
                     object.tags = [];
-                    for (var j = 0; j < message.tags.length; ++j)
+                    for (let j = 0; j < message.tags.length; ++j)
                         object.tags[j] = message.tags[j];
                 }
                 return object;
@@ -16233,7 +16585,7 @@ $root.graphwiz = (function() {
          * @memberof graphwiz
          * @namespace
          */
-        var media = {};
+        const media = {};
 
         media.MediaService = (function() {
 
@@ -16621,7 +16973,7 @@ $root.graphwiz = (function() {
              */
             function CreateOfferRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -16710,9 +17062,9 @@ $root.graphwiz = (function() {
             CreateOfferRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateOfferRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateOfferRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -16770,7 +17122,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.clientId))
                         return "clientId: string expected";
                 if (message.constraints != null && message.hasOwnProperty("constraints")) {
-                    var error = $root.graphwiz.media.MediaConstraints.verify(message.constraints);
+                    let error = $root.graphwiz.media.MediaConstraints.verify(message.constraints);
                     if (error)
                         return "constraints." + error;
                 }
@@ -16788,7 +17140,7 @@ $root.graphwiz = (function() {
             CreateOfferRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.CreateOfferRequest)
                     return object;
-                var message = new $root.graphwiz.media.CreateOfferRequest();
+                let message = new $root.graphwiz.media.CreateOfferRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -16813,7 +17165,7 @@ $root.graphwiz = (function() {
             CreateOfferRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -16878,7 +17230,7 @@ $root.graphwiz = (function() {
              */
             function CreateOfferResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -16967,9 +17319,9 @@ $root.graphwiz = (function() {
             CreateOfferResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateOfferResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateOfferResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -17043,7 +17395,7 @@ $root.graphwiz = (function() {
             CreateOfferResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.CreateOfferResponse)
                     return object;
-                var message = new $root.graphwiz.media.CreateOfferResponse();
+                let message = new $root.graphwiz.media.CreateOfferResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.sdp != null)
@@ -17065,7 +17417,7 @@ $root.graphwiz = (function() {
             CreateOfferResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.sdp = "";
@@ -17131,7 +17483,7 @@ $root.graphwiz = (function() {
              */
             function CreateAnswerRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -17230,9 +17582,9 @@ $root.graphwiz = (function() {
             CreateAnswerRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateAnswerRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateAnswerRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -17297,7 +17649,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.offerSdp))
                         return "offerSdp: string expected";
                 if (message.constraints != null && message.hasOwnProperty("constraints")) {
-                    var error = $root.graphwiz.media.MediaConstraints.verify(message.constraints);
+                    let error = $root.graphwiz.media.MediaConstraints.verify(message.constraints);
                     if (error)
                         return "constraints." + error;
                 }
@@ -17315,7 +17667,7 @@ $root.graphwiz = (function() {
             CreateAnswerRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.CreateAnswerRequest)
                     return object;
-                var message = new $root.graphwiz.media.CreateAnswerRequest();
+                let message = new $root.graphwiz.media.CreateAnswerRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -17342,7 +17694,7 @@ $root.graphwiz = (function() {
             CreateAnswerRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -17409,7 +17761,7 @@ $root.graphwiz = (function() {
              */
             function CreateAnswerResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -17488,9 +17840,9 @@ $root.graphwiz = (function() {
             CreateAnswerResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateAnswerResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.CreateAnswerResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -17557,7 +17909,7 @@ $root.graphwiz = (function() {
             CreateAnswerResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.CreateAnswerResponse)
                     return object;
-                var message = new $root.graphwiz.media.CreateAnswerResponse();
+                let message = new $root.graphwiz.media.CreateAnswerResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.sdp != null)
@@ -17577,7 +17929,7 @@ $root.graphwiz = (function() {
             CreateAnswerResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.sdp = "";
@@ -17640,7 +17992,7 @@ $root.graphwiz = (function() {
              */
             function SetRemoteDescriptionRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -17739,9 +18091,9 @@ $root.graphwiz = (function() {
             SetRemoteDescriptionRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SetRemoteDescriptionRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SetRemoteDescriptionRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -17829,7 +18181,7 @@ $root.graphwiz = (function() {
             SetRemoteDescriptionRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.SetRemoteDescriptionRequest)
                     return object;
-                var message = new $root.graphwiz.media.SetRemoteDescriptionRequest();
+                let message = new $root.graphwiz.media.SetRemoteDescriptionRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -17875,7 +18227,7 @@ $root.graphwiz = (function() {
             SetRemoteDescriptionRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -17941,7 +18293,7 @@ $root.graphwiz = (function() {
              */
             function SetRemoteDescriptionResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -18010,9 +18362,9 @@ $root.graphwiz = (function() {
             SetRemoteDescriptionResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SetRemoteDescriptionResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SetRemoteDescriptionResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -18072,7 +18424,7 @@ $root.graphwiz = (function() {
             SetRemoteDescriptionResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.SetRemoteDescriptionResponse)
                     return object;
-                var message = new $root.graphwiz.media.SetRemoteDescriptionResponse();
+                let message = new $root.graphwiz.media.SetRemoteDescriptionResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -18090,7 +18442,7 @@ $root.graphwiz = (function() {
             SetRemoteDescriptionResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -18148,7 +18500,7 @@ $root.graphwiz = (function() {
              */
             function AddIceCandidateRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -18237,9 +18589,9 @@ $root.graphwiz = (function() {
             AddIceCandidateRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddIceCandidateRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddIceCandidateRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -18297,7 +18649,7 @@ $root.graphwiz = (function() {
                     if (!$util.isString(message.clientId))
                         return "clientId: string expected";
                 if (message.candidate != null && message.hasOwnProperty("candidate")) {
-                    var error = $root.graphwiz.media.IceCandidate.verify(message.candidate);
+                    let error = $root.graphwiz.media.IceCandidate.verify(message.candidate);
                     if (error)
                         return "candidate." + error;
                 }
@@ -18315,7 +18667,7 @@ $root.graphwiz = (function() {
             AddIceCandidateRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.AddIceCandidateRequest)
                     return object;
-                var message = new $root.graphwiz.media.AddIceCandidateRequest();
+                let message = new $root.graphwiz.media.AddIceCandidateRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -18340,7 +18692,7 @@ $root.graphwiz = (function() {
             AddIceCandidateRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -18403,7 +18755,7 @@ $root.graphwiz = (function() {
              */
             function AddIceCandidateResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -18472,9 +18824,9 @@ $root.graphwiz = (function() {
             AddIceCandidateResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddIceCandidateResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddIceCandidateResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -18534,7 +18886,7 @@ $root.graphwiz = (function() {
             AddIceCandidateResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.AddIceCandidateResponse)
                     return object;
-                var message = new $root.graphwiz.media.AddIceCandidateResponse();
+                let message = new $root.graphwiz.media.AddIceCandidateResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -18552,7 +18904,7 @@ $root.graphwiz = (function() {
             AddIceCandidateResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -18611,7 +18963,7 @@ $root.graphwiz = (function() {
              */
             function IceCandidate(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -18710,9 +19062,9 @@ $root.graphwiz = (function() {
             IceCandidate.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.IceCandidate();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.IceCandidate();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -18793,7 +19145,7 @@ $root.graphwiz = (function() {
             IceCandidate.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.IceCandidate)
                     return object;
-                var message = new $root.graphwiz.media.IceCandidate();
+                let message = new $root.graphwiz.media.IceCandidate();
                 if (object.candidate != null)
                     message.candidate = String(object.candidate);
                 if (object.sdpMid != null)
@@ -18817,7 +19169,7 @@ $root.graphwiz = (function() {
             IceCandidate.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.candidate = "";
                     object.sdpMid = "";
@@ -18888,7 +19240,7 @@ $root.graphwiz = (function() {
             function AddTrackRequest(properties) {
                 this.metadata = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -18966,7 +19318,7 @@ $root.graphwiz = (function() {
                 if (message.kind != null && Object.hasOwnProperty.call(message, "kind"))
                     writer.uint32(/* id 4, wireType 0 =*/32).int32(message.kind);
                 if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
-                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
                 return writer;
             };
@@ -18998,9 +19350,9 @@ $root.graphwiz = (function() {
             AddTrackRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddTrackRequest(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddTrackRequest(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -19023,11 +19375,11 @@ $root.graphwiz = (function() {
                     case 5: {
                             if (message.metadata === $util.emptyObject)
                                 message.metadata = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -19099,8 +19451,8 @@ $root.graphwiz = (function() {
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
                     if (!$util.isObject(message.metadata))
                         return "metadata: object expected";
-                    var key = Object.keys(message.metadata);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.metadata);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.metadata[key[i]]))
                             return "metadata: string{k:string} expected";
                 }
@@ -19118,7 +19470,7 @@ $root.graphwiz = (function() {
             AddTrackRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.AddTrackRequest)
                     return object;
-                var message = new $root.graphwiz.media.AddTrackRequest();
+                let message = new $root.graphwiz.media.AddTrackRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -19149,7 +19501,7 @@ $root.graphwiz = (function() {
                     if (typeof object.metadata !== "object")
                         throw TypeError(".graphwiz.media.AddTrackRequest.metadata: object expected");
                     message.metadata = {};
-                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
                         message.metadata[keys[i]] = String(object.metadata[keys[i]]);
                 }
                 return message;
@@ -19167,7 +19519,7 @@ $root.graphwiz = (function() {
             AddTrackRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.metadata = {};
                 if (options.defaults) {
@@ -19184,10 +19536,10 @@ $root.graphwiz = (function() {
                     object.trackId = message.trackId;
                 if (message.kind != null && message.hasOwnProperty("kind"))
                     object.kind = options.enums === String ? $root.graphwiz.media.TrackKind[message.kind] === undefined ? message.kind : $root.graphwiz.media.TrackKind[message.kind] : message.kind;
-                var keys2;
+                let keys2;
                 if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
                     object.metadata = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.metadata[keys2[j]] = message.metadata[keys2[j]];
                 }
                 return object;
@@ -19243,7 +19595,7 @@ $root.graphwiz = (function() {
              */
             function AddTrackResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -19332,9 +19684,9 @@ $root.graphwiz = (function() {
             AddTrackResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddTrackResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AddTrackResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -19408,7 +19760,7 @@ $root.graphwiz = (function() {
             AddTrackResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.AddTrackResponse)
                     return object;
-                var message = new $root.graphwiz.media.AddTrackResponse();
+                let message = new $root.graphwiz.media.AddTrackResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.trackId != null)
@@ -19430,7 +19782,7 @@ $root.graphwiz = (function() {
             AddTrackResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.trackId = "";
@@ -19495,7 +19847,7 @@ $root.graphwiz = (function() {
              */
             function RemoveTrackRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -19584,9 +19936,9 @@ $root.graphwiz = (function() {
             RemoveTrackRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.RemoveTrackRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.RemoveTrackRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -19660,7 +20012,7 @@ $root.graphwiz = (function() {
             RemoveTrackRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.RemoveTrackRequest)
                     return object;
-                var message = new $root.graphwiz.media.RemoveTrackRequest();
+                let message = new $root.graphwiz.media.RemoveTrackRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -19682,7 +20034,7 @@ $root.graphwiz = (function() {
             RemoveTrackRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -19745,7 +20097,7 @@ $root.graphwiz = (function() {
              */
             function RemoveTrackResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -19814,9 +20166,9 @@ $root.graphwiz = (function() {
             RemoveTrackResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.RemoveTrackResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.RemoveTrackResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -19876,7 +20228,7 @@ $root.graphwiz = (function() {
             RemoveTrackResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.RemoveTrackResponse)
                     return object;
-                var message = new $root.graphwiz.media.RemoveTrackResponse();
+                let message = new $root.graphwiz.media.RemoveTrackResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -19894,7 +20246,7 @@ $root.graphwiz = (function() {
             RemoveTrackResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -19953,7 +20305,7 @@ $root.graphwiz = (function() {
              */
             function MuteTrackRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -20052,9 +20404,9 @@ $root.graphwiz = (function() {
             MuteTrackRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MuteTrackRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MuteTrackRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -20135,7 +20487,7 @@ $root.graphwiz = (function() {
             MuteTrackRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.MuteTrackRequest)
                     return object;
-                var message = new $root.graphwiz.media.MuteTrackRequest();
+                let message = new $root.graphwiz.media.MuteTrackRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -20159,7 +20511,7 @@ $root.graphwiz = (function() {
             MuteTrackRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -20225,7 +20577,7 @@ $root.graphwiz = (function() {
              */
             function MuteTrackResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -20294,9 +20646,9 @@ $root.graphwiz = (function() {
             MuteTrackResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MuteTrackResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MuteTrackResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -20356,7 +20708,7 @@ $root.graphwiz = (function() {
             MuteTrackResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.MuteTrackResponse)
                     return object;
-                var message = new $root.graphwiz.media.MuteTrackResponse();
+                let message = new $root.graphwiz.media.MuteTrackResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -20374,7 +20726,7 @@ $root.graphwiz = (function() {
             MuteTrackResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -20434,7 +20786,7 @@ $root.graphwiz = (function() {
              */
             function JoinSessionRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -20543,9 +20895,9 @@ $root.graphwiz = (function() {
             JoinSessionRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.JoinSessionRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.JoinSessionRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -20633,7 +20985,7 @@ $root.graphwiz = (function() {
             JoinSessionRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.JoinSessionRequest)
                     return object;
-                var message = new $root.graphwiz.media.JoinSessionRequest();
+                let message = new $root.graphwiz.media.JoinSessionRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -20659,7 +21011,7 @@ $root.graphwiz = (function() {
             JoinSessionRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -20733,7 +21085,7 @@ $root.graphwiz = (function() {
                 this.existingTracks = [];
                 this.participantIds = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -20799,10 +21151,10 @@ $root.graphwiz = (function() {
                 if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
                 if (message.existingTracks != null && message.existingTracks.length)
-                    for (var i = 0; i < message.existingTracks.length; ++i)
+                    for (let i = 0; i < message.existingTracks.length; ++i)
                         $root.graphwiz.media.ActiveTrack.encode(message.existingTracks[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                 if (message.participantIds != null && message.participantIds.length)
-                    for (var i = 0; i < message.participantIds.length; ++i)
+                    for (let i = 0; i < message.participantIds.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).string(message.participantIds[i]);
                 return writer;
             };
@@ -20834,9 +21186,9 @@ $root.graphwiz = (function() {
             JoinSessionResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.JoinSessionResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.JoinSessionResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -20904,8 +21256,8 @@ $root.graphwiz = (function() {
                 if (message.existingTracks != null && message.hasOwnProperty("existingTracks")) {
                     if (!Array.isArray(message.existingTracks))
                         return "existingTracks: array expected";
-                    for (var i = 0; i < message.existingTracks.length; ++i) {
-                        var error = $root.graphwiz.media.ActiveTrack.verify(message.existingTracks[i]);
+                    for (let i = 0; i < message.existingTracks.length; ++i) {
+                        let error = $root.graphwiz.media.ActiveTrack.verify(message.existingTracks[i]);
                         if (error)
                             return "existingTracks." + error;
                     }
@@ -20913,7 +21265,7 @@ $root.graphwiz = (function() {
                 if (message.participantIds != null && message.hasOwnProperty("participantIds")) {
                     if (!Array.isArray(message.participantIds))
                         return "participantIds: array expected";
-                    for (var i = 0; i < message.participantIds.length; ++i)
+                    for (let i = 0; i < message.participantIds.length; ++i)
                         if (!$util.isString(message.participantIds[i]))
                             return "participantIds: string[] expected";
                 }
@@ -20931,7 +21283,7 @@ $root.graphwiz = (function() {
             JoinSessionResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.JoinSessionResponse)
                     return object;
-                var message = new $root.graphwiz.media.JoinSessionResponse();
+                let message = new $root.graphwiz.media.JoinSessionResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.sessionId != null)
@@ -20940,7 +21292,7 @@ $root.graphwiz = (function() {
                     if (!Array.isArray(object.existingTracks))
                         throw TypeError(".graphwiz.media.JoinSessionResponse.existingTracks: array expected");
                     message.existingTracks = [];
-                    for (var i = 0; i < object.existingTracks.length; ++i) {
+                    for (let i = 0; i < object.existingTracks.length; ++i) {
                         if (typeof object.existingTracks[i] !== "object")
                             throw TypeError(".graphwiz.media.JoinSessionResponse.existingTracks: object expected");
                         message.existingTracks[i] = $root.graphwiz.media.ActiveTrack.fromObject(object.existingTracks[i]);
@@ -20950,7 +21302,7 @@ $root.graphwiz = (function() {
                     if (!Array.isArray(object.participantIds))
                         throw TypeError(".graphwiz.media.JoinSessionResponse.participantIds: array expected");
                     message.participantIds = [];
-                    for (var i = 0; i < object.participantIds.length; ++i)
+                    for (let i = 0; i < object.participantIds.length; ++i)
                         message.participantIds[i] = String(object.participantIds[i]);
                 }
                 return message;
@@ -20968,7 +21320,7 @@ $root.graphwiz = (function() {
             JoinSessionResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults) {
                     object.existingTracks = [];
                     object.participantIds = [];
@@ -20983,12 +21335,12 @@ $root.graphwiz = (function() {
                     object.sessionId = message.sessionId;
                 if (message.existingTracks && message.existingTracks.length) {
                     object.existingTracks = [];
-                    for (var j = 0; j < message.existingTracks.length; ++j)
+                    for (let j = 0; j < message.existingTracks.length; ++j)
                         object.existingTracks[j] = $root.graphwiz.media.ActiveTrack.toObject(message.existingTracks[j], options);
                 }
                 if (message.participantIds && message.participantIds.length) {
                     object.participantIds = [];
-                    for (var j = 0; j < message.participantIds.length; ++j)
+                    for (let j = 0; j < message.participantIds.length; ++j)
                         object.participantIds[j] = message.participantIds[j];
                 }
                 return object;
@@ -21044,7 +21396,7 @@ $root.graphwiz = (function() {
              */
             function LeaveSessionRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -21133,9 +21485,9 @@ $root.graphwiz = (function() {
             LeaveSessionRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.LeaveSessionRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.LeaveSessionRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -21209,7 +21561,7 @@ $root.graphwiz = (function() {
             LeaveSessionRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.LeaveSessionRequest)
                     return object;
-                var message = new $root.graphwiz.media.LeaveSessionRequest();
+                let message = new $root.graphwiz.media.LeaveSessionRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -21231,7 +21583,7 @@ $root.graphwiz = (function() {
             LeaveSessionRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -21294,7 +21646,7 @@ $root.graphwiz = (function() {
              */
             function LeaveSessionResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -21363,9 +21715,9 @@ $root.graphwiz = (function() {
             LeaveSessionResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.LeaveSessionResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.LeaveSessionResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -21425,7 +21777,7 @@ $root.graphwiz = (function() {
             LeaveSessionResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.LeaveSessionResponse)
                     return object;
-                var message = new $root.graphwiz.media.LeaveSessionResponse();
+                let message = new $root.graphwiz.media.LeaveSessionResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 return message;
@@ -21443,7 +21795,7 @@ $root.graphwiz = (function() {
             LeaveSessionResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.success = false;
                 if (message.success != null && message.hasOwnProperty("success"))
@@ -21500,7 +21852,7 @@ $root.graphwiz = (function() {
              */
             function StreamMediaEventsRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -21579,9 +21931,9 @@ $root.graphwiz = (function() {
             StreamMediaEventsRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.StreamMediaEventsRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.StreamMediaEventsRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -21648,7 +22000,7 @@ $root.graphwiz = (function() {
             StreamMediaEventsRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.StreamMediaEventsRequest)
                     return object;
-                var message = new $root.graphwiz.media.StreamMediaEventsRequest();
+                let message = new $root.graphwiz.media.StreamMediaEventsRequest();
                 if (object.roomId != null)
                     message.roomId = String(object.roomId);
                 if (object.clientId != null)
@@ -21668,7 +22020,7 @@ $root.graphwiz = (function() {
             StreamMediaEventsRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.roomId = "";
                     object.clientId = "";
@@ -21738,7 +22090,7 @@ $root.graphwiz = (function() {
              */
             function MediaEvent(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -21832,7 +22184,7 @@ $root.graphwiz = (function() {
             MediaEvent.prototype.iceCandidate = null;
 
             // OneOf field names bound to virtual getters and setters
-            var $oneOfFields;
+            let $oneOfFields;
 
             /**
              * MediaEvent payload.
@@ -21921,9 +22273,9 @@ $root.graphwiz = (function() {
             MediaEvent.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MediaEvent();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MediaEvent();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -22006,7 +22358,7 @@ $root.graphwiz = (function() {
             MediaEvent.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                var properties = {};
+                let properties = {};
                 if (message.eventId != null && message.hasOwnProperty("eventId"))
                     if (!$util.isString(message.eventId))
                         return "eventId: string expected";
@@ -22016,7 +22368,7 @@ $root.graphwiz = (function() {
                 if (message.trackPublished != null && message.hasOwnProperty("trackPublished")) {
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.TrackPublished.verify(message.trackPublished);
+                        let error = $root.graphwiz.media.TrackPublished.verify(message.trackPublished);
                         if (error)
                             return "trackPublished." + error;
                     }
@@ -22026,7 +22378,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.TrackUnpublished.verify(message.trackUnpublished);
+                        let error = $root.graphwiz.media.TrackUnpublished.verify(message.trackUnpublished);
                         if (error)
                             return "trackUnpublished." + error;
                     }
@@ -22036,7 +22388,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.TrackUpdated.verify(message.trackUpdated);
+                        let error = $root.graphwiz.media.TrackUpdated.verify(message.trackUpdated);
                         if (error)
                             return "trackUpdated." + error;
                     }
@@ -22046,7 +22398,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.ParticipantJoined.verify(message.participantJoined);
+                        let error = $root.graphwiz.media.ParticipantJoined.verify(message.participantJoined);
                         if (error)
                             return "participantJoined." + error;
                     }
@@ -22056,7 +22408,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.ParticipantLeft.verify(message.participantLeft);
+                        let error = $root.graphwiz.media.ParticipantLeft.verify(message.participantLeft);
                         if (error)
                             return "participantLeft." + error;
                     }
@@ -22066,7 +22418,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.ParticipantUpdated.verify(message.participantUpdated);
+                        let error = $root.graphwiz.media.ParticipantUpdated.verify(message.participantUpdated);
                         if (error)
                             return "participantUpdated." + error;
                     }
@@ -22076,7 +22428,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.SdpOffer.verify(message.sdpOffer);
+                        let error = $root.graphwiz.media.SdpOffer.verify(message.sdpOffer);
                         if (error)
                             return "sdpOffer." + error;
                     }
@@ -22086,7 +22438,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.SdpAnswer.verify(message.sdpAnswer);
+                        let error = $root.graphwiz.media.SdpAnswer.verify(message.sdpAnswer);
                         if (error)
                             return "sdpAnswer." + error;
                     }
@@ -22096,7 +22448,7 @@ $root.graphwiz = (function() {
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        var error = $root.graphwiz.media.IceCandidate.verify(message.iceCandidate);
+                        let error = $root.graphwiz.media.IceCandidate.verify(message.iceCandidate);
                         if (error)
                             return "iceCandidate." + error;
                     }
@@ -22115,7 +22467,7 @@ $root.graphwiz = (function() {
             MediaEvent.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.MediaEvent)
                     return object;
-                var message = new $root.graphwiz.media.MediaEvent();
+                let message = new $root.graphwiz.media.MediaEvent();
                 if (object.eventId != null)
                     message.eventId = String(object.eventId);
                 if (object.timestamp != null)
@@ -22187,11 +22539,11 @@ $root.graphwiz = (function() {
             MediaEvent.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.eventId = "";
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.timestamp = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.timestamp = options.longs === String ? "0" : 0;
@@ -22303,7 +22655,7 @@ $root.graphwiz = (function() {
             function TrackPublished(properties) {
                 this.metadata = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -22371,7 +22723,7 @@ $root.graphwiz = (function() {
                 if (message.kind != null && Object.hasOwnProperty.call(message, "kind"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int32(message.kind);
                 if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
-                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
                 return writer;
             };
@@ -22403,9 +22755,9 @@ $root.graphwiz = (function() {
             TrackPublished.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackPublished(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackPublished(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -22424,11 +22776,11 @@ $root.graphwiz = (function() {
                     case 4: {
                             if (message.metadata === $util.emptyObject)
                                 message.metadata = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -22497,8 +22849,8 @@ $root.graphwiz = (function() {
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
                     if (!$util.isObject(message.metadata))
                         return "metadata: object expected";
-                    var key = Object.keys(message.metadata);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.metadata);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.metadata[key[i]]))
                             return "metadata: string{k:string} expected";
                 }
@@ -22516,7 +22868,7 @@ $root.graphwiz = (function() {
             TrackPublished.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.TrackPublished)
                     return object;
-                var message = new $root.graphwiz.media.TrackPublished();
+                let message = new $root.graphwiz.media.TrackPublished();
                 if (object.trackId != null)
                     message.trackId = String(object.trackId);
                 if (object.clientId != null)
@@ -22545,7 +22897,7 @@ $root.graphwiz = (function() {
                     if (typeof object.metadata !== "object")
                         throw TypeError(".graphwiz.media.TrackPublished.metadata: object expected");
                     message.metadata = {};
-                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
                         message.metadata[keys[i]] = String(object.metadata[keys[i]]);
                 }
                 return message;
@@ -22563,7 +22915,7 @@ $root.graphwiz = (function() {
             TrackPublished.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.metadata = {};
                 if (options.defaults) {
@@ -22577,10 +22929,10 @@ $root.graphwiz = (function() {
                     object.clientId = message.clientId;
                 if (message.kind != null && message.hasOwnProperty("kind"))
                     object.kind = options.enums === String ? $root.graphwiz.media.TrackKind[message.kind] === undefined ? message.kind : $root.graphwiz.media.TrackKind[message.kind] : message.kind;
-                var keys2;
+                let keys2;
                 if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
                     object.metadata = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.metadata[keys2[j]] = message.metadata[keys2[j]];
                 }
                 return object;
@@ -22635,7 +22987,7 @@ $root.graphwiz = (function() {
              */
             function TrackUnpublished(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -22714,9 +23066,9 @@ $root.graphwiz = (function() {
             TrackUnpublished.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackUnpublished();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackUnpublished();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -22783,7 +23135,7 @@ $root.graphwiz = (function() {
             TrackUnpublished.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.TrackUnpublished)
                     return object;
-                var message = new $root.graphwiz.media.TrackUnpublished();
+                let message = new $root.graphwiz.media.TrackUnpublished();
                 if (object.trackId != null)
                     message.trackId = String(object.trackId);
                 if (object.clientId != null)
@@ -22803,7 +23155,7 @@ $root.graphwiz = (function() {
             TrackUnpublished.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.trackId = "";
                     object.clientId = "";
@@ -22866,7 +23218,7 @@ $root.graphwiz = (function() {
             function TrackUpdated(properties) {
                 this.metadata = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -22924,7 +23276,7 @@ $root.graphwiz = (function() {
                 if (message.muted != null && Object.hasOwnProperty.call(message, "muted"))
                     writer.uint32(/* id 2, wireType 0 =*/16).bool(message.muted);
                 if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
-                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
                 return writer;
             };
@@ -22956,9 +23308,9 @@ $root.graphwiz = (function() {
             TrackUpdated.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackUpdated(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.TrackUpdated(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -22973,11 +23325,11 @@ $root.graphwiz = (function() {
                     case 3: {
                             if (message.metadata === $util.emptyObject)
                                 message.metadata = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -23037,8 +23389,8 @@ $root.graphwiz = (function() {
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
                     if (!$util.isObject(message.metadata))
                         return "metadata: object expected";
-                    var key = Object.keys(message.metadata);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.metadata);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.metadata[key[i]]))
                             return "metadata: string{k:string} expected";
                 }
@@ -23056,7 +23408,7 @@ $root.graphwiz = (function() {
             TrackUpdated.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.TrackUpdated)
                     return object;
-                var message = new $root.graphwiz.media.TrackUpdated();
+                let message = new $root.graphwiz.media.TrackUpdated();
                 if (object.trackId != null)
                     message.trackId = String(object.trackId);
                 if (object.muted != null)
@@ -23065,7 +23417,7 @@ $root.graphwiz = (function() {
                     if (typeof object.metadata !== "object")
                         throw TypeError(".graphwiz.media.TrackUpdated.metadata: object expected");
                     message.metadata = {};
-                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
                         message.metadata[keys[i]] = String(object.metadata[keys[i]]);
                 }
                 return message;
@@ -23083,7 +23435,7 @@ $root.graphwiz = (function() {
             TrackUpdated.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.metadata = {};
                 if (options.defaults) {
@@ -23094,10 +23446,10 @@ $root.graphwiz = (function() {
                     object.trackId = message.trackId;
                 if (message.muted != null && message.hasOwnProperty("muted"))
                     object.muted = message.muted;
-                var keys2;
+                let keys2;
                 if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
                     object.metadata = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.metadata[keys2[j]] = message.metadata[keys2[j]];
                 }
                 return object;
@@ -23154,7 +23506,7 @@ $root.graphwiz = (function() {
             function ParticipantJoined(properties) {
                 this.trackIds = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -23212,7 +23564,7 @@ $root.graphwiz = (function() {
                 if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.displayName);
                 if (message.trackIds != null && message.trackIds.length)
-                    for (var i = 0; i < message.trackIds.length; ++i)
+                    for (let i = 0; i < message.trackIds.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).string(message.trackIds[i]);
                 return writer;
             };
@@ -23244,9 +23596,9 @@ $root.graphwiz = (function() {
             ParticipantJoined.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantJoined();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantJoined();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -23308,7 +23660,7 @@ $root.graphwiz = (function() {
                 if (message.trackIds != null && message.hasOwnProperty("trackIds")) {
                     if (!Array.isArray(message.trackIds))
                         return "trackIds: array expected";
-                    for (var i = 0; i < message.trackIds.length; ++i)
+                    for (let i = 0; i < message.trackIds.length; ++i)
                         if (!$util.isString(message.trackIds[i]))
                             return "trackIds: string[] expected";
                 }
@@ -23326,7 +23678,7 @@ $root.graphwiz = (function() {
             ParticipantJoined.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.ParticipantJoined)
                     return object;
-                var message = new $root.graphwiz.media.ParticipantJoined();
+                let message = new $root.graphwiz.media.ParticipantJoined();
                 if (object.clientId != null)
                     message.clientId = String(object.clientId);
                 if (object.displayName != null)
@@ -23335,7 +23687,7 @@ $root.graphwiz = (function() {
                     if (!Array.isArray(object.trackIds))
                         throw TypeError(".graphwiz.media.ParticipantJoined.trackIds: array expected");
                     message.trackIds = [];
-                    for (var i = 0; i < object.trackIds.length; ++i)
+                    for (let i = 0; i < object.trackIds.length; ++i)
                         message.trackIds[i] = String(object.trackIds[i]);
                 }
                 return message;
@@ -23353,7 +23705,7 @@ $root.graphwiz = (function() {
             ParticipantJoined.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults)
                     object.trackIds = [];
                 if (options.defaults) {
@@ -23366,7 +23718,7 @@ $root.graphwiz = (function() {
                     object.displayName = message.displayName;
                 if (message.trackIds && message.trackIds.length) {
                     object.trackIds = [];
-                    for (var j = 0; j < message.trackIds.length; ++j)
+                    for (let j = 0; j < message.trackIds.length; ++j)
                         object.trackIds[j] = message.trackIds[j];
                 }
                 return object;
@@ -23420,7 +23772,7 @@ $root.graphwiz = (function() {
              */
             function ParticipantLeft(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -23489,9 +23841,9 @@ $root.graphwiz = (function() {
             ParticipantLeft.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantLeft();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantLeft();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -23551,7 +23903,7 @@ $root.graphwiz = (function() {
             ParticipantLeft.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.ParticipantLeft)
                     return object;
-                var message = new $root.graphwiz.media.ParticipantLeft();
+                let message = new $root.graphwiz.media.ParticipantLeft();
                 if (object.clientId != null)
                     message.clientId = String(object.clientId);
                 return message;
@@ -23569,7 +23921,7 @@ $root.graphwiz = (function() {
             ParticipantLeft.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.clientId = "";
                 if (message.clientId != null && message.hasOwnProperty("clientId"))
@@ -23627,7 +23979,7 @@ $root.graphwiz = (function() {
             function ParticipantUpdated(properties) {
                 this.mutedTracks = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -23675,7 +24027,7 @@ $root.graphwiz = (function() {
                 if (message.clientId != null && Object.hasOwnProperty.call(message, "clientId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientId);
                 if (message.mutedTracks != null && Object.hasOwnProperty.call(message, "mutedTracks"))
-                    for (var keys = Object.keys(message.mutedTracks), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.mutedTracks), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).bool(message.mutedTracks[keys[i]]).ldelim();
                 return writer;
             };
@@ -23707,9 +24059,9 @@ $root.graphwiz = (function() {
             ParticipantUpdated.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantUpdated(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ParticipantUpdated(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -23720,11 +24072,11 @@ $root.graphwiz = (function() {
                     case 2: {
                             if (message.mutedTracks === $util.emptyObject)
                                 message.mutedTracks = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = false;
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -23781,8 +24133,8 @@ $root.graphwiz = (function() {
                 if (message.mutedTracks != null && message.hasOwnProperty("mutedTracks")) {
                     if (!$util.isObject(message.mutedTracks))
                         return "mutedTracks: object expected";
-                    var key = Object.keys(message.mutedTracks);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.mutedTracks);
+                    for (let i = 0; i < key.length; ++i)
                         if (typeof message.mutedTracks[key[i]] !== "boolean")
                             return "mutedTracks: boolean{k:string} expected";
                 }
@@ -23800,14 +24152,14 @@ $root.graphwiz = (function() {
             ParticipantUpdated.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.ParticipantUpdated)
                     return object;
-                var message = new $root.graphwiz.media.ParticipantUpdated();
+                let message = new $root.graphwiz.media.ParticipantUpdated();
                 if (object.clientId != null)
                     message.clientId = String(object.clientId);
                 if (object.mutedTracks) {
                     if (typeof object.mutedTracks !== "object")
                         throw TypeError(".graphwiz.media.ParticipantUpdated.mutedTracks: object expected");
                     message.mutedTracks = {};
-                    for (var keys = Object.keys(object.mutedTracks), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.mutedTracks), i = 0; i < keys.length; ++i)
                         message.mutedTracks[keys[i]] = Boolean(object.mutedTracks[keys[i]]);
                 }
                 return message;
@@ -23825,17 +24177,17 @@ $root.graphwiz = (function() {
             ParticipantUpdated.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.mutedTracks = {};
                 if (options.defaults)
                     object.clientId = "";
                 if (message.clientId != null && message.hasOwnProperty("clientId"))
                     object.clientId = message.clientId;
-                var keys2;
+                let keys2;
                 if (message.mutedTracks && (keys2 = Object.keys(message.mutedTracks)).length) {
                     object.mutedTracks = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.mutedTracks[keys2[j]] = message.mutedTracks[keys2[j]];
                 }
                 return object;
@@ -23890,7 +24242,7 @@ $root.graphwiz = (function() {
              */
             function SdpOffer(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -23969,9 +24321,9 @@ $root.graphwiz = (function() {
             SdpOffer.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SdpOffer();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SdpOffer();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -24038,7 +24390,7 @@ $root.graphwiz = (function() {
             SdpOffer.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.SdpOffer)
                     return object;
-                var message = new $root.graphwiz.media.SdpOffer();
+                let message = new $root.graphwiz.media.SdpOffer();
                 if (object.clientId != null)
                     message.clientId = String(object.clientId);
                 if (object.sdp != null)
@@ -24058,7 +24410,7 @@ $root.graphwiz = (function() {
             SdpOffer.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.clientId = "";
                     object.sdp = "";
@@ -24119,7 +24471,7 @@ $root.graphwiz = (function() {
              */
             function SdpAnswer(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -24198,9 +24550,9 @@ $root.graphwiz = (function() {
             SdpAnswer.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SdpAnswer();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.SdpAnswer();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -24267,7 +24619,7 @@ $root.graphwiz = (function() {
             SdpAnswer.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.SdpAnswer)
                     return object;
-                var message = new $root.graphwiz.media.SdpAnswer();
+                let message = new $root.graphwiz.media.SdpAnswer();
                 if (object.clientId != null)
                     message.clientId = String(object.clientId);
                 if (object.sdp != null)
@@ -24287,7 +24639,7 @@ $root.graphwiz = (function() {
             SdpAnswer.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.clientId = "";
                     object.sdp = "";
@@ -24352,7 +24704,7 @@ $root.graphwiz = (function() {
             function ActiveTrack(properties) {
                 this.metadata = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -24430,7 +24782,7 @@ $root.graphwiz = (function() {
                 if (message.muted != null && Object.hasOwnProperty.call(message, "muted"))
                     writer.uint32(/* id 4, wireType 0 =*/32).bool(message.muted);
                 if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
-                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
                 return writer;
             };
@@ -24462,9 +24814,9 @@ $root.graphwiz = (function() {
             ActiveTrack.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ActiveTrack(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.ActiveTrack(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -24487,11 +24839,11 @@ $root.graphwiz = (function() {
                     case 5: {
                             if (message.metadata === $util.emptyObject)
                                 message.metadata = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -24563,8 +24915,8 @@ $root.graphwiz = (function() {
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
                     if (!$util.isObject(message.metadata))
                         return "metadata: object expected";
-                    var key = Object.keys(message.metadata);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.metadata);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.metadata[key[i]]))
                             return "metadata: string{k:string} expected";
                 }
@@ -24582,7 +24934,7 @@ $root.graphwiz = (function() {
             ActiveTrack.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.ActiveTrack)
                     return object;
-                var message = new $root.graphwiz.media.ActiveTrack();
+                let message = new $root.graphwiz.media.ActiveTrack();
                 if (object.trackId != null)
                     message.trackId = String(object.trackId);
                 if (object.clientId != null)
@@ -24613,7 +24965,7 @@ $root.graphwiz = (function() {
                     if (typeof object.metadata !== "object")
                         throw TypeError(".graphwiz.media.ActiveTrack.metadata: object expected");
                     message.metadata = {};
-                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
                         message.metadata[keys[i]] = String(object.metadata[keys[i]]);
                 }
                 return message;
@@ -24631,7 +24983,7 @@ $root.graphwiz = (function() {
             ActiveTrack.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.metadata = {};
                 if (options.defaults) {
@@ -24648,10 +25000,10 @@ $root.graphwiz = (function() {
                     object.kind = options.enums === String ? $root.graphwiz.media.TrackKind[message.kind] === undefined ? message.kind : $root.graphwiz.media.TrackKind[message.kind] : message.kind;
                 if (message.muted != null && message.hasOwnProperty("muted"))
                     object.muted = message.muted;
-                var keys2;
+                let keys2;
                 if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
                     object.metadata = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.metadata[keys2[j]] = message.metadata[keys2[j]];
                 }
                 return object;
@@ -24695,7 +25047,7 @@ $root.graphwiz = (function() {
          * @property {number} DATA=2 DATA value
          */
         media.TrackKind = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "AUDIO"] = 0;
             values[valuesById[1] = "VIDEO"] = 1;
             values[valuesById[2] = "DATA"] = 2;
@@ -24712,7 +25064,7 @@ $root.graphwiz = (function() {
          * @property {number} ROLLBACK=3 ROLLBACK value
          */
         media.SessionDescriptionType = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "OFFER"] = 0;
             values[valuesById[1] = "ANSWER"] = 1;
             values[valuesById[2] = "PRANSWER"] = 2;
@@ -24743,7 +25095,7 @@ $root.graphwiz = (function() {
              */
             function MediaConstraints(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -24852,9 +25204,9 @@ $root.graphwiz = (function() {
             MediaConstraints.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MediaConstraints();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.MediaConstraints();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -24923,12 +25275,12 @@ $root.graphwiz = (function() {
                     if (typeof message.data !== "boolean")
                         return "data: boolean expected";
                 if (message.audioConstraints != null && message.hasOwnProperty("audioConstraints")) {
-                    var error = $root.graphwiz.media.AudioConstraints.verify(message.audioConstraints);
+                    let error = $root.graphwiz.media.AudioConstraints.verify(message.audioConstraints);
                     if (error)
                         return "audioConstraints." + error;
                 }
                 if (message.videoConstraints != null && message.hasOwnProperty("videoConstraints")) {
-                    var error = $root.graphwiz.media.VideoConstraints.verify(message.videoConstraints);
+                    let error = $root.graphwiz.media.VideoConstraints.verify(message.videoConstraints);
                     if (error)
                         return "videoConstraints." + error;
                 }
@@ -24946,7 +25298,7 @@ $root.graphwiz = (function() {
             MediaConstraints.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.MediaConstraints)
                     return object;
-                var message = new $root.graphwiz.media.MediaConstraints();
+                let message = new $root.graphwiz.media.MediaConstraints();
                 if (object.audio != null)
                     message.audio = Boolean(object.audio);
                 if (object.video != null)
@@ -24978,7 +25330,7 @@ $root.graphwiz = (function() {
             MediaConstraints.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.audio = false;
                     object.video = false;
@@ -25051,7 +25403,7 @@ $root.graphwiz = (function() {
              */
             function AudioConstraints(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -25160,9 +25512,9 @@ $root.graphwiz = (function() {
             AudioConstraints.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AudioConstraints();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.AudioConstraints();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -25250,7 +25602,7 @@ $root.graphwiz = (function() {
             AudioConstraints.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.AudioConstraints)
                     return object;
-                var message = new $root.graphwiz.media.AudioConstraints();
+                let message = new $root.graphwiz.media.AudioConstraints();
                 if (object.echoCancellation != null)
                     message.echoCancellation = Boolean(object.echoCancellation);
                 if (object.noiseSuppression != null)
@@ -25276,7 +25628,7 @@ $root.graphwiz = (function() {
             AudioConstraints.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.echoCancellation = false;
                     object.noiseSuppression = false;
@@ -25348,7 +25700,7 @@ $root.graphwiz = (function() {
              */
             function VideoConstraints(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -25447,9 +25799,9 @@ $root.graphwiz = (function() {
             VideoConstraints.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.VideoConstraints();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.media.VideoConstraints();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -25537,7 +25889,7 @@ $root.graphwiz = (function() {
             VideoConstraints.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.media.VideoConstraints)
                     return object;
-                var message = new $root.graphwiz.media.VideoConstraints();
+                let message = new $root.graphwiz.media.VideoConstraints();
                 if (object.maxWidth != null)
                     message.maxWidth = object.maxWidth | 0;
                 if (object.maxHeight != null)
@@ -25583,7 +25935,7 @@ $root.graphwiz = (function() {
             VideoConstraints.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.maxWidth = 0;
                     object.maxHeight = 0;
@@ -25640,7 +25992,7 @@ $root.graphwiz = (function() {
          * @property {number} AV1=3 AV1 value
          */
         media.VideoCodecType = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "VP8"] = 0;
             values[valuesById[1] = "VP9"] = 1;
             values[valuesById[2] = "H264"] = 2;
@@ -25658,7 +26010,7 @@ $root.graphwiz = (function() {
          * @memberof graphwiz
          * @namespace
          */
-        var auth = {};
+        const auth = {};
 
         auth.AuthService = (function() {
 
@@ -26134,7 +26486,7 @@ $root.graphwiz = (function() {
          * @property {number} DISCORD=3 DISCORD value
          */
         auth.OAuthProvider = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_PROVIDER"] = 0;
             values[valuesById[1] = "GITHUB"] = 1;
             values[valuesById[2] = "GOOGLE"] = 2;
@@ -26152,7 +26504,7 @@ $root.graphwiz = (function() {
          * @property {number} ADMIN=3 ADMIN value
          */
         auth.Role = (function() {
-            var valuesById = {}, values = Object.create(valuesById);
+            const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_ROLE"] = 0;
             values[valuesById[1] = "USER"] = 1;
             values[valuesById[2] = "MODERATOR"] = 2;
@@ -26180,7 +26532,7 @@ $root.graphwiz = (function() {
              */
             function MagicLinkRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -26259,9 +26611,9 @@ $root.graphwiz = (function() {
             MagicLinkRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -26328,7 +26680,7 @@ $root.graphwiz = (function() {
             MagicLinkRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.MagicLinkRequest)
                     return object;
-                var message = new $root.graphwiz.auth.MagicLinkRequest();
+                let message = new $root.graphwiz.auth.MagicLinkRequest();
                 if (object.email != null)
                     message.email = String(object.email);
                 if (object.redirectUrl != null)
@@ -26348,7 +26700,7 @@ $root.graphwiz = (function() {
             MagicLinkRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.email = "";
                     object.redirectUrl = "";
@@ -26409,7 +26761,7 @@ $root.graphwiz = (function() {
              */
             function MagicLinkResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -26488,9 +26840,9 @@ $root.graphwiz = (function() {
             MagicLinkResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -26557,7 +26909,7 @@ $root.graphwiz = (function() {
             MagicLinkResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.MagicLinkResponse)
                     return object;
-                var message = new $root.graphwiz.auth.MagicLinkResponse();
+                let message = new $root.graphwiz.auth.MagicLinkResponse();
                 if (object.success != null)
                     message.success = Boolean(object.success);
                 if (object.message != null)
@@ -26577,7 +26929,7 @@ $root.graphwiz = (function() {
             MagicLinkResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.success = false;
                     object.message = "";
@@ -26637,7 +26989,7 @@ $root.graphwiz = (function() {
              */
             function MagicLinkVerifyRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -26706,9 +27058,9 @@ $root.graphwiz = (function() {
             MagicLinkVerifyRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkVerifyRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.MagicLinkVerifyRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -26768,7 +27120,7 @@ $root.graphwiz = (function() {
             MagicLinkVerifyRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.MagicLinkVerifyRequest)
                     return object;
-                var message = new $root.graphwiz.auth.MagicLinkVerifyRequest();
+                let message = new $root.graphwiz.auth.MagicLinkVerifyRequest();
                 if (object.token != null)
                     message.token = String(object.token);
                 return message;
@@ -26786,7 +27138,7 @@ $root.graphwiz = (function() {
             MagicLinkVerifyRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.token = "";
                 if (message.token != null && message.hasOwnProperty("token"))
@@ -26844,7 +27196,7 @@ $root.graphwiz = (function() {
              */
             function OAuthUrlRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -26933,9 +27285,9 @@ $root.graphwiz = (function() {
             OAuthUrlRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthUrlRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthUrlRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -27016,7 +27368,7 @@ $root.graphwiz = (function() {
             OAuthUrlRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.OAuthUrlRequest)
                     return object;
-                var message = new $root.graphwiz.auth.OAuthUrlRequest();
+                let message = new $root.graphwiz.auth.OAuthUrlRequest();
                 switch (object.provider) {
                 default:
                     if (typeof object.provider === "number") {
@@ -27060,7 +27412,7 @@ $root.graphwiz = (function() {
             OAuthUrlRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.provider = options.enums === String ? "UNKNOWN_PROVIDER" : 0;
                     object.redirectUri = "";
@@ -27124,7 +27476,7 @@ $root.graphwiz = (function() {
              */
             function OAuthUrlResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -27203,9 +27555,9 @@ $root.graphwiz = (function() {
             OAuthUrlResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthUrlResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthUrlResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -27272,7 +27624,7 @@ $root.graphwiz = (function() {
             OAuthUrlResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.OAuthUrlResponse)
                     return object;
-                var message = new $root.graphwiz.auth.OAuthUrlResponse();
+                let message = new $root.graphwiz.auth.OAuthUrlResponse();
                 if (object.url != null)
                     message.url = String(object.url);
                 if (object.state != null)
@@ -27292,7 +27644,7 @@ $root.graphwiz = (function() {
             OAuthUrlResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.url = "";
                     object.state = "";
@@ -27355,7 +27707,7 @@ $root.graphwiz = (function() {
              */
             function OAuthCallbackRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -27454,9 +27806,9 @@ $root.graphwiz = (function() {
             OAuthCallbackRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthCallbackRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.OAuthCallbackRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -27544,7 +27896,7 @@ $root.graphwiz = (function() {
             OAuthCallbackRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.OAuthCallbackRequest)
                     return object;
-                var message = new $root.graphwiz.auth.OAuthCallbackRequest();
+                let message = new $root.graphwiz.auth.OAuthCallbackRequest();
                 switch (object.provider) {
                 default:
                     if (typeof object.provider === "number") {
@@ -27590,7 +27942,7 @@ $root.graphwiz = (function() {
             OAuthCallbackRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.provider = options.enums === String ? "UNKNOWN_PROVIDER" : 0;
                     object.code = "";
@@ -27658,7 +28010,7 @@ $root.graphwiz = (function() {
              */
             function UpdateProfileRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -27747,9 +28099,9 @@ $root.graphwiz = (function() {
             UpdateProfileRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.UpdateProfileRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.UpdateProfileRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -27823,7 +28175,7 @@ $root.graphwiz = (function() {
             UpdateProfileRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.UpdateProfileRequest)
                     return object;
-                var message = new $root.graphwiz.auth.UpdateProfileRequest();
+                let message = new $root.graphwiz.auth.UpdateProfileRequest();
                 if (object.displayName != null)
                     message.displayName = String(object.displayName);
                 if (object.bio != null)
@@ -27845,7 +28197,7 @@ $root.graphwiz = (function() {
             UpdateProfileRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.displayName = "";
                     object.bio = "";
@@ -27909,7 +28261,7 @@ $root.graphwiz = (function() {
              */
             function ChangePasswordRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -27988,9 +28340,9 @@ $root.graphwiz = (function() {
             ChangePasswordRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.ChangePasswordRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.ChangePasswordRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -28057,7 +28409,7 @@ $root.graphwiz = (function() {
             ChangePasswordRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.ChangePasswordRequest)
                     return object;
-                var message = new $root.graphwiz.auth.ChangePasswordRequest();
+                let message = new $root.graphwiz.auth.ChangePasswordRequest();
                 if (object.oldPassword != null)
                     message.oldPassword = String(object.oldPassword);
                 if (object.newPassword != null)
@@ -28077,7 +28429,7 @@ $root.graphwiz = (function() {
             ChangePasswordRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.oldPassword = "";
                     object.newPassword = "";
@@ -28137,7 +28489,7 @@ $root.graphwiz = (function() {
              */
             function DeleteAccountRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -28206,9 +28558,9 @@ $root.graphwiz = (function() {
             DeleteAccountRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.DeleteAccountRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.DeleteAccountRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -28268,7 +28620,7 @@ $root.graphwiz = (function() {
             DeleteAccountRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.DeleteAccountRequest)
                     return object;
-                var message = new $root.graphwiz.auth.DeleteAccountRequest();
+                let message = new $root.graphwiz.auth.DeleteAccountRequest();
                 if (object.password != null)
                     message.password = String(object.password);
                 return message;
@@ -28286,7 +28638,7 @@ $root.graphwiz = (function() {
             DeleteAccountRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.password = "";
                 if (message.password != null && message.hasOwnProperty("password"))
@@ -28343,7 +28695,7 @@ $root.graphwiz = (function() {
              */
             function GrantRoleRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -28422,9 +28774,9 @@ $root.graphwiz = (function() {
             GrantRoleRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GrantRoleRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GrantRoleRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -28498,7 +28850,7 @@ $root.graphwiz = (function() {
             GrantRoleRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.GrantRoleRequest)
                     return object;
-                var message = new $root.graphwiz.auth.GrantRoleRequest();
+                let message = new $root.graphwiz.auth.GrantRoleRequest();
                 if (object.userId != null)
                     message.userId = String(object.userId);
                 switch (object.role) {
@@ -28540,7 +28892,7 @@ $root.graphwiz = (function() {
             GrantRoleRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.userId = "";
                     object.role = options.enums === String ? "UNKNOWN_ROLE" : 0;
@@ -28601,7 +28953,7 @@ $root.graphwiz = (function() {
              */
             function RevokeRoleRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -28680,9 +29032,9 @@ $root.graphwiz = (function() {
             RevokeRoleRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RevokeRoleRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RevokeRoleRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -28756,7 +29108,7 @@ $root.graphwiz = (function() {
             RevokeRoleRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.RevokeRoleRequest)
                     return object;
-                var message = new $root.graphwiz.auth.RevokeRoleRequest();
+                let message = new $root.graphwiz.auth.RevokeRoleRequest();
                 if (object.userId != null)
                     message.userId = String(object.userId);
                 switch (object.role) {
@@ -28798,7 +29150,7 @@ $root.graphwiz = (function() {
             RevokeRoleRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.userId = "";
                     object.role = options.enums === String ? "UNKNOWN_ROLE" : 0;
@@ -28859,7 +29211,7 @@ $root.graphwiz = (function() {
              */
             function LogoutRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -28938,9 +29290,9 @@ $root.graphwiz = (function() {
             LogoutRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.LogoutRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.LogoutRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -29007,7 +29359,7 @@ $root.graphwiz = (function() {
             LogoutRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.LogoutRequest)
                     return object;
-                var message = new $root.graphwiz.auth.LogoutRequest();
+                let message = new $root.graphwiz.auth.LogoutRequest();
                 if (object.refreshToken != null)
                     message.refreshToken = String(object.refreshToken);
                 if (object.allDevices != null)
@@ -29027,7 +29379,7 @@ $root.graphwiz = (function() {
             LogoutRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.refreshToken = "";
                     object.allDevices = false;
@@ -29087,7 +29439,7 @@ $root.graphwiz = (function() {
              */
             function RefreshTokenRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -29156,9 +29508,9 @@ $root.graphwiz = (function() {
             RefreshTokenRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RefreshTokenRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RefreshTokenRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -29218,7 +29570,7 @@ $root.graphwiz = (function() {
             RefreshTokenRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.RefreshTokenRequest)
                     return object;
-                var message = new $root.graphwiz.auth.RefreshTokenRequest();
+                let message = new $root.graphwiz.auth.RefreshTokenRequest();
                 if (object.refreshToken != null)
                     message.refreshToken = String(object.refreshToken);
                 return message;
@@ -29236,7 +29588,7 @@ $root.graphwiz = (function() {
             RefreshTokenRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.refreshToken = "";
                 if (message.refreshToken != null && message.hasOwnProperty("refreshToken"))
@@ -29293,7 +29645,7 @@ $root.graphwiz = (function() {
              */
             function GetActiveSessionsRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -29372,9 +29724,9 @@ $root.graphwiz = (function() {
             GetActiveSessionsRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GetActiveSessionsRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GetActiveSessionsRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -29441,7 +29793,7 @@ $root.graphwiz = (function() {
             GetActiveSessionsRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.GetActiveSessionsRequest)
                     return object;
-                var message = new $root.graphwiz.auth.GetActiveSessionsRequest();
+                let message = new $root.graphwiz.auth.GetActiveSessionsRequest();
                 if (object.limit != null)
                     message.limit = object.limit | 0;
                 if (object.offset != null)
@@ -29461,7 +29813,7 @@ $root.graphwiz = (function() {
             GetActiveSessionsRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.limit = 0;
                     object.offset = 0;
@@ -29526,7 +29878,7 @@ $root.graphwiz = (function() {
              */
             function Session(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -29645,9 +29997,9 @@ $root.graphwiz = (function() {
             Session.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.Session();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.Session();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -29742,7 +30094,7 @@ $root.graphwiz = (function() {
             Session.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.Session)
                     return object;
-                var message = new $root.graphwiz.auth.Session();
+                let message = new $root.graphwiz.auth.Session();
                 if (object.sessionId != null)
                     message.sessionId = String(object.sessionId);
                 if (object.deviceInfo != null)
@@ -29784,18 +30136,18 @@ $root.graphwiz = (function() {
             Session.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.sessionId = "";
                     object.deviceInfo = "";
                     object.ipAddress = "";
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.createdAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.createdAt = options.longs === String ? "0" : 0;
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.lastActive = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.lastActive = options.longs === String ? "0" : 0;
@@ -29872,7 +30224,7 @@ $root.graphwiz = (function() {
             function GetActiveSessionsResponse(properties) {
                 this.sessions = [];
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -29918,7 +30270,7 @@ $root.graphwiz = (function() {
                 if (!writer)
                     writer = $Writer.create();
                 if (message.sessions != null && message.sessions.length)
-                    for (var i = 0; i < message.sessions.length; ++i)
+                    for (let i = 0; i < message.sessions.length; ++i)
                         $root.graphwiz.auth.Session.encode(message.sessions[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                 if (message.total != null && Object.hasOwnProperty.call(message, "total"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.total);
@@ -29952,9 +30304,9 @@ $root.graphwiz = (function() {
             GetActiveSessionsResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GetActiveSessionsResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.GetActiveSessionsResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -30006,8 +30358,8 @@ $root.graphwiz = (function() {
                 if (message.sessions != null && message.hasOwnProperty("sessions")) {
                     if (!Array.isArray(message.sessions))
                         return "sessions: array expected";
-                    for (var i = 0; i < message.sessions.length; ++i) {
-                        var error = $root.graphwiz.auth.Session.verify(message.sessions[i]);
+                    for (let i = 0; i < message.sessions.length; ++i) {
+                        let error = $root.graphwiz.auth.Session.verify(message.sessions[i]);
                         if (error)
                             return "sessions." + error;
                     }
@@ -30029,12 +30381,12 @@ $root.graphwiz = (function() {
             GetActiveSessionsResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.GetActiveSessionsResponse)
                     return object;
-                var message = new $root.graphwiz.auth.GetActiveSessionsResponse();
+                let message = new $root.graphwiz.auth.GetActiveSessionsResponse();
                 if (object.sessions) {
                     if (!Array.isArray(object.sessions))
                         throw TypeError(".graphwiz.auth.GetActiveSessionsResponse.sessions: array expected");
                     message.sessions = [];
-                    for (var i = 0; i < object.sessions.length; ++i) {
+                    for (let i = 0; i < object.sessions.length; ++i) {
                         if (typeof object.sessions[i] !== "object")
                             throw TypeError(".graphwiz.auth.GetActiveSessionsResponse.sessions: object expected");
                         message.sessions[i] = $root.graphwiz.auth.Session.fromObject(object.sessions[i]);
@@ -30057,14 +30409,14 @@ $root.graphwiz = (function() {
             GetActiveSessionsResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.arrays || options.defaults)
                     object.sessions = [];
                 if (options.defaults)
                     object.total = 0;
                 if (message.sessions && message.sessions.length) {
                     object.sessions = [];
-                    for (var j = 0; j < message.sessions.length; ++j)
+                    for (let j = 0; j < message.sessions.length; ++j)
                         object.sessions[j] = $root.graphwiz.auth.Session.toObject(message.sessions[j], options);
                 }
                 if (message.total != null && message.hasOwnProperty("total"))
@@ -30120,7 +30472,7 @@ $root.graphwiz = (function() {
              */
             function RevokeSessionRequest(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -30189,9 +30541,9 @@ $root.graphwiz = (function() {
             RevokeSessionRequest.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RevokeSessionRequest();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.RevokeSessionRequest();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -30251,7 +30603,7 @@ $root.graphwiz = (function() {
             RevokeSessionRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.RevokeSessionRequest)
                     return object;
-                var message = new $root.graphwiz.auth.RevokeSessionRequest();
+                let message = new $root.graphwiz.auth.RevokeSessionRequest();
                 if (object.sessionId != null)
                     message.sessionId = String(object.sessionId);
                 return message;
@@ -30269,7 +30621,7 @@ $root.graphwiz = (function() {
             RevokeSessionRequest.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults)
                     object.sessionId = "";
                 if (message.sessionId != null && message.hasOwnProperty("sessionId"))
@@ -30328,7 +30680,7 @@ $root.graphwiz = (function() {
              */
             function AuthResponse(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -30427,9 +30779,9 @@ $root.graphwiz = (function() {
             AuthResponse.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.AuthResponse();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.AuthResponse();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -30485,7 +30837,7 @@ $root.graphwiz = (function() {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 if (message.user != null && message.hasOwnProperty("user")) {
-                    var error = $root.graphwiz.auth.User.verify(message.user);
+                    let error = $root.graphwiz.auth.User.verify(message.user);
                     if (error)
                         return "user." + error;
                 }
@@ -30512,7 +30864,7 @@ $root.graphwiz = (function() {
             AuthResponse.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.AuthResponse)
                     return object;
-                var message = new $root.graphwiz.auth.AuthResponse();
+                let message = new $root.graphwiz.auth.AuthResponse();
                 if (object.user != null) {
                     if (typeof object.user !== "object")
                         throw TypeError(".graphwiz.auth.AuthResponse.user: object expected");
@@ -30546,13 +30898,13 @@ $root.graphwiz = (function() {
             AuthResponse.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.defaults) {
                     object.user = null;
                     object.accessToken = "";
                     object.refreshToken = "";
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.expiresAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.expiresAt = options.longs === String ? "0" : 0;
@@ -30630,7 +30982,7 @@ $root.graphwiz = (function() {
             function User(properties) {
                 this.metadata = {};
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -30768,7 +31120,7 @@ $root.graphwiz = (function() {
                 if (message.isActive != null && Object.hasOwnProperty.call(message, "isActive"))
                     writer.uint32(/* id 10, wireType 0 =*/80).bool(message.isActive);
                 if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
-                    for (var keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(message.metadata), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 11, wireType 2 =*/90).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.metadata[keys[i]]).ldelim();
                 return writer;
             };
@@ -30800,9 +31152,9 @@ $root.graphwiz = (function() {
             User.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.User(), key, value;
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.User(), key, value;
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -30849,11 +31201,11 @@ $root.graphwiz = (function() {
                     case 11: {
                             if (message.metadata === $util.emptyObject)
                                 message.metadata = {};
-                            var end2 = reader.uint32() + reader.pos;
+                            let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                var tag2 = reader.uint32();
+                                let tag2 = reader.uint32();
                                 switch (tag2 >>> 3) {
                                 case 1:
                                     key = reader.string();
@@ -30944,8 +31296,8 @@ $root.graphwiz = (function() {
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
                     if (!$util.isObject(message.metadata))
                         return "metadata: object expected";
-                    var key = Object.keys(message.metadata);
-                    for (var i = 0; i < key.length; ++i)
+                    let key = Object.keys(message.metadata);
+                    for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.metadata[key[i]]))
                             return "metadata: string{k:string} expected";
                 }
@@ -30963,7 +31315,7 @@ $root.graphwiz = (function() {
             User.fromObject = function fromObject(object) {
                 if (object instanceof $root.graphwiz.auth.User)
                     return object;
-                var message = new $root.graphwiz.auth.User();
+                let message = new $root.graphwiz.auth.User();
                 if (object.id != null)
                     message.id = String(object.id);
                 if (object.email != null)
@@ -31024,7 +31376,7 @@ $root.graphwiz = (function() {
                     if (typeof object.metadata !== "object")
                         throw TypeError(".graphwiz.auth.User.metadata: object expected");
                     message.metadata = {};
-                    for (var keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(object.metadata), i = 0; i < keys.length; ++i)
                         message.metadata[keys[i]] = String(object.metadata[keys[i]]);
                 }
                 return message;
@@ -31042,7 +31394,7 @@ $root.graphwiz = (function() {
             User.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
-                var object = {};
+                let object = {};
                 if (options.objects || options.defaults)
                     object.metadata = {};
                 if (options.defaults) {
@@ -31054,12 +31406,12 @@ $root.graphwiz = (function() {
                     object.bio = "";
                     object.role = options.enums === String ? "UNKNOWN_ROLE" : 0;
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.createdAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.createdAt = options.longs === String ? "0" : 0;
                     if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
+                        let long = new $util.Long(0, 0, false);
                         object.updatedAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.updatedAt = options.longs === String ? "0" : 0;
@@ -31091,10 +31443,10 @@ $root.graphwiz = (function() {
                         object.updatedAt = options.longs === String ? $util.Long.prototype.toString.call(message.updatedAt) : options.longs === Number ? new $util.LongBits(message.updatedAt.low >>> 0, message.updatedAt.high >>> 0).toNumber() : message.updatedAt;
                 if (message.isActive != null && message.hasOwnProperty("isActive"))
                     object.isActive = message.isActive;
-                var keys2;
+                let keys2;
                 if (message.metadata && (keys2 = Object.keys(message.metadata)).length) {
                     object.metadata = {};
-                    for (var j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j)
                         object.metadata[keys2[j]] = message.metadata[keys2[j]];
                 }
                 return object;
@@ -31147,7 +31499,7 @@ $root.graphwiz = (function() {
              */
             function Empty(properties) {
                 if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
@@ -31206,9 +31558,9 @@ $root.graphwiz = (function() {
             Empty.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.Empty();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.auth.Empty();
                 while (reader.pos < end) {
-                    var tag = reader.uint32();
+                    let tag = reader.uint32();
                     if (tag === error)
                         break;
                     switch (tag >>> 3) {
@@ -31312,4 +31664,4 @@ $root.graphwiz = (function() {
     return graphwiz;
 })();
 
-module.exports = $root;
+export { $root as default };

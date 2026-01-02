@@ -216,6 +216,63 @@ export class WebSocketClient {
   }
 
   /**
+   * Send emoji reaction
+   */
+  sendEmojiReaction(emoji: string, position: { x: number; y: number; z: number }): void {
+    const reaction = {
+      fromClientId: this.clientId!,
+      emoji,
+      position: { ...position },
+      timestamp: Date.now(),
+      reactionId: uuidv4(),
+    };
+
+    const message = MessageBuilder.create(31 as MessageType, reaction); // EMOJI_REACTION = 31
+    this.send(message);
+  }
+
+  /**
+   * Send avatar update to sync with other players
+   */
+  sendAvatarUpdate(avatarConfig: {
+    bodyType: string;
+    primaryColor: string;
+    secondaryColor: string;
+    height: number;
+    customModelUrl?: string;
+  }): void {
+    // Create presence update payload
+    const presenceData = {
+      displayName: this.config.displayName,
+      avatarUrl: '', // Deprecated, using avatarConfig instead
+      position: { x: 0, y: 0, z: 0 }, // Default position
+      rotation: { x: 0, y: 0, z: 0, w: 1 }, // Default rotation
+      avatarConfig: {
+        bodyType: avatarConfig.bodyType,
+        primaryColor: avatarConfig.primaryColor,
+        secondaryColor: avatarConfig.secondaryColor,
+        height: avatarConfig.height,
+        customModelUrl: avatarConfig.customModelUrl || '',
+      },
+    };
+
+    // Create message with proper wrapper
+    const message: any = {
+      messageId: uuidv4(),
+      timestamp: Date.now(),
+      type: 42, // PRESENCE_UPDATE
+      payload: {
+        clientId: this.clientId!,
+        ...presenceData,
+      },
+    };
+
+    this.send(message);
+
+    console.log('[WebSocketClient] Sent avatar update:', avatarConfig);
+  }
+
+  /**
    * Handle incoming message from server
    */
   private handleMessage(data: string | ArrayBuffer): void {

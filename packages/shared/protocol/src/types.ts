@@ -29,6 +29,7 @@ export enum MessageType {
   ENTITY_DESPAWN = 22,
   // Communication
   CHAT_MESSAGE = 30,
+  EMOJI_REACTION = 31,
   // Presence
   PRESENCE_JOIN = 40,
   PRESENCE_LEAVE = 41,
@@ -85,6 +86,14 @@ export enum ChatMessageType {
   SHOUT = 2,
 }
 
+export interface EmojiReaction {
+  fromClientId: string;
+  emoji: string;
+  position: Vector3;
+  timestamp: number;
+  reactionId: string;
+}
+
 export interface PresenceEvent {
   clientId: string;
   eventType: PresenceEventType;
@@ -117,6 +126,7 @@ export interface Message {
     | EntityUpdate
     | EntityDespawn
     | ChatMessage
+    | EmojiReaction
     | PresenceEvent;
 }
 

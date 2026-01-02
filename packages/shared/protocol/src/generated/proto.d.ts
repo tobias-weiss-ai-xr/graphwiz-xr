@@ -1216,6 +1216,9 @@ export namespace graphwiz {
 
             /** PresenceData rotation */
             rotation?: (graphwiz.core.IQuaternion|null);
+
+            /** PresenceData avatarConfig */
+            avatarConfig?: (graphwiz.core.IAvatarConfig|null);
         }
 
         /** Represents a PresenceData. */
@@ -1238,6 +1241,9 @@ export namespace graphwiz {
 
             /** PresenceData rotation. */
             public rotation?: (graphwiz.core.IQuaternion|null);
+
+            /** PresenceData avatarConfig. */
+            public avatarConfig?: (graphwiz.core.IAvatarConfig|null);
 
             /**
              * Creates a new PresenceData instance using the specified properties.
@@ -1311,6 +1317,254 @@ export namespace graphwiz {
 
             /**
              * Gets the default type url for PresenceData
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PlayerSnapshot. */
+        interface IPlayerSnapshot {
+
+            /** PlayerSnapshot clientId */
+            clientId?: (string|null);
+
+            /** PlayerSnapshot displayName */
+            displayName?: (string|null);
+
+            /** PlayerSnapshot avatarUrl */
+            avatarUrl?: (string|null);
+
+            /** PlayerSnapshot position */
+            position?: (graphwiz.core.IVector3|null);
+
+            /** PlayerSnapshot rotation */
+            rotation?: (graphwiz.core.IQuaternion|null);
+
+            /** PlayerSnapshot avatarConfig */
+            avatarConfig?: (graphwiz.core.IAvatarConfig|null);
+        }
+
+        /** Represents a PlayerSnapshot. */
+        class PlayerSnapshot implements IPlayerSnapshot {
+
+            /**
+             * Constructs a new PlayerSnapshot.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.core.IPlayerSnapshot);
+
+            /** PlayerSnapshot clientId. */
+            public clientId: string;
+
+            /** PlayerSnapshot displayName. */
+            public displayName: string;
+
+            /** PlayerSnapshot avatarUrl. */
+            public avatarUrl: string;
+
+            /** PlayerSnapshot position. */
+            public position?: (graphwiz.core.IVector3|null);
+
+            /** PlayerSnapshot rotation. */
+            public rotation?: (graphwiz.core.IQuaternion|null);
+
+            /** PlayerSnapshot avatarConfig. */
+            public avatarConfig?: (graphwiz.core.IAvatarConfig|null);
+
+            /**
+             * Creates a new PlayerSnapshot instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PlayerSnapshot instance
+             */
+            public static create(properties?: graphwiz.core.IPlayerSnapshot): graphwiz.core.PlayerSnapshot;
+
+            /**
+             * Encodes the specified PlayerSnapshot message. Does not implicitly {@link graphwiz.core.PlayerSnapshot.verify|verify} messages.
+             * @param message PlayerSnapshot message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.core.IPlayerSnapshot, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PlayerSnapshot message, length delimited. Does not implicitly {@link graphwiz.core.PlayerSnapshot.verify|verify} messages.
+             * @param message PlayerSnapshot message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.core.IPlayerSnapshot, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PlayerSnapshot message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PlayerSnapshot
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.core.PlayerSnapshot;
+
+            /**
+             * Decodes a PlayerSnapshot message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PlayerSnapshot
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.core.PlayerSnapshot;
+
+            /**
+             * Verifies a PlayerSnapshot message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PlayerSnapshot message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PlayerSnapshot
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.core.PlayerSnapshot;
+
+            /**
+             * Creates a plain object from a PlayerSnapshot message. Also converts values to other types if specified.
+             * @param message PlayerSnapshot
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.core.PlayerSnapshot, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PlayerSnapshot to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PlayerSnapshot
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of an AvatarConfig. */
+        interface IAvatarConfig {
+
+            /** AvatarConfig bodyType */
+            bodyType?: (string|null);
+
+            /** AvatarConfig primaryColor */
+            primaryColor?: (string|null);
+
+            /** AvatarConfig secondaryColor */
+            secondaryColor?: (string|null);
+
+            /** AvatarConfig height */
+            height?: (number|null);
+
+            /** AvatarConfig customModelUrl */
+            customModelUrl?: (string|null);
+        }
+
+        /** Represents an AvatarConfig. */
+        class AvatarConfig implements IAvatarConfig {
+
+            /**
+             * Constructs a new AvatarConfig.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.core.IAvatarConfig);
+
+            /** AvatarConfig bodyType. */
+            public bodyType: string;
+
+            /** AvatarConfig primaryColor. */
+            public primaryColor: string;
+
+            /** AvatarConfig secondaryColor. */
+            public secondaryColor: string;
+
+            /** AvatarConfig height. */
+            public height: number;
+
+            /** AvatarConfig customModelUrl. */
+            public customModelUrl: string;
+
+            /**
+             * Creates a new AvatarConfig instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns AvatarConfig instance
+             */
+            public static create(properties?: graphwiz.core.IAvatarConfig): graphwiz.core.AvatarConfig;
+
+            /**
+             * Encodes the specified AvatarConfig message. Does not implicitly {@link graphwiz.core.AvatarConfig.verify|verify} messages.
+             * @param message AvatarConfig message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.core.IAvatarConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified AvatarConfig message, length delimited. Does not implicitly {@link graphwiz.core.AvatarConfig.verify|verify} messages.
+             * @param message AvatarConfig message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.core.IAvatarConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an AvatarConfig message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns AvatarConfig
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.core.AvatarConfig;
+
+            /**
+             * Decodes an AvatarConfig message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns AvatarConfig
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.core.AvatarConfig;
+
+            /**
+             * Verifies an AvatarConfig message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an AvatarConfig message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns AvatarConfig
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.core.AvatarConfig;
+
+            /**
+             * Creates a plain object from an AvatarConfig message. Also converts values to other types if specified.
+             * @param message AvatarConfig
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.core.AvatarConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this AvatarConfig to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for AvatarConfig
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */
@@ -1771,127 +2025,6 @@ export namespace graphwiz {
 
             /**
              * Gets the default type url for EntitySnapshot
-             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns The default type url
-             */
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        /** Properties of a PlayerSnapshot. */
-        interface IPlayerSnapshot {
-
-            /** PlayerSnapshot clientId */
-            clientId?: (string|null);
-
-            /** PlayerSnapshot displayName */
-            displayName?: (string|null);
-
-            /** PlayerSnapshot avatarUrl */
-            avatarUrl?: (string|null);
-
-            /** PlayerSnapshot position */
-            position?: (graphwiz.core.IVector3|null);
-
-            /** PlayerSnapshot rotation */
-            rotation?: (graphwiz.core.IQuaternion|null);
-        }
-
-        /** Represents a PlayerSnapshot. */
-        class PlayerSnapshot implements IPlayerSnapshot {
-
-            /**
-             * Constructs a new PlayerSnapshot.
-             * @param [properties] Properties to set
-             */
-            constructor(properties?: graphwiz.core.IPlayerSnapshot);
-
-            /** PlayerSnapshot clientId. */
-            public clientId: string;
-
-            /** PlayerSnapshot displayName. */
-            public displayName: string;
-
-            /** PlayerSnapshot avatarUrl. */
-            public avatarUrl: string;
-
-            /** PlayerSnapshot position. */
-            public position?: (graphwiz.core.IVector3|null);
-
-            /** PlayerSnapshot rotation. */
-            public rotation?: (graphwiz.core.IQuaternion|null);
-
-            /**
-             * Creates a new PlayerSnapshot instance using the specified properties.
-             * @param [properties] Properties to set
-             * @returns PlayerSnapshot instance
-             */
-            public static create(properties?: graphwiz.core.IPlayerSnapshot): graphwiz.core.PlayerSnapshot;
-
-            /**
-             * Encodes the specified PlayerSnapshot message. Does not implicitly {@link graphwiz.core.PlayerSnapshot.verify|verify} messages.
-             * @param message PlayerSnapshot message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encode(message: graphwiz.core.IPlayerSnapshot, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Encodes the specified PlayerSnapshot message, length delimited. Does not implicitly {@link graphwiz.core.PlayerSnapshot.verify|verify} messages.
-             * @param message PlayerSnapshot message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encodeDelimited(message: graphwiz.core.IPlayerSnapshot, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Decodes a PlayerSnapshot message from the specified reader or buffer.
-             * @param reader Reader or buffer to decode from
-             * @param [length] Message length if known beforehand
-             * @returns PlayerSnapshot
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.core.PlayerSnapshot;
-
-            /**
-             * Decodes a PlayerSnapshot message from the specified reader or buffer, length delimited.
-             * @param reader Reader or buffer to decode from
-             * @returns PlayerSnapshot
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.core.PlayerSnapshot;
-
-            /**
-             * Verifies a PlayerSnapshot message.
-             * @param message Plain object to verify
-             * @returns `null` if valid, otherwise the reason why it is not
-             */
-            public static verify(message: { [k: string]: any }): (string|null);
-
-            /**
-             * Creates a PlayerSnapshot message from a plain object. Also converts values to their respective internal types.
-             * @param object Plain object
-             * @returns PlayerSnapshot
-             */
-            public static fromObject(object: { [k: string]: any }): graphwiz.core.PlayerSnapshot;
-
-            /**
-             * Creates a plain object from a PlayerSnapshot message. Also converts values to other types if specified.
-             * @param message PlayerSnapshot
-             * @param [options] Conversion options
-             * @returns Plain object
-             */
-            public static toObject(message: graphwiz.core.PlayerSnapshot, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-            /**
-             * Converts this PlayerSnapshot to JSON.
-             * @returns JSON object
-             */
-            public toJSON(): { [k: string]: any };
-
-            /**
-             * Gets the default type url for PlayerSnapshot
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */

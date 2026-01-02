@@ -4,8 +4,13 @@ import { Canvas } from '@react-three/fiber';
 import { useState, useCallback, useEffect } from 'react';
 
 import { WebSocketClient } from './network/websocket-client';
-import { MessageType } from '@graphwiz/protocol';
+import { MessageType, EmojiReaction } from '@graphwiz/protocol';
 import { AssetBrowser, AssetUploader, Asset } from './storage';
+import { EmojiPicker } from './components/EmojiPicker';
+import { FloatingEmoji } from './components/FloatingEmoji';
+import { SettingsPanel } from './settings';
+import { AvatarConfigurator } from './avatar';
+import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
 
 interface Entity {
   id: string;
@@ -14,6 +19,13 @@ interface Entity {
   scale: [number, number, number];
   displayName?: string;
   isPlayer?: boolean;
+  avatarConfig?: NetworkedAvatarConfig;
+}
+
+interface FloatingEmojiData {
+  id: string;
+  emoji: string;
+  position: [number, number, number];
 }
 
 function PlayerAvatar({ position, rotation, displayName }: { position: [number, number, number]; rotation: [number, number, number]; displayName: string }) {
@@ -67,6 +79,16 @@ function App() {
   const [storageTab, setStorageTab] = useState<'browse' | 'upload'>('browse');
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
 
+  // Emoji state
+  const [emojiPickerVisible, setEmojiPickerVisible] = useState(false);
+  const [floatingEmojis, setFloatingEmojis] = useState<Map<string, FloatingEmojiData>>(new Map());
+
+  // Settings state
+  const [settingsVisible, setSettingsVisible] = useState(false);
+
+  // Avatar configurator state
+  const [avatarConfiguratorVisible, setAvatarConfiguratorVisible] = useState(false);
+
   // Initialize WebSocket connection
   useEffect(() => {
     // Use environment variable or default to the presence service port (4000)
@@ -119,10 +141,56 @@ function App() {
       }
     });
 
+    const unsubscribeEmoji = wsClient.on(MessageType.EMOJI_REACTION, (message: any) => {
+      if (message.payload) {
+        const payload = message.payload as EmojiReaction;
+        const newEmoji: FloatingEmojiData = {
+          id: payload.reactionId,
+          emoji: payload.emoji,
+          position: [payload.position.x, payload.position.y, payload.position.z],
+        };
+
+        setFloatingEmojis((prev) => {
+          const updated = new Map(prev);
+          updated.set(newEmoji.id, newEmoji);
+          return updated;
+        });
+
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+          setFloatingEmojis((prev) => {
+            const updated = new Map(prev);
+            updated.delete(newEmoji.id);
+            return updated;
+          });
+        }, 3000);
+      }
+    });
+
+    // Handle presence updates (including avatar updates)
+    const unsubscribePresenceUpdate = wsClient.on(MessageType.PRESENCE_UPDATE, (message: any) => {
+      if (message.payload) {
+        setPresenceEvents((prev) => {
+          const existing = prev.find((e) => e.clientId === message.payload.clientId);
+          if (existing) {
+            // Update existing presence
+            return prev.map((e) =>
+              e.clientId === message.payload.clientId ? { ...e, data: message.payload } : e
+            );
+          } else {
+            // Add new presence
+            return [...prev, { clientId: message.payload.clientId, data: message.payload }];
+          }
+        });
+      }
+    });
+
     // Cleanup on unmount
     return () => {
       unsubscribePresence();
       unsubscribeChat();
+      unsubscribeEmoji();
+      unsubscribePresenceUpdate();
       wsClient.disconnect();
     };
   }, []);
@@ -140,6 +208,13 @@ function App() {
         scale: [1, 1, 1] as [number, number, number],
         displayName: p.data.displayName || 'Unknown',
         isPlayer: true,
+        avatarConfig: p.data.avatarConfig ? {
+          body_type: p.data.avatarConfig.bodyType || 'human',
+          primary_color: p.data.avatarConfig.primaryColor || '#4CAF50',
+          secondary_color: p.data.avatarConfig.secondaryColor || '#2196F3',
+          height: p.data.avatarConfig.height || 1.7,
+          custom_model_url: p.data.avatarConfig.customModelUrl,
+        } : undefined,
       })),
   ];
 
@@ -170,6 +245,19 @@ function App() {
       handleSendChat();
     }
   }, [handleSendChat]);
+
+  const handleSendEmoji = useCallback((emoji: string) => {
+    if (client) {
+      // Spawn at a random position near the center
+      const position = {
+        x: (Math.random() - 0.5) * 4,
+        y: 1.5,
+        z: (Math.random() - 0.5) * 4,
+      };
+      client.sendEmojiReaction(emoji, position);
+      setEmojiPickerVisible(false);
+    }
+  }, [client]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
@@ -225,6 +313,36 @@ function App() {
           }}
         >
           Add Entity
+        </button>
+        <button
+          onClick={() => setSettingsVisible(true)}
+          style={{
+            marginTop: 8,
+            padding: '8px 16px',
+            background: 'rgba(33, 150, 243, 0.8)',
+            border: 'none',
+            borderRadius: 4,
+            color: 'white',
+            cursor: 'pointer',
+            width: '100%',
+          }}
+        >
+          ⚙️ Settings
+        </button>
+        <button
+          onClick={() => setAvatarConfiguratorVisible(true)}
+          style={{
+            marginTop: 8,
+            padding: '8px 16px',
+            background: 'rgba(156, 39, 176, 0.8)',
+            border: 'none',
+            borderRadius: 4,
+            color: 'white',
+            cursor: 'pointer',
+            width: '100%',
+          }}
+        >
+          🎭 Avatar
         </button>
       </div>
 
@@ -317,6 +435,34 @@ function App() {
         >
           💬 Chat ({messages.length})
         </button>
+      )}
+
+      {/* Emoji Reaction Button */}
+      <button
+        onClick={() => setEmojiPickerVisible(!emojiPickerVisible)}
+        style={{
+          position: 'absolute',
+          bottom: 16,
+          left: chatVisible ? 356 : 16,
+          zIndex: 100,
+          padding: '12px 16px',
+          background: emojiPickerVisible ? 'rgba(255, 152, 0, 0.8)' : 'rgba(0, 0, 0, 0.7)',
+          border: 'none',
+          borderRadius: 8,
+          color: 'white',
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+        }}
+      >
+        😀 Emoji
+      </button>
+
+      {/* Emoji Picker */}
+      {emojiPickerVisible && (
+        <EmojiPicker
+          onSelect={handleSendEmoji}
+          onClose={() => setEmojiPickerVisible(false)}
+        />
       )}
 
       {/* Storage Button */}
@@ -425,6 +571,41 @@ function App() {
         </div>
       )}
 
+      {/* Settings Panel */}
+      {settingsVisible && (
+        <SettingsPanel onClose={() => setSettingsVisible(false)} />
+      )}
+
+      {/* Avatar Configurator */}
+      {avatarConfiguratorVisible && myClientId && (
+        <AvatarConfigurator
+          userId={myClientId}
+          onClose={() => setAvatarConfiguratorVisible(false)}
+          onSave={(config) => {
+            console.log('[App] Avatar saved:', config);
+
+            // Send avatar update to network
+            if (client && client.connected()) {
+              client.sendAvatarUpdate({
+                bodyType: config.body_type,
+                primaryColor: config.primary_color,
+                secondaryColor: config.secondary_color,
+                height: config.height,
+                customModelUrl: config.custom_model_id || '',
+              });
+              console.log('[App] Avatar update sent to network');
+            }
+
+            // Update local player entity with new avatar
+            setLocalEntities((prev) => {
+              const updated = new Map(prev);
+              // The player is represented by presence data, not local entities
+              return updated;
+            });
+          }}
+        />
+      )}
+
       {/* 3D Canvas */}
       <Canvas shadows>
         <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={60} />
@@ -468,12 +649,22 @@ function App() {
         {/* Entities */}
         {allEntities.map((entity) => (
           entity.isPlayer ? (
-            <PlayerAvatar
-              key={entity.id}
-              position={entity.position}
-              rotation={entity.rotation}
-              displayName={entity.displayName || 'Unknown'}
-            />
+            entity.avatarConfig ? (
+              <NetworkedAvatar
+                key={entity.id}
+                position={entity.position}
+                rotation={entity.rotation}
+                displayName={entity.displayName || 'Unknown'}
+                avatarConfig={entity.avatarConfig}
+              />
+            ) : (
+              <PlayerAvatar
+                key={entity.id}
+                position={entity.position}
+                rotation={entity.rotation}
+                displayName={entity.displayName || 'Unknown'}
+              />
+            )
           ) : (
             <mesh
               key={entity.id}
@@ -491,7 +682,23 @@ function App() {
                 metalness={0.5}
               />
             </mesh>
-          )
+          ))
+        )}
+
+        {/* Floating Emojis */}
+        {Array.from(floatingEmojis.values()).map((emojiData) => (
+          <FloatingEmoji
+            key={emojiData.id}
+            emoji={emojiData.emoji}
+            position={emojiData.position}
+            onComplete={() => {
+              setFloatingEmojis((prev) => {
+                const updated = new Map(prev);
+                updated.delete(emojiData.id);
+                return updated;
+              });
+            }}
+          />
         ))}
       </Canvas>
     </div>
