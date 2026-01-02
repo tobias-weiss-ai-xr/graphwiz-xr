@@ -11,6 +11,7 @@ import { FloatingEmoji } from './components/FloatingEmoji';
 import { SettingsPanel } from './settings';
 import { AvatarConfigurator } from './avatar';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
+import { DemoScene } from './components/DemoScene';
 import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
 
@@ -1108,6 +1109,9 @@ function App() {
           <planeGeometry args={[20, 20]} />
           <shadowMaterial opacity={0.3} />
         </mesh>
+
+        {/* Demo Scene Objects */}
+        <DemoScene />
 
         {/* Entities */}
         {allEntities.map((entity) => (
