@@ -5,48 +5,75 @@
 FROM node:20-alpine AS dependencies
 WORKDIR /app
 
-# Copy package files
-COPY packages/clients/hub-client/package.json packages/clients/hub-client/pnpm-lock.yaml ./
+# Copy workspace files
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+# Copy all workspace packages (needed for proper dependency resolution)
+COPY packages ./packages
 
 # Install pnpm
 RUN npm install -g pnpm@8
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Install dependencies (workspace mode)
+# Use --no-frozen-lockfile for workspace builds
+RUN pnpm install --no-frozen-lockfile
 
 # Stage 2: Development
 FROM node:20-alpine AS development
 WORKDIR /app
 
-# Copy pnpm
-COPY --from=dependencies /usr/local/bin/pnpm /usr/local/bin/pnpm
+# Install pnpm
+RUN npm install -g pnpm@8
 
-# Copy dependencies
+# Copy workspace config
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+# Copy dependencies from dependencies stage
 COPY --from=dependencies /app/node_modules ./node_modules
-
-# Copy source code
-COPY packages/clients/hub-client ./
+COPY --from=dependencies /app/packages ./packages
 
 # Expose Vite dev server port
 EXPOSE 5173
 
 # Run development server
+WORKDIR /app/packages/clients/hub-client
 CMD ["pnpm", "dev", "--host"]
 
 # Stage 3: Build
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Copy pnpm
-COPY --from=dependencies /usr/local/bin/pnpm /usr/local/bin/pnpm
+# Install pnpm
+RUN npm install -g pnpm@8
+
+# Copy workspace config
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
 
 # Copy dependencies
 COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/packages ./packages
 
-# Copy source code
-COPY packages/clients/hub-client ./
+# Set environment variables for production build
+ARG VITE_API_BASE_URL=https://xr.graphwiz.ai/api/auth
+ARG VITE_HUB_API_URL=https://xr.graphwiz.ai/api/hub
+ARG VITE_PRESENCE_WS_URL=wss://xr.graphwiz.ai/ws
+ARG VITE_SFU_URL=https://xr.graphwiz.ai/api/sfu
+ARG VITE_ROOM_ID=lobby
 
-# Build
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+ENV VITE_HUB_API_URL=${VITE_HUB_API_URL}
+ENV VITE_PRESENCE_WS_URL=${VITE_PRESENCE_WS_URL}
+ENV VITE_SFU_URL=${VITE_SFU_URL}
+ENV VITE_ROOM_ID=${VITE_ROOM_ID}
+
+# Build hub client
+WORKDIR /app/packages/clients/hub-client
 RUN pnpm build
 
 # Stage 4: Production
@@ -55,11 +82,14 @@ FROM alpine:3.19 AS production
 # Install nginx
 RUN apk add --no-cache nginx
 
-# Copy built files
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy built files from the correct path
+COPY --from=build /app/packages/clients/hub-client/dist /usr/share/nginx/html
 
-# Copy nginx config
-COPY packages/deploy/docker/nginx-client.conf /etc/nginx/conf.d/default.conf
+# Copy nginx config (properly included in http context)
+COPY packages/deploy/docker/nginx-client.conf /etc/nginx/http.d/default.conf
+
+# Remove default nginx config that conflicts
+RUN rm -f /etc/nginx/conf.d/*.conf
 
 # Expose port
 EXPOSE 80
