@@ -1,0 +1,115 @@
+# GraphWiz-XR Infrastructure-Only Docker Compose
+# Starts Traefik, PostgreSQL, and Redis (no application services)
+#
+# This is a simplified setup for testing the infrastructure.
+# The Rust services need code fixes before they can build.
+
+version: "3.9"
+
+services:
+  # ============================================================================
+  # TRAEFIK REVERSE PROXY
+  # ============================================================================
+  traefik:
+    image: traefik:v2.10
+    container_name: graphwiz-traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - traefik-letsencrypt:/letsencrypt
+      - traefik-logs:/var/log/traefik
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+      - TRAEFIK_DOMAIN=${TRAEFIK_DOMAIN:-xr.graphwiz.ai}
+    networks:
+      - traefik-public
+      - graphwiz-internal
+
+  # ============================================================================
+  # POSTGRESQL DATABASE
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: graphwiz-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DATABASE_USER:-graphwiz}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-graphwiz_dev}
+      POSTGRES_DB: ${DATABASE_NAME:-graphwiz}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./packages/deploy/compose/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-graphwiz}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - graphwiz-internal
+
+  # ============================================================================
+  # REDIS CACHE
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: graphwiz-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_dev}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - graphwiz-internal
+
+  # ============================================================================
+  # ADMINER (Database Management UI)
+  # ============================================================================
+  adminer:
+    image: adminer:latest
+    container_name: graphwiz-adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: nette
+    networks:
+      - traefik-public
+      - graphwiz-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adminer.rule=Host(`adminer.xr.graphwiz.ai`)"
+      - "traefik.http.routers.adminer.entrypoints=websecure"
+      - "traefik.http.services.adminer.loadbalancer.server.port=8080"
+      - "traefik.http.routers.adminer.tls.certresolver=letsencrypt"
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  traefik-letsencrypt:
+    driver: local
+  traefik-logs:
+    driver: local
+
+networks:
+  traefik-public:
+    external: true
+  graphwiz-internal:
+    driver: bridge

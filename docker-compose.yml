@@ -188,20 +188,45 @@ services:
       - graphwiz-internal
     labels:
       - "traefik.enable=true"
-      # WebSocket routes
-      - "traefik.http.routers.presence-ws.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/ws`)"
-      - "traefik.http.routers.presence-ws.entrypoints=websecure"
+      # Service definition FIRST
       - "traefik.http.services.presence.loadbalancer.server.port=4000"
-      - "traefik.http.routers.presence-ws.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.presence-ws.middlewares=security-headers,cors"
-      # API routes
-      - "traefik.http.routers.presence-api.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/presence`)"
-      - "traefik.http.routers.presence-api.entrypoints=websecure"
-      - "traefik.http.routers.presence-api.service=presence"
-      - "traefik.http.routers.presence-api.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.presence-api.middlewares=security-headers,cors,api-strip"
+      # Then router
+      - "traefik.http.routers.presence.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/ws`)"
+      - "traefik.http.routers.presence.entrypoints=websecure"
+      - "traefik.http.routers.presence.priority=100"
+      - "traefik.http.routers.presence.tls.certresolver=letsencrypt"
 
   # ============================================================================
+  # AVATAR SERVICE (Avatar Configuration)
+  # ============================================================================
+  avatar:
+    build:
+      context: .
+      dockerfile: packages/deploy/docker/Dockerfile.avatar
+    container_name: graphwiz-avatar
+    restart: unless-stopped
+    environment:
+      RUST_LOG: ${RUST_LOG:-info}
+      DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev}@redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8005
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - traefik-public
+      - graphwiz-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.avatar.loadbalancer.server.port=8005"
+      - "traefik.http.routers.avatar.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/avatar`)"
+      - "traefik.http.routers.avatar.entrypoints=websecure"
+      - "traefik.http.routers.avatar.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.avatar.middlewares=security-headers,cors,api-strip"
+
   # SFU SERVICE (WebRTC Media Forwarding)
   # ============================================================================
   sfu:
@@ -265,6 +290,7 @@ services:
       - "traefik.http.services.hub-client.loadbalancer.server.port=80"
       - "traefik.http.routers.hub-client.tls.certresolver=letsencrypt"
       - "traefik.http.routers.hub-client.middlewares=security-headers@file"
+      - "traefik.http.routers.hub-client.priority=1"
 
   # ============================================================================
   # ADMIN CLIENT (Optional - for dashboard/admin panel)

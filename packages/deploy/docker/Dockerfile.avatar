@@ -1,0 +1,81 @@
+# Dockerfile for Reticulum Avatar Service
+# Multi-stage build for optimized production image
+
+# Stage 1: Build
+FROM debian:bookworm-slim AS builder
+
+# Install build dependencies including curl for rustup
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    protobuf-compiler \
+    curl \
+    ca-certificates \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install nightly Rust for edition2024 support
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Set PROTOC environment variable at build time (must be set before cargo runs)
+ENV PROTOC=/usr/bin/protoc
+
+# Verify installation
+RUN rustc --version && cargo --version && protoc --version
+
+# Debug: check protoc location
+RUN which protoc && ls -la $(which protoc) && echo $PATH
+
+WORKDIR /build
+
+# Copy Cargo.toml
+COPY Cargo.toml ./
+
+# Copy source code
+COPY packages/shared/protocol packages/shared/protocol
+COPY packages/services/reticulum/core packages/services/reticulum/core
+COPY packages/services/reticulum/auth packages/services/reticulum/auth
+COPY packages/services/reticulum/hub packages/services/reticulum/hub
+COPY packages/services/reticulum/presence packages/services/reticulum/presence
+COPY packages/services/reticulum/sfu packages/services/reticulum/sfu
+COPY packages/services/reticulum/avatar packages/services/reticulum/avatar
+
+# Build the avatar service binary
+RUN echo "Building with PROTOC=$PROTOC" && \
+    protoc --version && \
+    DATABASE_URL="postgresql://postgres:postgres@localhost/postgres" cargo build --release -p reticulum-avatar
+
+# Stage 2: Runtime
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libssl3 \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -g 1000 graphwiz && \
+    useradd -r -u 1000 -g graphwiz graphwiz
+
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /build/target/release/reticulum-avatar /app/
+
+# Set ownership
+RUN chown -R graphwiz:graphwiz /app
+
+USER graphwiz
+
+# Expose port
+EXPOSE 8005
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8005/health || exit 1
+
+# Run the service
+CMD ["./reticulum-avatar"]

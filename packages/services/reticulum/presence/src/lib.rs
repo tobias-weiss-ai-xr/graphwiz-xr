@@ -20,20 +20,19 @@ pub mod routes;
 
 use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;
-use std::sync::Arc;
 
 use routes::configure_routes;
 use websocket::WebSocketManager;
 
 pub struct PresenceService {
     config: Config,
-    ws_manager: Arc<WebSocketManager>,
+    ws_manager: WebSocketManager,
     // optimization: optimization::OptimizationManager, // Disabled: Agent Looper dependency removed
 }
 
 impl PresenceService {
     pub fn new(config: Config) -> Self {
-        let ws_manager = Arc::new(WebSocketManager::new());
+        let ws_manager = WebSocketManager::new();
 
         // Optimization disabled: Agent Looper dependency removed
         // let mut optimization = optimization::OptimizationManager::new();
@@ -55,7 +54,6 @@ impl PresenceService {
         let host = self.config.server.host.clone();
         let port = self.config.server.port;
         let workers = self.config.server.workers.unwrap_or(1);
-        let ws_manager = self.ws_manager.clone();
 
         log::info!("Starting presence service on {}:{}", host, port);
 
@@ -67,7 +65,7 @@ impl PresenceService {
         HttpServer::new(move || {
             App::new()
                 .app_data(web::Data::new(self.config.clone()))
-                .app_data(web::Data::new(ws_manager.clone()))
+                .app_data(web::Data::new(self.ws_manager.clone()))
                 // .app_data(web::Data::new(self.optimization.clone())) // Disabled
                 .wrap(actix_cors::Cors::permissive())
                 .wrap(reticulum_core::middleware::LoggingMiddleware)

@@ -1,0 +1,101 @@
+# Traefik Dynamic Configuration
+# Runtime configuration for middlewares and routing
+
+http:
+  middlewares:
+    # Security headers
+    security-headers:
+      headers:
+        sslRedirect: true
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        forceSTSHeader: true
+        frameDeny: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        referrerPolicy: "no-referrer"
+        customFrameOptionsValue: "SAMEORIGIN"
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+
+    # CORS middleware
+    cors:
+      headers:
+        accesscontrolallowmethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        accesscontrolallowheaders:
+          - Authorization
+          - Content-Type
+          - X-Requested-With
+        accesscontrolalloworiginlist: "https://xr.graphwiz.ai"
+        accesscontrolmaxage: 100
+
+    # Rate limiting
+    rate-limit:
+      rateLimit:
+        average: 100
+        period: 1m
+        burst: 50
+
+    # Basic auth (optional - for admin routes)
+    admin-auth:
+      basicAuth:
+        users:
+          - "admin:$apr1$hash_changed_in_production"
+
+    # Strip prefix for API routes
+    api-strip:
+      stripPrefix:
+        prefixes:
+          - "/api"
+          - "/v1"
+
+    # Compress responses
+    compression:
+      compress: true
+
+    # HTTPS redirect for chemie-lernen.org
+    chemie-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  # Routers (additional custom routing)
+  routers:
+    # Presence WebSocket routes
+    presence-ws:
+      rule: "Host(`xr.graphwiz.ai`) && PathPrefix(`/ws`)"
+      service: presence
+      priority: 100
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+
+    # Health check endpoint
+    health:
+      rule: "PathPrefix(`/health`)"
+      service: ping@internal
+      entryPoints:
+        - websecure
+
+  services:
+    # Presence service (manual configuration)
+    presence:
+      loadBalancer:
+        servers:
+          - url: "http://graphwiz-presence:4000"
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      cipherSuites:
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
