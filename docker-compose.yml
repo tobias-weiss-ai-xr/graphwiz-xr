@@ -191,7 +191,7 @@ services:
       # WebSocket routes
       - "traefik.http.routers.presence-ws.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/ws`)"
       - "traefik.http.routers.presence-ws.entrypoints=websecure"
-      - "traefik.http.services.presence.loadbalancer.server.port=8003"
+      - "traefik.http.services.presence.loadbalancer.server.port=4000"
       - "traefik.http.routers.presence-ws.tls.certresolver=letsencrypt"
       - "traefik.http.routers.presence-ws.middlewares=security-headers,cors"
       # API routes
