@@ -181,8 +181,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      auth:
-        condition: service_started
+      # auth:  # Temporarily disabled - auth service not built yet
+      #   condition: service_started
     networks:
       - traefik-public
       - graphwiz-internal
