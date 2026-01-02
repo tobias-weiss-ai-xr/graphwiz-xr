@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { OrbitControls, Grid, PerspectiveCamera, Text } from '@react-three/drei';
+import { Grid, PerspectiveCamera, Text } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useState, useCallback, useEffect, useRef } from 'react';
 
@@ -12,6 +12,7 @@ import { SettingsPanel } from './settings';
 import { AvatarConfigurator } from './avatar';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
 import { DemoScene } from './components/DemoScene';
+import { CameraController } from './components/CameraController';
 import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
 
@@ -1058,26 +1059,12 @@ function App() {
           interpolationFactor={interpolationFactor}
         />
 
-        {/* Camera positioned behind player based on rotation */}
-        <PerspectiveCamera
-          makeDefault
-          position={[
-            playerPosition[0] - Math.sin(playerRotation) * 8,
-            playerPosition[1] + 5,
-            playerPosition[2] - Math.cos(playerRotation) * 8
-          ]}
-          fov={60}
-        />
-        {/* Camera controls looking at player */}
-        <OrbitControls
-          makeDefault
-          target={[playerPosition[0], playerPosition[1] + 1, playerPosition[2]]}
-          minDistance={5}
-          maxDistance={15}
-          maxPolarAngle={Math.PI / 2.1}
-          enablePan={false}
-          enableZoom={true}
-          zoomSpeed={0.5}
+        {/* Camera with smooth following and orbit controls */}
+        <PerspectiveCamera makeDefault fov={60} position={[0, 5, 8]} />
+        <CameraController
+          targetPosition={playerPosition}
+          targetRotation={playerRotation}
+          enabled={true}
         />
 
         {/* Lighting */}
