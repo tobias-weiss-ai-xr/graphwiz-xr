@@ -79,8 +79,8 @@ impl PresenceService {
         .await
     }
 
-    /// Get the optimization manager
-    pub fn optimization(&self) -> &optimization::OptimizationManager {
-        &self.optimization
-    }
+    // /// Get the optimization manager
+    // pub fn optimization(&self) -> &optimization::OptimizationManager {
+    //     &self.optimization
+    // }
 }
