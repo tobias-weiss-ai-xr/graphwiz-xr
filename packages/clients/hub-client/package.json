@@ -9,6 +9,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:prod": "playwright test --config=playwright.config.prod.ts",
+    "test:e2e:prod:ui": "playwright test --config=playwright.config.prod.ts --ui",
+    "test:e2e:prod:headed": "playwright test --config=playwright.config.prod.ts --headed",
     "check": "tsc --noEmit",
     "lint": "eslint src --ext ts,tsx",
     "clean": "rm -rf dist .turbo"
