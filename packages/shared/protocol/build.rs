@@ -1,8 +1,22 @@
 use std::io::Result;
 
 fn main() -> Result<()> {
-    // Set protoc path to downloaded binary
-    std::env::set_var("PROTOC", "/home/weiss/tmp/protoc/bin/protoc");
+    // Use PROTOC from environment if set, otherwise try system path
+    if std::env::var("PROTOC").is_err() {
+        // Check for protoc in common locations
+        let possible_paths = [
+            "/usr/bin/protoc",
+            "/usr/local/bin/protoc",
+            "/home/weiss/tmp/protoc/bin/protoc",
+        ];
+
+        for path in &possible_paths {
+            if std::path::Path::new(path).exists() {
+                std::env::set_var("PROTOC", path);
+                break;
+            }
+        }
+    }
 
     // Get the manifest directory to use absolute paths
     let manifest_dir = std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());

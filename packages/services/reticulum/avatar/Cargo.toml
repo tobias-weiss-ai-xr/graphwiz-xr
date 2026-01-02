@@ -1,18 +1,11 @@
 [package]
-name = "reticulum-presence"
+name = "reticulum-avatar"
 version.workspace = true
 edition.workspace = true
-
-[[bin]]
-name = "reticulum-presence"
-path = "src/bin/main.rs"
 
 [dependencies]
 # Core
 reticulum-core = { path = "../core" }
-graphwiz-protocol = { path = "../../../shared/protocol" }
-
-# Agent Looper (optional)
 
 # Workspace
 tokio.workspace = true
@@ -21,29 +14,18 @@ actix-cors.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tracing.workspace = true
-tracing-subscriber.workspace = true
 uuid.workspace = true
 chrono.workspace = true
 thiserror.workspace = true
 log.workspace = true
-env_logger = "0.11"
+env_logger = "0.10"
+validator.workspace = true
+
+# Database
+sqlx.workspace = true
 
 # Async
 async-trait.workspace = true
-futures = "0.3"
-
-# WebSocket
-actix-ws = "0.3"
-tokio-tungstenite = "0.21"
-
-# Networking & WebTransport
-wtransport = "0.1"
-
-# Protocol
-prost.workspace = true
 
 [dev-dependencies]
 tokio-test = "0.4"
-
-[features]
-default = []

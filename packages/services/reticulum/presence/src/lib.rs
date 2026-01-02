@@ -7,7 +7,7 @@ pub mod signaling;
 pub mod websocket;
 pub mod handlers;
 pub mod routes;
-pub mod optimization;
+// pub mod optimization; // Disabled: Agent Looper dependency removed
 
 // Production-ready features
 // Temporarily disabled for initial compilation
@@ -28,26 +28,26 @@ use websocket::WebSocketManager;
 pub struct PresenceService {
     config: Config,
     ws_manager: Arc<WebSocketManager>,
-    optimization: optimization::OptimizationManager,
+    // optimization: optimization::OptimizationManager, // Disabled: Agent Looper dependency removed
 }
 
 impl PresenceService {
     pub fn new(config: Config) -> Self {
         let ws_manager = Arc::new(WebSocketManager::new());
-        let mut optimization = optimization::OptimizationManager::new();
 
-        // Initialize optimization if Agent Looper URL is configured
-        if let Ok(agent_url) = std::env::var("AGENT_LOOPER_URL") {
-            log::info!("Agent Looper URL configured for Presence: {}", agent_url);
-            if let Err(e) = optimization.init(agent_url) {
-                log::warn!("Failed to initialize Presence optimization: {}", e);
-            }
-        }
+        // Optimization disabled: Agent Looper dependency removed
+        // let mut optimization = optimization::OptimizationManager::new();
+        // if let Ok(agent_url) = std::env::var("AGENT_LOOPER_URL") {
+        //     log::info!("Agent Looper URL configured for Presence: {}", agent_url);
+        //     if let Err(e) = optimization.init(agent_url) {
+        //         log::warn!("Failed to initialize Presence optimization: {}", e);
+        //     }
+        // }
 
         Self {
             config,
             ws_manager,
-            optimization,
+            // optimization,
         }
     }
 
@@ -59,15 +59,16 @@ impl PresenceService {
 
         log::info!("Starting presence service on {}:{}", host, port);
 
-        if self.optimization.is_enabled() {
-            log::info!("Presence optimization enabled: Agent Looper integration active");
-        }
+        // Optimization disabled: Agent Looper dependency removed
+        // if self.optimization.is_enabled() {
+        //     log::info!("Presence optimization enabled: Agent Looper integration active");
+        // }
 
         HttpServer::new(move || {
             App::new()
                 .app_data(web::Data::new(self.config.clone()))
                 .app_data(web::Data::new(ws_manager.clone()))
-                .app_data(web::Data::new(self.optimization.clone()))
+                // .app_data(web::Data::new(self.optimization.clone())) // Disabled
                 .wrap(actix_cors::Cors::permissive())
                 .wrap(reticulum_core::middleware::LoggingMiddleware)
                 .configure(configure_routes)

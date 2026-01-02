@@ -8,7 +8,6 @@ edition.workspace = true
 reticulum-core = { path = "../core" }
 
 # Agent Looper (optional)
-agent-looper-client = { path = "../agent-looper/rust", optional = true }
 
 # Workspace
 tokio.workspace = true
@@ -28,7 +27,6 @@ async-trait.workspace = true
 
 [features]
 default = []
-optimization = ["agent-looper-client"]
 
 [dev-dependencies]
 tokio-test = "0.4"

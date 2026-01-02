@@ -52,7 +52,7 @@ export class WebSocketClient {
           client_id: this.clientId!,
         });
 
-        const wsUrl = `${this.config.presenceUrl}/ws/${this.config.roomId}?${params.toString()}`;
+        const wsUrl = `${this.config.presenceUrl}/${this.config.roomId}?${params.toString()}`;
         console.log('[WebSocketClient] Connecting to:', wsUrl);
 
         this.ws = new WebSocket(wsUrl);

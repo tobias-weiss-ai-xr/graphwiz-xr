@@ -10,7 +10,7 @@ pub mod handlers;
 pub mod routes;
 pub mod config;
 pub mod error;
-pub mod optimization;
+// pub mod optimization;  // Disabled: Agent Looper dependency removed
 
 use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;
@@ -27,27 +27,27 @@ pub struct SfuService {
     config: Config,
     sfu_config: SfuConfig,
     room_manager: Arc<RwLock<RoomManager>>,
-    optimization: optimization::OptimizationManager,
+    // optimization: optimization::OptimizationManager,  // Disabled: Agent Looper dependency removed
 }
 
 impl SfuService {
     pub fn new(config: Config, sfu_config: SfuConfig) -> Self {
         let room_manager = Arc::new(RwLock::new(RoomManager::new(sfu_config.clone())));
-        let mut optimization = optimization::OptimizationManager::new();
 
-        // Initialize optimization if Agent Looper URL is configured
-        if let Ok(agent_url) = std::env::var("AGENT_LOOPER_URL") {
-            log::info!("Agent Looper URL configured for SFU: {}", agent_url);
-            if let Err(e) = optimization.init(agent_url) {
-                log::warn!("Failed to initialize SFU optimization: {}", e);
-            }
-        }
+        // Optimization disabled: Agent Looper dependency removed
+        // let mut optimization = optimization::OptimizationManager::new();
+        // if let Ok(agent_url) = std::env::var("AGENT_LOOPER_URL") {
+        //     log::info!("Agent Looper URL configured for SFU: {}", agent_url);
+        //     if let Err(e) = optimization.init(agent_url) {
+        //         log::warn!("Failed to initialize SFU optimization: {}", e);
+        //     }
+        // }
 
         Self {
             config,
             sfu_config,
             room_manager,
-            optimization,
+            // optimization,
         }
     }
 
@@ -60,9 +60,10 @@ impl SfuService {
         log::info!("Max concurrent rooms: {}", self.sfu_config.max_rooms);
         log::info!("Max peers per room: {}", self.sfu_config.max_peers_per_room);
 
-        if self.optimization.is_enabled() {
-            log::info!("SFU optimization enabled: Agent Looper integration active");
-        }
+        // Optimization disabled: Agent Looper dependency removed
+        // if self.optimization.is_enabled() {
+        //     log::info!("SFU optimization enabled: Agent Looper integration active");
+        // }
 
         let room_manager = self.room_manager.clone();
 
@@ -77,7 +78,7 @@ impl SfuService {
             App::new()
                 .app_data(web::Data::new(self.config.clone()))
                 .app_data(web::Data::new(app_state))
-                .app_data(web::Data::new(self.optimization.clone()))
+                // .app_data(web::Data::new(self.optimization.clone())) // Disabled
                 .wrap(actix_cors::Cors::permissive())
                 .wrap(reticulum_core::middleware::LoggingMiddleware)
                 .configure(routes::configure_routes)
@@ -93,10 +94,10 @@ impl SfuService {
         self.room_manager.clone()
     }
 
-    /// Get the optimization manager
-    pub fn optimization(&self) -> &optimization::OptimizationManager {
-        &self.optimization
-    }
+    // /// Get the optimization manager
+    // pub fn optimization(&self) -> &optimization::OptimizationManager {
+    //     &self.optimization
+    // }
 }
 
 #[cfg(test)]

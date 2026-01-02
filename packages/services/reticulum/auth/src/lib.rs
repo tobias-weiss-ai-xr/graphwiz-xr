@@ -10,7 +10,7 @@ pub mod models;
 pub mod oauth;
 pub mod routes;
 pub mod session;
-pub mod optimization;
+// pub mod optimization;  // Disabled: Agent Looper dependency removed
 
 use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;
@@ -19,24 +19,23 @@ use routes::configure_routes;
 
 pub struct AuthService {
     config: Config,
-    optimization: optimization::OptimizationManager,
+    // optimization: optimization::OptimizationManager,  // Disabled: Agent Looper dependency removed
 }
 
 impl AuthService {
     pub fn new(config: Config) -> Self {
-        let mut optimization = optimization::OptimizationManager::new();
-
-        // Initialize optimization if Agent Looper URL is configured
-        if let Ok(agent_url) = std::env::var("AGENT_LOOPER_URL") {
-            log::info!("Agent Looper URL configured for Auth: {}", agent_url);
-            if let Err(e) = optimization.init(agent_url) {
-                log::warn!("Failed to initialize Auth optimization: {}", e);
-            }
-        }
+        // Optimization disabled: Agent Looper dependency removed
+        // let mut optimization = optimization::OptimizationManager::new();
+        // if let Ok(agent_url) = std::env::var("AGENT_LOOPER_URL") {
+        //     log::info!("Agent Looper URL configured for Auth: {}", agent_url);
+        //     if let Err(e) = optimization.init(agent_url) {
+        //         log::warn!("Failed to initialize Auth optimization: {}", e);
+        //     }
+        // }
 
         Self {
             config,
-            optimization,
+            // optimization,
         }
     }
 
@@ -47,14 +46,15 @@ impl AuthService {
 
         log::info!("Starting auth service on {}:{}", host, port);
 
-        if self.optimization.is_enabled() {
-            log::info!("Auth optimization enabled: Agent Looper integration active");
-        }
+        // Optimization disabled: Agent Looper dependency removed
+        // if self.optimization.is_enabled() {
+        //     log::info!("Auth optimization enabled: Agent Looper integration active");
+        // }
 
         HttpServer::new(move || {
             App::new()
                 .app_data(web::Data::new(self.config.clone()))
-                .app_data(web::Data::new(self.optimization.clone()))
+                // .app_data(web::Data::new(self.optimization.clone())) // Disabled
                 .wrap(actix_cors::Cors::permissive())
                 .wrap(reticulum_core::middleware::LoggingMiddleware)
                 .configure(configure_routes)
@@ -65,8 +65,8 @@ impl AuthService {
         .await
     }
 
-    /// Get the optimization manager
-    pub fn optimization(&self) -> &optimization::OptimizationManager {
-        &self.optimization
-    }
+    // /// Get the optimization manager
+    // pub fn optimization(&self) -> &optimization::OptimizationManager {
+    //     &self.optimization
+    // }
 }

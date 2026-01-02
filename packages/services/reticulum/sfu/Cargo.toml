@@ -10,7 +10,6 @@ license.workspace = true
 reticulum-core = { path = "../core" }
 
 # Agent Looper (optional)
-agent-looper-client = { path = "../agent-looper/rust", optional = true }
 
 tokio = { workspace = true }
 async-trait = { workspace = true }
@@ -44,5 +43,4 @@ tokio-test = "0.4"
 
 [features]
 default = []
-optimization = ["agent-looper-client"]
 # webrtc = ["dep:webrtc"]
