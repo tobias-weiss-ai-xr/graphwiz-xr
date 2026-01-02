@@ -460,7 +460,13 @@ function App() {
 
   // Movement update loop
   useEffect(() => {
-    if (!connected || !client) return;
+    if (!connected || !client) {
+      console.log('[App] Movement loop not started: connected=', connected, 'client=', !!client);
+      return;
+    }
+
+    console.log('[App] Starting movement loop...');
+    let updateCount = 0;
 
     const movementInterval = setInterval(() => {
       setPlayerPosition((prev) => {
@@ -506,6 +512,10 @@ function App() {
 
         // Send position update if position changed
         if (newX !== x || newZ !== z) {
+          updateCount++;
+          if (updateCount % 60 === 0) { // Log every 60 updates (~1 second)
+            console.log('[App] Player moved to:', newPos, 'Total updates:', updateCount);
+          }
           client.sendPositionUpdate(
             myClientId || 'local',
             { x: newX, y: y, z: newZ },
@@ -565,21 +575,21 @@ function App() {
 
   // Combine local entities
   const allEntities: Entity[] = [
-    // Add local player if connected and has avatar config
-    ...(myClientId && localAvatarConfig ? [{
+    // Add local player (always render, even without avatar config)
+    ...(myClientId ? [{
       id: myClientId,
       position: playerPosition,
       rotation: [0, playerRotation, 0] as [number, number, number],
       scale: [1, 1, 1] as [number, number, number],
       displayName: 'You',
       isPlayer: true,
-      avatarConfig: {
+      avatarConfig: localAvatarConfig ? {
         body_type: localAvatarConfig.body_type,
         primary_color: localAvatarConfig.primary_color,
         secondary_color: localAvatarConfig.secondary_color,
         height: localAvatarConfig.height,
         custom_model_url: localAvatarConfig.custom_model_id,
-      },
+      } : undefined,
     }] : []),
     ...Array.from(localEntities.values()),
     // Add other players from presence (using interpolated positions)
