@@ -16,9 +16,9 @@ GraphWiz-XR delivers high-fidelity, browser-based virtual reality without instal
 
 ## Screenshot
 
-![GraphWiz-XR Hub Client](./docs/hub-client-screenshot.png)
+![GraphWiz-XR Interactive Multiplayer Demo](./docs/interactive-demo-screenshot.png)
 
-*The Hub Client - Your gateway to immersive VR experiences*
+*Interactive Multiplayer Demo - Click objects to interact, changes sync across all players in real-time*
 
 ## Technology Stack
 
@@ -333,7 +333,7 @@ MPL-2.0 - See LICENSE file for details
 - [x] Mute/unmute controls
 - [x] Voice chat client implementation
 
-#### 4.7 Scene & Interaction Systems ✅ NEW FEATURES (2026-01-01)
+#### 4.7 Scene & Interaction Systems ✅ NEW FEATURES (2026-01-02)
 - [x] **Text chat UI** - Real-time text messaging
 - [x] **Emoji reactions system** - 3D floating emojis with network sync (32 emojis)
 - [x] **User settings panel** - 18 settings across 4 categories
@@ -348,13 +348,21 @@ MPL-2.0 - See LICENSE file for details
   - Color customization (primary/secondary)
   - Height adjustment (0.5m - 3.0m)
   - Custom model support
+- [x] **Interactive multiplayer demo scene** - Real-time synchronized objects (NEW!)
+  - 3 clickable buttons with state sync (toggle on/off)
+  - 2 collectible gems with respawn (5 seconds)
+  - Toggleable light switch affecting scene
+  - Hover effects (scaling, color brightening)
+  - ENTITY_UPDATE message type for state synchronization
+  - Timestamp-based conflict resolution
+  - Visual feedback (rotation, glow effects, animations)
 - [ ] Media playing (video, audio)
 - [ ] Drawing tools
 - [ ] Portal system
 - [ ] Grab and move objects
 - [ ] Gesture recognition
 
-**Deliverables**: ✅ VR client with chat, emoji reactions, settings, and avatar customization (NEW 2026-01-01)
+**Deliverables**: ✅ VR client with chat, emoji reactions, settings, avatar customization, and interactive multiplayer demo (NEW 2026-01-02)
 
 ---
 
@@ -418,12 +426,28 @@ MPL-2.0 - See LICENSE file for details
 **Overall Progress**: ~68% Complete
 
 ### Recent Updates (January 2026)
-- ✅ **Multiplayer Entity Synchronization Fixed**: Critical bug fix for player-to-player visibility
-  - Resolved closure issue causing myClientId to be null in message handlers
-  - Fixed entity duplication (3 entities → 2 players correct)
-  - Added getMyClientId() helper to read current client ID from WebSocketClient
-  - Enhanced backend logging for message broadcasting and delivery tracking
-  - Each client now correctly distinguishes local vs remote player entities
+- ✅ **Interactive Multiplayer Demo Scene**: Real-time synchronized demo objects (NEW 2026-01-02)
+  - **3 Clickable Buttons** - Click to toggle state, all players see changes instantly
+  - **2 Collectible Gems** - Click to collect, respawn after 5 seconds with glow effects
+  - **Toggleable Light Switch** - Controls scene lighting, synchronized across all clients
+  - **Hover Effects** - Objects scale up, brighten color when hovered
+  - **Network Sync** - Uses ENTITY_UPDATE messages (type 21) for real-time state synchronization
+  - **Visual Feedback** - Active objects rotate continuously, gems have particle glow effects
+  - **Conflict Resolution** - Timestamp-based state resolution ensures consistency
+- ✅ **Strafe Movement Fixed**: Corrected A/D strafe direction (inverted → working)
+  - Fixed right vector calculation: `[-cos(rotation), sin(rotation)]`
+  - A key now strafes left, D key strafes right correctly
+  - Movement direction matches player's facing direction
+- ✅ **Multiplayer Visibility Fixed**: Players consistently see each other
+  - ENTITY_SPAWN handler now uses `getMyClientId()` for current client ID
+  - Fixed closure issue causing myClientId to be null in message handlers
+  - Added dual-check: skip if ownerId === myId OR entityId === myId
+  - Each client correctly distinguishes local vs remote player entities
+- ✅ **Camera Controller**: Smooth camera following system with orbit controls
+  - Camera smoothly follows player at 5% lerp per frame
+  - Fixed OrbitControls + manual camera positioning conflict
+  - Damping enabled (0.05 factor) for buttery-smooth movement
+  - Target follows player position with 10% lerp
 - ✅ **Player Movement System**: WASD keyboard controls with network synchronization
   - Smooth position interpolation at 15% per frame
   - Position updates broadcast at 60 FPS
