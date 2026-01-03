@@ -276,15 +276,23 @@ function App() {
       console.log('[App] ========== ENTITY_SPAWN RECEIVED ==========');
       console.log('[App] Full message:', JSON.stringify(message, null, 2));
       console.log('[App] Message payload:', message.payload);
-      console.log('[App] My client ID:', myClientId);
+
+      const myId = getMyClientId();
+      console.log('[App] My client ID:', myId);
 
       if (message.payload && message.payload.entityId) {
         const ownerId = message.payload.ownerId || message.payload.clientId;
         console.log('[App] Entity owner ID:', ownerId);
 
         // Skip if it's the local player (already rendered)
-        if (ownerId === myClientId) {
-          console.log('[App] Skipping local player entity spawn');
+        if (ownerId === myId) {
+          console.log('[App] Skipping local player entity spawn (ownerId match)');
+          return;
+        }
+
+        // Also skip if the entityId matches our client ID
+        if (message.payload.entityId === myId) {
+          console.log('[App] Skipping local player entity spawn (entityId match)');
           return;
         }
 
@@ -476,7 +484,8 @@ function App() {
 
         // Calculate forward/backward and left/right based on rotation
         const forward = [Math.sin(playerRotation), Math.cos(playerRotation)] as [number, number];
-        const right = [Math.cos(playerRotation), -Math.sin(playerRotation)] as [number, number];
+        // Fixed: negated right vector to correct strafe direction
+        const right = [-Math.cos(playerRotation), Math.sin(playerRotation)] as [number, number];
 
         // WASD movement
         if (keysPressed.current.has('w')) {
@@ -488,12 +497,14 @@ function App() {
           newZ -= forward[1] * movementSpeed;
         }
         if (keysPressed.current.has('a')) {
-          newX -= right[0] * movementSpeed;
-          newZ -= right[1] * movementSpeed;
-        }
-        if (keysPressed.current.has('d')) {
+          // Strafe left
           newX += right[0] * movementSpeed;
           newZ += right[1] * movementSpeed;
+        }
+        if (keysPressed.current.has('d')) {
+          // Strafe right
+          newX -= right[0] * movementSpeed;
+          newZ -= right[1] * movementSpeed;
         }
 
         // Q/E rotation
