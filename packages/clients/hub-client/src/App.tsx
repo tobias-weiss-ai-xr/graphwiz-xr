@@ -12,6 +12,7 @@ import { SettingsPanel } from './settings';
 import { AvatarConfigurator } from './avatar';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
 import { InteractiveDemoScene } from './components/InteractiveDemoScene';
+import { MediaDemoScene } from './components/MediaDemoScene';
 import { CameraController } from './components/CameraController';
 import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
@@ -1121,6 +1122,11 @@ function App() {
         {/* Interactive Demo Scene Objects */}
         {client && myClientId && (
           <InteractiveDemoScene wsClient={client} myClientId={myClientId} />
+        )}
+
+        {/* Media Demo Scene - Video and Audio Playback */}
+        {client && myClientId && false && (
+          <MediaDemoScene wsClient={client} myClientId={myClientId || ''} />
         )}
 
         {/* Entities */}
