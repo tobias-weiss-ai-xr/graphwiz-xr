@@ -1,0 +1,158 @@
+{
+  "timestamp": "2026-01-03T08:57:29.422Z",
+  "url": "http://localhost:3002",
+  "tests": [
+    {
+      "name": "Navigate to Page",
+      "status": "INFO",
+      "message": "Loading http://localhost:3002",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:29.732Z"
+    },
+    {
+      "name": "MediaDemoScene Presence",
+      "status": "INFO",
+      "message": "Checking for MediaDemoScene component",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:38.283Z"
+    },
+    {
+      "name": "MediaDemoScene Presence",
+      "status": "PASS",
+      "message": "Canvas element found",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:38.786Z"
+    },
+    {
+      "name": "Initial Screenshot",
+      "status": "INFO",
+      "message": "Saved to /opt/git/graphwiz-xr/packages/clients/hub-client/test-screenshots/01-initial-load.png",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:43.160Z"
+    },
+    {
+      "name": "Media Elements",
+      "status": "INFO",
+      "message": "Checking for video and audio elements",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:43.160Z"
+    },
+    {
+      "name": "Media Elements Count",
+      "status": "INFO",
+      "message": "Found 0 video(s) and 0 audio(s)",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:45.474Z"
+    },
+    {
+      "name": "Video Element",
+      "status": "FAIL",
+      "message": "No video element found",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:45.474Z"
+    },
+    {
+      "name": "Audio Element",
+      "status": "FAIL",
+      "message": "No audio element found",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:45.474Z"
+    },
+    {
+      "name": "Scene Labels",
+      "status": "INFO",
+      "message": "Checking for media player labels in scene",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:45.474Z"
+    },
+    {
+      "name": "Scene Rendering",
+      "status": "PASS",
+      "message": "Canvas is being rendered",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:46.567Z"
+    },
+    {
+      "name": "Web Audio API",
+      "status": "INFO",
+      "message": "Checking Web Audio API support",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:46.567Z"
+    },
+    {
+      "name": "Web Audio API",
+      "status": "PASS",
+      "message": "Web Audio API is supported",
+      "details": {
+        "audioContext": true,
+        "analyserNode": true
+      },
+      "timestamp": "2026-01-03T08:57:46.914Z"
+    },
+    {
+      "name": "Media Screenshot",
+      "status": "INFO",
+      "message": "Saved to /opt/git/graphwiz-xr/packages/clients/hub-client/test-screenshots/02-media-loaded.png",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:52.085Z"
+    },
+    {
+      "name": "Controls UI",
+      "status": "INFO",
+      "message": "Checking for media controls",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:52.085Z"
+    },
+    {
+      "name": "Controls UI",
+      "status": "INFO",
+      "message": "Controls not visible (need to click on media players)",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:52.741Z"
+    },
+    {
+      "name": "Network Sync",
+      "status": "INFO",
+      "message": "Checking WebSocket connection",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:52.741Z"
+    },
+    {
+      "name": "Network Sync",
+      "status": "PASS",
+      "message": "Browser supports WebSocket",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:53.437Z"
+    },
+    {
+      "name": "Performance",
+      "status": "INFO",
+      "message": "Checking performance metrics",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:53.437Z"
+    },
+    {
+      "name": "Performance Metrics",
+      "status": "INFO",
+      "message": "Page performance measured",
+      "details": {
+        "domContentLoaded": 0.6999998092651367,
+        "loadComplete": 0,
+        "totalLoad": 5306.900000095367
+      },
+      "timestamp": "2026-01-03T08:57:53.900Z"
+    },
+    {
+      "name": "Final Screenshot",
+      "status": "INFO",
+      "message": "Saved to /opt/git/graphwiz-xr/packages/clients/hub-client/test-screenshots/03-final-state.png",
+      "details": {},
+      "timestamp": "2026-01-03T08:57:57.289Z"
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "passed": 4,
+    "failed": 2
+  }
+}

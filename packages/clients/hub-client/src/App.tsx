@@ -1125,7 +1125,7 @@ function App() {
         )}
 
         {/* Media Demo Scene - Video and Audio Playback */}
-        {client && myClientId && false && (
+        {client && myClientId && true && (
           <MediaDemoScene wsClient={client} myClientId={myClientId || ''} />
         )}
 
