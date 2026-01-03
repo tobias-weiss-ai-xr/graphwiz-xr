@@ -170,6 +170,8 @@ services:
       dockerfile: packages/deploy/docker/Dockerfile.presence
     container_name: graphwiz-presence
     restart: unless-stopped
+    ports:
+      - "4000:8003"  # Expose WebSocket for local development (container 8003 -> host 4000)
     environment:
       RUST_LOG: ${RUST_LOG:-info}
       DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
@@ -225,7 +227,8 @@ services:
       - "traefik.http.routers.avatar.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/avatar`)"
       - "traefik.http.routers.avatar.entrypoints=websecure"
       - "traefik.http.routers.avatar.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.avatar.middlewares=security-headers,cors,api-strip"
+      - "traefik.http.routers.avatar.middlewares=security-headers,cors,avatar-strip"
+      - "traefik.http.middlewares.avatar-strip.stripprefix.prefixes=/api/avatar"
 
   # SFU SERVICE (WebRTC Media Forwarding)
   # ============================================================================
