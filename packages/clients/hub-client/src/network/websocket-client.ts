@@ -194,6 +194,17 @@ export class WebSocketClient {
   }
 
   /**
+   * Send entity update message
+   */
+  sendEntityUpdate(data: {
+    entityId: string;
+    components: Record<string, unknown>;
+  }): void {
+    const message = MessageBuilder.createEntityUpdate(data);
+    this.send(message);
+  }
+
+  /**
    * Send entity despawn message
    */
   sendEntityDespawn(entityId: string): void {

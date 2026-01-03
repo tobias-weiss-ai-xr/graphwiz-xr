@@ -11,7 +11,7 @@ import { FloatingEmoji } from './components/FloatingEmoji';
 import { SettingsPanel } from './settings';
 import { AvatarConfigurator } from './avatar';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
-import { DemoScene } from './components/DemoScene';
+import { InteractiveDemoScene } from './components/InteractiveDemoScene';
 import { CameraController } from './components/CameraController';
 import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
@@ -1118,8 +1118,10 @@ function App() {
           <shadowMaterial opacity={0.3} />
         </mesh>
 
-        {/* Demo Scene Objects */}
-        <DemoScene />
+        {/* Interactive Demo Scene Objects */}
+        {client && myClientId && (
+          <InteractiveDemoScene wsClient={client} myClientId={myClientId} />
+        )}
 
         {/* Entities */}
         {allEntities.map((entity) => (

@@ -51,6 +51,16 @@ export class MessageBuilder {
   }
 
   /**
+   * Create an entity update message
+   */
+  static createEntityUpdate(update: {
+    entityId: string;
+    components: Record<string, unknown>;
+  }): Message {
+    return this.create(MessageType.ENTITY_UPDATE, update);
+  }
+
+  /**
    * Create an entity despawn message
    */
   static createEntityDespawn(entityId: string): Message {
