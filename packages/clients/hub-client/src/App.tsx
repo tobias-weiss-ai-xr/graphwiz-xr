@@ -8,6 +8,7 @@ import { MessageType, EmojiReaction } from '@graphwiz/protocol';
 import { AssetBrowser, AssetUploader, Asset } from './storage';
 import { EmojiPicker } from './components/EmojiPicker';
 import { FloatingEmoji } from './components/FloatingEmoji';
+import { FPSCounter } from './components/FPSCounter';
 import { SettingsPanel } from './settings';
 import { AvatarConfigurator } from './avatar';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
@@ -189,10 +190,14 @@ function App() {
       .then(() => {
         setConnected(true);
         setConnecting(false);
-        const clientId = wsClient['clientId'];
-        setMyClientId(clientId);
+        const clientId = wsClient.getClientId();
         console.log('[App] Connected to presence server');
         console.log('[App] Client ID:', clientId);
+        if (clientId) {
+          setMyClientId(clientId);
+        } else {
+          console.error('[App] Client ID is null after connection!');
+        }
       })
       .catch((err) => {
         console.error('[App] Failed to connect:', err);
@@ -201,7 +206,7 @@ function App() {
       });
 
     // Set up message handlers - use function to get current client ID
-    const getMyClientId = () => wsClient['clientId'] || myClientId;
+    const getMyClientId = () => wsClient.getClientId() || myClientId;
     const unsubscribePresence = wsClient.on(MessageType.PRESENCE_JOIN, (message: any) => {
       if (message.payload) {
         setPresenceEvents((prev) => {
@@ -306,22 +311,23 @@ function App() {
         // Add to presence events so it gets rendered
         const avatarConfig = message.payload.components?.avatarConfig || {};
         const position = message.payload.components?.position || { x: 0, y: 0, z: 0 };
+        const entityId = message.payload.entityId;
 
         console.log('[App] Avatar config from spawn:', avatarConfig);
         console.log('[App] Position from spawn:', position);
 
         setPresenceEvents((prev) => {
           console.log('[App] Current presence events count:', prev.length);
-          // Check if presence already exists
-          if (prev.find((e) => e.clientId === ownerId)) {
+          // Check if presence already exists (use entityId as the key)
+          if (prev.find((e) => e.clientId === entityId)) {
             console.log('[App] Player already in presence list, skipping');
             return prev;
           }
 
           const newPresence = {
-            clientId: ownerId,
+            clientId: entityId, // Use entityId as the key to match position updates
             data: {
-              displayName: `Player-${ownerId.substring(0, 8)}`,
+              displayName: `Player-${entityId.substring(0, 8)}`,
               position: position,
               avatarConfig: avatarConfig,
             },
@@ -338,36 +344,51 @@ function App() {
     });
 
     // Handle position updates (update avatar positions from network)
+    let positionUpdateCount = 0;
     const unsubscribePositionUpdate = wsClient.on(MessageType.POSITION_UPDATE, (message: any) => {
-      console.log('[App] ========== POSITION_UPDATE RECEIVED ==========');
-      console.log('[App] Position update message:', message);
-
       const myId = getMyClientId();
-      console.log('[App] My client ID:', myId);
 
       if (message.payload && message.payload.entityId) {
         const entityId = message.payload.entityId;
         const position = message.payload.position;
 
-        console.log('[App] Position update for entity:', entityId);
-        console.log('[App] Position:', position);
-
         // Skip if it's the local player
         if (entityId === myId) {
-          console.log('[App] Skipping local player position update');
           return;
         }
 
         // Update target position for interpolation
         if (position && typeof position.x === 'number') {
           const newPos: [number, number, number] = [position.x, position.y || 0, position.z || 0];
+
+          // Store under entityId for interpolation
           targetPositionsRef.current.set(entityId, newPos);
-          console.log('[App] Updated target position for', entityId, 'to', newPos);
-        } else {
-          console.log('[App] Invalid position data');
+
+          // Also update presenceEvents state to trigger re-render
+          setPresenceEvents((prev) => {
+            return prev.map((p) => {
+              // Check if this presence event matches the entity
+              // We need to match by checking if this entity's position is being updated
+              const hasMatchingEntityId = p.clientId === entityId;
+              if (hasMatchingEntityId) {
+                return {
+                  ...p,
+                  data: {
+                    ...p.data,
+                    position: { x: position.x, y: position.y || 0, z: position.z || 0 }
+                  }
+                };
+              }
+              return p;
+            });
+          });
+
+          // Log every 60 updates (~3 seconds)
+          positionUpdateCount++;
+          if (positionUpdateCount % 60 === 0) {
+            console.log(`[App] Received ${positionUpdateCount} position updates for ${entityId}`);
+          }
         }
-      } else {
-        console.log('[App] POSITION_UPDATE missing payload or entityId');
       }
     });
 
@@ -453,7 +474,20 @@ function App() {
 
   // Send avatar to network when connected
   useEffect(() => {
-    if (!connected || !client || !localAvatarConfig) return;
+    if (!connected || !client) {
+      console.log('[App] Avatar spawn: not ready - connected:', connected, 'client:', !!client);
+      return;
+    }
+
+    if (!localAvatarConfig) {
+      console.log('[App] Avatar spawn: localAvatarConfig is null, skipping spawn');
+      return;
+    }
+
+    if (!myClientId) {
+      console.log('[App] Avatar spawn: myClientId is null, skipping spawn');
+      return;
+    }
 
     console.log('[App] Sending avatar config to network...');
     client.sendAvatarUpdate({
@@ -465,9 +499,9 @@ function App() {
     });
 
     // Also send ENTITY_SPAWN so other clients render our avatar
-    console.log('[App] Sending ENTITY_SPAWN for local player...');
+    console.log('[App] Sending ENTITY_SPAWN for local player...', myClientId);
     client.sendEntitySpawn({
-      entityId: myClientId || 'local',
+      entityId: myClientId,
       templateId: 'player',
       components: {
         position: { x: playerPosition[0], y: playerPosition[1], z: playerPosition[2] },
@@ -480,7 +514,7 @@ function App() {
       },
     });
     console.log('[App] Avatar update sent to network');
-  }, [connected, client, localAvatarConfig]);
+  }, [connected, client, localAvatarConfig, myClientId]);
 
   // Keyboard event handlers for movement
   useEffect(() => {
@@ -574,7 +608,7 @@ function App() {
     }, 1000 / 60); // 60 FPS
 
     return () => clearInterval(movementInterval);
-  }, [connected, client, playerRotation]);
+  }, [connected, client, myClientId]);
 
   // Update target positions for interpolation when presence events change
   useEffect(() => {
@@ -1243,6 +1277,9 @@ function App() {
           />
         ))}
       </Canvas>
+
+      {/* FPS Counter Overlay */}
+      <FPSCounter />
     </div>
   );
 }

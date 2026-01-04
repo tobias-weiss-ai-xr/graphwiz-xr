@@ -28,6 +28,7 @@ export class WebSocketClient {
   private reconnectDelay = 1000;
   private clientId: string | null = null;
   private sequenceNumber = 0;
+  private pingInterval: NodeJS.Timeout | null = null;
 
   constructor(config: WebSocketClientConfig) {
     this.config = config;
@@ -64,6 +65,9 @@ export class WebSocketClient {
           this.isConnected = true;
           this.reconnectAttempts = 0;
 
+          // Start ping/pong keep-alive (every 30 seconds)
+          this.startPingInterval();
+
           // Send client hello
           this.sendClientHello().then(() => {
             resolve();
@@ -85,6 +89,10 @@ export class WebSocketClient {
         this.ws.onclose = (event) => {
           console.log('[WebSocketClient] WebSocket disconnected:', event.code, event.reason);
           this.isConnected = false;
+
+          // Clear ping interval
+          this.stopPingInterval();
+
           this.attemptReconnect();
         };
       } catch (error) {
@@ -97,6 +105,9 @@ export class WebSocketClient {
    * Disconnect from the server
    */
   disconnect(): void {
+    // Stop ping interval
+    this.stopPingInterval();
+
     if (this.ws) {
       this.ws.close(1000, 'Client disconnecting');
       this.ws = null;
@@ -135,7 +146,11 @@ export class WebSocketClient {
     try {
       const serialized = MessageParser.serialize(message);
       this.ws.send(serialized);
-      console.log('[WebSocketClient] Sent message type:', message.type);
+
+      // Only log important message types (not position updates which are sent at 20Hz)
+      if (message.type !== 10) { // 10 = POSITION_UPDATE
+        console.log('[WebSocketClient] Sent message type:', message.type);
+      }
     } catch (error) {
       console.error('[WebSocketClient] Failed to send message:', error);
     }
@@ -334,6 +349,9 @@ export class WebSocketClient {
             console.log('[WebSocketClient] Received server hello (text):', parsed);
             this.handleServerHelloText(parsed);
             return;
+          } else if (parsed.type === 255) {
+            // Handle ping response (silently ignore)
+            return;
           }
         } catch {
           // Not JSON, continue to binary parsing
@@ -345,7 +363,10 @@ export class WebSocketClient {
       // Parse binary message
       message = MessageParser.parse(data);
 
-      console.log('[WebSocketClient] Received message type:', message.type);
+      // Only log important message types (not position updates which are received at 20Hz)
+      if (message.type !== 10) { // 10 = POSITION_UPDATE
+        console.log('[WebSocketClient] Received message type:', message.type);
+      }
 
       // Call registered handlers
       const handlers = this.messageHandlers.get(message.type);
@@ -359,7 +380,13 @@ export class WebSocketClient {
         });
       }
     } catch (error) {
-      console.error('[WebSocketClient] Failed to parse message:', error);
+      // Silently ignore parse errors for malformed binary messages
+      // These can occur due to network issues or protocol mismatches
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      if (!errorMsg.includes('Invalid typed array length')) {
+        // Only log unexpected errors, not the common parse errors
+        console.warn('[WebSocketClient] Failed to parse message:', errorMsg);
+      }
     }
   }
 
@@ -441,5 +468,43 @@ export class WebSocketClient {
       clientId: this.clientId,
       readyState: this.ws?.readyState ?? WebSocket.CLOSED,
     };
+  }
+
+  /**
+   * Start ping interval to keep WebSocket connection alive
+   */
+  private startPingInterval(): void {
+    // Clear any existing interval
+    this.stopPingInterval();
+
+    // Send ping every 30 seconds as a minimal message
+    this.pingInterval = setInterval(() => {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        // Send a minimal binary ping message (type 255 = custom ping)
+        const pingMessage = {
+          messageId: 'ping-' + Date.now(),
+          timestamp: Date.now(),
+          type: 255, // Custom ping type (outside normal range)
+          payload: null,
+        };
+
+        try {
+          const serialized = JSON.stringify(pingMessage);
+          this.ws.send(serialized);
+        } catch (error) {
+          console.warn('[WebSocketClient] Failed to send ping:', error);
+        }
+      }
+    }, 30000);
+  }
+
+  /**
+   * Stop ping interval
+   */
+  private stopPingInterval(): void {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
   }
 }

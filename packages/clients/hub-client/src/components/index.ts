@@ -8,3 +8,4 @@ export { EntityRenderer } from './EntityRenderer';
 export { SceneRenderer } from './SceneRenderer';
 export { Light } from './Light';
 export { PlayerAvatar } from './PlayerAvatar';
+export { FPSCounter } from './FPSCounter';
