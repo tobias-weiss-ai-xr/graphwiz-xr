@@ -27,7 +27,8 @@ providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false  # Services must opt-in with traefik.enable=true
-    network: traefik-public
+    network: graphwiz-xr_traefik-public
+    watch: true
 
   file:
     filename: /etc/traefik/dynamic.yml

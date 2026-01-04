@@ -74,8 +74,7 @@ http:
       priority: 100
       entryPoints:
         - websecure
-      tls:
-        certResolver: letsencrypt
+      tls: {}
 
     # Health check endpoint
     health:
@@ -89,7 +88,13 @@ http:
     presence:
       loadBalancer:
         servers:
-          - url: "http://graphwiz-presence:4000"
+          - url: "http://graphwiz-presence:8003"
+
+    # Avatar service (manual configuration)
+    avatar:
+      loadBalancer:
+        servers:
+          - url: "http://graphwiz-avatar:8005"
 
 tls:
   options:
