@@ -30,6 +30,9 @@ export enum MessageType {
   // Communication
   CHAT_MESSAGE = 30,
   EMOJI_REACTION = 31,
+  // Object interaction
+  OBJECT_GRAB = 32,
+  OBJECT_RELEASE = 33,
   // Presence
   PRESENCE_JOIN = 40,
   PRESENCE_LEAVE = 41,
@@ -100,6 +103,21 @@ export interface PresenceEvent {
   data: PresenceData;
 }
 
+export interface ObjectGrab {
+  entityId: string;
+  clientId: string;
+  position: Vector3;
+  timestamp: number;
+}
+
+export interface ObjectRelease {
+  entityId: string;
+  clientId: string;
+  position: Vector3;
+  velocity: Vector3;
+  timestamp: number;
+}
+
 export enum PresenceEventType {
   JOIN = 0,
   LEAVE = 1,
@@ -127,6 +145,8 @@ export interface Message {
     | EntityDespawn
     | ChatMessage
     | EmojiReaction
+    | ObjectGrab
+    | ObjectRelease
     | PresenceEvent;
 }
 

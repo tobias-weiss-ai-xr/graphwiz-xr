@@ -32,12 +32,13 @@ WORKDIR /build
 # Copy Cargo.toml
 COPY Cargo.toml ./
 
-# Copy source code
+# Copy source code (include all workspace members even if not directly used)
 COPY packages/shared/protocol packages/shared/protocol
 COPY packages/services/reticulum/core packages/services/reticulum/core
 COPY packages/services/reticulum/auth packages/services/reticulum/auth
 COPY packages/services/reticulum/hub packages/services/reticulum/hub
 COPY packages/services/reticulum/sfu packages/services/reticulum/sfu
+COPY packages/services/reticulum/avatar packages/services/reticulum/avatar
 COPY packages/services/reticulum/presence packages/services/reticulum/presence
 
 # Build the presence service binary
@@ -72,9 +73,9 @@ USER graphwiz
 # Expose port
 EXPOSE 8003
 
-# Health check
+# Health check (use GET request instead of HEAD, use 127.0.0.1 to avoid IPv6 issues)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8003/health || exit 1
+    CMD wget --no-verbose --tries=1 -O /dev/null http://127.0.0.1:8003/health || exit 1
 
 # Run the service
 CMD ["./reticulum-presence"]

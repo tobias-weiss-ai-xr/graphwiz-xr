@@ -13,6 +13,7 @@ import { AvatarConfigurator } from './avatar';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
 import { InteractiveDemoScene } from './components/InteractiveDemoScene';
 import { MediaDemoScene } from './components/MediaDemoScene';
+import { GrabDemoScene } from './components/GrabDemoScene';
 import { CameraController } from './components/CameraController';
 import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
@@ -150,6 +151,9 @@ function App() {
   // Avatar configurator state
   const [avatarConfiguratorVisible, setAvatarConfiguratorVisible] = useState(false);
   const [localAvatarConfig, setLocalAvatarConfig] = useState<AvatarConfig | null>(null);
+
+  // Grab system state
+  const grabbedEntityId = useRef<string | null>(null);
 
   // Player movement state
   const [playerPosition, setPlayerPosition] = useState<[number, number, number]>([0, 0, 0]);
@@ -367,6 +371,34 @@ function App() {
       }
     });
 
+    // Handle OBJECT_GRAB messages
+    const unsubscribeObjectGrab = wsClient.on(MessageType.OBJECT_GRAB, (message: any) => {
+      console.log('[App] ========== OBJECT_GRAB RECEIVED ==========');
+      if (message.payload) {
+        const { entityId, clientId } = message.payload;
+        console.log('[App] Entity', entityId, 'grabbed by', clientId);
+
+        // Update grab state for rendering
+        if (clientId !== myClientId) {
+          grabbedEntityId.current = entityId;
+        }
+      }
+    });
+
+    // Handle OBJECT_RELEASE messages
+    const unsubscribeObjectRelease = wsClient.on(MessageType.OBJECT_RELEASE, (message: any) => {
+      console.log('[App] ========== OBJECT_RELEASE RECEIVED ==========');
+      if (message.payload) {
+        const { entityId, clientId, velocity } = message.payload;
+        console.log('[App] Entity', entityId, 'released by', clientId, 'with velocity:', velocity);
+
+        // Clear grab state
+        if (grabbedEntityId.current === entityId) {
+          grabbedEntityId.current = null;
+        }
+      }
+    });
+
     // Cleanup on unmount
     return () => {
       unsubscribePresence();
@@ -375,6 +407,8 @@ function App() {
       unsubscribePresenceUpdate();
       unsubscribeEntitySpawn();
       unsubscribePositionUpdate();
+      unsubscribeObjectGrab();
+      unsubscribeObjectRelease();
       wsClient.disconnect();
     };
   }, []);
@@ -674,6 +708,23 @@ function App() {
       setEmojiPickerVisible(false);
     }
   }, [client]);
+
+  // Send grab/release messages
+  const sendGrabMessage = useCallback((entityId: string, action: 'grab' | 'release', velocity?: { x: number; y: number; z: number }) => {
+    if (!client) return;
+
+    const position = {
+      x: playerPosition[0],
+      y: playerPosition[1] + 1, // Approximate hand position
+      z: playerPosition[2],
+    };
+
+    if (action === 'grab') {
+      client.sendGrabMessage(entityId, position);
+    } else if (action === 'release' && velocity) {
+      client.sendReleaseMessage(entityId, position, velocity);
+    }
+  }, [client, playerPosition]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
@@ -1127,6 +1178,14 @@ function App() {
         {/* Media Demo Scene - Video and Audio Playback */}
         {client && myClientId && true && (
           <MediaDemoScene wsClient={client} myClientId={myClientId || ''} />
+        )}
+
+        {/* Grab Demo Scene - Object Grabbing System */}
+        {client && myClientId && (
+          <GrabDemoScene
+            myClientId={myClientId}
+            sendGrabMessage={sendGrabMessage}
+          />
         )}
 
         {/* Entities */}

@@ -73,9 +73,9 @@ USER graphwiz
 # Expose port
 EXPOSE 8005
 
-# Health check
+# Health check (use GET request instead of HEAD, use 127.0.0.1 to avoid IPv6 issues)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8005/health || exit 1
+    CMD wget --no-verbose --tries=1 -O /dev/null http://127.0.0.1:8005/health || exit 1
 
 # Run the service
 CMD ["./reticulum-avatar"]

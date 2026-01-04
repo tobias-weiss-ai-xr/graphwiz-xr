@@ -506,3 +506,77 @@ export class ParticleComponent {
   ) {}
 }
 
+/**
+ * Grabbable component - for objects that can be grabbed and moved
+ */
+export class GrabbableComponent {
+  public isGrabbed: boolean = false;
+  public grabbedBy: string | null = null; // clientId of who grabbed it
+  public grabOffset: Vector3 = new Vector3(0, 0, 0);
+  public grabDistance: number = 2; // distance from player when grabbed
+  public throwVelocity: Vector3 = new Vector3(0, 0, 0);
+  public lastPosition: Vector3 = new Vector3(0, 0, 0);
+  public velocitySamples: Vector3[] = [];
+
+  constructor(
+    public mass: number = 1,
+    public breakawayForce: number = 100, // force required to pull from another player
+    public maxThrowSpeed: number = 20,
+    public canBeThrown: boolean = true
+  ) {}
+
+  /**
+   * Called when object is grabbed
+   */
+  onGrab(clientId: string, offset: Vector3): void {
+    this.isGrabbed = true;
+    this.grabbedBy = clientId;
+    this.grabOffset.copy(offset);
+    this.velocitySamples = [];
+  }
+
+  /**
+   * Called when object is released
+   */
+  onRelease(): void {
+    this.isGrabbed = false;
+    this.grabbedBy = null;
+
+    // Calculate throw velocity from recent position samples
+    if (this.velocitySamples.length >= 2 && this.canBeThrown) {
+      const latest = this.velocitySamples[this.velocitySamples.length - 1];
+      const oldest = this.velocitySamples[0];
+      const dt = (this.velocitySamples.length - 1) * 0.016; // assuming 60fps
+
+      this.throwVelocity.set(
+        (latest.x - oldest.x) / dt,
+        (latest.y - oldest.y) / dt,
+        (latest.z - oldest.z) / dt
+      );
+
+      // Clamp throw velocity
+      const speed = this.throwVelocity.length();
+      if (speed > this.maxThrowSpeed) {
+        this.throwVelocity.multiplyScalar(this.maxThrowSpeed / speed);
+      }
+    } else {
+      this.throwVelocity.set(0, 0, 0);
+    }
+
+    this.velocitySamples = [];
+  }
+
+  /**
+   * Update velocity samples for throw calculation
+   */
+  recordPosition(position: Vector3): void {
+    this.lastPosition.copy(position);
+    this.velocitySamples.push(position.clone());
+
+    // Keep only last 10 samples (approx 160ms at 60fps)
+    if (this.velocitySamples.length > 10) {
+      this.velocitySamples.shift();
+    }
+  }
+}
+

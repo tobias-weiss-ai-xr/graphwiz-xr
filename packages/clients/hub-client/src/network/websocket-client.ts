@@ -243,6 +243,41 @@ export class WebSocketClient {
   }
 
   /**
+   * Send object grab message
+   */
+  sendGrabMessage(entityId: string, position: { x: number; y: number; z: number }): void {
+    const grab = {
+      entityId,
+      clientId: this.clientId!,
+      position: { ...position },
+      timestamp: Date.now(),
+    };
+
+    const message = MessageBuilder.create(32 as MessageType, grab); // OBJECT_GRAB = 32
+    this.send(message);
+  }
+
+  /**
+   * Send object release message
+   */
+  sendReleaseMessage(
+    entityId: string,
+    position: { x: number; y: number; z: number },
+    velocity: { x: number; y: number; z: number }
+  ): void {
+    const release = {
+      entityId,
+      clientId: this.clientId!,
+      position: { ...position },
+      velocity: { ...velocity },
+      timestamp: Date.now(),
+    };
+
+    const message = MessageBuilder.create(33 as MessageType, release); // OBJECT_RELEASE = 33
+    this.send(message);
+  }
+
+  /**
    * Send avatar update to sync with other players
    */
   sendAvatarUpdate(avatarConfig: {
