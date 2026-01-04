@@ -16,12 +16,14 @@ interface CameraControllerProps {
   targetPosition: [number, number, number];
   targetRotation: number;
   enabled?: boolean;
+  onCameraRotationChange?: (angle: number) => void;
 }
 
 export function CameraController({
   targetPosition,
   targetRotation,
-  enabled = true
+  enabled = true,
+  onCameraRotationChange
 }: CameraControllerProps) {
   const controlsRef = useRef<any>();
   const cameraOffset = useRef<[number, number, number]>([0, 5, 8]); // Height, back distance
@@ -66,6 +68,13 @@ export function CameraController({
 
     // Update controls
     controlsRef.current.update();
+
+    // Report camera azimuth angle back to parent for movement calculation
+    if (onCameraRotationChange && controlsRef.current) {
+      // Get the azimuth angle from orbit controls
+      const azimuth = controlsRef.current.getAzimuthalAngle();
+      onCameraRotationChange(azimuth);
+    }
   });
 
   return (

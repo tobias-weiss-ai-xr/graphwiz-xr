@@ -18,6 +18,8 @@ import { GrabDemoScene } from './components/GrabDemoScene';
 import { CameraController } from './components/CameraController';
 import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
+import { RoomBrowser, CreateRoomModal, RoomSettingsPanel, RoomButton } from './components';
+import { useRoomManager } from './hooks/useRoomManager';
 
 interface Entity {
   id: string;
@@ -153,12 +155,16 @@ function App() {
   const [avatarConfiguratorVisible, setAvatarConfiguratorVisible] = useState(false);
   const [localAvatarConfig, setLocalAvatarConfig] = useState<AvatarConfig | null>(null);
 
+  // Room manager
+  const roomManager = useRoomManager(client);
+
   // Grab system state
   const grabbedEntityId = useRef<string | null>(null);
 
   // Player movement state
   const [playerPosition, setPlayerPosition] = useState<[number, number, number]>([0, 0, 0]);
-  const [playerRotation, setPlayerRotation] = useState<number>(0); // Y-axis rotation
+  const [playerRotation, setPlayerRotation] = useState<number>(0); // Y-axis rotation (from Q/E)
+  const [cameraRotation, setCameraRotation] = useState<number>(0); // Camera azimuth angle (from mouse)
   const keysPressed = useRef<Set<string>>(new Set());
   const movementSpeed = 0.1;
   const rotationSpeed = 0.03;
@@ -551,10 +557,11 @@ function App() {
         let newX = x;
         let newZ = z;
 
-        // Calculate forward/backward and left/right based on rotation
-        const forward = [Math.sin(playerRotation), Math.cos(playerRotation)] as [number, number];
-        // Fixed: negated right vector to correct strafe direction
-        const right = [-Math.cos(playerRotation), Math.sin(playerRotation)] as [number, number];
+        // Calculate forward/backward and left/right based on CAMERA rotation (where player is looking)
+        // Use cameraRotation for WASD movement so player moves in direction they're facing
+        const forward = [Math.sin(cameraRotation), Math.cos(cameraRotation)] as [number, number];
+        // Right vector (perpendicular to forward)
+        const right = [Math.cos(cameraRotation), -Math.sin(cameraRotation)] as [number, number];
 
         // WASD movement
         if (keysPressed.current.has('w')) {
@@ -566,17 +573,17 @@ function App() {
           newZ -= forward[1] * movementSpeed;
         }
         if (keysPressed.current.has('a')) {
-          // Strafe left
-          newX += right[0] * movementSpeed;
-          newZ += right[1] * movementSpeed;
-        }
-        if (keysPressed.current.has('d')) {
-          // Strafe right
+          // Strafe left (opposite of right vector)
           newX -= right[0] * movementSpeed;
           newZ -= right[1] * movementSpeed;
         }
+        if (keysPressed.current.has('d')) {
+          // Strafe right
+          newX += right[0] * movementSpeed;
+          newZ += right[1] * movementSpeed;
+        }
 
-        // Q/E rotation
+        // Q/E rotation (still updates player model rotation)
         if (keysPressed.current.has('q')) {
           setPlayerRotation((r) => r + rotationSpeed);
         }
@@ -608,7 +615,7 @@ function App() {
     }, 1000 / 60); // 60 FPS
 
     return () => clearInterval(movementInterval);
-  }, [connected, client, myClientId]);
+  }, [connected, client, myClientId, cameraRotation]);
 
   // Update target positions for interpolation when presence events change
   useEffect(() => {
@@ -843,9 +850,9 @@ function App() {
           fontSize: 11,
         }}>
           <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Movement Controls:</div>
-          <div style={{ opacity: 0.9 }}>W/A/S/D - Move</div>
-          <div style={{ opacity: 0.9 }}>Q/E - Rotate</div>
-          <div style={{ opacity: 0.9 }}>Mouse - Look around</div>
+          <div style={{ opacity: 0.9 }}>W/A/S/D - Move in facing direction</div>
+          <div style={{ opacity: 0.9 }}>Q/E - Rotate character</div>
+          <div style={{ opacity: 0.9 }}>Mouse - Rotate camera</div>
           <div style={{ opacity: 0.9, marginTop: 4 }}>Position: {playerPosition[0].toFixed(1)}, {playerPosition[2].toFixed(1)}</div>
         </div>
         <button
@@ -1172,6 +1179,7 @@ function App() {
           targetPosition={playerPosition}
           targetRotation={playerRotation}
           enabled={true}
+          onCameraRotationChange={setCameraRotation}
         />
 
         {/* Lighting */}
@@ -1280,6 +1288,42 @@ function App() {
 
       {/* FPS Counter Overlay */}
       <FPSCounter />
+
+      {/* Room Management UI */}
+      <RoomButton
+        currentRoomId={roomManager.currentRoomId || undefined}
+        onOpenBrowser={() => roomManager.setShowBrowser(true)}
+        onOpenSettings={() => roomManager.setShowSettings(true)}
+        onLeaveRoom={roomManager.handleLeaveRoom}
+      />
+
+      <RoomBrowser
+        isOpen={roomManager.showBrowser}
+        onClose={() => roomManager.setShowBrowser(false)}
+        onJoinRoom={roomManager.handleJoinRoom}
+        onCreateRoom={() => roomManager.setShowCreateRoom(true)}
+        currentUserId={myClientId || ''}
+      />
+
+      <CreateRoomModal
+        isOpen={roomManager.showCreateRoom}
+        onClose={() => roomManager.setShowCreateRoom(false)}
+        onCreateRoom={roomManager.handleCreateRoom}
+      />
+
+      {roomManager.showSettings && roomManager.roomSettings && (
+        <RoomSettingsPanel
+          isOpen={roomManager.showSettings}
+          onClose={() => roomManager.setShowSettings(false)}
+          roomSettings={roomManager.roomSettings}
+          participants={roomManager.participants}
+          currentUserId={myClientId || ''}
+          onLeaveRoom={roomManager.handleLeaveRoom}
+          onKickParticipant={roomManager.handleKickParticipant}
+          onMuteParticipant={roomManager.handleMuteParticipant}
+          onToggleHost={roomManager.handleToggleHost}
+        />
+      )}
     </div>
   );
 }
