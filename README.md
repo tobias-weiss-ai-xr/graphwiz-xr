@@ -411,17 +411,40 @@ MPL-2.0 - See LICENSE file for details
 
 ---
 
-### 🔴 Phase 5: Admin & Moderation (PENDING)
+### 🟡 Phase 5: Admin & Moderation (IN PROGRESS)
 
 **Goal**: Build admin dashboard and moderation tools
 
-#### 5.1 Admin Client 🔴 NOT STARTED
+#### 5.1 Admin Client 🟡 FRONTEND COMPLETE
 
-- [ ] Dashboard for room management
-- [ ] User management and moderation
+- [x] Dashboard with service status monitoring
+- [x] System statistics display (rooms, users, entities, uptime)
+- [x] User management interface
+  - List users with pagination
+  - Ban/unban users
+  - Update user roles
+- [x] Room management interface
+  - List rooms with pagination
+  - Edit room configuration
+  - Close and delete rooms
+- [x] Room persistence interface
+  - Load room state by ID
+  - Save room name and description
+  - Clear room state
+- [x] Historical metrics visualization
+  - Time range selection (1h - 7 days)
+  - Summary statistics (avg/max rooms, users, latency)
+  - Graph visualization for metrics
+- [x] System logs viewer
+  - Real-time logs from all services
+  - Filter by service, level, time
+  - Export logs functionality
+- [x] Service control
+  - Restart individual services
+  - Restart all services
+  - Emergency shutdown
 - [ ] Asset library management
-- [ ] Analytics and metrics visualization
-- [ ] System health monitoring
+- [ ] Real-time analytics dashboard
 
 #### 5.2 Moderation Features 🔴 NOT STARTED
 
@@ -475,11 +498,20 @@ MPL-2.0 - See LICENSE file for details
 
 **Last Updated**: 2026-01-07
 
-**Overall Progress**: ~72% Complete
+**Overall Progress**: ~74% Complete
 
 ### Recent Updates (January 2026)
 
-- ✅ **Grab and Move Objects System**: Physics-based object interaction (NEW 2026-01-06)
+- ✅ **Admin Dashboard Frontend**: Complete admin client interface (NEW 2026-01-07)
+  - Dashboard with real-time service health monitoring
+  - User management (list, ban/unban, role assignment)
+  - Room management (list, edit, close, delete)
+  - Room persistence (save/load room state)
+  - Historical metrics with time range selection and graphs
+  - System logs viewer with filtering and export
+  - Service controls (restart, shutdown)
+  - Tab-based navigation for all admin functions
+- ✅ **Grab and Move Objects System**: Physics-based object interaction (2026-01-06)
   - Multiplayer object grabbing with physics integration
   - Real-time position synchronization during grab
   - Release physics with proper velocity transfer
@@ -567,7 +599,7 @@ MPL-2.0 - See LICENSE file for details
 - Hub client UI (core complete, most interactions done, gesture recognition pending)
 - Testing infrastructure (138 tests passing, more coverage needed)
 - Documentation (READMEs complete, API docs pending)
-- Admin dashboard (started, room management features implemented)
+- Admin dashboard (frontend complete, moderation tools pending)
 
 ### 🔴 Not Started (0%)
 
@@ -587,14 +619,16 @@ MPL-2.0 - See LICENSE file for details
 
 A modern reimplementation of the [Hubs ecosystem](https://github.com/Hubs-Foundation) with TypeScript + Rust architecture.
 
-**Next Priorities (Q1 2025)**:
+**Next Priorities (Q1 2026)**:
 
-1. Complete client interaction systems (grab, throw, gestures)
-2. Implement text chat and emoji reactions
-3. Add media playback (video, audio)
-4. Build admin dashboard MVP
-5. Implement S3 backend for storage service
-6. E2E testing and cross-browser compatibility
+1. ✅ Complete client interaction systems (grab, throw, portals)
+2. ✅ Implement text chat and emoji reactions
+3. ✅ Add media playback (video, audio)
+4. ✅ Build admin dashboard frontend
+5. **Implement in-room moderation tools** (NEXT)
+6. Build Spoke scene editor
+7. Implement S3 backend for storage service
+8. E2E testing and cross-browser compatibility
 
 ---
 
