@@ -22,7 +22,7 @@ use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;
 
 use routes::configure_routes;
-use websocket::WebSocketManager;
+use session::SessionManager;
 
 pub struct PresenceService {
     config: Config,
@@ -57,16 +57,16 @@ impl PresenceService {
 
         log::info!("Starting presence service on {}:{}", host, port);
 
-        // Optimization disabled: Agent Looper dependency removed
-        // if self.optimization.is_enabled() {
-        //     log::info!("Presence optimization enabled: Agent Looper integration active");
-        // }
+        // Create and start session manager
+        let session_manager = SessionManager::new();
+        tokio::spawn(async move {
+            session_manager.start_background_flush_task().await;
+        });
 
         HttpServer::new(move || {
             App::new()
                 .app_data(web::Data::new(self.config.clone()))
-                .app_data(web::Data::new(self.ws_manager.clone()))
-                // .app_data(web::Data::new(self.optimization.clone())) // Disabled
+                .app_data(web::Data::new(session_manager.clone()))
                 .wrap(actix_cors::Cors::permissive())
                 .wrap(reticulum_core::middleware::LoggingMiddleware)
                 .configure(configure_routes)

@@ -4,6 +4,8 @@ use reticulum_core::Result;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
+use chrono::{DateTime, Utc, Duration};
+use serde::{Serialize, Deserialize};
 
 #[derive(Clone)]
 pub struct ClientSession {
@@ -11,8 +13,149 @@ pub struct ClientSession {
     pub client_id: String,
     pub user_id: String,
     pub room_id: Option<String>,
-    pub connected_at: chrono::DateTime<chrono::Utc>,
-    pub last_heartbeat: chrono::DateTime<chrono::Utc>,
+    pub connected_at: DateTime<Utc>,
+    pub last_heartbeat: DateTime<Utc>,
+}
+
+pub struct SessionManager {
+    sessions: Arc<RwLock<HashMap<String, ClientSession>>>,
+    room_sessions: Arc<RwLock<HashMap<String, Vec<String>>>>, // room_id -> session_ids
+    pending_messages: Arc<RwLock<HashMap<String, Vec<serde_json::Value>>>>, // session_id -> pending messages
+    batch_size: usize,
+    batch_timeout: Duration,
+}
+
+impl SessionManager {
+    pub fn new() -> Self {
+        Self {
+            sessions: Arc::new(RwLock::new(HashMap::new())),
+            room_sessions: Arc::new(RwLock::new(HashMap::new())),
+            pending_messages: Arc::new(RwLock::new(HashMap::new())),
+            batch_size: 50, // Default batch size
+            batch_timeout: Duration::from_millis(50), // Flush every 50ms
+        }
+    }
+
+    /// Register a new client session
+    pub async fn register_session(&self, session: ClientSession) -> Result<()> {
+        let mut sessions = self.sessions.write().await;
+        let session_id = session.session_id.clone();
+
+        // Add to sessions map
+        sessions.insert(session_id.clone(), session.clone());
+
+        // Add to room if applicable
+        if let Some(ref room_id) = session.room_id {
+            let mut room_sessions = self.room_sessions.write().await;
+            room_sessions.entry(room_id.clone())
+                .or_insert_with(Vec::new())
+                .push(session_id);
+        }
+
+        // Initialize pending messages for this session
+        let mut pending = self.pending_messages.write().await;
+        pending.insert(session_id.clone(), Vec::new());
+
+        Ok(())
+    }
+
+    /// Unregister a session
+    pub async fn unregister_session(&self, session_id: &str) -> Result<Option<ClientSession>> {
+        let mut sessions = self.sessions.write().await;
+        let session = sessions.remove(session_id);
+
+        // Remove from room sessions
+        if let Some(ref s) = session {
+            if let Some(ref room_id) = s.room_id {
+                let mut room_sessions = self.room_sessions.write().await;
+                if let Some(session_ids) = room_sessions.get_mut(room_id) {
+                    session_ids.retain(|id| id != &session_id);
+                }
+            }
+        }
+
+        // Clean up pending messages
+        let mut pending = self.pending_messages.write().await;
+        pending.remove(session_id);
+
+        Ok(session)
+    }
+
+    /// Add message to batch (returns true if batch should be flushed)
+    pub async fn add_to_batch(&self, session_id: &str, message: serde_json::Value) -> bool {
+        let mut pending = self.pending_messages.write().await;
+
+        // Check if session exists
+        let sessions = self.sessions.read().await;
+        if !sessions.contains_key(session_id) {
+            log::warn!("Session {} not found for batching", session_id);
+            return false;
+        }
+
+        // Get or create pending messages
+        let should_flush = if let Some(messages) = pending.get_mut(session_id) {
+            messages.push(message);
+            messages.len() >= self.batch_size
+        } else {
+            pending.insert(session_id.to_string(), vec![message]);
+            true // New batch created
+        };
+
+        Ok(())
+    }
+
+    /// Get batched messages for a session
+    pub async fn get_batched_messages(&self, session_id: &str) -> Vec<serde_json::Value> {
+        let pending = self.pending_messages.read().await;
+
+        if let Some(messages) = pending.get(session_id) {
+            messages.clone()
+        } else {
+            vec![]
+        }
+    }
+
+    /// Flush all pending messages for a session
+    pub async fn flush_session(&self, session_id: &str) {
+        let mut pending = self.pending_messages.write().await;
+
+        if let Some(messages) = pending.remove(session_id) {
+            if !messages.is_empty() {
+                log::info!("Flushing {} messages for session {}", messages.len(), session_id);
+
+                // In a real implementation, send to clients here
+                // For now, we just log them
+                for msg in messages {
+                    log::info!("Session {} message: {:?}", session_id, msg);
+                }
+            }
+        }
+    }
+
+    /// Flush all pending messages (called periodically)
+    pub async fn flush_all(&self) {
+        let pending = self.pending_messages.read().await;
+        let session_ids: Vec<_> = pending.keys().cloned().collect();
+
+        for session_id in session_ids {
+            self.flush_session(&session_id).await;
+        }
+    }
+
+    /// Start background task to flush messages periodically
+    pub fn start_background_flush_task(&self) -> tokio::task::JoinHandle<()> {
+        let pending_messages = self.pending_messages.clone();
+        let batch_timeout = self.batch_timeout;
+
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(batch_timeout);
+
+            loop {
+                interval.tick().await;
+                pending_messages.flush_all().await;
+            }
+        })
+    }
 }
 
 pub struct SessionManager {
