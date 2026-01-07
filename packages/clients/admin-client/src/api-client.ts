@@ -841,3 +841,97 @@ export async function clearHistoricalMetrics(): Promise<{ success: boolean; mess
     return { success: false, message: `${error}` };
   }
 }
+
+/**
+ * Room persistence types
+ */
+export interface RoomState {
+  id: string;
+  name: string;
+  description?: string;
+  created_at: string;
+  updated_at: string;
+  data?: Record<string, unknown>;
+}
+
+export interface LoadRoomResponse {
+  success: boolean;
+  message?: string;
+  room_state?: RoomState | null;
+}
+
+export interface SaveRoomRequest {
+  name?: string;
+  description?: string;
+  data?: Record<string, unknown>;
+}
+
+/**
+ * Fetch room state by room ID
+ */
+export async function fetchRoomState(roomId: string): Promise<Response> {
+  try {
+    const response = await fetch(`http://localhost:8012/api/v1/rooms/${roomId}/state`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to fetch room state`);
+    }
+
+    return response;
+  } catch (error) {
+    console.error('Failed to fetch room state:', error);
+    throw error;
+  }
+}
+
+/**
+ * Save room state
+ */
+export async function saveRoomState(roomId: string, request: SaveRoomRequest): Promise<Response> {
+  try {
+    const response = await fetch(`http://localhost:8012/api/v1/rooms/${roomId}/state`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to save room state`);
+    }
+
+    return response;
+  } catch (error) {
+    console.error('Failed to save room state:', error);
+    throw error;
+  }
+}
+
+/**
+ * Clear room state
+ */
+export async function clearRoomState(
+  roomId: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const response = await fetch(`http://localhost:8012/api/v1/rooms/${roomId}/state`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to clear room state`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; message: string };
+  } catch (error) {
+    console.error('Failed to clear room state:', error);
+    return { success: false, message: `${error}` };
+  }
+}

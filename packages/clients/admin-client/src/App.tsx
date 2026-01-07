@@ -12,6 +12,7 @@ import LogsViewer from './LogsViewer';
 import RestartModal from './RestartModal';
 import UserManagement from './UserManagement';
 import RoomManagement from './RoomManagement';
+import RoomPersistence from './RoomPersistence';
 import HistoricalMetrics from './HistoricalMetrics';
 
 interface ServiceStatusUI {
@@ -30,54 +31,48 @@ const SERVICE_PORTS: Record<string, number> = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'rooms' | 'metrics'>(
-    'dashboard'
-  );
-  const [showLogsViewer, setShowLogsViewer] = useState(false);
-  const [showRestartModal, setShowRestartModal] = useState(false);
   const [services, setServices] = useState<ServiceStatusUI[]>([
-    { name: 'Auth', url: `http://localhost:${SERVICE_PORTS.auth}`, status: 'loading' },
-    { name: 'Hub', url: `http://localhost:${SERVICE_PORTS.hub}`, status: 'loading' },
-    { name: 'Presence', url: `http://localhost:${SERVICE_PORTS.presence}`, status: 'loading' },
-    { name: 'SFU', url: `http://localhost:${SERVICE_PORTS.sfu}`, status: 'loading' },
-    { name: 'Storage', url: `http://localhost:${SERVICE_PORTS.storage}`, status: 'loading' }
+    { name: 'Auth', url: 'http://localhost:8011', status: 'loading' },
+    { name: 'Hub', url: 'http://localhost:8012', status: 'loading' },
+    { name: 'Presence', url: 'http://localhost:8013', status: 'loading' },
+    { name: 'SFU', url: 'http://localhost:8014', status: 'loading' },
+    { name: 'Storage', url: 'http://localhost:8015', status: 'loading' }
   ]);
-
   const [stats, setStats] = useState<SystemStatistics>({
-    rooms: { total: 0, active: 0, private: 0 },
-    users: { total: 0, active: 0, new_today: 0 },
+    rooms: { active: 0, total: 0, private: 0 },
+    users: { active: 0, total: 0, new_today: 0 },
     entities: { total: 0, by_type: {} },
     server_start_time: new Date().toISOString()
   });
-
   const [loadingStats, setLoadingStats] = useState(false);
+  const [activeTab, setActiveTab] = useState<
+    'dashboard' | 'users' | 'rooms' | 'persistence' | 'metrics'
+  >('dashboard');
   const [restartingServices, setRestartingServices] = useState<Map<string, boolean>>(new Map());
+  const [showLogsViewer, setShowLogsViewer] = useState(false);
+  const [showRestartModal, setShowRestartModal] = useState(false);
 
   useEffect(() => {
     const checkHealth = async () => {
-      const servicesData = ['auth', 'hub', 'presence', 'sfu', 'storage'] as const;
-
       const results = await Promise.all(
-        servicesData.map(async (serviceName) => {
+        Object.entries(SERVICE_PORTS).map(async ([serviceName, port]) => {
           try {
             const start = Date.now();
-            const health = await fetchServiceHealth(serviceName);
+            const health = await fetchServiceHealth(
+              serviceName as 'auth' | 'hub' | 'presence' | 'sfu' | 'storage'
+            );
             const latency = Date.now() - start;
-            const port = SERVICE_PORTS[serviceName];
             return {
               name: serviceName.charAt(0).toUpperCase() + serviceName.slice(1),
               url: `http://localhost:${port}`,
               status: health.status,
               latency
             } as ServiceStatusUI;
-          } catch (error) {
-            console.error(`Failed to check health for ${serviceName}:`, error);
-            const port = SERVICE_PORTS[serviceName];
+          } catch {
             return {
               name: serviceName.charAt(0).toUpperCase() + serviceName.slice(1),
               url: `http://localhost:${port}`,
-              status: 'error',
-              timestamp: new Date().toISOString()
+              status: 'error' as const
             } as ServiceStatusUI;
           }
         })
@@ -357,6 +352,16 @@ export default function App() {
             Rooms
           </button>
           <button
+            onClick={() => setActiveTab('persistence')}
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === 'persistence'
+                ? 'text-blue-400 border-b-2 border-blue-400'
+                : 'text-gray-400 hover:text-white border-transparent hover:border-gray-500'
+            }`}
+          >
+            Persistence
+          </button>
+          <button
             onClick={() => setActiveTab('metrics')}
             className={`px-4 py-2 font-medium text-sm ${
               activeTab === 'metrics'
@@ -472,8 +477,11 @@ export default function App() {
       {/* Rooms Tab Content */}
       {activeTab === 'rooms' && <RoomManagement />}
 
+      {/* Persistence Tab Content */}
+      {activeTab === 'persistence' && <RoomPersistence />}
+
       {/* Metrics Tab Content */}
-      {activeTab === 'metrics' && <HistorialMetrics />}
+      {activeTab === 'metrics' && <HistoricalMetrics />}
 
       {/* Logs Modal - shared across all tabs */}
       {showLogsViewer && (

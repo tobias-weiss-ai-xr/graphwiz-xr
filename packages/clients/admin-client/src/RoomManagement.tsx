@@ -1,12 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  fetchRooms,
-  updateRoomConfig,
-  closeRoom,
-  deleteRoom,
-  type RoomListResponse,
-  type RoomInfo
-} from './api-client';
+import { fetchRooms, updateRoomConfig, closeRoom, deleteRoom, type RoomInfo } from './api-client';
 
 export default function RoomManagement() {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
@@ -37,7 +30,7 @@ export default function RoomManagement() {
   const handleEdit = async (room: RoomInfo) => {
     const name = prompt('Room name:', room.name) || room.name;
     const description = prompt('Room description:', room.description || '') || room.description;
-    const maxPlayers = prompt('Max players:', String(room.maxPlayers));
+    const maxPlayers = prompt('Max players:', String(room.max_players));
     const isPrivate = confirm('Make room private?');
 
     if (!name) {
@@ -45,7 +38,12 @@ export default function RoomManagement() {
     }
 
     try {
-      await updateRoomConfig(room.id, { name, description, maxPlayers, isPrivate });
+      await updateRoomConfig(room.id, {
+        name,
+        description,
+        max_players: Number(maxPlayers),
+        is_private: isPrivate
+      });
       await loadRooms(page);
       alert(`Room ${room.name} updated successfully`);
       setEditingRoom(null);
@@ -56,7 +54,9 @@ export default function RoomManagement() {
   };
 
   const handleClose = async (roomId: number, roomName: string) => {
-    if (!confirm(`Are you sure you want to close room "${roomName}"? Users will be disconnected.`)) {
+    if (
+      !confirm(`Are you sure you want to close room "${roomName}"? Users will be disconnected.`)
+    ) {
       return;
     }
 
@@ -71,7 +71,11 @@ export default function RoomManagement() {
   };
 
   const handleDelete = async (roomId: number, roomName: string) => {
-    if (!confirm(`Are you sure you want to PERMANENTLY DELETE room "${roomName}"? This cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to PERMANENTLY DELETE room "${roomName}"? This cannot be undone.`
+      )
+    ) {
       return;
     }
 
@@ -101,26 +105,48 @@ export default function RoomManagement() {
             <table className="min-w-full divide-y divide-gray-700">
               <thead className="bg-gray-900">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Room ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Players</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Created By</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Created</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Room ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Players
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Type
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Created By
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Created
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-gray-800 divide-y divide-gray-700">
                 {rooms.map((room) => (
                   <tr key={room.id} className="hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{room.id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-mono">{room.room_id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-mono">
+                      {room.room_id}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-medium">
                       {room.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{room.max_players}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      {room.max_players}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <span
                         className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -132,16 +158,16 @@ export default function RoomManagement() {
                         {room.is_private ? 'Private' : 'Public'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{room.created_by}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      {room.created_by}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                       {new Date(room.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <span
                         className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          room.is_active
-                            ? 'bg-green-900 text-green-200'
-                            : 'bg-red-900 text-red-200'
+                          room.is_active ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'
                         }`}
                       >
                         {room.is_active ? 'Active' : 'Closed'}
@@ -224,7 +250,9 @@ export default function RoomManagement() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Description
+                  </label>
                   <textarea
                     defaultValue={editingRoom.description || ''}
                     rows={3}
@@ -233,7 +261,9 @@ export default function RoomManagement() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Max Players</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Max Players
+                  </label>
                   <input
                     type="number"
                     defaultValue={String(editingRoom.max_players)}
@@ -280,11 +310,18 @@ export default function RoomManagement() {
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-white mb-4">Confirm Delete</h3>
                 <p className="text-gray-300 mb-6">
-                  Are you sure you want to permanently delete room "{rooms.find(r => r.id === showDeleteConfirm)?.name}"? This action cannot be undone.
+                  Are you sure you want to permanently delete room "
+                  {rooms.find((r) => r.id === showDeleteConfirm)?.name}"? This action cannot be
+                  undone.
                 </p>
                 <div className="flex justify-end space-x-3">
                   <button
-                    onClick={() => handleDelete(showDeleteConfirm, rooms.find(r => r.id === showDeleteConfirm)?.name || '')}
+                    onClick={() =>
+                      handleDelete(
+                        showDeleteConfirm,
+                        rooms.find((r) => r.id === showDeleteConfirm)?.name || ''
+                      )
+                    }
                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium"
                   >
                     Yes, Delete
@@ -298,6 +335,7 @@ export default function RoomManagement() {
                 </div>
               </div>
             </div>
+          </div>
         </div>
       )}
     </div>

@@ -14,7 +14,7 @@ export default function HistoricalMetrics() {
       setMetrics(response.summary);
       // Generate mock historical data for visualization
       const mockHistory: MetricDataPoint[] = Array.from({ length: timeRange }, (_, i) => ({
-        timestamp: new Date(Date.now() - i * 60 * 60 * 1000),
+        timestamp: new Date(Date.now() - i * 60 * 60 * 1000).toISOString(),
         active_rooms: Math.floor(10 + Math.random() * 15),
         active_users: Math.floor(20 + Math.random() * 30),
         total_entities: Math.floor(100 + Math.random() * 50),
