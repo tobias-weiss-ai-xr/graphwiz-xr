@@ -18,6 +18,7 @@ pub struct Model {
     pub created_at: DateTime,
     pub updated_at: DateTime,
     pub is_active: bool,
+    pub role: Option<String>, // 'USER', 'MODERATOR', 'ADMIN'
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -35,6 +36,7 @@ pub struct User {
     pub bio: Option<String>,
     pub created_at: DateTime,
     pub is_active: bool,
+    pub role: Option<String>,
 }
 
 impl From<Model> for User {
@@ -47,6 +49,7 @@ impl From<Model> for User {
             bio: model.bio,
             created_at: model.created_at,
             is_active: model.is_active,
+            role: model.role,
         }
     }
 }

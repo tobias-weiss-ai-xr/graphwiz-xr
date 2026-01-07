@@ -299,3 +299,224 @@ pub async fn clear_logs(
         "message": format!("Logs cleared for service: {}", service_name)
     }))
 }
+
+// ============== USER MANAGEMENT ENDPOINTS ==============
+
+/// List all users with their roles
+pub async fn list_users(
+    config: web::Data<Config>,
+    query: web::Query<UserListQuery>,
+) -> HttpResponse {
+    // Connect to database
+    let db = match db::connect(&config).await {
+        Ok(db) => db,
+        Err(e) => {
+            log::error!("Database connection failed: {}", e);
+            return HttpResponse::InternalServerError().json(json!({
+                "error": "database_error",
+                "message": "Failed to connect to database"
+            }));
+        }
+    };
+
+    let page = query.page.unwrap_or(1).max(1);
+    let per_page = query.per_page.unwrap_or(50).min(100);
+    let offset = (page - 1) * per_page;
+
+    // Fetch users with roles
+    match reticulum_core::RoleModel::list_all_with_roles(&db).await {
+        Ok(users_with_roles) => {
+            // Get total count
+            let total = users_with_roles.len();
+
+            // Apply pagination
+            let paginated: Vec<_> = users_with_roles
+                .into_iter()
+                .skip(offset as usize)
+                .take(per_page as usize)
+                .collect();
+
+            HttpResponse::Ok().json(json!({
+                "users": paginated,
+                "total": total,
+                "page": page,
+                "per_page": per_page,
+                "total_pages": (total as f64 / per_page as f64).ceil() as i64
+            }))
+        }
+        Err(e) => {
+            log::error!("Failed to list users: {}", e);
+            HttpResponse::InternalServerError().json(json!({
+                "error": "internal_error",
+                "message": "Failed to retrieve users"
+            }))
+        }
+    }
+}
+
+/// Ban/unban user (deactivate/activate)
+pub async fn toggle_user_status(
+    config: web::Data<Config>,
+    path: web::Path<i32>,
+    body: web::Json<ToggleUserRequest>,
+) -> HttpResponse {
+    let user_id = path.into_inner();
+
+    // Connect to database
+    let db = match db::connect(&config).await {
+        Ok(db) => db,
+        Err(e) => {
+            log::error!("Database connection failed: {}", e);
+            return HttpResponse::InternalServerError().json(json!({
+                "error": "database_error",
+                "message": "Failed to connect to database"
+            }));
+        }
+    };
+
+    let now = chrono::Utc::now().naive_utc();
+
+    match reticulum_core::UserModel::find_by_id(&db, user_id).await {
+        Ok(Some(mut user)) => {
+            let mut active_model: reticulum_core::users::ActiveModel = user.into();
+            active_model.is_active = sea_orm::ActiveValue::Set(body.is_active);
+            active_model.updated_at = sea_orm::ActiveValue::Set(now);
+
+            match active_model.update(&db).await {
+                Ok(updated_user) => {
+                    log::info!("User {} status changed to: {}", user_id, body.is_active);
+                    HttpResponse::Ok().json(json!({
+                        "message": format!("User {} {}", user_id, if body.is_active { "activated" } else { "banned" }),
+                        "user_id": user_id,
+                        "is_active": body.is_active
+                    }))
+                }
+                Err(e) => {
+                    log::error!("Failed to update user status: {}", e);
+                    HttpResponse::InternalServerError().json(json!({
+                        "error": "internal_error",
+                        "message": "Failed to update user status"
+                    }))
+                }
+            }
+        }
+        Ok(None) => {
+            HttpResponse::NotFound().json(json!({
+                "error": "not_found",
+                "message": format!("User {} not found", user_id)
+            }))
+        }
+        Err(e) => {
+            log::error!("Failed to find user: {}", e);
+            HttpResponse::InternalServerError().json(json!({
+                "error": "internal_error",
+                "message": "Failed to retrieve user"
+            }))
+        }
+    }
+}
+
+/// Update user role
+pub async fn update_user_role(
+    config: web::Data<Config>,
+    path: web::Path<i32>,
+    body: web::Json<UpdateRoleRequest>,
+) -> HttpResponse {
+    let user_id = path.into_inner();
+
+    // Connect to database
+    let db = match db::connect(&config).await {
+        Ok(db) => db,
+        Err(e) => {
+            log::error!("Database connection failed: {}", e);
+            return HttpResponse::InternalServerError().json(json!({
+                "error": "database_error",
+                "message": "Failed to connect to database"
+            }));
+        }
+    };
+
+    // Validate role
+    let user_role = match reticulum_core::UserRole::from_str(&body.role) {
+        Ok(role) => role,
+        Err(e) => {
+            return HttpResponse::BadRequest().json(json!({
+                "error": "validation_error",
+                "message": e
+            }));
+        }
+    };
+
+    // Grant role to user
+    match reticulum_core::RoleModel::grant_role(&db, user_id, user_role, body.granted_by).await {
+        Ok(role_assignment) => {
+            log::info!("Role {} granted to user {} by {}", body.role, user_id, body.granted_by);
+            HttpResponse::Ok().json(json!({
+                "message": format!("Role '{}' assigned to user {}", body.role, user_id),
+                "role_assignment": role_assignment
+            }))
+        }
+        Err(e) => {
+            log::error!("Failed to update user role: {}", e);
+            HttpResponse::InternalServerError().json(json!({
+                "error": "internal_error",
+                "message": "Failed to update user role"
+            }))
+        }
+    }
+}
+
+/// Revoke user role
+pub async fn revoke_user_role(
+    config: web::Data<Config>,
+    path: web::Path<i32>,
+) -> HttpResponse {
+    let user_id = path.into_inner();
+
+    // Connect to database
+    let db = match db::connect(&config).await {
+        Ok(db) => db,
+        Err(e) => {
+            log::error!("Database connection failed: {}", e);
+            return HttpResponse::InternalServerError().json(json!({
+                "error": "database_error",
+                "message": "Failed to connect to database"
+            }));
+        }
+    };
+
+    match reticulum_core::RoleModel::revoke_role(&db, user_id).await {
+        Ok(_) => {
+            log::info!("Role revoked from user {}", user_id);
+            HttpResponse::Ok().json(json!({
+                "message": format!("Role revoked from user {}", user_id)
+            }))
+        }
+        Err(e) => {
+            log::error!("Failed to revoke user role: {}", e);
+            HttpResponse::InternalServerError().json(json!({
+                "error": "internal_error",
+                "message": "Failed to revoke user role"
+            }))
+        }
+    }
+}
+
+// Query parameter types for user listing
+#[derive(Debug, Deserialize)]
+pub struct UserListQuery {
+    pub page: Option<i64>,
+    pub per_page: Option<i64>,
+}
+
+// Request types for user management
+#[derive(Debug, Deserialize, Validate)]
+pub struct ToggleUserRequest {
+    pub is_active: bool,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct UpdateRoleRequest {
+    pub role: String,
+    pub granted_by: i32,
+}

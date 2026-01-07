@@ -10,6 +10,7 @@ pub mod jwt;
 pub mod log_store;
 pub mod middleware;
 pub mod models;
+pub mod metrics;
 
 pub use auth::{hash_password, verify_password, validate_password_strength, PasswordHasherWrapper};
 pub use config::Config;
@@ -19,3 +20,4 @@ pub use log_store::{add_log, get_log_store, LogEntry, LogLevel, LogStore, LogsQu
 pub use middleware::{AuthUser, OptionalAuthUser};
 pub use models::{OAuthProvider};
 pub use sea_orm::DatabaseConnection;
+pub use metrics::{get_metrics, add_metrics_point, clear_metrics, MetricsSummary, MetricDataPoint};

@@ -111,4 +111,16 @@ impl RoomModel {
         let result = model.insert(db).await?;
         Ok(Room::from(result))
     }
+
+    pub async fn list_all(db: &DatabaseConnection) -> crate::Result<Vec<Room>> {
+        let results = Entity::find()
+            .all(db)
+            .await?;
+        Ok(results.into_iter().map(Room::from).collect())
+    }
+
+    pub async fn delete_by_id(db: &DatabaseConnection, id: i32) -> crate::Result<()> {
+        Entity::delete_by_id(id).exec(db).await?;
+        Ok(())
+    }
 }

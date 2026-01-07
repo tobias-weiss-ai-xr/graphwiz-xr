@@ -11,6 +11,7 @@ pub mod models;
 pub mod oauth;
 pub mod routes;
 pub mod session;
+pub mod metrics_handlers;
 // pub mod optimization;  // Disabled: Agent Looper dependency removed
 
 use actix_web::{web, App, HttpServer};

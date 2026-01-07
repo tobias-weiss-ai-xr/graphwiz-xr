@@ -10,6 +10,9 @@ import {
 } from './api-client';
 import LogsViewer from './LogsViewer';
 import RestartModal from './RestartModal';
+import UserManagement from './UserManagement';
+import RoomManagement from './RoomManagement';
+import HistoricalMetrics from './HistoricalMetrics';
 
 interface ServiceStatusUI {
   name: string;
@@ -27,6 +30,9 @@ const SERVICE_PORTS: Record<string, number> = {
 };
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'rooms' | 'metrics'>(
+    'dashboard'
+  );
   const [showLogsViewer, setShowLogsViewer] = useState(false);
   const [showRestartModal, setShowRestartModal] = useState(false);
   const [services, setServices] = useState<ServiceStatusUI[]>([
@@ -317,95 +323,159 @@ export default function App() {
         <p className="text-gray-400">System Administration Dashboard</p>
       </header>
 
-      {/* Service Status */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Service Status</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {services.map((service) => (
-            <div key={service.name} className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-medium">{service.name}</h3>
-                <StatusIndicator status={service.status} />
+      {/* Tab Navigation */}
+      <div className="mb-8">
+        <div className="flex space-x-1 border-b border-gray-700">
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === 'dashboard'
+                ? 'text-blue-400 border-b-2 border-blue-400'
+                : 'text-gray-400 hover:text-white border-transparent hover:border-gray-500'
+            }`}
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === 'users'
+                ? 'text-blue-400 border-b-2 border-blue-400'
+                : 'text-gray-400 hover:text-white border-transparent hover:border-gray-500'
+            }`}
+          >
+            Users
+          </button>
+          <button
+            onClick={() => setActiveTab('rooms')}
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === 'rooms'
+                ? 'text-blue-400 border-b-2 border-blue-400'
+                : 'text-gray-400 hover:text-white border-transparent hover:border-gray-500'
+            }`}
+          >
+            Rooms
+          </button>
+          <button
+            onClick={() => setActiveTab('metrics')}
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === 'metrics'
+                ? 'text-blue-400 border-b-2 border-blue-400'
+                : 'text-gray-400 hover:text-white border-transparent hover:border-gray-500'
+            }`}
+          >
+            Metrics
+          </button>
+        </div>
+      </div>
+
+      {/* Dashboard Tab Content */}
+      {activeTab === 'dashboard' && (
+        <>
+          {/* Service Status */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Service Status</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              {services.map((service) => (
+                <div
+                  key={service.name}
+                  className="bg-gray-800 rounded-lg p-6 border border-gray-700"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-medium">{service.name}</h3>
+                    <StatusIndicator status={service.status} />
+                  </div>
+                  <p className="text-sm text-gray-400">{service.url}</p>
+                  {service.latency !== undefined && service.status === 'healthy' && (
+                    <p className="text-sm text-green-400 mt-2">{service.latency}ms</p>
+                  )}
+                  {service.status === 'error' && (
+                    <p className="text-sm text-red-400 mt-2">Unavailable</p>
+                  )}
+                  {service.status === 'restarting' && (
+                    <p className="text-sm text-amber-400 mt-2">Restarting...</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* System Statistics */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">System Statistics</h2>
+            {loadingStats && (
+              <div className="text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-t-2 border-gray-400"></div>
+                <p className="mt-4 text-gray-400">Loading statistics...</p>
               </div>
-              <p className="text-sm text-gray-400">{service.url}</p>
-              {service.latency !== undefined && service.status === 'healthy' && (
-                <p className="text-sm text-green-400 mt-2">{service.latency}ms</p>
-              )}
-              {service.status === 'error' && (
-                <p className="text-sm text-red-400 mt-2">Unavailable</p>
-              )}
-              {service.status === 'restarting' && (
-                <p className="text-sm text-amber-400 mt-2">Restarting...</p>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
+            )}
+            {!loadingStats && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                  <h3 className="text-lg font-medium mb-2">Active Rooms</h3>
+                  <p className="text-4xl font-bold text-blue-400">{stats.rooms.active}</p>
+                  <p className="text-sm text-gray-400">Total: {stats.rooms.total}</p>
+                </div>
+                <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                  <h3 className="text-lg font-medium mb-2">Active Users</h3>
+                  <p className="text-4xl font-bold text-green-400">{stats.users.active}</p>
+                  <p className="text-sm text-gray-400">Total: {stats.users.total}</p>
+                </div>
+                <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                  <h3 className="text-lg font-medium mb-2">Total Entities</h3>
+                  <p className="text-4xl font-bold text-purple-400">{stats.entities.total}</p>
+                </div>
+                <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                  <h3 className="text-lg font-medium mb-2">Uptime</h3>
+                  <p className="text-4xl font-bold text-yellow-400">{calculateUptime()}</p>
+                  <p className="text-sm text-gray-400">
+                    Started: {new Date(stats.server_start_time).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            )}
+          </section>
 
-      {/* System Statistics */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">System Statistics</h2>
-        {loadingStats && (
-          <div className="text-center py-8">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-t-2 border-gray-400"></div>
-            <p className="mt-4 text-gray-400">Loading statistics...</p>
-          </div>
-        )}
-        {!loadingStats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-medium mb-2">Active Rooms</h3>
-              <p className="text-4xl font-bold text-blue-400">{stats.rooms.active}</p>
-              <p className="text-sm text-gray-400">Total: {stats.rooms.total}</p>
+          {/* Quick Actions */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition"
+                disabled={loadingStats}
+                onClick={() => setShowLogsViewer(true)}
+              >
+                View Logs
+              </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-600 text-white font-medium py-3 px-6 rounded-lg transition"
+                disabled={loadingStats}
+                onClick={() => setShowRestartModal(true)}
+              >
+                Restart Services
+              </button>
+              <button
+                className="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition"
+                disabled={loadingStats}
+                onClick={handleEmergencyShutdown}
+              >
+                Emergency Shutdown
+              </button>
             </div>
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-medium mb-2">Active Users</h3>
-              <p className="text-4xl font-bold text-green-400">{stats.users.active}</p>
-              <p className="text-sm text-gray-400">Total: {stats.users.total}</p>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-medium mb-2">Total Entities</h3>
-              <p className="text-4xl font-bold text-purple-400">{stats.entities.total}</p>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-medium mb-2">Uptime</h3>
-              <p className="text-4xl font-bold text-yellow-400">{calculateUptime()}</p>
-              <p className="text-sm text-gray-400">
-                Started: {new Date(stats.server_start_time).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        )}
-      </section>
+          </section>
+        </>
+      )}
 
-      {/* Quick Actions */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition"
-            disabled={loadingStats}
-            onClick={() => setShowLogsViewer(true)}
-          >
-            View Logs
-          </button>
-          <button
-            className="bg-gray-700 hover:bg-gray-600 text-white font-medium py-3 px-6 rounded-lg transition"
-            disabled={loadingStats}
-            onClick={() => setShowRestartModal(true)}
-          >
-            Restart Services
-          </button>
-          <button
-            className="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition"
-            disabled={loadingStats}
-            onClick={handleEmergencyShutdown}
-          >
-            Emergency Shutdown
-          </button>
-        </div>
-      </section>
+      {/* Users Tab Content */}
+      {activeTab === 'users' && <UserManagement />}
 
+      {/* Rooms Tab Content */}
+      {activeTab === 'rooms' && <RoomManagement />}
+
+      {/* Metrics Tab Content */}
+      {activeTab === 'metrics' && <HistorialMetrics />}
+
+      {/* Logs Modal - shared across all tabs */}
       {showLogsViewer && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 overflow-y-auto">
           <div className="min-h-screen px-4 flex items-center justify-center">
@@ -429,6 +499,7 @@ export default function App() {
         </div>
       )}
 
+      {/* Restart Modal - shared across all tabs */}
       {showRestartModal && (
         <RestartModal
           isOpen={showRestartModal}

@@ -450,7 +450,7 @@ function applyFilters(entries: LogEntry[], query: LogsQuery): LogEntry[] {
 }
 
 /**
- * Export logs as JSON
+ *  * Export logs as JSON
  */
 export async function exportLogs(query: LogsQuery = {}): Promise<string> {
   const response = await fetchLogs({ ...query, perPage: 10000 });
@@ -462,4 +462,382 @@ export async function exportLogs(query: LogsQuery = {}): Promise<string> {
   };
 
   return JSON.stringify(exportData, null, 2);
+}
+
+/**
+ *  * List users with their roles (admin)
+ */
+export interface UserListResponse {
+  users: UserWithRole[];
+  total: number;
+  page: number;
+  perPage: number;
+  totalPages: number;
+}
+
+export interface UserWithRole {
+  id: number;
+  display_name: string;
+  email: string;
+  avatar_url?: string;
+  bio?: string;
+  created_at: string;
+  is_active: boolean;
+  role: string | null;
+}
+
+export async function fetchUsers(
+  page: number = 1,
+  perPage: number = 50,
+  search?: string
+): Promise<UserListResponse> {
+  try {
+    const params = new URLSearchParams();
+    params.append('page', String(page));
+    params.append('per_page', String(perPage));
+    if (search) params.append('search', search);
+
+    const response = await fetch(`http://localhost:8011/api/v1/admin/users?${params}`, {
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to fetch users`);
+    }
+
+    const data = await response.json();
+    return data as UserListResponse;
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+    return {
+      users: [],
+      total: 0,
+      page: 1,
+      perPage: 50,
+      totalPages: 0
+    };
+  }
+}
+
+/**
+ *  * Toggle user active status (ban/unban)
+ */
+export async function toggleUserStatus(
+  userId: number,
+  is_active: boolean
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const response = await fetch(`http://localhost:8011/api/v1/admin/users/${userId}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_active }),
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to update user status`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; message: string };
+  } catch (error) {
+    console.error('Failed to toggle user status:', error);
+    return { success: false, message: `${error}` };
+  }
+}
+
+/**
+ *  * Update user role
+ */
+export async function updateUserRole(
+  userId: number,
+  role: string,
+  granted_by: number
+): Promise<{ success: boolean; message: string; role_assignment: any }> {
+  try {
+    const response = await fetch(`http://localhost:8011/api/v1/admin/users/${userId}/role`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role, granted_by }),
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to update user role`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; message: string; role_assignment: any };
+  } catch (error) {
+    console.error('Failed to update user role:', error);
+    return { success: false, message: `${error}`, role_assignment: null };
+  }
+}
+
+/**
+ *  * Revoke user role
+ */
+export async function revokeUserRole(
+  userId: number
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const response = await fetch(`http://localhost:8011/api/v1/admin/users/${userId}/role`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to revoke user role`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; message: string };
+  } catch (error) {
+    console.error('Failed to revoke user role:', error);
+    return { success: false, message: `${error}` };
+  }
+}
+
+/**
+ *  * List rooms (admin view)
+ */
+export interface RoomListResponse {
+  rooms: RoomInfo[];
+  total: number;
+  page: number;
+  perPage: number;
+  totalPages: number;
+}
+
+export interface RoomInfo {
+  id: number;
+  room_id: string;
+  name: string;
+  description?: string;
+  max_players: number;
+  is_private: boolean;
+  created_by: string;
+  created_at: string;
+  is_active: boolean;
+}
+
+export async function fetchRooms(
+  page: number = 1,
+  perPage: number = 50
+): Promise<RoomListResponse> {
+  try {
+    const params = new URLSearchParams();
+    params.append('page', String(page));
+    params.append('per_page', String(perPage));
+
+    const response = await fetch(`http://localhost:8012/api/v1/admin/rooms?${params}`, {
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to fetch rooms`);
+    }
+
+    const data = await response.json();
+    return data as RoomListResponse;
+  } catch (error) {
+    console.error('Failed to fetch rooms:', error);
+    return {
+      rooms: [],
+      total: 0,
+      page: 1,
+      perPage: 50,
+      totalPages: 0
+    };
+  }
+}
+
+/**
+ *  * Update room configuration
+ */
+export interface UpdateRoomRequest {
+  name?: string;
+  description?: string;
+  max_players?: number;
+  is_private?: boolean;
+}
+
+export async function updateRoomConfig(
+  roomId: number,
+  config: UpdateRoomRequest
+): Promise<{ success: boolean; message: string; room?: any }> {
+  try {
+    const response = await fetch(`http://localhost:8012/api/v1/admin/rooms/${roomId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to update room`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; message: string; room?: any };
+  } catch (error) {
+    console.error('Failed to update room config:', error);
+    return { success: false, message: `${error}`, room: null };
+  }
+}
+
+/**
+ *  * Close (deactivate) a room
+ */
+export async function closeRoom(roomId: number): Promise<{ success: boolean; message: string }> {
+  try {
+    const response = await fetch(`http://localhost:8012/api/v1/admin/rooms/${roomId}/close`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to close room`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; message: string };
+  } catch (error) {
+    console.error('Failed to close room:', error);
+    return { success: false, message: `${error}` };
+  }
+}
+
+/**
+ *  * Delete a room permanently
+ */
+export async function deleteRoom(roomId: number): Promise<{ success: boolean; message: string }> {
+  try {
+    const response = await fetch(`http://localhost:8012/api/v1/admin/rooms/${roomId}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to delete room`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; message: string };
+  } catch (error) {
+    console.error('Failed to delete room:', error);
+    return { success: false, message: `${error}` };
+  }
+}
+
+/**
+ *  * Get room details
+ */
+export async function fetchRoomDetails(
+  roomId: number
+): Promise<{ success: boolean; room?: any; message?: string }> {
+  try {
+    const response = await fetch(`http://localhost:8012/api/v1/admin/rooms/${roomId}`, {
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to fetch room details`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; room?: any; message?: string };
+  } catch (error) {
+    console.error('Failed to fetch room details:', error);
+    return { success: false, room: null, message: `${error}` };
+  }
+}
+
+/**
+ *  * Historical Metrics API types
+ */
+export interface MetricsSummary {
+  avg_active_rooms: number;
+  max_active_rooms: number;
+  avg_active_users: number;
+  max_active_users: number;
+  avg_latency_ms: number;
+  max_latency_ms: number;
+  total_points: number;
+  time_range?: {
+    start: string;
+    end: string;
+    hours: number;
+  };
+}
+
+export interface MetricDataPoint {
+  timestamp: string;
+  active_rooms: number;
+  active_users: number;
+  total_entities: number;
+  avg_latency_ms: number;
+}
+
+/**
+ *  * Fetch historical metrics summary
+ */
+export async function fetchHistoricalMetrics(
+  hours: number = 24
+): Promise<{ summary: MetricsSummary }> {
+  try {
+    const params = new URLSearchParams();
+    params.append('hours', String(hours));
+
+    const response = await fetch(`http://localhost:8011/api/v1/admin/metrics?${params}`, {
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to fetch historical metrics`);
+    }
+
+    const data = await response.json();
+    return data as { summary: MetricsSummary };
+  } catch (error) {
+    console.error('Failed to fetch historical metrics:', error);
+    // Return fallback empty summary
+    return {
+      summary: {
+        avg_active_rooms: 0,
+        max_active_rooms: 0,
+        avg_active_users: 0,
+        max_active_users: 0,
+        avg_latency_ms: 0,
+        max_latency_ms: 0,
+        total_points: 0
+      }
+    };
+  }
+}
+
+/**
+ *  * Clear historical metrics
+ */
+export async function clearHistoricalMetrics(): Promise<{ success: boolean; message: string }> {
+  try {
+    const response = await fetch(`http://localhost:8011/api/v1/admin/metrics`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to clear historical metrics`);
+    }
+
+    const data = await response.json();
+    return data as { success: boolean; message: string };
+  } catch (error) {
+    console.error('Failed to clear historical metrics:', error);
+    return { success: false, message: `${error}` };
+  }
 }

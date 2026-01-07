@@ -2,6 +2,7 @@
 
 use actix_web::web;
 use crate::handlers;
+use crate::admin_handlers;
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg
@@ -16,5 +17,11 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route("/rooms/{room_id}/entities", web::post().to(handlers::spawn_entity))
         .route("/rooms/{room_id}/entities", web::get().to(handlers::list_entities))
         .route("/rooms/{room_id}/entities/{entity_id}", web::put().to(handlers::update_entity))
-        .route("/rooms/{room_id}/entities/{entity_id}", web::delete().to(handlers::despawn_entity));
+        .route("/rooms/{room_id}/entities/{entity_id}", web::delete().to(handlers::despawn_entity))
+        // Admin routes
+        .route("/admin/rooms", web::get().to(admin_handlers::list_rooms))
+        .route("/admin/rooms/{room_id}", web::get().to(admin_handlers::get_room_details))
+        .route("/admin/rooms/{room_id}", web::put().to(admin_handlers::update_room_config))
+        .route("/admin/rooms/{room_id}/close", web::post().to(admin_handlers::close_room))
+        .route("/admin/rooms/{room_id}", web::delete().to(admin_handlers::delete_room));
 }

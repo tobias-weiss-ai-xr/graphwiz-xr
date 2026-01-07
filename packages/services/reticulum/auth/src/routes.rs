@@ -30,6 +30,15 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route("/admin/logs/clear", web::post().to(admin_handlers::clear_logs))
         .route("/admin/restart", web::post().to(admin_handlers::restart_service))
         .route("/admin/restart-all", web::post().to(admin_handlers::restart_all_services))
+        // User management routes
+        .route("/admin/users", web::get().to(admin_handlers::list_users))
+        .route("/admin/users/{user_id}/status", web::post().to(admin_handlers::toggle_user_status))
+        .route("/admin/users/{user_id}/role", web::put().to(admin_handlers::update_user_role))
+        .route("/admin/users/{user_id}/role", web::delete().to(admin_handlers::revoke_user_role))
+        // Admin metrics routes
+        .route("/admin/metrics", web::get().to(admin_handlers::get_historical_metrics))
+        .route("/admin/metrics", web::post().to(admin_handlers::add_metrics))
+        .route("/admin/metrics", web::delete().to(admin_handlers::clear_metrics))
         .service(
             web::resource("/admin/logs/{service_name}")
                 .route(web::get().to(admin_handlers::fetch_logs))
