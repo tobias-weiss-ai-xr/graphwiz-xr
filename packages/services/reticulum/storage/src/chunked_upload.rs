@@ -86,7 +86,7 @@ pub async fn initiate_chunked_upload(
 
     match UploadSessionModel::create(
         &db,
-        session_id.clone(),
+        session_id,
         user_id,
         file_name.clone(),
         asset_type_str.clone(),
@@ -95,13 +95,13 @@ pub async fn initiate_chunked_upload(
         chunk_size,
         total_chunks,
         is_public,
-        metadata,
+        metadata.clone(),
     )
     .await
     {
         Ok(_) => {
             let response = InitiateUploadResponse {
-                session_id: session_id.clone(),
+                session_id: session_id,
                 file_name,
                 file_size,
                 chunk_size,
@@ -232,18 +232,18 @@ pub async fn upload_chunk(
     let chunk_path = format!("{}/{}", session_id, chunk_number);
 
     match storage_backend
-        .store_chunk(&user_id, &session_id, chunk_number, chunk_data.clone())
+        .store_chunk(&user_id, &session_id, chunk_number, &chunk_data)
         .await
     {
         Ok(_) => {
             match UploadSessionModel::update_chunk(&db, &session_id, chunk_number).await {
-                Ok(Some(updated_session)) => {
-                    let progress = (updated_session.uploaded_chunks.len() as f64
-                        / updated_session.total_chunks as f64)
+        Ok(Some(updated_session)) => {
+                    let progress = (updated_session.uploaded_chunks.len() as f64)
+                        / updated_session.total_chunks as f64
                         * 100.0;
 
                     let response = UploadChunkResponse {
-                        session_id: session_id.clone(),
+                        session_id: session_id,
                         chunk_number,
                         uploaded_chunks: updated_session.uploaded_chunks,
                         progress,
