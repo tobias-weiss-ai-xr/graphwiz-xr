@@ -6,7 +6,10 @@ interface RestartModalProps {
   onRestartService: (serviceName: string) => Promise<void>;
   onRestartAll: () => Promise<void>;
   restartingServices: Map<string, boolean>;
-  services: Array<{ name: string; status: 'loading' | 'healthy' | 'error' | 'restarting' }>;
+  services: Array<{
+    name: string;
+    status: 'loading' | 'healthy' | 'degraded' | 'error' | 'restarting';
+  }>;
 }
 
 export default function RestartModal({

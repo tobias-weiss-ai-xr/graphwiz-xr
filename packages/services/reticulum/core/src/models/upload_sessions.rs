@@ -3,6 +3,8 @@ use sea_orm::ActiveValue::Set;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
+use crate::Error;
+
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "upload_sessions")]
 pub struct Model {
@@ -211,11 +213,14 @@ impl UploadSessionModel {
         let now = chrono::Utc::now().naive_utc();
         let completed_at = if is_complete { Some(now) } else { None };
 
+        let uploaded_chunks_json = serde_json::to_value(&uploaded_chunks)
+            .map_err(|e| Error::Serialization(format!("Failed to serialize uploaded_chunks: {}", e)))?;
+
         let updated = Entity::update_many()
             .filter(Column::SessionId.eq(session_id))
             .col_expr(
                 Column::UploadedChunks,
-                Expr::value(serde_json::to_value(uploaded_chunks).unwrap()),
+                Expr::value(uploaded_chunks_json),
             )
             .col_expr(Column::Status, Expr::value(new_status.as_str()))
             .col_expr(Column::UpdatedAt, Expr::value(now))

@@ -5,6 +5,7 @@ interface RoomBrowserProps {
   onClose: () => void;
   onJoinRoom: (roomId: string) => void;
   onCreateRoom: () => void;
+  currentUserId?: string;
 }
 
 interface Room {
@@ -19,7 +20,8 @@ export function RoomBrowser({
   isOpen,
   onClose,
   onJoinRoom,
-  onCreateRoom
+  onCreateRoom,
+  currentUserId: _currentUserId
 }: RoomBrowserProps): JSX.Element | null {
   const [rooms] = useState<Room[]>([
     { id: 'lobby', name: 'Main Lobby', participantCount: 5, maxParticipants: 20, isPrivate: false },

@@ -15,10 +15,8 @@
   },
   "dependencies": {
     "@graphwiz/types": "workspace:*",
-    "@graphwiz/protocol": "workspace:*",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.1",

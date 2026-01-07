@@ -1,6 +1,5 @@
 /**
- * Re-export the demos from the main index
+ * Re-export of demos from main index
  */
 
-export { GraphWizXRDemo } from './index';
 export { PhysicsDemo } from './physics-demo';

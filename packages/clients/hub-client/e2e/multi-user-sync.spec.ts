@@ -13,13 +13,13 @@ test.describe('Multi-User Avatar Synchronization', () => {
     const user1Messages: string[] = [];
     const user2Messages: string[] = [];
 
-    user1Page.on('console', msg => {
+    user1Page.on('console', (msg) => {
       const text = msg.text();
       user1Messages.push(text);
       console.log('[User 1]', text);
     });
 
-    user2Page.on('console', msg => {
+    user2Page.on('console', (msg) => {
       const text = msg.text();
       user2Messages.push(text);
       console.log('[User 2]', text);
@@ -34,11 +34,11 @@ test.describe('Multi-User Avatar Synchronization', () => {
     await user2Page.waitForTimeout(3000);
 
     // Verify WebSocket connections
-    const user1Connected = user1Messages.some(msg =>
-      msg.includes('WebSocket connected') || msg.includes('Connected to presence server')
+    const user1Connected = user1Messages.some(
+      (msg) => msg.includes('WebSocket connected') || msg.includes('Connected to presence server')
     );
-    const user2Connected = user2Messages.some(msg =>
-      msg.includes('WebSocket connected') || msg.includes('Connected to presence server')
+    const user2Connected = user2Messages.some(
+      (msg) => msg.includes('WebSocket connected') || msg.includes('Connected to presence server')
     );
 
     expect(user1Connected).toBe(true);
@@ -51,11 +51,11 @@ test.describe('Multi-User Avatar Synchronization', () => {
     await user2Page.waitForTimeout(2000);
 
     // Check if users received server hello
-    const user1ReceivedHello = user1Messages.some(msg =>
-      msg.includes('server hello') || msg.includes('SERVER_HELLO')
+    const user1ReceivedHello = user1Messages.some(
+      (msg) => msg.includes('server hello') || msg.includes('SERVER_HELLO')
     );
-    const user2ReceivedHello = user2Messages.some(msg =>
-      msg.includes('server hello') || msg.includes('SERVER_HELLO')
+    const user2ReceivedHello = user2Messages.some(
+      (msg) => msg.includes('server hello') || msg.includes('SERVER_HELLO')
     );
 
     console.log('User 1 received server hello:', user1ReceivedHello);
@@ -76,18 +76,27 @@ test.describe('Multi-User Avatar Synchronization', () => {
     console.log('Screenshot 2: test-results/multi-user-user2-initial.png');
 
     // Monitor for avatar position updates
-    let user1ReceivedUpdate = false;
-    let user2ReceivedUpdate = false;
+    // TODO: Add assertions to verify updates were received
+    let _user1ReceivedUpdate = false;
+    let _user2ReceivedUpdate = false;
 
-    user1Page.on('console', msg => {
-      if (msg.text().includes('avatar') || msg.text().includes('position') || msg.text().includes('transform')) {
-        user1ReceivedUpdate = true;
+    user1Page.on('console', (msg) => {
+      if (
+        msg.text().includes('avatar') ||
+        msg.text().includes('position') ||
+        msg.text().includes('transform')
+      ) {
+        _user1ReceivedUpdate = true;
       }
     });
 
-    user2Page.on('console', msg => {
-      if (msg.text().includes('avatar') || msg.text().includes('position') || msg.text().includes('transform')) {
-        user2ReceivedUpdate = true;
+    user2Page.on('console', (msg) => {
+      if (
+        msg.text().includes('avatar') ||
+        msg.text().includes('position') ||
+        msg.text().includes('transform')
+      ) {
+        _user2ReceivedUpdate = true;
       }
     });
 
@@ -98,13 +107,19 @@ test.describe('Multi-User Avatar Synchronization', () => {
     // Log all WebSocket-related messages
     console.log('\n=== User 1 WebSocket Messages ===');
     user1Messages
-      .filter(msg => msg.includes('WebSocket') || msg.includes('Sent message') || msg.includes('Received'))
-      .forEach(msg => console.log('  ', msg));
+      .filter(
+        (msg) =>
+          msg.includes('WebSocket') || msg.includes('Sent message') || msg.includes('Received')
+      )
+      .forEach((msg) => console.log('  ', msg));
 
     console.log('\n=== User 2 WebSocket Messages ===');
     user2Messages
-      .filter(msg => msg.includes('WebSocket') || msg.includes('Sent message') || msg.includes('Received'))
-      .forEach(msg => console.log('  ', msg));
+      .filter(
+        (msg) =>
+          msg.includes('WebSocket') || msg.includes('Sent message') || msg.includes('Received')
+      )
+      .forEach((msg) => console.log('  ', msg));
 
     // Final screenshots
     await user1Page.screenshot({
@@ -137,7 +152,7 @@ test.describe('Multi-User Avatar Synchronization', () => {
   test('should handle WebSocket connection lifecycle', async ({ page }) => {
     const logs: string[] = [];
 
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       logs.push(msg.text());
     });
 
@@ -147,9 +162,9 @@ test.describe('Multi-User Avatar Synchronization', () => {
     await page.waitForTimeout(5000);
 
     // Check connection sequence
-    const hasConnecting = logs.some(msg => msg.includes('Connecting to'));
-    const hasConnected = logs.some(msg => msg.includes('WebSocket connected'));
-    const hasServerHello = logs.some(msg => msg.includes('server hello'));
+    const hasConnecting = logs.some((msg) => msg.includes('Connecting to'));
+    const hasConnected = logs.some((msg) => msg.includes('WebSocket connected'));
+    const hasServerHello = logs.some((msg) => msg.includes('server hello'));
 
     console.log('\n=== WebSocket Connection Lifecycle ===');
     console.log('Connecting message:', hasConnecting ? '✓' : '✗');
@@ -160,13 +175,11 @@ test.describe('Multi-User Avatar Synchronization', () => {
     expect(hasConnected).toBe(true);
 
     // Log WebSocket messages
-    const wsLogs = logs.filter(log =>
-      log.includes('WebSocket') ||
-      log.includes('Sent message') ||
-      log.includes('Received')
+    const wsLogs = logs.filter(
+      (log) => log.includes('WebSocket') || log.includes('Sent message') || log.includes('Received')
     );
 
     console.log('\n=== WebSocket Messages ===');
-    wsLogs.forEach(log => console.log(log));
+    wsLogs.forEach((log) => console.log(log));
   });
 });

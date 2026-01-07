@@ -44,9 +44,6 @@ importers:
 
   packages/clients/admin-client:
     dependencies:
-      '@graphwiz/protocol':
-        specifier: workspace:*
-        version: link:../../shared/protocol
       '@graphwiz/types':
         specifier: workspace:*
         version: link:../../shared/types
@@ -56,9 +53,6 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
-      react-router-dom:
-        specifier: ^6.21.0
-        version: 6.30.2(react-dom@18.3.1)(react@18.3.1)
     devDependencies:
       '@playwright/test':
         specifier: ^1.40.1
@@ -123,6 +117,9 @@ importers:
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
+      ws:
+        specifier: ^8.18.3
+        version: 8.18.3
       zod:
         specifier: ^3.22.4
         version: 3.25.76
@@ -172,9 +169,6 @@ importers:
       vitest:
         specifier: ^1.1.0
         version: 1.6.1(jsdom@23.2.0)
-      ws:
-        specifier: ^8.18.3
-        version: 8.18.3
 
   packages/clients/hub-client/src/demo/mock-servers:
     dependencies:
@@ -1303,11 +1297,6 @@ packages:
       three-stdlib: 2.36.1(three@0.160.1)
     transitivePeerDependencies:
       - '@types/three'
-    dev: false
-
-  /@remix-run/router@1.23.1:
-    resolution: {integrity: sha512-vDbaOzF7yT2Qs4vO6XV1MHcJv+3dgR1sT+l3B8xxOVhUC336prMvqrvsLL/9Dnw2xr6Qhz4J0dmS0llNAbnUmQ==}
-    engines: {node: '>=14.0.0'}
     dev: false
 
   /@rolldown/pluginutils@1.0.0-beta.27:
@@ -6102,29 +6091,6 @@ packages:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
     dev: true
-
-  /react-router-dom@6.30.2(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-l2OwHn3UUnEVUqc6/1VMmR1cvZryZ3j3NzapC2eUXO1dB0sYp5mvwdjiXhpUbRb21eFow3qSxpP8Yv6oAU824Q==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      react: '>=16.8'
-      react-dom: '>=16.8'
-    dependencies:
-      '@remix-run/router': 1.23.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-router: 6.30.2(react@18.3.1)
-    dev: false
-
-  /react-router@6.30.2(react@18.3.1):
-    resolution: {integrity: sha512-H2Bm38Zu1bm8KUE5NVWRMzuIyAV8p/JrOaBJAwVmp37AXG72+CZJlEBw6pdn9i5TBgLMhNDgijS4ZlblpHyWTA==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      '@remix-run/router': 1.23.1
-      react: 18.3.1
-    dev: false
 
   /react-use-measure@2.1.7(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-KrvcAo13I/60HpwGO5jpW7E9DfusKyLPLvuHlUyP5zqnmAPhNc6qTRjUQrdTADl0lpPpDVU2/Gg51UlOGHXbdg==}

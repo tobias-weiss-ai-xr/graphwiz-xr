@@ -14,7 +14,7 @@ import RestartModal from './RestartModal';
 interface ServiceStatusUI {
   name: string;
   url: string;
-  status: 'loading' | 'healthy' | 'error' | 'restarting';
+  status: 'loading' | 'healthy' | 'degraded' | 'error' | 'restarting';
   latency?: number;
 }
 
@@ -291,7 +291,7 @@ export default function App() {
 
   const StatusIndicator = ({
     status,
-    latency
+    latency: _latency
   }: {
     status: ServiceStatusUI['status'];
     latency?: number;
@@ -299,6 +299,7 @@ export default function App() {
     const colors = {
       loading: 'bg-yellow-500',
       healthy: 'bg-green-500',
+      degraded: 'bg-orange-500',
       error: 'bg-red-500',
       restarting: 'bg-amber-500'
     };

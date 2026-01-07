@@ -32,10 +32,12 @@ test.describe('Networked Avatar Sync - Production', () => {
           originalLog.apply(console, args);
 
           // Check for connection success
-          if (logs.some(log =>
-            log.includes('Connected to server') ||
-            log.includes('wss://xr.graphwiz.ai/ws')
-          )) {
+          if (
+            logs.some(
+              (log) =>
+                log.includes('Connected to server') || log.includes('wss://xr.graphwiz.ai/ws')
+            )
+          ) {
             clearTimeout(timeout);
             console.log = originalLog;
             resolve(true);
@@ -44,9 +46,11 @@ test.describe('Networked Avatar Sync - Production', () => {
 
         // Also check if we're already connected
         setTimeout(() => {
-          if (logs.some(log =>
-            log.includes('Connecting to presence service at: wss://xr.graphwiz.ai/ws')
-          )) {
+          if (
+            logs.some((log) =>
+              log.includes('Connecting to presence service at: wss://xr.graphwiz.ai/ws')
+            )
+          ) {
             clearTimeout(timeout);
             console.log = originalLog;
             resolve(true);
@@ -69,8 +73,7 @@ test.describe('Networked Avatar Sync - Production', () => {
 
         console.error = (...args) => {
           const message = args.join(' ');
-          if (message.includes('ws://localhost:4000') ||
-              message.includes('localhost:4000/ws')) {
+          if (message.includes('ws://localhost:4000') || message.includes('localhost:4000/ws')) {
             hasError = true;
           }
           originalError.apply(console, args);
@@ -91,7 +94,11 @@ test.describe('Networked Avatar Sync - Production', () => {
     await page.waitForTimeout(2000); // Wait for React to mount
 
     // Look for avatar configurator button or panel
-    const avatarButton = page.locator('button:has-text("Avatar"), button:has-text("Customize"), [data-testid="avatar-button"]').first();
+    const avatarButton = page
+      .locator(
+        'button:has-text("Avatar"), button:has-text("Customize"), [data-testid="avatar-button"]'
+      )
+      .first();
 
     // Avatar configurator might be accessible via keyboard or UI
     // For now, just verify the page is interactive
@@ -108,10 +115,7 @@ test.describe('Networked Avatar Sync - Production', () => {
     // Verify WebGL context is available
     const hasWebGL = await page.evaluate(() => {
       const canvas = document.createElement('canvas');
-      return !!(
-        window.WebGLRenderingContext ||
-        (window as any).WebGL2RenderingContext
-      );
+      return !!(window.WebGLRenderingContext || (window as any).WebGL2RenderingContext);
     });
 
     expect(hasWebGL).toBeTruthy();
@@ -151,7 +155,7 @@ test.describe('Networked Avatar Sync - Production', () => {
     await page.waitForLoadState('networkidle');
 
     const errors: string[] = [];
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       if (msg.type() === 'error') {
         errors.push(msg.text());
       }
@@ -160,9 +164,8 @@ test.describe('Networked Avatar Sync - Production', () => {
     await page.waitForTimeout(3000);
 
     // Filter out acceptable errors (like ad-blockers)
-    const criticalErrors = errors.filter(err =>
-      !err.includes('ERR_BLOCKED_BY_CLIENT') &&
-      !err.includes('net::ERR_BLOCKED_BY_CLIENT')
+    const criticalErrors = errors.filter(
+      (err) => !err.includes('ERR_BLOCKED_BY_CLIENT') && !err.includes('net::ERR_BLOCKED_BY_CLIENT')
     );
 
     expect(criticalErrors.length).toBe(0);
@@ -180,10 +183,7 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
 
     try {
       // Navigate both to production
-      await Promise.all([
-        page1.goto(PRODUCTION_URL),
-        page2.goto(PRODUCTION_URL)
-      ]);
+      await Promise.all([page1.goto(PRODUCTION_URL), page2.goto(PRODUCTION_URL)]);
 
       // Wait for both pages to load
       await Promise.all([
@@ -200,10 +200,11 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
       await expect(page2.locator('canvas').first()).toBeVisible();
 
       // Check that both are using production WebSocket URL
-      const wsUrl1 = await page1.evaluate(() => {
+      // TODO: Add assertions to verify correct WebSocket URL configuration
+      const _wsUrl1 = await page1.evaluate(() => {
         return (window as any).localStorage?.getItem('ws_url') || '';
       });
-      const wsUrl2 = await page2.evaluate(() => {
+      const _wsUrl2 = await page2.evaluate(() => {
         return (window as any).localStorage?.getItem('ws_url') || '';
       });
 
@@ -212,7 +213,6 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
       expect(await page2.locator('body').isVisible()).toBeTruthy();
 
       console.log('✅ Multi-user test: Both users connected successfully');
-
     } finally {
       await context1.close();
       await context2.close();
@@ -245,10 +245,7 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
 
     // Simulate user interactions
     for (let i = 0; i < 10; i++) {
-      await page.mouse.move(
-        Math.random() * 800 + 100,
-        Math.random() * 600 + 100
-      );
+      await page.mouse.move(Math.random() * 800 + 100, Math.random() * 600 + 100);
       await page.waitForTimeout(100);
 
       if (i % 3 === 0) {
@@ -279,9 +276,9 @@ test.describe('Networked Avatar Sync - Performance', () => {
   });
 
   test('should have acceptable bundle size', async ({ page }) => {
-    const jsFiles: {name: string, size: number}[] = [];
+    const jsFiles: { name: string; size: number }[] = [];
 
-    page.on('response', async response => {
+    page.on('response', async (response) => {
       const url = response.url();
       if (url.endsWith('.js')) {
         const headers = response.headers();
@@ -299,12 +296,12 @@ test.describe('Networked Avatar Sync - Performance', () => {
     await page.waitForLoadState('networkidle');
 
     console.log('JavaScript bundles loaded:');
-    jsFiles.forEach(file => {
+    jsFiles.forEach((file) => {
       console.log(`  ${file.name}: ${(file.size / 1024).toFixed(2)} KB`);
     });
 
     // Main bundle should be under 1MB
-    const mainBundle = jsFiles.find(f => f.name.includes('index-'));
+    const mainBundle = jsFiles.find((f) => f.name.includes('index-'));
     if (mainBundle) {
       expect(mainBundle.size).toBeLessThan(1024 * 1024); // 1MB
       console.log(`✅ Main bundle size: ${(mainBundle.size / 1024).toFixed(2)} KB`);
@@ -325,7 +322,8 @@ test.describe('Networked Avatar Sync - Performance', () => {
           frames++;
           const elapsed = performance.now() - startTime;
 
-          if (elapsed >= 2000) { // Measure for 2 seconds
+          if (elapsed >= 2000) {
+            // Measure for 2 seconds
             const fps = (frames / elapsed) * 1000;
             resolve(fps);
           } else {
@@ -381,13 +379,12 @@ test.describe('Networked Avatar Sync - Security', () => {
       const scripts = Array.from(document.querySelectorAll('script'));
       const bodyText = document.body.innerHTML;
 
-      const hasLocalScript = scripts.some(script =>
-        script.src.includes('localhost') ||
-        script.src.includes('127.0.0.1')
+      const hasLocalScript = scripts.some(
+        (script) => script.src.includes('localhost') || script.src.includes('127.0.0.1')
       );
 
-      const hasLocalText = bodyText.includes('ws://localhost') ||
-                          bodyText.includes('http://localhost:5173');
+      const hasLocalText =
+        bodyText.includes('ws://localhost') || bodyText.includes('http://localhost:5173');
 
       return hasLocalScript || hasLocalText;
     });

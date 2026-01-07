@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+
 import {
   fetchLogs,
   fetchLogsForService,
@@ -70,7 +71,10 @@ export default function LogsViewer() {
       const response =
         selectedService === 'all'
           ? await fetchLogs(query)
-          : await fetchLogsForService(selectedService as any, query);
+          : await fetchLogsForService(
+              selectedService as 'auth' | 'hub' | 'presence' | 'sfu' | 'storage',
+              query
+            );
 
       setLogs(response.entries);
       setTotal(response.total);
