@@ -3,6 +3,11 @@
  */
 
 import { UserSettings, DEFAULT_SETTINGS } from './user-settings';
+import { createLogger } from '@graphwiz/types';
+
+const SETTINGS_KEY = 'graphwiz-user-settings';
+
+const logger = createLogger('SettingsManager');
 
 const SETTINGS_KEY = 'graphwiz-user-settings';
 
@@ -25,7 +30,7 @@ export class SettingsManager {
         return { ...DEFAULT_SETTINGS, ...parsed };
       }
     } catch (error) {
-      console.error('[SettingsManager] Failed to load settings:', error);
+      logger.error('[SettingsManager] Failed to load settings:', error);
     }
     return { ...DEFAULT_SETTINGS };
   }
@@ -38,7 +43,7 @@ export class SettingsManager {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(this.settings));
       this.notifyListeners();
     } catch (error) {
-      console.error('[SettingsManager] Failed to save settings:', error);
+      logger.error('[SettingsManager] Failed to save settings:', error);
     }
   }
 
@@ -100,7 +105,7 @@ export class SettingsManager {
       try {
         listener(this.getSettings());
       } catch (error) {
-        console.error('[SettingsManager] Listener error:', error);
+        logger.error('[SettingsManager] Listener error:', error);
       }
     });
   }
@@ -122,7 +127,7 @@ export class SettingsManager {
       this.saveSettings();
       return true;
     } catch (error) {
-      console.error('[SettingsManager] Failed to import settings:', error);
+      logger.error('[SettingsManager] Failed to import settings:', error);
       return false;
     }
   }

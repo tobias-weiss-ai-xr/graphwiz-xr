@@ -7,6 +7,9 @@
 import { MessageParser, MessageBuilder } from '@graphwiz/protocol';
 import type { Message, MessageType, ClientHello, PositionUpdate } from '@graphwiz/protocol';
 import { v4 as uuidv4 } from 'uuid';
+import { createLogger, LogLevel } from '@graphwiz/types';
+
+const logger = createLogger('WebSocketClient');
 
 export interface WebSocketClientConfig {
   presenceUrl: string;
@@ -40,7 +43,7 @@ export class WebSocketClient {
    */
   async connect(): Promise<void> {
     if (this.isConnected) {
-      console.warn('[WebSocketClient] Already connected');
+      logger.warn('[WebSocketClient] Already connected');
       return;
     }
 
@@ -54,14 +57,14 @@ export class WebSocketClient {
         });
 
         const wsUrl = `${this.config.presenceUrl}/ws/${this.config.roomId}?${params.toString()}`;
-        console.log('[WebSocketClient] Connecting to:', wsUrl);
+        logger.log('[WebSocketClient] Connecting to:', wsUrl);
 
         this.ws = new WebSocket(wsUrl);
 
         this.ws.binaryType = 'arraybuffer';
 
         this.ws.onopen = () => {
-          console.log('[WebSocketClient] WebSocket connected');
+          logger.log('[WebSocketClient] WebSocket connected');
           this.isConnected = true;
           this.reconnectAttempts = 0;
 
@@ -74,7 +77,7 @@ export class WebSocketClient {
               resolve();
             })
             .catch((err) => {
-              console.error('[WebSocketClient] Failed to send client hello:', err);
+              logger.error('[WebSocketClient] Failed to send client hello:', err);
               reject(err);
             });
         };
@@ -84,12 +87,12 @@ export class WebSocketClient {
         };
 
         this.ws.onerror = (error) => {
-          console.error('[WebSocketClient] WebSocket error:', error);
+          logger.error('[WebSocketClient] WebSocket error:', error);
           reject(error);
         };
 
         this.ws.onclose = (event) => {
-          console.log('[WebSocketClient] WebSocket disconnected:', event.code, event.reason);
+          logger.log('[WebSocketClient] WebSocket disconnected:', event.code, event.reason);
           this.isConnected = false;
 
           // Clear ping interval
@@ -141,7 +144,7 @@ export class WebSocketClient {
    */
   send(message: Message): void {
     if (!this.ws || !this.isConnected || this.ws.readyState !== WebSocket.OPEN) {
-      console.warn('[WebSocketClient] Cannot send message: not connected');
+      logger.warn('[WebSocketClient] Cannot send message: not connected');
       return;
     }
 
@@ -152,10 +155,10 @@ export class WebSocketClient {
       // Only log important message types (not position updates which are sent at 20Hz)
       if (message.type !== 10) {
         // 10 = POSITION_UPDATE
-        console.log('[WebSocketClient] Sent message type:', message.type);
+        logger.log('[WebSocketClient] Sent message type:', message.type);
       }
     } catch (error) {
-      console.error('[WebSocketClient] Failed to send message:', error);
+      logger.error('[WebSocketClient] Failed to send message:', error);
     }
   }
 
@@ -330,7 +333,7 @@ export class WebSocketClient {
 
     this.send(message);
 
-    console.log('[WebSocketClient] Sent avatar update:', avatarConfig);
+    logger.log('[WebSocketClient] Sent avatar update:', avatarConfig);
   }
 
   /**

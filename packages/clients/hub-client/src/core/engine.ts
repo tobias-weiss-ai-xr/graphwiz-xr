@@ -11,9 +11,11 @@ import { BillboardSystem } from '../ecs/systems/billboard-system';
 import { PhysicsSystem } from '../ecs/systems/physics-system';
 import { TransformSystem } from '../ecs/systems/transform-system';
 import { World } from '../ecs/world';
-
 import { assetLoader } from './assets';
 import type { EngineConfig } from './config';
+import { createLogger, LogLevel } from '@graphwiz/types';
+
+const logger = createLogger('Engine');
 
 export class Engine {
   private world: World;
@@ -45,7 +47,7 @@ export class Engine {
    */
   async start(): Promise<void> {
     if (this.isRunning) {
-      console.warn('[Engine] Already running');
+      logger.warn('[Engine] Already running');
       return;
     }
 
@@ -56,7 +58,7 @@ export class Engine {
     this.lastTime = performance.now();
     this.tick();
 
-    console.log('[Engine] Started');
+    logger.log('[Engine] Started');
   }
 
   /**
@@ -73,7 +75,7 @@ export class Engine {
       this.animationFrameId = null;
     }
 
-    console.log('[Engine] Stopped');
+    logger.log('[Engine] Stopped');
   }
 
   /**
