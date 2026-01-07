@@ -6,6 +6,8 @@ pub mod room;
 pub mod entity;
 pub mod handlers;
 pub mod admin_handlers;
+pub mod room_persistence;
+pub mod persistence_handlers;
 pub mod routes;
 // pub mod optimization;  // Disabled: Agent Looper dependency removed
 

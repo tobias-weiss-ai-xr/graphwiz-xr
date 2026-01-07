@@ -3,6 +3,7 @@
 //! Shared utilities, database models, and configuration for all Reticulum services.
 
 pub mod auth;
+pub mod cache;
 pub mod config;
 pub mod db;
 pub mod error;
@@ -21,3 +22,4 @@ pub use middleware::{AuthUser, OptionalAuthUser};
 pub use models::{OAuthProvider};
 pub use sea_orm::DatabaseConnection;
 pub use metrics::{get_metrics, add_metrics_point, clear_metrics, MetricsSummary, MetricDataPoint};
+pub use cache::{CacheManager, cache_keys, ttl};

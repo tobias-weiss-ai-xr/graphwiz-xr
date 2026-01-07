@@ -4,6 +4,8 @@ use actix_web::web;
 
 use crate::handlers;
 use crate::admin_handlers;
+use crate::cached_handlers;
+use crate::metrics_handlers;
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg
@@ -24,17 +26,18 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route("/session/refresh", web::post().to(handlers::refresh_session))
         .route("/logout", web::post().to(handlers::logout))
         .route("/logout/all", web::post().to(handlers::logout_all))
-        // Admin routes
+        // Admin routes - Cached for performance
+        .route("/admin/users", web::get().to(cached_handlers::list_users_cached))
+        .route("/admin/users/{user_id}", web::get().to(cached_handlers::get_user_cached))
+        .route("/admin/users/{user_id}/status", web::post().to(admin_handlers::toggle_user_status))
+        .route("/admin/users/{user_id}/role", web::put().to(admin_handlers::update_user_role))
+        .route("/admin/users/{user_id}/role", web::delete().to(admin_handlers::revoke_user_role))
+        // Admin logs routes
         .route("/admin/logs", web::get().to(admin_handlers::fetch_all_logs))
         .route("/admin/logs/export", web::get().to(admin_handlers::export_logs))
         .route("/admin/logs/clear", web::post().to(admin_handlers::clear_logs))
         .route("/admin/restart", web::post().to(admin_handlers::restart_service))
         .route("/admin/restart-all", web::post().to(admin_handlers::restart_all_services))
-        // User management routes
-        .route("/admin/users", web::get().to(admin_handlers::list_users))
-        .route("/admin/users/{user_id}/status", web::post().to(admin_handlers::toggle_user_status))
-        .route("/admin/users/{user_id}/role", web::put().to(admin_handlers::update_user_role))
-        .route("/admin/users/{user_id}/role", web::delete().to(admin_handlers::revoke_user_role))
         // Admin metrics routes
         .route("/admin/metrics", web::get().to(admin_handlers::get_historical_metrics))
         .route("/admin/metrics", web::post().to(admin_handlers::add_metrics))

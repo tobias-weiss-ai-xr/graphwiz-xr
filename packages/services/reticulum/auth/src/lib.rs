@@ -3,6 +3,7 @@
 //! Handles user registration, login, JWT token generation and validation
 
 pub mod admin_handlers;
+pub mod cached_handlers;
 pub mod config;
 pub mod handlers;
 pub mod jwt;
@@ -19,25 +20,33 @@ use reticulum_core::Config;
 
 use routes::configure_routes;
 
-pub struct AuthService {
+    pub struct AuthService {
     config: Config,
-    // optimization: optimization::OptimizationManager,  // Disabled: Agent Looper dependency removed
+    cache: Option<CacheManager>,
 }
 
 impl AuthService {
     pub fn new(config: Config) -> Self {
-        // Optimization disabled: Agent Looper dependency removed
-        // let mut optimization = optimization::OptimizationManager::new();
-        // if let Ok(agent_url) = std::env::var("AGENT_LOOPER_URL") {
-        //     log::info!("Agent Looper URL configured for Auth: {}", agent_url);
-        //     if let Err(e) = optimization.init(agent_url) {
-        //         log::warn!("Failed to initialize Auth optimization: {}", e);
-        //     }
-        // }
+        // Initialize cache manager if Redis is configured
+        let cache = if let Some(ref redis_config) = config.redis {
+            match CacheManager::with_redis(&redis_config.url) {
+                Ok(cache) => {
+                    log::info!("Redis caching enabled for Auth service");
+                    Some(cache)
+                }
+                Err(e) => {
+                    log::warn!("Failed to initialize Redis cache, running without cache: {}", e);
+                    None
+                }
+            }
+        } else {
+            log::info!("No Redis configured, Auth service running without cache");
+            None
+        };
 
         Self {
             config,
-            // optimization,
+            cache,
         }
     }
 
@@ -48,18 +57,25 @@ impl AuthService {
 
         log::info!("Starting auth service on {}:{}", host, port);
 
-        // Optimization disabled: Agent Looper dependency removed
-        // if self.optimization.is_enabled() {
-        //     log::info!("Auth optimization enabled: Agent Looper integration active");
-        // }
+        // Cache enabled if Redis configured
+        if self.cache.is_some() {
+            log::info!("Redis caching enabled");
+        }
 
         HttpServer::new(move || {
-            App::new()
-                .app_data(web::Data::new(self.config.clone()))
-                // .app_data(web::Data::new(self.optimization.clone())) // Disabled
+            let config = self.config.clone();
+            let mut app = App::new()
+                .app_data(web::Data::new(config.clone()))
                 .wrap(actix_cors::Cors::permissive())
                 .wrap(reticulum_core::middleware::LoggingMiddleware)
-                .configure(configure_routes)
+                .configure(configure_routes);
+
+            // Add cache to app_data if configured
+            if let Some(ref cache) = self.cache {
+                app = app.app_data(web::Data::new(cache.clone()));
+            }
+
+            app
         })
         .bind((host.as_str(), port))?
         .workers(workers)
