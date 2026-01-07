@@ -14,7 +14,7 @@
 #   docker-compose ps                   # Check service status
 #   docker-compose down                 # Stop all services
 
-version: "3.9"
+version: '3.9'
 
 services:
   # ============================================================================
@@ -27,9 +27,9 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - "80:80"      # HTTP
-      - "443:443"    # HTTPS
-      - "127.0.0.1:8080:8080"  # Dashboard (local only)
+      - '80:80' # HTTP
+      - '443:443' # HTTPS
+      - '127.0.0.1:8080:8080' # Dashboard (local only)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
@@ -43,11 +43,11 @@ services:
       - traefik-public
       - graphwiz-internal
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.xr.graphwiz.ai`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
-      - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.dashboard.middlewares=admin-auth"
-      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.dashboard.rule=Host(`traefik.xr.graphwiz.ai`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))'
+      - 'traefik.http.routers.dashboard.service=api@internal'
+      - 'traefik.http.routers.dashboard.middlewares=admin-auth'
+      - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
 
   # ============================================================================
   # POSTGRESQL DATABASE
@@ -65,14 +65,14 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./packages/deploy/compose/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-graphwiz}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USER:-graphwiz}']
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - graphwiz-internal
     labels:
-      - "traefik.enable=false"  # Database not exposed externally
+      - 'traefik.enable=false' # Database not exposed externally
 
   # ============================================================================
   # REDIS CACHE
@@ -85,14 +85,14 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - graphwiz-internal
     labels:
-      - "traefik.enable=false"  # Redis not exposed externally
+      - 'traefik.enable=false' # Redis not exposed externally
 
   # ============================================================================
   # AUTH SERVICE
@@ -120,13 +120,13 @@ services:
       - traefik-public
       - graphwiz-internal
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/auth`, `/api/v1/auth`)"
-      - "traefik.http.routers.auth.entrypoints=websecure"
-      - "traefik.http.services.auth.loadbalancer.server.port=8001"
-      - "traefik.http.routers.auth.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.auth.middlewares=security-headers,cors,rate-limit,api-strip"
-      - "traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/api/v1"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.auth.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/auth`, `/api/v1/auth`)'
+      - 'traefik.http.routers.auth.entrypoints=websecure'
+      - 'traefik.http.services.auth.loadbalancer.server.port=8001'
+      - 'traefik.http.routers.auth.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.auth.middlewares=security-headers,cors,rate-limit,api-strip'
+      - 'traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/api/v1'
 
   # ============================================================================
   # HUB SERVICE (Room/Entity Management)
@@ -154,12 +154,12 @@ services:
       - traefik-public
       - graphwiz-internal
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.hub.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/hub`, `/api/v1/hub`)"
-      - "traefik.http.routers.hub.entrypoints=websecure"
-      - "traefik.http.services.hub.loadbalancer.server.port=8002"
-      - "traefik.http.routers.hub.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.hub.middlewares=security-headers,cors,rate-limit,api-strip"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.hub.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/hub`, `/api/v1/hub`)'
+      - 'traefik.http.routers.hub.entrypoints=websecure'
+      - 'traefik.http.services.hub.loadbalancer.server.port=8002'
+      - 'traefik.http.routers.hub.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.hub.middlewares=security-headers,cors,rate-limit,api-strip'
 
   # ============================================================================
   # PRESENCE SERVICE (WebRTC Signaling/WebTransport)
@@ -171,7 +171,7 @@ services:
     container_name: graphwiz-presence
     restart: unless-stopped
     ports:
-      - "4000:8003"  # Expose WebSocket for local development (container 8003 -> host 4000)
+      - '4000:4000' # Expose WebSocket for local development (container 8003 -> host 4003)
     environment:
       RUST_LOG: ${RUST_LOG:-info}
       DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
@@ -189,14 +189,14 @@ services:
       - traefik-public
       - graphwiz-internal
     labels:
-      - "traefik.enable=true"
+      - 'traefik.enable=true'
       # Service definition FIRST
-      - "traefik.http.services.presence.loadbalancer.server.port=8003"
+      - 'traefik.http.services.presence.loadbalancer.server.port=8003'
       # Then router
-      - "traefik.http.routers.presence.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/ws`)"
-      - "traefik.http.routers.presence.entrypoints=websecure"
-      - "traefik.http.routers.presence.priority=100"
-      - "traefik.http.routers.presence.tls.certresolver=letsencrypt"
+      - 'traefik.http.routers.presence.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/ws`)'
+      - 'traefik.http.routers.presence.entrypoints=websecure'
+      - 'traefik.http.routers.presence.priority=100'
+      - 'traefik.http.routers.presence.tls.certresolver=letsencrypt'
 
   # ============================================================================
   # AVATAR SERVICE (Avatar Configuration)
@@ -222,13 +222,13 @@ services:
       - traefik-public
       - graphwiz-internal
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.avatar.loadbalancer.server.port=8005"
-      - "traefik.http.routers.avatar.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/avatar`)"
-      - "traefik.http.routers.avatar.entrypoints=websecure"
-      - "traefik.http.routers.avatar.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.avatar.middlewares=security-headers,cors,avatar-strip"
-      - "traefik.http.middlewares.avatar-strip.stripprefix.prefixes=/api/avatar"
+      - 'traefik.enable=true'
+      - 'traefik.http.services.avatar.loadbalancer.server.port=8005'
+      - 'traefik.http.routers.avatar.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/avatar`)'
+      - 'traefik.http.routers.avatar.entrypoints=websecure'
+      - 'traefik.http.routers.avatar.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.avatar.middlewares=security-headers,cors,avatar-strip'
+      - 'traefik.http.middlewares.avatar-strip.stripprefix.prefixes=/api/avatar'
 
   # SFU SERVICE (WebRTC Media Forwarding)
   # ============================================================================
@@ -259,14 +259,14 @@ services:
       - traefik-public
       - graphwiz-internal
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.sfu.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/sfu`)"
-      - "traefik.http.routers.sfu.entrypoints=websecure"
-      - "traefik.http.services.sfu.loadbalancer.server.port=8004"
-      - "traefik.http.routers.sfu.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.sfu.middlewares=security-headers,cors,api-strip"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.sfu.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/sfu`)'
+      - 'traefik.http.routers.sfu.entrypoints=websecure'
+      - 'traefik.http.services.sfu.loadbalancer.server.port=8004'
+      - 'traefik.http.routers.sfu.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.sfu.middlewares=security-headers,cors,api-strip'
     ports:
-      - "10000-10100:10000-10100/udp"  # RTP ports for WebRTC
+      - '10000-10100:10000-10100/udp' # RTP ports for WebRTC
 
   # ============================================================================
   # HUB CLIENT (Frontend Application)
@@ -275,26 +275,19 @@ services:
     build:
       context: .
       dockerfile: packages/deploy/docker/Dockerfile.hub-client
-      target: production
-      args:
-        VITE_API_BASE_URL: https://xr.graphwiz.ai/api/auth
-        VITE_HUB_API_URL: https://xr.graphwiz.ai/api/hub
-        VITE_PRESENCE_WS_URL: wss://xr.graphwiz.ai/ws
-        VITE_SFU_URL: https://xr.graphwiz.ai/api/sfu
-        VITE_ROOM_ID: lobby
+      target: development
     container_name: graphwiz-hub-client
     restart: unless-stopped
+    ports:
+      - '5173:5173'
     networks:
-      - traefik-public
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.hub-client.rule=Host(`xr.graphwiz.ai`)"
-      - "traefik.http.routers.hub-client.entrypoints=websecure"
-      - "traefik.http.services.hub-client.loadbalancer.server.port=80"
-      - "traefik.http.routers.hub-client.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.hub-client.middlewares=security-headers@file"
-      - "traefik.http.routers.hub-client.priority=1"
-
+      - graphwiz-internal
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1/auth
+      - VITE_HUB_API_URL=http://localhost:8002/api/v1/hub
+      - VITE_PRESENCE_WS_URL=ws://localhost:4000
+      - VITE_SFU_URL=http://localhost:8004/api/v1/sfu
+      - VITE_ROOM_ID=lobby
   # ============================================================================
   # ADMIN CLIENT (Optional - for dashboard/admin panel)
   # ============================================================================
@@ -310,12 +303,12 @@ services:
     networks:
       - traefik-public
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.admin.rule=Host(`admin.xr.graphwiz.ai`)"
-      - "traefik.http.routers.admin.entrypoints=websecure"
-      - "traefik.http.services.admin.loadbalancer.server.port=80"
-      - "traefik.http.routers.admin.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.admin.middlewares=security-headers,compression,admin-auth"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.admin.rule=Host(`admin.xr.graphwiz.ai`)'
+      - 'traefik.http.routers.admin.entrypoints=websecure'
+      - 'traefik.http.services.admin.loadbalancer.server.port=80'
+      - 'traefik.http.routers.admin.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.admin.middlewares=security-headers,compression,admin-auth'
 
   # ============================================================================
   # ADMINER (Database Management UI - Internal Only)
@@ -330,12 +323,12 @@ services:
     networks:
       - graphwiz-internal
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.adminer.rule=Host(`adminer.xr.graphwiz.ai`)"
-      - "traefik.http.routers.adminer.entrypoints=websecure"
-      - "traefik.http.services.adminer.loadbalancer.server.port=8080"
-      - "traefik.http.routers.adminer.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.adminer.middlewares=admin-auth"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.adminer.rule=Host(`adminer.xr.graphwiz.ai`)'
+      - 'traefik.http.routers.adminer.entrypoints=websecure'
+      - 'traefik.http.services.adminer.loadbalancer.server.port=8080'
+      - 'traefik.http.routers.adminer.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.adminer.middlewares=admin-auth'
       # Only allow from specific IPs (uncomment and configure)
       # - "traefik.http.routers.adminer.middlewares=ip-whitelist"
 

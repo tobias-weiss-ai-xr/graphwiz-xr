@@ -1,25 +1,25 @@
 /* eslint-disable react/no-unknown-property */
+import { MessageType, EmojiReaction } from '@graphwiz/protocol';
 import { Grid, PerspectiveCamera, Text } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useState, useCallback, useEffect, useRef } from 'react';
 
-import { WebSocketClient } from './network/websocket-client';
-import { MessageType, EmojiReaction } from '@graphwiz/protocol';
-import { AssetBrowser, AssetUploader, Asset } from './storage';
-import { EmojiPicker } from './components/EmojiPicker';
-import { FloatingEmoji } from './components/FloatingEmoji';
-import { FPSCounter } from './components/FPSCounter';
-import { SettingsPanel } from './settings';
 import { AvatarConfigurator } from './avatar';
-import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
-import { InteractiveDemoScene } from './components/InteractiveDemoScene';
-import { MediaDemoScene } from './components/MediaDemoScene';
 import { GrabDemoScene } from './components/GrabDemoScene';
 import { CameraController } from './components/CameraController';
 import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
 import { RoomBrowser, CreateRoomModal, RoomSettingsPanel, RoomButton } from './components';
+import { EmojiPicker } from './components/EmojiPicker';
+import { FloatingEmoji } from './components/FloatingEmoji';
+import { FPSCounter } from './components/FPSCounter';
+import { InteractiveDemoScene } from './components/InteractiveDemoScene';
+import { MediaDemoScene } from './components/MediaDemoScene';
+import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
 import { useRoomManager } from './hooks/useRoomManager';
+import { WebSocketClient } from './network/websocket-client';
+import { SettingsPanel } from './settings';
+import { AssetBrowser, AssetUploader, Asset } from './storage';
 
 interface Entity {
   id: string;

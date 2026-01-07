@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { getSettingsManager } from './settings-persistence';
 import type { UserSettings } from './user-settings';
 

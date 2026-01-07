@@ -6,6 +6,7 @@
 
 import * as THREE from 'three';
 import { Group, Mesh, Material } from 'three';
+
 import { AvatarComponent, AvatarCustomization } from './avatar-component';
 import { AvatarNameTag } from './name-tag';
 

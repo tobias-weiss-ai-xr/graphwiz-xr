@@ -7,10 +7,12 @@
 
 import * as CANNON from 'cannon-es';
 import { Vector3 } from 'three';
+
 import { System } from '../ecs';
-import { PhysicsWorld } from './physics-world';
-import { PhysicsBodyComponent } from './physics-body-component';
 import { TransformComponent } from '../ecs';
+
+import { PhysicsBodyComponent } from './physics-body-component';
+import { PhysicsWorld } from './physics-world';
 
 export interface CannonPhysicsSystemConfig {
   gravity?: { x: number; y: number; z: number };

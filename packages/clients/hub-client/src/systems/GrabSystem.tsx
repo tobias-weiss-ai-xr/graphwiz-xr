@@ -9,9 +9,10 @@
  * - Smooth interpolation
  */
 
-import { useRef, useCallback } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useRef, useCallback } from 'react';
 import { Vector3, Raycaster, Object3D } from 'three';
+
 import { GrabbableComponent } from '../ecs/components';
 
 export interface GrabTarget {

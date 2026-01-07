@@ -4,11 +4,16 @@
  * ECS system that handles WebXR controller input and updates entities.
  */
 
-import { System } from '../ecs/system';
-import { TransformComponent, PhysicsComponent } from '../ecs/entity';
-import { XRInputManager, ControllerState } from './xr-input-manager';
 import { EventEmitter } from 'events';
+
 import * as THREE from 'three';
+
+import { TransformComponent, PhysicsComponent } from '../ecs/entity';
+import { System } from '../ecs/system';
+
+import { XRInputManager, ControllerState } from './xr-input-manager';
+
+
 
 export interface XRInputSystemConfig {
   enableHapticFeedback?: boolean;

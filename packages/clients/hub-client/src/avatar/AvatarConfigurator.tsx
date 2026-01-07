@@ -4,9 +4,10 @@
  * Allows users to customize their avatar with live 3D preview
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+import { useState, useEffect, useCallback } from 'react';
+
 import type { AvatarConfig, BodyTypeEnum } from './api';
 import { AvatarPreview } from './AvatarPreview';
 import { getAvatarPersistence } from './persistence';

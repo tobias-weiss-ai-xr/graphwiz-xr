@@ -4,14 +4,18 @@
  * ECS system for managing user avatars in 3D space.
  */
 
-import { System } from '../ecs/system';
-import { AvatarComponent } from './avatar-component';
-import { AvatarRenderer } from './avatar-renderer';
-import { TransformComponent } from '../ecs/entity';
-import { XRInputManager } from '../xr/xr-input-manager';
-import type { NetworkClient } from '../network/client';
 import { MessageType } from '@graphwiz/protocol';
 import * as THREE from 'three';
+
+import { TransformComponent } from '../ecs/entity';
+import { System } from '../ecs/system';
+import type { NetworkClient } from '../network/client';
+import { XRInputManager } from '../xr/xr-input-manager';
+
+import { AvatarComponent } from './avatar-component';
+import { AvatarRenderer } from './avatar-renderer';
+
+
 
 export interface AvatarSystemConfig {
   updateRate?: number; // Position update rate in Hz

@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react';
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
 interface FloatingEmojiProps {

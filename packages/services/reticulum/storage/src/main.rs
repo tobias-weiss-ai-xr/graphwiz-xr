@@ -3,6 +3,7 @@
 use reticulum_core::Config;
 use reticulum_storage::StorageService;
 use std::env;
+use std::sync::Arc;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -65,7 +66,8 @@ async fn main() -> std::io::Result<()> {
     log::info!("  Port: {}", config.server.port);
     log::info!("  Storage path: {}", storage_base_path);
 
-    // Create storage service
+    // Create storage service with Arc config for JwtAuth
+    let config_arc = Arc::new(config);
     let service = StorageService::new(config, storage_base_path);
 
     // Run the service

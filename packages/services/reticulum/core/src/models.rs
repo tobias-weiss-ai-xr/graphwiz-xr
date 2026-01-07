@@ -7,6 +7,7 @@ pub mod entities;
 pub mod oauth_accounts;
 pub mod magic_link_tokens;
 pub mod assets;
+pub mod upload_sessions;
 
 pub use users::{User, UserModel};
 pub use rooms::{Room, RoomModel};
@@ -15,3 +16,4 @@ pub use entities::{EntityData, EntityModel, Vector3, Quaternion};
 pub use oauth_accounts::{OAuthAccountModel, OAuthProvider};
 pub use magic_link_tokens::{MagicLinkTokenModel, Entity as MagicLinkTokenEntity, ActiveModel as MagicLinkTokenActiveModel, Model as MagicLinkToken};
 pub use assets::{Asset, AssetModel, AssetType};
+pub use upload_sessions::{UploadSession, UploadSessionModel, UploadStatus};

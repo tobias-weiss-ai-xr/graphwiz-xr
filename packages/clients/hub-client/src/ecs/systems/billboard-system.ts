@@ -4,10 +4,11 @@
  * Makes entities always face the camera.
  */
 
-import { BillboardComponent, TransformComponent } from '../entity';
-import { System } from '../system';
 import type { Camera } from 'three';
 import { Vector3, Quaternion, Matrix4 } from 'three';
+
+import { BillboardComponent, TransformComponent } from '../entity';
+import { System } from '../system';
 
 export class BillboardSystem extends System {
   private camera: Camera | null = null;

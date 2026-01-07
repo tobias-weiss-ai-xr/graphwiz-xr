@@ -1,8 +1,8 @@
-import { useRef } from 'react';
-import { Mesh } from 'three';
-import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import { Float, MeshDistortMaterial, Stars, Environment } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
+import { Mesh } from 'three';
 
 /**
  * RotatingCube - A rotating cube with distort material

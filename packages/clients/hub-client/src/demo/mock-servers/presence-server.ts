@@ -4,8 +4,9 @@
  * Simulates the WebSocket presence service for development/testing.
  */
 
-import { WebSocketServer, WebSocket } from 'ws';
 import { randomUUID } from 'crypto';
+
+import { WebSocketServer, WebSocket } from 'ws';
 
 const PORT = 8013;
 

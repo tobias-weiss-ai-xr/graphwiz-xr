@@ -2,10 +2,11 @@
  * 3D Avatar Preview Component
  */
 
-import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
 import { Cylinder, Sphere, Box, Cone } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
 import * as THREE from 'three';
+
 import type { AvatarConfig } from './api';
 
 interface AvatarPreviewProps {

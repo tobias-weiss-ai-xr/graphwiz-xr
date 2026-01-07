@@ -50,10 +50,10 @@ export class WebSocketClient {
         const params = new URLSearchParams({
           room_id: this.config.roomId,
           user_id: this.config.userId,
-          client_id: this.clientId!,
+          client_id: this.clientId!
         });
 
-        const wsUrl = `${this.config.presenceUrl}/${this.config.roomId}?${params.toString()}`;
+        const wsUrl = `${this.config.presenceUrl}/ws/${this.config.roomId}?${params.toString()}`;
         console.log('[WebSocketClient] Connecting to:', wsUrl);
 
         this.ws = new WebSocket(wsUrl);
@@ -69,12 +69,14 @@ export class WebSocketClient {
           this.startPingInterval();
 
           // Send client hello
-          this.sendClientHello().then(() => {
-            resolve();
-          }).catch((err) => {
-            console.error('[WebSocketClient] Failed to send client hello:', err);
-            reject(err);
-          });
+          this.sendClientHello()
+            .then(() => {
+              resolve();
+            })
+            .catch((err) => {
+              console.error('[WebSocketClient] Failed to send client hello:', err);
+              reject(err);
+            });
         };
 
         this.ws.onmessage = (event) => {
@@ -148,7 +150,8 @@ export class WebSocketClient {
       this.ws.send(serialized);
 
       // Only log important message types (not position updates which are sent at 20Hz)
-      if (message.type !== 10) { // 10 = POSITION_UPDATE
+      if (message.type !== 10) {
+        // 10 = POSITION_UPDATE
         console.log('[WebSocketClient] Sent message type:', message.type);
       }
     } catch (error) {
@@ -164,7 +167,7 @@ export class WebSocketClient {
       clientId: this.clientId!,
       displayName: this.config.displayName,
       authToken: this.config.authToken || '',
-      requestedRoom: this.config.roomId,
+      requestedRoom: this.config.roomId
     };
 
     const message = MessageBuilder.create(1 as MessageType, hello); // CLIENT_HELLO = 1
@@ -184,7 +187,7 @@ export class WebSocketClient {
       position: { ...position },
       rotation: { ...rotation },
       sequenceNumber: this.sequenceNumber++,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     const message = MessageBuilder.createPositionUpdate(update);
@@ -201,7 +204,7 @@ export class WebSocketClient {
   }): void {
     const spawn = {
       ...data,
-      ownerId: this.config.userId,
+      ownerId: this.config.userId
     };
 
     const message = MessageBuilder.createEntitySpawn(spawn);
@@ -211,10 +214,7 @@ export class WebSocketClient {
   /**
    * Send entity update message
    */
-  sendEntityUpdate(data: {
-    entityId: string;
-    components: Record<string, unknown>;
-  }): void {
+  sendEntityUpdate(data: { entityId: string; components: Record<string, unknown> }): void {
     const message = MessageBuilder.createEntityUpdate(data);
     this.send(message);
   }
@@ -234,7 +234,7 @@ export class WebSocketClient {
     const chat = {
       fromClientId: this.clientId!,
       message: messageText,
-      type: 0, // NORMAL
+      type: 0 // NORMAL
     };
 
     const message = MessageBuilder.createChatMessage(chat);
@@ -250,7 +250,7 @@ export class WebSocketClient {
       emoji,
       position: { ...position },
       timestamp: Date.now(),
-      reactionId: uuidv4(),
+      reactionId: uuidv4()
     };
 
     const message = MessageBuilder.create(31 as MessageType, reaction); // EMOJI_REACTION = 31
@@ -265,7 +265,7 @@ export class WebSocketClient {
       entityId,
       clientId: this.clientId!,
       position: { ...position },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     const message = MessageBuilder.create(32 as MessageType, grab); // OBJECT_GRAB = 32
@@ -285,7 +285,7 @@ export class WebSocketClient {
       clientId: this.clientId!,
       position: { ...position },
       velocity: { ...velocity },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     const message = MessageBuilder.create(33 as MessageType, release); // OBJECT_RELEASE = 33
@@ -313,8 +313,8 @@ export class WebSocketClient {
         primaryColor: avatarConfig.primaryColor,
         secondaryColor: avatarConfig.secondaryColor,
         height: avatarConfig.height,
-        customModelUrl: avatarConfig.customModelUrl || '',
-      },
+        customModelUrl: avatarConfig.customModelUrl || ''
+      }
     };
 
     // Create message with proper wrapper
@@ -324,8 +324,8 @@ export class WebSocketClient {
       type: 42, // PRESENCE_UPDATE
       payload: {
         clientId: this.clientId!,
-        ...presenceData,
-      },
+        ...presenceData
+      }
     };
 
     this.send(message);
@@ -364,7 +364,8 @@ export class WebSocketClient {
       message = MessageParser.parse(data);
 
       // Only log important message types (not position updates which are received at 20Hz)
-      if (message.type !== 10) { // 10 = POSITION_UPDATE
+      if (message.type !== 10) {
+        // 10 = POSITION_UPDATE
         console.log('[WebSocketClient] Received message type:', message.type);
       }
 
@@ -408,8 +409,8 @@ export class WebSocketClient {
         serverVersion: data.server_version || '1.0.0',
         assignedClientId: data.client_id || this.clientId!,
         roomId: data.room_id || this.config.roomId,
-        initialState: data.initial_state,
-      } as any,
+        initialState: data.initial_state
+      } as any
     };
 
     const handlers = this.messageHandlers.get(2 as MessageType); // SERVER_HELLO
@@ -430,7 +431,9 @@ export class WebSocketClient {
     this.reconnectAttempts++;
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
 
-    console.log(`[WebSocketClient] Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+    console.log(
+      `[WebSocketClient] Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+    );
 
     setTimeout(() => {
       this.connect().catch((error) => {
@@ -466,7 +469,7 @@ export class WebSocketClient {
       isConnected: this.isConnected,
       reconnectAttempts: this.reconnectAttempts,
       clientId: this.clientId,
-      readyState: this.ws?.readyState ?? WebSocket.CLOSED,
+      readyState: this.ws?.readyState ?? WebSocket.CLOSED
     };
   }
 
@@ -485,7 +488,7 @@ export class WebSocketClient {
           messageId: 'ping-' + Date.now(),
           timestamp: Date.now(),
           type: 255, // Custom ping type (outside normal range)
-          payload: null,
+          payload: null
         };
 
         try {

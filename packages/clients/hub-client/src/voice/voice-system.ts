@@ -4,9 +4,13 @@
  * ECS system that handles voice chat integration with spatial audio.
  */
 
-import { System } from '../ecs/system';
+import { EventEmitter } from 'events';
+
 import { TransformComponent } from '../ecs/entity';
+import { System } from '../ecs/system';
+
 import { VoiceChatClient } from './voice-chat-client';
+
 
 export interface VoiceSystemConfig {
   maxDistance?: number;
@@ -38,10 +42,12 @@ export class VoiceLocalComponent {
   public volume: number = 1.0;
   public voiceActivityDetection: boolean = true;
 
-  constructor(options: {
-    pushToTalk?: boolean;
-    voiceActivityDetection?: boolean;
-  } = {}) {
+  constructor(
+    options: {
+      pushToTalk?: boolean;
+      voiceActivityDetection?: boolean;
+    } = {}
+  ) {
     this.pushToTalk = options.pushToTalk ?? false;
     this.voiceActivityDetection = options.voiceActivityDetection ?? true;
   }
@@ -56,6 +62,16 @@ export class VoiceSystem extends System {
   // Voice indicators (visual feedback)
   private speakingThreshold = 2000; // ms to show as speaking
 
+  private eventEmitter = new EventEmitter();
+
+  on(event: string, listener: Function): void {
+    this.eventEmitter.on(event, listener as any);
+  }
+
+  emit(event: string, ...args: any[]): boolean {
+    return this.eventEmitter.emit(event, ...args);
+  }
+
   constructor(voiceClient: VoiceChatClient, config: VoiceSystemConfig = {}) {
     super();
     this.voiceClient = voiceClient;
@@ -63,7 +79,7 @@ export class VoiceSystem extends System {
       maxDistance: 10,
       spatialAudioEnabled: true,
       voiceActivityEnabled: true,
-      ...config,
+      ...config
     };
 
     this.setupEventListeners();
@@ -94,7 +110,7 @@ export class VoiceSystem extends System {
         this.voiceClient.setRemotePosition(userId, {
           x: transform.position.x,
           y: transform.position.y,
-          z: transform.position.z,
+          z: transform.position.z
         });
       }
 
@@ -102,7 +118,7 @@ export class VoiceSystem extends System {
       if (currentTime - voiceParticipant.lastSpeakTime > this.speakingThreshold) {
         if (voiceParticipant.isSpeaking) {
           voiceParticipant.isSpeaking = false;
-          // Event emission removed - System doesn't have EventEmitter
+          this.emit('userStoppedSpeaking', userId, entityId);
         }
       }
     }
@@ -154,7 +170,7 @@ export class VoiceSystem extends System {
 
     this.localEntityId = localEntity.id;
 
-    // Event emission removed - System doesn't have EventEmitter
+    this.emit('localVoiceEntityCreated', localEntity.id);
   }
 
   /**
@@ -177,7 +193,7 @@ export class VoiceSystem extends System {
 
     this.voiceEntities.set(userId, entity.id);
 
-    // Event emission removed - System doesn't have EventEmitter
+    this.emit('voiceParticipantCreated', entity.id, userId);
   }
 
   /**
@@ -189,7 +205,7 @@ export class VoiceSystem extends System {
       if (entity) {
         const localVoice = entity.getComponent(VoiceLocalComponent);
         if (localVoice) {
-          // Could trigger visual indicator here
+          this.emit('localUserStartedSpeaking', this.localEntityId);
         }
       }
     }
@@ -200,7 +216,7 @@ export class VoiceSystem extends System {
    */
   private onLocalUserStoppedSpeaking(): void {
     if (this.localEntityId && this.config.voiceActivityEnabled) {
-      // Event emission removed - System doesn't have EventEmitter
+      this.emit('localUserStoppedSpeaking', this.localEntityId);
     }
   }
 

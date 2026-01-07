@@ -5,9 +5,10 @@
  */
 
 import { useRef, useEffect } from 'react';
-import type { LightComponent } from '../ecs/entity';
 import { Color } from 'three';
 import type { Light as ThreeLight } from 'three';
+
+import type { LightComponent } from '../ecs/entity';
 
 interface LightProps {
   component: LightComponent;

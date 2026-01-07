@@ -21,6 +21,7 @@ class MockWebSocket {
   onmessage: ((event: MessageEvent) => void) | null = null;
   onerror: ((event: Event) => void) | null = null;
   onclose: ((event: CloseEvent) => void) | null = null;
+  eventListeners = new Map<string, Function[]>();
 
   sentMessages: Array<ArrayBuffer | string> = [];
 
@@ -29,10 +30,33 @@ class MockWebSocket {
     // Simulate async connection
     setTimeout(() => {
       this.readyState = WebSocket.OPEN;
+      this.triggerEvent('open', new Event('open'));
       if (this.onopen) {
         this.onopen(new Event('open'));
       }
     }, 10);
+  }
+
+  addEventListener(event: string, listener: Function): void {
+    if (!this.eventListeners.has(event)) {
+      this.eventListeners.set(event, []);
+    }
+    this.eventListeners.get(event)!.push(listener);
+  }
+
+  removeEventListener(event: string, listener: Function): void {
+    const listeners = this.eventListeners.get(event);
+    if (listeners) {
+      const index = listeners.indexOf(listener);
+      if (index > -1) listeners.splice(index, 1);
+    }
+  }
+
+  private triggerEvent(event: string, data: any): void {
+    const listeners = this.eventListeners.get(event);
+    if (listeners) {
+      listeners.forEach((listener) => listener(data));
+    }
   }
 
   send(data: ArrayBuffer | string): void {
@@ -41,30 +65,38 @@ class MockWebSocket {
 
   close(code?: number, reason?: string): void {
     this.readyState = WebSocket.CLOSED;
+    const event = new CloseEvent('close', { code: code || 1000, reason: reason || '' });
+    this.triggerEvent('close', event);
     if (this.onclose) {
-      this.onclose(new CloseEvent('close', { code: code || 1000, reason: reason || '' }));
+      this.onclose(event);
     }
   }
 
   // Test helper: simulate receiving a message
   simulateMessage(data: ArrayBuffer | string): void {
+    const event = new MessageEvent('message', { data });
+    this.triggerEvent('message', event);
     if (this.onmessage) {
-      this.onmessage(new MessageEvent('message', { data }));
+      this.onmessage(event);
     }
   }
 
   // Test helper: simulate connection error
   simulateError(): void {
+    const event = new Event('error');
+    this.triggerEvent('error', event);
     if (this.onerror) {
-      this.onerror(new Event('error'));
+      this.onerror(event);
     }
   }
 
   // Test helper: simulate disconnection
   simulateDisconnect(): void {
     this.readyState = WebSocket.CLOSED;
+    const event = new CloseEvent('close');
+    this.triggerEvent('close', event);
     if (this.onclose) {
-      this.onclose(new CloseEvent('close'));
+      this.onclose(event);
     }
   }
 }
@@ -84,8 +116,8 @@ describe('MessageParser', () => {
           position: { x: 1, y: 2, z: 3 },
           rotation: { x: 0, y: 0, z: 0, w: 1 },
           sequenceNumber: 1,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       };
 
       const buffer = MessageParser.serialize(message);
@@ -103,8 +135,8 @@ describe('MessageParser', () => {
           fromClientId: 'user-1',
           message: 'Hello, world!',
           timestamp: Date.now(),
-          type: 0,
-        },
+          type: 0
+        }
       };
 
       const buffer = MessageParser.serialize(original);
@@ -123,7 +155,7 @@ describe('MessageParser', () => {
         position: { x: 10.5, y: 2.0, z: -5.3 },
         rotation: { x: 0, y: 0.707, z: 0, w: 0.707 },
         sequenceNumber: 42,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
       const buffer = MessageParser.serialize(message);
@@ -142,7 +174,7 @@ describe('WebSocketClient', () => {
       presenceUrl: 'ws://localhost:8003',
       roomId: 'test-room',
       userId: 'test-user',
-      displayName: 'Test User',
+      displayName: 'Test User'
     });
   });
 
@@ -205,17 +237,19 @@ describe('WebSocketClient', () => {
           position: { x: 1, y: 2, z: 3 },
           rotation: { x: 0, y: 0, z: 0, w: 1 },
           sequenceNumber: 1,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       };
 
       const buffer = MessageParser.serialize(message);
       mockWs.simulateMessage(buffer);
 
       // Handler should be called
-      expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-        type: MessageType.POSITION_UPDATE,
-      }));
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: MessageType.POSITION_UPDATE
+        })
+      );
     });
 
     it('should unsubscribe from message handlers', async () => {
@@ -238,8 +272,8 @@ describe('WebSocketClient', () => {
           fromClientId: 'user-1',
           message: 'Test',
           timestamp: Date.now(),
-          type: 0,
-        },
+          type: 0
+        }
       };
 
       const buffer = MessageParser.serialize(message);
@@ -286,7 +320,7 @@ describe('WebSocketClient', () => {
       client.sendEntitySpawn({
         entityId: 'new-entity',
         templateId: 'cube',
-        components: { color: 'red' },
+        components: { color: 'red' }
       });
 
       expect(mockWs.sentMessages.length).toBeGreaterThan(0);
@@ -303,7 +337,7 @@ describe('WebSocketClient', () => {
       mockWs.simulateDisconnect();
 
       // Should attempt reconnection
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // After disconnect, client should show not connected
       expect(client.connected()).toBe(false);
@@ -325,7 +359,7 @@ describe('NetworkClient', () => {
       roomId: 'test-room',
       authToken: 'test-token',
       userId: 'test-user',
-      displayName: 'Test User',
+      displayName: 'Test User'
     });
   });
 
@@ -366,7 +400,7 @@ describe('Integration Tests', () => {
         presenceUrl: 'ws://localhost:8003',
         roomId: 'integration-test',
         userId: 'user-1',
-        displayName: 'User 1',
+        displayName: 'User 1'
       });
 
       await client.connect();
@@ -389,8 +423,8 @@ describe('Integration Tests', () => {
           fromClientId: 'user-1',
           message: 'Test message',
           timestamp: Date.now(),
-          type: 0,
-        },
+          type: 0
+        }
       };
 
       const buffer = MessageParser.serialize(message);
@@ -410,7 +444,7 @@ describe('Integration Tests', () => {
         position: { x: 1, y: 2, z: 3 },
         rotation: { x: 0, y: 0, z: 0, w: 1 },
         sequenceNumber: 1,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
       const start = performance.now();
@@ -425,13 +459,15 @@ describe('Integration Tests', () => {
       const messages: Message[] = [];
 
       for (let i = 0; i < 100; i++) {
-        messages.push(MessageBuilder.createPositionUpdate({
-          entityId: `entity-${i}`,
-          position: { x: i, y: i * 2, z: i * 3 },
-          rotation: { x: 0, y: 0, z: 0, w: 1 },
-          sequenceNumber: i,
-          timestamp: Date.now(),
-        }));
+        messages.push(
+          MessageBuilder.createPositionUpdate({
+            entityId: `entity-${i}`,
+            position: { x: i, y: i * 2, z: i * 3 },
+            rotation: { x: 0, y: 0, z: 0, w: 1 },
+            sequenceNumber: i,
+            timestamp: Date.now()
+          })
+        );
       }
 
       const start = performance.now();

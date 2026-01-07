@@ -24,15 +24,18 @@ RUN pnpm install --no-frozen-lockfile
 FROM node:20-alpine AS development
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm@8
-
-# Copy workspace config
-COPY pnpm-workspace.yaml ./
-COPY package.json ./
-COPY pnpm-lock.yaml ./
-
-# Copy dependencies from dependencies stage
+  # Install pnpm
+  RUN npm install -g pnpm@8
+  
+  # Copy workspace config
+  COPY pnpm-workspace.yaml ./
+  COPY package.json ./
+  COPY pnpm-lock.yaml ./
+  
+  # Install all dependencies (including devDependencies for development)
+  RUN pnpm install --no-frozen-lockfile --dev
+  
+  # Copy dependencies from dependencies stage
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY --from=dependencies /app/packages ./packages
 

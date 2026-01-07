@@ -4,9 +4,10 @@
  * Simple physics simulation for entities.
  */
 
+import { Vector3 } from 'three';
+
 import { PhysicsComponent, TransformComponent } from '../entity';
 import { System } from '../system';
-import { Vector3 } from 'three';
 
 const GRAVITY = new Vector3(0, -9.8, 0);
 

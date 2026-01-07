@@ -4,8 +4,8 @@
  * Renders a player avatar with name tag.
  */
 
-import { useRef } from 'react';
 import { Text } from '@react-three/drei';
+import { useRef } from 'react';
 import type { Group } from 'three';
 
 interface PlayerAvatarProps {

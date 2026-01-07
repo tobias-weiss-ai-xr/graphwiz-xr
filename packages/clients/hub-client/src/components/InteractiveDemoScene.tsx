@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
-import { Mesh } from 'three';
-import { useFrame } from '@react-three/fiber';
 import { Text, Grid } from '@react-three/drei';
 import { Float, MeshDistortMaterial, Stars, Environment } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { useThree } from '@react-three/fiber';
+import { useState, useRef } from 'react';
 import { useEffect } from 'react';
+import { Mesh } from 'three';
 
 /**
  * Interactive Button Object

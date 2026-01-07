@@ -3,6 +3,7 @@
 use actix_web::web;
 
 use crate::handlers;
+use crate::admin_handlers;
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg
@@ -22,5 +23,15 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route("/session/validate", web::post().to(handlers::validate_session))
         .route("/session/refresh", web::post().to(handlers::refresh_session))
         .route("/logout", web::post().to(handlers::logout))
-        .route("/logout/all", web::post().to(handlers::logout_all));
+        .route("/logout/all", web::post().to(handlers::logout_all))
+        // Admin routes
+        .route("/admin/logs", web::get().to(admin_handlers::fetch_all_logs))
+        .route("/admin/logs/export", web::get().to(admin_handlers::export_logs))
+        .route("/admin/logs/clear", web::post().to(admin_handlers::clear_logs))
+        .route("/admin/restart", web::post().to(admin_handlers::restart_service))
+        .route("/admin/restart-all", web::post().to(admin_handlers::restart_all_services))
+        .service(
+            web::resource("/admin/logs/{service_name}")
+                .route(web::get().to(admin_handlers::fetch_logs))
+        );
 }

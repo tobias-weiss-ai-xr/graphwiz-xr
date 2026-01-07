@@ -5,14 +5,14 @@
  * Manages the ECS world, renderer, and systems.
  */
 
-import { TransformSystem } from '../ecs/systems/transform-system';
 import { AnimationSystem } from '../ecs/systems/animation-system';
 import { AudioSystem } from '../ecs/systems/audio-system';
-import { PhysicsSystem } from '../ecs/systems/physics-system';
 import { BillboardSystem } from '../ecs/systems/billboard-system';
+import { PhysicsSystem } from '../ecs/systems/physics-system';
+import { TransformSystem } from '../ecs/systems/transform-system';
 import { World } from '../ecs/world';
-import { assetLoader } from './assets';
 
+import { assetLoader } from './assets';
 import type { EngineConfig } from './config';
 
 export class Engine {

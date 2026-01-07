@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
 import { Text, Grid } from '@react-three/drei';
-import { MediaPlayer, useMediaSync, MediaState } from './MediaPlayer';
-import { MediaControls } from './MediaControls';
-import { AudioVisualizer, WaveformVisualizer } from './AudioVisualizer';
 import { useThree, useFrame } from '@react-three/fiber';
+import { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
+
+import { AudioVisualizer, WaveformVisualizer } from './AudioVisualizer';
+import { MediaControls } from './MediaControls';
+import { MediaPlayer, useMediaSync, MediaState } from './MediaPlayer';
 
 /**
  * Media Demo Scene

@@ -2,6 +2,7 @@
 //!
 //! Handles user registration, login, JWT token generation and validation
 
+pub mod admin_handlers;
 pub mod config;
 pub mod handlers;
 pub mod jwt;

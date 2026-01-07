@@ -4,12 +4,14 @@
  * ECS system that handles network synchronization of entities.
  */
 
-import { System } from '../ecs/system';
+import type { Message, MessageType } from '@graphwiz/protocol';
+
 import type { Entity } from '../ecs/entity';
 import { TransformComponent } from '../ecs/entity';
-import { NetworkSyncComponent } from './network-sync';
+import { System } from '../ecs/system';
+
 import type { NetworkClient } from './client';
-import type { Message, MessageType } from '@graphwiz/protocol';
+import { NetworkSyncComponent } from './network-sync';
 
 export class NetworkSystem extends System {
   private networkClient: NetworkClient;

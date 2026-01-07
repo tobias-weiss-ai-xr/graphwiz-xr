@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useEffect, useRef, useState } from 'react';
 import { InstancedMesh } from 'three';
 import * as THREE from 'three';
 

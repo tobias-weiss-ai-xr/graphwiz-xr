@@ -1,7 +1,7 @@
-import { useRef } from 'react';
+import { OrbitControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useThree } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { useRef } from 'react';
 
 /**
  * CameraController - Smoothly follows player with orbit controls

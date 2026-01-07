@@ -10,13 +10,15 @@
  * - Stacking mechanics
  */
 
-import { useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { useEffect, useRef, useState } from 'react';
+import { Vector3 } from 'three';
+
 import { Engine } from '../core';
 import { TransformComponent } from '../ecs';
 import { PhysicsSystem, PhysicsBodyComponent } from '../physics';
 import { XRInputManager, XRInputSystem, VRInteractableComponent } from '../xr';
-import { Vector3 } from 'three';
+
 
 interface PhysicsDemoState {
   running: boolean;

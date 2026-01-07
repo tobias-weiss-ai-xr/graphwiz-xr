@@ -4,11 +4,13 @@
  * Renders an ECS entity in the 3D scene using React Three Fiber.
  */
 
-import { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useRef, useEffect } from 'react';
+import type { Group, Mesh } from 'three';
+
 import type { Entity } from '../ecs/entity';
 import { TransformComponent, ModelComponent, AnimationComponent } from '../ecs/entity';
-import type { Group, Mesh } from 'three';
+
 
 interface EntityRendererProps {
   entity: Entity;

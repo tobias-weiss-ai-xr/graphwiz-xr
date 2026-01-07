@@ -5,8 +5,9 @@
  * This is a wrapper around WebSocketClient that provides the high-level interface.
  */
 
-import { WebSocketClient } from './websocket-client';
 import type { Message, MessageType } from '@graphwiz/protocol';
+
+import { WebSocketClient } from './websocket-client';
 
 export interface NetworkConfig {
   presenceUrl: string;

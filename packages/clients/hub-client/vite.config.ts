@@ -6,17 +6,17 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
-    },
+      '@': resolve(__dirname, './src')
+    }
   },
   server: {
-    port: 3000,
+    port: 5173,
     proxy: {
       '/api': {
         target: 'http://localhost:4000',
-        changeOrigin: true,
-      },
-    },
+        changeOrigin: true
+      }
+    }
   },
   build: {
     target: 'es2020',
@@ -25,9 +25,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'three': ['three', '@react-three/fiber', '@react-three/drei'],
-        },
-      },
-    },
-  },
+          three: ['three', '@react-three/fiber', '@react-three/drei']
+        }
+      }
+    }
+  }
 });

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useRef, useState } from 'react';
 import { Mesh } from 'three';
 import * as THREE from 'three';
 

@@ -4,9 +4,11 @@
  * Renders the entire ECS world as a 3D scene.
  */
 
-import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+
 import type { World } from '../ecs/world';
+
 import { EntityRenderer } from './EntityRenderer';
 
 interface SceneRendererProps {

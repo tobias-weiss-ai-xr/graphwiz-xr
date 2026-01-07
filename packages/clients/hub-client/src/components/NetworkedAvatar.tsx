@@ -5,8 +5,8 @@
  * Supports all 5 body types with custom colors and heights.
  */
 
-import { useRef, useEffect } from 'react';
 import { Text } from '@react-three/drei';
+import { useRef, useEffect } from 'react';
 
 export interface NetworkedAvatarConfig {
   body_type: 'human' | 'robot' | 'alien' | 'animal' | 'abstract';

@@ -4,8 +4,9 @@
  * Manages VR controller input, tracking, and interaction.
  */
 
-import * as THREE from 'three';
 import { EventEmitter } from 'events';
+
+import * as THREE from 'three';
 
 export interface ControllerState {
   handedness: 'left' | 'right' | 'none';

@@ -9,10 +9,11 @@
  * - Physics-based throwing
  */
 
-import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Vector3, Mesh } from 'three';
 import { Text } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import { Vector3, Mesh } from 'three';
+
 import { GrabbableComponent } from '../ecs/components';
 import { useNetworkedGrabSystem } from '../systems/GrabSystem';
 
