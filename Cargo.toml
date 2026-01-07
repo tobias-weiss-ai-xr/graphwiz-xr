@@ -57,6 +57,9 @@ config = "0.14"
 sea-orm-migration = "0.12"
 validator = { version = "0.18", features = ["derive"] }
 
+# Caching
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
+
 # Logging
 log = "0.4"
 
