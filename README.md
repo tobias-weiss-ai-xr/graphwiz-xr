@@ -18,11 +18,12 @@ GraphWiz-XR delivers high-fidelity, browser-based virtual reality without instal
 
 ![GraphWiz-XR Interactive Multiplayer Demo](./docs/interactive-demo-screenshot.png)
 
-*Interactive Multiplayer Demo - Click objects to interact, changes sync across all players in real-time*
+_Interactive Multiplayer Demo - Click objects to interact, changes sync across all players in real-time_
 
 ## Technology Stack
 
 ### Frontend
+
 - **TypeScript** - Type-safe development
 - **React 18** - UI framework
 - **React Three Fiber** - Declarative 3D rendering
@@ -30,17 +31,20 @@ GraphWiz-XR delivers high-fidelity, browser-based virtual reality without instal
 - **Vite** - Fast build tool
 
 ### Backend
+
 - **Rust** - High-performance microservices
 - **Actix-Web** - Web framework
 - **SeaORM** - Database ORM
 - **PostgreSQL** - Primary database
 
 ### Networking
+
 - **WebTransport** - Next-gen real-time transport (HTTP/3)
 - **gRPC** - Structured RPC framework
 - **Protobuf** - Efficient serialization
 
 ### Editor
+
 - **Tauri** - Lightweight desktop app framework
 - **Rust** - Native performance
 - **React** - Shared UI with client
@@ -63,6 +67,7 @@ graphwiz-xr/
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 20+
 - Rust 1.75+
 - pnpm 8+
@@ -102,6 +107,7 @@ docker-compose -f packages/deploy/docker-compose.dev.yml down
 ```
 
 #### Access Points
+
 - **Hub Client**: http://localhost:5173
 - **Core API**: http://localhost:8000
 - **Storage Service**: http://localhost:8005
@@ -130,20 +136,24 @@ pnpm build
 ## 📚 Documentation & Planning
 
 ### Development Planning
+
 - **[NEXT_STEPS.md](./NEXT_STEPS.md)** - Detailed immediate action items, quick wins, and task breakdowns
 - **[ROADMAP.md](./ROADMAP.md)** - Long-term development roadmap and feature planning
 - **[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)** - Detailed implementation progress tracking
 
 ### Architecture Documentation
+
 - **[docs/arc42.md](./docs/arc42.md)** - Architecture documentation (arc42 template)
 - **[docs/INTENTION.md](./docs/INTENTION.md)** - Project intentions and design principles
 
 ### Quick Reference Guides
+
 - **[NETWORKING_IMPLEMENTATION_SUMMARY.md](./NETWORKING_IMPLEMENTATION_SUMMARY.md)** - WebSocket implementation details
 - **[PHYSICS_ENGINE_INTEGRATION.md](./PHYSICS_ENGINE_INTEGRATION.md)** - Physics system documentation
 - **[VOICE_CHAT_IMPLEMENTATION_SUMMARY.md](./VOICE_CHAT_IMPLEMENTATION_SUMMARY.md)** - Voice chat system
 
 ### Test Reports
+
 - **[PHYSICS_TEST_REPORT.md](./PHYSICS_TEST_REPORT.md)** - Physics system test results
 - **[FULL_STACK_INTEGRATION_TEST_REPORT.md](./FULL_STACK_INTEGRATION_TEST_REPORT.md)** - Integration test results
 
@@ -165,6 +175,7 @@ pnpm build
 ### Protocol
 
 The system uses a custom protocol built on:
+
 - **gRPC** - Reliable operations (auth, room management)
 - **WebTransport** - Real-time data (positions, voice)
 - **Protobuf** - Message serialization
@@ -194,6 +205,7 @@ MPL-2.0 - See LICENSE file for details
 ## Implementation Status
 
 ### ✅ Phase 1: Foundation (COMPLETE)
+
 **Goal**: Establish project infrastructure and tooling
 
 - [x] Configure monorepo build system (Turborepo)
@@ -214,9 +226,11 @@ MPL-2.0 - See LICENSE file for details
 ---
 
 ### ✅ Phase 2: Core Services (COMPLETE)
+
 **Goal**: Build backend microservices (Rust replacement for Reticulum)
 
 #### 2.1 Authentication Service ✅
+
 - [x] Email magic link authentication
 - [x] JWT token generation and validation
 - [x] OAuth integration (GitHub, Google, Discord)
@@ -227,6 +241,7 @@ MPL-2.0 - See LICENSE file for details
 - [x] Database migrations
 
 #### 2.2 Hub Service ✅
+
 - [x] Room creation and configuration
 - [x] Room URL generation and routing
 - [x] Room listing and discovery
@@ -236,6 +251,7 @@ MPL-2.0 - See LICENSE file for details
 - [x] Comprehensive test coverage
 
 #### 2.3 Storage Service ✅
+
 - [x] Multipart file upload with progress tracking
 - [x] File validation (magic bytes, size limits, MIME types)
 - [x] Asset metadata storage (PostgreSQL)
@@ -248,6 +264,7 @@ MPL-2.0 - See LICENSE file for details
 - [x] Supported types: Models (GLB/GLTF), Textures, Audio, Video
 
 #### 2.4 Presence Service ✅
+
 - [x] WebSocket connection management
 - [x] Room-based broadcasting
 - [x] Connection lifecycle (add/remove)
@@ -257,6 +274,7 @@ MPL-2.0 - See LICENSE file for details
 - [x] Connection statistics
 
 #### 2.5 SFU (Selective Forwarding Unit) Service ✅
+
 - [x] Room creation and management
 - [x] Peer connection tracking
 - [x] WebRTC offer/answer handling
@@ -270,9 +288,11 @@ MPL-2.0 - See LICENSE file for details
 ---
 
 ### 🟡 Phase 3: Real-Time Networking (IN PROGRESS)
+
 **Goal**: Build WebRTC SFU and signaling
 
 #### 3.1 SFU Service ✅ COMPLETE
+
 - [x] WebRTC Selective Forwarding Unit
 - [x] Audio/video routing
 - [x] Simulcast support
@@ -280,6 +300,7 @@ MPL-2.0 - See LICENSE file for details
 - [x] Multi-user conference management
 
 #### 3.2 Client Networking ✅ COMPLETE
+
 - [x] WebSocket client with auto-reconnect
 - [x] Binary message serialization/deserialization
 - [x] Position/rotation synchronization
@@ -292,9 +313,11 @@ MPL-2.0 - See LICENSE file for details
 ---
 
 ### 🟡 Phase 4: Hub Client Development (IN PROGRESS)
+
 **Goal**: Build main VR client (TypeScript + R3F replacement for hubs)
 
 #### 4.1 Core Client Foundation ✅ COMPLETE
+
 - [x] React 18 + Vite setup
 - [x] React Three Fiber scene initialization
 - [x] Camera and controls system
@@ -302,18 +325,21 @@ MPL-2.0 - See LICENSE file for details
 - [x] Performance monitoring
 
 #### 4.2 ECS Architecture ✅ COMPLETE
+
 - [x] Complete ECS (Entity Component System)
 - [x] Components: Transform, Physics, Collider, Audio, Animation, Model, Light, Camera, NetworkSync, Interactable, Billboard, Particle
 - [x] Systems: Transform, Physics, Animation, Audio, Billboard
 - [x] Game loop with delta time
 
 #### 4.3 Multiuser Networking ✅ COMPLETE
+
 - [x] WebSocket client implementation
 - [x] Networked avatar system
 - [x] Interpolation and prediction for smooth movement
 - [x] Network quality indicators
 
 #### 4.4 XR Input System ✅ COMPLETE
+
 - [x] WebXR controller input
 - [x] Button press handling
 - [x] Thumbstick tracking
@@ -321,19 +347,22 @@ MPL-2.0 - See LICENSE file for details
 - [x] Pose tracking and updates
 
 #### 4.5 Physics Engine ✅ COMPLETE
+
 - [x] Physics body components
 - [x] Collision detection
 - [x] Physics simulation with cannon-es
 - [x] Comprehensive physics tests (31 tests)
 
 #### 4.6 Voice Chat System ✅ COMPLETE
+
 - [x] WebRTC audio capture
 - [x] Voice activity detection
 - [x] Audio mixing and spatialization
 - [x] Mute/unmute controls
 - [x] Voice chat client implementation
 
-#### 4.7 Scene & Interaction Systems ✅ NEW FEATURES (2026-01-02)
+#### 4.7 Scene & Interaction Systems ✅ NEW FEATURES (2026-01-07)
+
 - [x] **Text chat UI** - Real-time text messaging
 - [x] **Emoji reactions system** - 3D floating emojis with network sync (32 emojis)
 - [x] **User settings panel** - 18 settings across 4 categories
@@ -356,20 +385,38 @@ MPL-2.0 - See LICENSE file for details
   - ENTITY_UPDATE message type for state synchronization
   - Timestamp-based conflict resolution
   - Visual feedback (rotation, glow effects, animations)
-- [ ] Media playing (video, audio)
-- [ ] Drawing tools
-- [ ] Portal system
-- [ ] Grab and move objects
-- [ ] Gesture recognition
+- [x] **Media playing system** - Video and audio playback with network synchronization (NEW 2026-01-05)
+  - 3D video screen entity with shared playback control
+  - Audio spatialization for immersive experience
+  - Network sync across all players (play/pause, seek)
+  - Support for video and audio media formats
+- [x] **Drawing tools** - Multi-user drawing system (NEW 2026-01-06)
+  - Drawing canvas component with brush controls
+  - Drawing tools panel with color/size options
+  - Network-synchronized drawing across clients
+  - Undo/redo functionality
+- [x] **Portal system** - Room-to-room teleportation (NEW 2026-01-06)
+  - 3D portal entities with visual effects
+  - Room linking and configuration
+  - Teleportation on walk-through
+  - Seamless room transitions
+- [x] **Grab and move objects** - Physics-based object interaction (NEW 2026-01-06)
+  - Multiplayer object grabbing system with physics
+  - Real-time position sync during grab
+  - Release physics with proper velocity
+  - Collision detection and response
+- [ ] Gesture recognition (in progress)
 
-**Deliverables**: ✅ VR client with chat, emoji reactions, settings, avatar customization, and interactive multiplayer demo (NEW 2026-01-02)
+**Deliverables**: ✅ VR client with chat, emoji reactions, settings, avatar customization, interactive multiplayer demo, media playback, drawing tools, portals, and object grabbing (NEW 2026-01-07)
 
 ---
 
 ### 🔴 Phase 5: Admin & Moderation (PENDING)
+
 **Goal**: Build admin dashboard and moderation tools
 
 #### 5.1 Admin Client 🔴 NOT STARTED
+
 - [ ] Dashboard for room management
 - [ ] User management and moderation
 - [ ] Asset library management
@@ -377,6 +424,7 @@ MPL-2.0 - See LICENSE file for details
 - [ ] System health monitoring
 
 #### 5.2 Moderation Features 🔴 NOT STARTED
+
 - [ ] In-room moderation tools
 - [ ] Kick/ban functionality
 - [ ] Mute system
@@ -386,6 +434,7 @@ MPL-2.0 - See LICENSE file for details
 ---
 
 ### 🔴 Phase 6: Spoke Editor (PENDING)
+
 **Goal**: Build scene editor (Tauri replacement for Spoke)
 
 - [ ] Tauri + React application setup
@@ -399,9 +448,11 @@ MPL-2.0 - See LICENSE file for details
 ---
 
 ### 🔴 Phase 7-8: Advanced Features & Production (PENDING)
+
 **Goal**: Add differentiating features and production readiness
 
 #### Advanced Features
+
 - [ ] WebGPU rendering backend
 - [ ] Performance optimization (LOD, instancing)
 - [ ] Social features (friends, groups)
@@ -409,6 +460,7 @@ MPL-2.0 - See LICENSE file for details
 - [ ] Developer APIs
 
 #### Production Readiness
+
 - [ ] E2E test suite expansion
 - [ ] Load testing for SFU
 - [ ] Cross-browser compatibility testing
@@ -421,12 +473,37 @@ MPL-2.0 - See LICENSE file for details
 
 ## Current Status Summary
 
-**Last Updated**: 2026-01-02
+**Last Updated**: 2026-01-07
 
-**Overall Progress**: ~68% Complete
+**Overall Progress**: ~72% Complete
 
 ### Recent Updates (January 2026)
-- ✅ **Interactive Multiplayer Demo Scene**: Real-time synchronized demo objects (NEW 2026-01-02)
+
+- ✅ **Grab and Move Objects System**: Physics-based object interaction (NEW 2026-01-06)
+  - Multiplayer object grabbing with physics integration
+  - Real-time position synchronization during grab
+  - Release physics with proper velocity transfer
+  - Collision detection and response during interactions
+  - Cannon.js physics engine integration
+- ✅ **Portal System**: Room-to-room teleportation (NEW 2026-01-06)
+  - 3D portal entities with visual effects
+  - Room linking configuration in backend
+  - Teleportation on walk-through with smooth transitions
+  - Portal state management and network sync
+- ✅ **Drawing Tools System**: Multi-user drawing capabilities (NEW 2026-01-06)
+  - DrawingCanvas component with brush controls
+  - DrawingTools panel with color/size/stroke options
+  - Network-synchronized drawing across all clients
+  - Undo/redo functionality with history management
+  - Drawing persistence in room state
+- ✅ **Media Playback System**: Video and audio with network sync (NEW 2026-01-05)
+  - 3D video screen entity with MediaPlayer component
+  - Shared playback control (play/pause, seek, volume)
+  - Audio spatialization for immersive 3D audio
+  - Network synchronization across all connected players
+  - MediaDemoScene for testing and demonstration
+  - Support for multiple video/audio formats
+- ✅ **Interactive Multiplayer Demo Scene**: Real-time synchronized demo objects (2026-01-02)
   - **3 Clickable Buttons** - Click to toggle state, all players see changes instantly
   - **2 Collectible Gems** - Click to collect, respawn after 5 seconds with glow effects
   - **Toggleable Light Switch** - Controls scene lighting, synchronized across all clients
@@ -459,6 +536,7 @@ MPL-2.0 - See LICENSE file for details
   - PostgreSQL persistence with automatic avatar loading on connect
 
 ### Recent Updates (December 2025)
+
 - ✅ **Storage Service Backend**: Complete file upload/download service with validation, magic bytes checking, and PostgreSQL metadata storage
 - ✅ **Storage Service Frontend**: React components with drag-drop upload, asset browser, and management UI
 - ✅ **Docker Integration**: Storage service containerized with hot-reload support
@@ -468,6 +546,7 @@ MPL-2.0 - See LICENSE file for details
 - ✅ **Test Suite**: All 138 tests passing (100% pass rate)
 
 ### ✅ Fully Implemented (100%)
+
 - Monorepo infrastructure with Turborepo
 - CI/CD pipeline with GitHub Actions
 - Docker development environment
@@ -484,17 +563,21 @@ MPL-2.0 - See LICENSE file for details
 - Voice chat system
 
 ### 🟡 Partially Implemented (50-90%)
-- Hub client UI (core complete, interactions in progress)
+
+- Hub client UI (core complete, most interactions done, gesture recognition pending)
 - Testing infrastructure (138 tests passing, more coverage needed)
 - Documentation (READMEs complete, API docs pending)
+- Admin dashboard (started, room management features implemented)
 
 ### 🔴 Not Started (0%)
+
 - Admin dashboard
 - Spoke editor
 - Advanced social features
 - Production deployment
 
 ### Test Metrics
+
 - **Total Tests**: 138 passing (100% pass rate)
 - **Coverage**: Networking (95%), Physics (95%), Protocol (95%), XR (70%), ECS (70%)
 
@@ -505,6 +588,7 @@ MPL-2.0 - See LICENSE file for details
 A modern reimplementation of the [Hubs ecosystem](https://github.com/Hubs-Foundation) with TypeScript + Rust architecture.
 
 **Next Priorities (Q1 2025)**:
+
 1. Complete client interaction systems (grab, throw, gestures)
 2. Implement text chat and emoji reactions
 3. Add media playback (video, audio)
@@ -517,17 +601,19 @@ A modern reimplementation of the [Hubs ecosystem](https://github.com/Hubs-Founda
 ## Technology Rationale
 
 ### Why TypeScript + Rust?
-| Aspect | Hubs (Legacy) | GraphWiz-XR |
-|--------|---------------|-------------|
-| **Frontend** | JavaScript + A-Frame | TypeScript + React Three Fiber |
-| **Backend** | Elixir + Phoenix | Rust + Actix-Web |
-| **Performance** | Good | Excellent (Rust zero-cost abstractions) |
-| **Type Safety** | Partial (Elixir dynamic) | Complete (TS + Rust) |
-| **Bundle Size** | Large (A-Frame deps) | Optimized (tree-shaking) |
-| **WebGPU** | Not available | Ready for WebGPU migration |
-| **WebTransport** | Custom implementation | Native HTTP/3 support |
+
+| Aspect           | Hubs (Legacy)            | GraphWiz-XR                             |
+| ---------------- | ------------------------ | --------------------------------------- |
+| **Frontend**     | JavaScript + A-Frame     | TypeScript + React Three Fiber          |
+| **Backend**      | Elixir + Phoenix         | Rust + Actix-Web                        |
+| **Performance**  | Good                     | Excellent (Rust zero-cost abstractions) |
+| **Type Safety**  | Partial (Elixir dynamic) | Complete (TS + Rust)                    |
+| **Bundle Size**  | Large (A-Frame deps)     | Optimized (tree-shaking)                |
+| **WebGPU**       | Not available            | Ready for WebGPU migration              |
+| **WebTransport** | Custom implementation    | Native HTTP/3 support                   |
 
 ### Architecture Improvements
+
 - **Microservices**: Separate Rust services for better scalability
 - **WebTransport**: Modern replacement for WebSocket for real-time data
 - **React Three Fiber**: Declarative 3D with React ecosystem

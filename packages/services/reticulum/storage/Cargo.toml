@@ -30,7 +30,6 @@ mime = "0.3"
 mime_guess = "2.0"
 tokio-util = { version = "0.7", features = ["io"] }
 futures-util = "0.3"
-tokio = { workspace = true }
 
 # S3 storage (optional)
 aws-sdk-s3 = { version = "1.119.0", optional = true }

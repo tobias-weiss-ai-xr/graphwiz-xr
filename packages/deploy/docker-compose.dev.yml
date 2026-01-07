@@ -18,12 +18,12 @@ services:
       POSTGRES_DB: ${DATABASE_NAME:-graphwiz}
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "${DATABASE_PORT:-5432}:5432"
+      - '${DATABASE_PORT:-5432}:5432'
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
       - ./compose/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-graphwiz}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USER:-graphwiz}']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -37,11 +37,11 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - '${REDIS_PORT:-6379}:6379'
     volumes:
       - redis_dev_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -57,7 +57,7 @@ services:
       ADMINER_DEFAULT_SERVER: postgres
       ADMINER_DESIGN: nette
     ports:
-      - "8080:8080"
+      - '8080:8080'
     depends_on:
       postgres:
         condition: service_healthy
@@ -81,8 +81,8 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400}
       PROTOC: /usr/bin/protoc
     ports:
-      - "8000:8000"
-      - "4000:4000"
+      - '8000:8000'
+      - '4000:4000'
     volumes:
       - ../../packages/services/reticulum:/app/packages/services/reticulum:cached
       - cargo_registry:/usr/local/cargo/registry
@@ -115,7 +115,7 @@ services:
       STORAGE_BASE_PATH: /storage
       PROTOC: /usr/bin/protoc
     ports:
-      - "8005:8005"
+      - '8005:8005'
     volumes:
       - ../../packages/services/reticulum:/app/packages/services/reticulum:cached
       - storage_data:/storage
@@ -130,7 +130,7 @@ services:
     networks:
       - graphwiz-dev-network
     privileged: true
-    command: ["cargo", "watch", "-x", "run -p reticulum-storage --bin reticulum-storage"]
+    command: ['cargo', 'watch', '-x', 'run -p reticulum-storage --bin reticulum-storage']
 
   # Hub Client (Vite dev server with hot reload)
   hub-client:
@@ -147,13 +147,14 @@ services:
       VITE_STORAGE_API_URL: http://localhost:8005
       NODE_ENV: development
     ports:
-      - "${HUB_CLIENT_PORT:-5173}:5173"
+      - '${HUB_CLIENT_PORT:-5173}:5173'
     volumes:
       - ../../packages/clients/hub-client:/app/packages/clients/hub-client:cached
       - ../../packages/shared/protocol:/app/packages/shared/protocol:cached
       - ../../packages/shared/types:/app/packages/shared/types:cached
     depends_on:
-      - core-api
+      - postgres
+      - redis
     networks:
       - graphwiz-dev-network
 
@@ -167,8 +168,6 @@ volumes:
   cargo_git:
     driver: local
   target_cache:
-    driver: local
-  hub_client_node_modules:
     driver: local
   storage_data:
     driver: local

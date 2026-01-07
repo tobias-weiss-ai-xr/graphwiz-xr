@@ -247,7 +247,7 @@ where
 
 struct LogVisitor<'a>(&'a mut String);
 
-impl<'a> tracing::field::Visitor for LogVisitor<'a> {
+impl<'a> tracing::field::Visit for LogVisitor<'a> {
     fn record_debug(&mut self, field: &tracing::field::Field, value: &dyn std::fmt::Debug) {
         if self.0.is_empty() {
             *self.0 = format!("{:?}", value);

@@ -9,17 +9,28 @@ import { GrabDemoScene } from './components/GrabDemoScene';
 import { CameraController } from './components/CameraController';
 import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
-import { RoomBrowser, CreateRoomModal, RoomSettingsPanel, RoomButton } from './components';
+import {
+  RoomBrowser,
+  CreateRoomModal,
+  RoomSettingsPanel,
+  RoomButton,
+  SceneSelector
+} from './components';
 import { EmojiPicker } from './components/EmojiPicker';
 import { FloatingEmoji } from './components/FloatingEmoji';
 import { FPSCounter } from './components/FPSCounter';
 import { InteractiveDemoScene } from './components/InteractiveDemoScene';
 import { MediaDemoScene } from './components/MediaDemoScene';
+import { PortalDemoScene } from './components/PortalDemoScene';
+import { GestureRecognition } from './components/GestureRecognition';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
 import { useRoomManager } from './hooks/useRoomManager';
 import { WebSocketClient } from './network/websocket-client';
 import { SettingsPanel } from './settings';
 import { AssetBrowser, AssetUploader, Asset } from './storage';
+import { DrawingCanvas, DrawingSettings } from './components/DrawingCanvas';
+import { DrawingTools } from './components/DrawingTools';
+import type { SceneType } from './components/SceneSelector';
 
 interface Entity {
   id: string;
@@ -37,7 +48,15 @@ interface FloatingEmojiData {
   position: [number, number, number];
 }
 
-function PlayerAvatar({ position, rotation, displayName }: { position: [number, number, number]; rotation: [number, number, number]; displayName: string }) {
+function PlayerAvatar({
+  position,
+  rotation,
+  displayName
+}: {
+  position: [number, number, number];
+  rotation: [number, number, number];
+  displayName: string;
+}) {
   return (
     <group position={position} rotation={rotation}>
       {/* Body */}
@@ -73,10 +92,12 @@ function PlayerAvatar({ position, rotation, displayName }: { position: [number, 
 function InterpolationUpdater({
   targetPositionsRef,
   setInterpolatedPositions,
-  interpolationFactor,
+  interpolationFactor
 }: {
   targetPositionsRef: React.RefObject<Map<string, [number, number, number]>>;
-  setInterpolatedPositions: React.Dispatch<React.SetStateAction<Map<string, [number, number, number]>>>;
+  setInterpolatedPositions: React.Dispatch<
+    React.SetStateAction<Map<string, [number, number, number]>>
+  >;
   interpolationFactor: number;
 }) {
   useFrame(() => {
@@ -96,14 +117,14 @@ function InterpolationUpdater({
           const newPos: [number, number, number] = [
             lerp(current[0], target[0]),
             lerp(current[1], target[1]),
-            lerp(current[2], target[2]),
+            lerp(current[2], target[2])
           ];
 
           // Only update if there's significant movement to prevent unnecessary renders
           const distance = Math.sqrt(
             Math.pow(newPos[0] - current[0], 2) +
-            Math.pow(newPos[1] - current[1], 2) +
-            Math.pow(newPos[2] - current[2], 2)
+              Math.pow(newPos[1] - current[1], 2) +
+              Math.pow(newPos[2] - current[2], 2)
           );
 
           if (distance > 0.001) {
@@ -155,6 +176,18 @@ function App() {
   const [avatarConfiguratorVisible, setAvatarConfiguratorVisible] = useState(false);
   const [localAvatarConfig, setLocalAvatarConfig] = useState<AvatarConfig | null>(null);
 
+  // Scene selector state
+  const [currentScene, setCurrentScene] = useState<SceneType>('default');
+
+  // Drawing tools state
+  const [drawingSettings, setDrawingSettings] = useState<DrawingSettings>({
+    mode: 'brush',
+    color: '#ffffff',
+    brushSize: 5,
+    lineWidth: 2,
+    isDrawing: false
+  });
+
   // Room manager
   const roomManager = useRoomManager(client);
 
@@ -170,7 +203,9 @@ function App() {
   const rotationSpeed = 0.03;
 
   // Interpolation state for remote players
-  const [interpolatedPositions, setInterpolatedPositions] = useState<Map<string, [number, number, number]>>(new Map());
+  const [interpolatedPositions, setInterpolatedPositions] = useState<
+    Map<string, [number, number, number]>
+  >(new Map());
   const targetPositionsRef = useRef<Map<string, [number, number, number]>>(new Map());
   const lastUpdateTimeRef = useRef<Map<string, number>>(new Map());
   const interpolationFactor = 0.15; // 15% interpolation per frame (smooth)
@@ -185,14 +220,15 @@ function App() {
       presenceUrl,
       roomId: import.meta.env.VITE_ROOM_ID || 'lobby',
       userId: `user-${Math.floor(Math.random() * 10000)}`,
-      displayName: `Player-${Math.floor(Math.random() * 1000)}`,
+      displayName: `Player-${Math.floor(Math.random() * 1000)}`
     });
 
     setClient(wsClient);
     setConnecting(true);
 
     // Connect to server
-    wsClient.connect()
+    wsClient
+      .connect()
       .then(() => {
         setConnected(true);
         setConnecting(false);
@@ -217,7 +253,8 @@ function App() {
       if (message.payload) {
         setPresenceEvents((prev) => {
           const filtered = prev.filter((e) => e.clientId !== message.payload.clientId);
-          if (message.payload.eventType === 1) { // Leave
+          if (message.payload.eventType === 1) {
+            // Leave
             return filtered;
           }
           return [...filtered, message.payload];
@@ -227,10 +264,13 @@ function App() {
 
     const unsubscribeChat = wsClient.on(MessageType.CHAT_MESSAGE, (message: any) => {
       if (message.payload) {
-        setMessages((prev) => [...prev, {
-          from: message.payload.fromClientId || 'Unknown',
-          message: message.payload.message || '',
-        }]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            from: message.payload.fromClientId || 'Unknown',
+            message: message.payload.message || ''
+          }
+        ]);
       }
     });
 
@@ -240,7 +280,7 @@ function App() {
         const newEmoji: FloatingEmojiData = {
           id: payload.reactionId,
           emoji: payload.emoji,
-          position: [payload.position.x, payload.position.y, payload.position.z],
+          position: [payload.position.x, payload.position.y, payload.position.z]
         };
 
         setFloatingEmojis((prev) => {
@@ -335,8 +375,8 @@ function App() {
             data: {
               displayName: `Player-${entityId.substring(0, 8)}`,
               position: position,
-              avatarConfig: avatarConfig,
-            },
+              avatarConfig: avatarConfig
+            }
           };
 
           console.log('[App] Adding new presence event:', newPresence);
@@ -447,7 +487,8 @@ function App() {
     const persistence = getAvatarPersistence();
     console.log('[App] Loading avatar for user:', myClientId);
 
-    persistence.loadAvatar(myClientId)
+    persistence
+      .loadAvatar(myClientId)
       .then((config) => {
         console.log('[App] Avatar loaded:', config);
         setLocalAvatarConfig(config);
@@ -459,7 +500,7 @@ function App() {
             primaryColor: config.primary_color,
             secondaryColor: config.secondary_color,
             height: config.height,
-            customModelUrl: config.custom_model_id || '',
+            customModelUrl: config.custom_model_id || ''
           });
           console.log('[App] Avatar config sent to network');
         }
@@ -473,7 +514,7 @@ function App() {
           primary_color: '#4CAF50',
           secondary_color: '#2196F3',
           height: 1.7,
-          metadata: {},
+          metadata: {}
         });
       });
   }, [myClientId, client]);
@@ -501,7 +542,7 @@ function App() {
       primaryColor: localAvatarConfig.primary_color,
       secondaryColor: localAvatarConfig.secondary_color,
       height: localAvatarConfig.height,
-      customModelUrl: localAvatarConfig.custom_model_id || '',
+      customModelUrl: localAvatarConfig.custom_model_id || ''
     });
 
     // Also send ENTITY_SPAWN so other clients render our avatar
@@ -515,9 +556,9 @@ function App() {
           bodyType: localAvatarConfig.body_type,
           primaryColor: localAvatarConfig.primary_color,
           secondaryColor: localAvatarConfig.secondary_color,
-          height: localAvatarConfig.height,
-        },
-      },
+          height: localAvatarConfig.height
+        }
+      }
     });
     console.log('[App] Avatar update sent to network');
   }, [connected, client, localAvatarConfig, myClientId]);
@@ -600,7 +641,8 @@ function App() {
         // Send position update if position changed
         if (newX !== x || newZ !== z) {
           updateCount++;
-          if (updateCount % 60 === 0) { // Log every 60 updates (~1 second)
+          if (updateCount % 60 === 0) {
+            // Log every 60 updates (~1 second)
             console.log('[App] Player moved to:', newPos, 'Total updates:', updateCount);
           }
           client.sendPositionUpdate(
@@ -663,21 +705,27 @@ function App() {
   // Combine local entities
   const allEntities: Entity[] = [
     // Add local player (always render, even without avatar config)
-    ...(myClientId ? [{
-      id: myClientId,
-      position: playerPosition,
-      rotation: [0, playerRotation, 0] as [number, number, number],
-      scale: [1, 1, 1] as [number, number, number],
-      displayName: 'You',
-      isPlayer: true,
-      avatarConfig: localAvatarConfig ? {
-        body_type: localAvatarConfig.body_type,
-        primary_color: localAvatarConfig.primary_color,
-        secondary_color: localAvatarConfig.secondary_color,
-        height: localAvatarConfig.height,
-        custom_model_url: localAvatarConfig.custom_model_id,
-      } : undefined,
-    }] : []),
+    ...(myClientId
+      ? [
+          {
+            id: myClientId,
+            position: playerPosition,
+            rotation: [0, playerRotation, 0] as [number, number, number],
+            scale: [1, 1, 1] as [number, number, number],
+            displayName: 'You',
+            isPlayer: true,
+            avatarConfig: localAvatarConfig
+              ? {
+                  body_type: localAvatarConfig.body_type,
+                  primary_color: localAvatarConfig.primary_color,
+                  secondary_color: localAvatarConfig.secondary_color,
+                  height: localAvatarConfig.height,
+                  custom_model_url: localAvatarConfig.custom_model_id
+                }
+              : undefined
+          }
+        ]
+      : []),
     ...Array.from(localEntities.values()),
     // Add other players from presence (using interpolated positions)
     ...presenceEvents
@@ -685,11 +733,13 @@ function App() {
       .map((p) => {
         // Use interpolated position if available, otherwise use target position
         const interpolatedPos = interpolatedPositions.get(p.clientId);
-        const position = interpolatedPos || [
-          p.data.position!.x,
-          p.data.position!.y,
-          p.data.position!.z
-        ] as [number, number, number];
+        const position =
+          interpolatedPos ||
+          ([p.data.position!.x, p.data.position!.y, p.data.position!.z] as [
+            number,
+            number,
+            number
+          ]);
 
         return {
           id: p.clientId,
@@ -698,15 +748,17 @@ function App() {
           scale: [1, 1, 1] as [number, number, number],
           displayName: p.data.displayName || 'Unknown',
           isPlayer: true,
-          avatarConfig: p.data.avatarConfig ? {
-            body_type: p.data.avatarConfig.bodyType || 'human',
-            primary_color: p.data.avatarConfig.primaryColor || '#4CAF50',
-            secondary_color: p.data.avatarConfig.secondaryColor || '#2196F3',
-            height: p.data.avatarConfig.height || 1.7,
-            custom_model_url: p.data.avatarConfig.customModelUrl,
-          } : undefined,
+          avatarConfig: p.data.avatarConfig
+            ? {
+                body_type: p.data.avatarConfig.bodyType || 'human',
+                primary_color: p.data.avatarConfig.primaryColor || '#4CAF50',
+                secondary_color: p.data.avatarConfig.secondaryColor || '#2196F3',
+                height: p.data.avatarConfig.height || 1.7,
+                custom_model_url: p.data.avatarConfig.customModelUrl
+              }
+            : undefined
         };
-      }),
+      })
   ];
 
   const addEntity = useCallback(() => {
@@ -715,7 +767,7 @@ function App() {
       id,
       position: [0, 1, 0],
       rotation: [0, 0, 0],
-      scale: [1, 1, 1],
+      scale: [1, 1, 1]
     };
     setLocalEntities((prev) => new Map(prev).set(id, newEntity));
   }, []);
@@ -723,74 +775,92 @@ function App() {
   const handleSendChat = useCallback(() => {
     if (chatInput.trim() && client) {
       client.sendChatMessage(chatInput.trim());
-      setMessages((prev) => [...prev, {
-        from: 'You',
-        message: chatInput.trim(),
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          from: 'You',
+          message: chatInput.trim()
+        }
+      ]);
       setChatInput('');
     }
   }, [chatInput, client]);
 
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSendChat();
-    }
-  }, [handleSendChat]);
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleSendChat();
+      }
+    },
+    [handleSendChat]
+  );
 
-  const handleSendEmoji = useCallback((emoji: string) => {
-    if (client) {
-      // Spawn at a random position near the center
-      const position = {
-        x: (Math.random() - 0.5) * 4,
-        y: 1.5,
-        z: (Math.random() - 0.5) * 4,
-      };
-      client.sendEmojiReaction(emoji, position);
-      setEmojiPickerVisible(false);
-    }
-  }, [client]);
+  const handleSendEmoji = useCallback(
+    (emoji: string) => {
+      if (client) {
+        // Spawn at a random position near the center
+        const position = {
+          x: (Math.random() - 0.5) * 4,
+          y: 1.5,
+          z: (Math.random() - 0.5) * 4
+        };
+        client.sendEmojiReaction(emoji, position);
+        setEmojiPickerVisible(false);
+      }
+    },
+    [client]
+  );
 
   // Send grab/release messages
-  const sendGrabMessage = useCallback((entityId: string, action: 'grab' | 'release', velocity?: { x: number; y: number; z: number }) => {
-    if (!client) return;
+  const sendGrabMessage = useCallback(
+    (
+      entityId: string,
+      action: 'grab' | 'release',
+      velocity?: { x: number; y: number; z: number }
+    ) => {
+      if (!client) return;
 
-    const position = {
-      x: playerPosition[0],
-      y: playerPosition[1] + 1, // Approximate hand position
-      z: playerPosition[2],
-    };
+      const position = {
+        x: playerPosition[0],
+        y: playerPosition[1] + 1, // Approximate hand position
+        z: playerPosition[2]
+      };
 
-    if (action === 'grab') {
-      client.sendGrabMessage(entityId, position);
-    } else if (action === 'release' && velocity) {
-      client.sendReleaseMessage(entityId, position, velocity);
-    }
-  }, [client, playerPosition]);
+      if (action === 'grab') {
+        client.sendGrabMessage(entityId, position);
+      } else if (action === 'release' && velocity) {
+        client.sendReleaseMessage(entityId, position, velocity);
+      }
+    },
+    [client, playerPosition]
+  );
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       {/* UI Overlay - Connection Status */}
-      <div style={{
-        position: 'absolute',
-        top: 16,
-        left: 16,
-        zIndex: 100,
-        background: 'rgba(0, 0, 0, 0.7)',
-        padding: 16,
-        borderRadius: 8,
-        color: 'white',
-        fontFamily: 'sans-serif',
-      }}>
-        <h1 style={{ margin: '0 0 8px 0', fontSize: 18 }}>
-          GraphWiz-XR Hub Client
-        </h1>
+      <div
+        style={{
+          position: 'absolute',
+          top: 16,
+          left: 16,
+          zIndex: 100,
+          background: 'rgba(0, 0, 0, 0.7)',
+          padding: 16,
+          borderRadius: 8,
+          color: 'white',
+          fontFamily: 'sans-serif'
+        }}
+      >
+        <h1 style={{ margin: '0 0 8px 0', fontSize: 18 }}>GraphWiz-XR Hub Client</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-          <div style={{
-            width: 10,
-            height: 10,
-            borderRadius: '50%',
-            background: connecting ? '#FFC107' : connected ? '#4CAF50' : '#f44336',
-          }} />
+          <div
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: '50%',
+              background: connecting ? '#FFC107' : connected ? '#4CAF50' : '#f44336'
+            }}
+          />
           <span style={{ fontSize: 12 }}>
             {connecting ? 'Connecting...' : connected ? 'Connected' : 'Disconnected'}
           </span>
@@ -801,25 +871,29 @@ function App() {
           </p>
         )}
         {localAvatarConfig && (
-          <div style={{
-            marginTop: 8,
-            padding: 8,
-            background: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: 4,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-          }}>
-            <div style={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              background: `linear-gradient(135deg, ${localAvatarConfig.primary_color} 0%, ${localAvatarConfig.secondary_color} 100%)`,
+          <div
+            style={{
+              marginTop: 8,
+              padding: 8,
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 4,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 16,
-            }}>
+              gap: 8
+            }}
+          >
+            <div
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: '50%',
+                background: `linear-gradient(135deg, ${localAvatarConfig.primary_color} 0%, ${localAvatarConfig.secondary_color} 100%)`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 16
+              }}
+            >
               {localAvatarConfig.body_type === 'human' && '👤'}
               {localAvatarConfig.body_type === 'robot' && '🤖'}
               {localAvatarConfig.body_type === 'alien' && '👽'}
@@ -829,31 +903,33 @@ function App() {
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 10, opacity: 0.7 }}>Your Avatar</div>
               <div style={{ fontSize: 11, fontWeight: 'bold' }}>
-                {localAvatarConfig.body_type.charAt(0).toUpperCase() + localAvatarConfig.body_type.slice(1)} · {localAvatarConfig.height}m
+                {localAvatarConfig.body_type.charAt(0).toUpperCase() +
+                  localAvatarConfig.body_type.slice(1)}{' '}
+                · {localAvatarConfig.height}m
               </div>
             </div>
           </div>
         )}
-        {error && (
-          <p style={{ margin: 0, fontSize: 11, color: '#f44336' }}>
-            {error}
-          </p>
-        )}
+        {error && <p style={{ margin: 0, fontSize: 11, color: '#f44336' }}>{error}</p>}
         <p style={{ margin: '8px 0 0 0', fontSize: 12, opacity: 0.8 }}>
           Entities: {allEntities.length} | Players: {presenceEvents.length}
         </p>
-        <div style={{
-          marginTop: 12,
-          padding: 8,
-          background: 'rgba(255, 255, 255, 0.1)',
-          borderRadius: 4,
-          fontSize: 11,
-        }}>
+        <div
+          style={{
+            marginTop: 12,
+            padding: 8,
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: 4,
+            fontSize: 11
+          }}
+        >
           <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Movement Controls:</div>
           <div style={{ opacity: 0.9 }}>W/A/S/D - Move in facing direction</div>
           <div style={{ opacity: 0.9 }}>Q/E - Rotate character</div>
           <div style={{ opacity: 0.9 }}>Mouse - Rotate camera</div>
-          <div style={{ opacity: 0.9, marginTop: 4 }}>Position: {playerPosition[0].toFixed(1)}, {playerPosition[2].toFixed(1)}</div>
+          <div style={{ opacity: 0.9, marginTop: 4 }}>
+            Position: {playerPosition[0].toFixed(1)}, {playerPosition[2].toFixed(1)}
+          </div>
         </div>
         <button
           onClick={addEntity}
@@ -864,7 +940,7 @@ function App() {
             border: 'none',
             borderRadius: 4,
             color: 'white',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
         >
           Add Entity
@@ -879,7 +955,7 @@ function App() {
             borderRadius: 4,
             color: 'white',
             cursor: 'pointer',
-            width: '100%',
+            width: '100%'
           }}
         >
           ⚙️ Settings
@@ -894,7 +970,7 @@ function App() {
             borderRadius: 4,
             color: 'white',
             cursor: 'pointer',
-            width: '100%',
+            width: '100%'
           }}
         >
           🎭 Avatar
@@ -903,25 +979,29 @@ function App() {
 
       {/* Chat Overlay */}
       {chatVisible && (
-        <div style={{
-          position: 'absolute',
-          bottom: 16,
-          left: 16,
-          zIndex: 100,
-          width: 320,
-          maxHeight: 300,
-          background: 'rgba(0, 0, 0, 0.8)',
-          borderRadius: 8,
-          display: 'flex',
-          flexDirection: 'column',
-        }}>
-          <div style={{
-            padding: '12px 16px',
-            borderBottom: '1px solid rgba(255,255,255,0.1)',
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 16,
+            left: 16,
+            zIndex: 100,
+            width: 320,
+            maxHeight: 300,
+            background: 'rgba(0, 0, 0, 0.8)',
+            borderRadius: 8,
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
+            flexDirection: 'column'
+          }}
+        >
+          <div
+            style={{
+              padding: '12px 16px',
+              borderBottom: '1px solid rgba(255,255,255,0.1)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
             <span style={{ color: 'white', fontSize: 14, fontWeight: 'bold' }}>Chat</span>
             <button
               onClick={() => setChatVisible(false)}
@@ -930,22 +1010,24 @@ function App() {
               ×
             </button>
           </div>
-          <div style={{
-            flex: 1,
-            overflowY: 'auto',
-            padding: 12,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-          }}>
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: 12,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8
+            }}
+          >
             {messages.length === 0 ? (
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, textAlign: 'center' }}>No messages yet</p>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, textAlign: 'center' }}>
+                No messages yet
+              </p>
             ) : (
               messages.map((msg, i) => (
                 <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11 }}>
-                    {msg.from}
-                  </span>
+                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11 }}>{msg.from}</span>
                   <span style={{ color: 'white', fontSize: 13 }}>{msg.message}</span>
                 </div>
               ))
@@ -965,7 +1047,7 @@ function App() {
                 border: 'none',
                 background: 'rgba(255,255,255,0.1)',
                 color: 'white',
-                fontSize: 13,
+                fontSize: 13
               }}
             />
           </div>
@@ -985,7 +1067,7 @@ function App() {
             border: 'none',
             borderRadius: 8,
             color: 'white',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
         >
           💬 Chat ({messages.length})
@@ -1006,7 +1088,7 @@ function App() {
           borderRadius: 8,
           color: 'white',
           cursor: 'pointer',
-          transition: 'all 0.2s',
+          transition: 'all 0.2s'
         }}
       >
         😀 Emoji
@@ -1014,10 +1096,7 @@ function App() {
 
       {/* Emoji Picker */}
       {emojiPickerVisible && (
-        <EmojiPicker
-          onSelect={handleSendEmoji}
-          onClose={() => setEmojiPickerVisible(false)}
-        />
+        <EmojiPicker onSelect={handleSendEmoji} onClose={() => setEmojiPickerVisible(false)} />
       )}
 
       {/* Storage Button */}
@@ -1033,7 +1112,7 @@ function App() {
           border: 'none',
           borderRadius: 8,
           color: 'white',
-          cursor: 'pointer',
+          cursor: 'pointer'
         }}
       >
         {storageVisible ? '× Close' : '📦 Assets'}
@@ -1041,31 +1120,41 @@ function App() {
 
       {/* Storage Panel */}
       {storageVisible && (
-        <div style={{
-          position: 'absolute',
-          top: 16,
-          right: 16,
-          zIndex: 100,
-          width: 400,
-          maxHeight: 'calc(100vh - 32px)',
-          background: 'rgba(0, 0, 0, 0.9)',
-          borderRadius: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-        }}>
-          {/* Header */}
-          <div style={{
-            padding: '12px 16px',
-            borderBottom: '1px solid rgba(255,255,255,0.1)',
+        <div
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            zIndex: 100,
+            width: 400,
+            maxHeight: 'calc(100vh - 32px)',
+            background: 'rgba(0, 0, 0, 0.9)',
+            borderRadius: 8,
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
+            flexDirection: 'column',
+            overflow: 'hidden'
+          }}
+        >
+          {/* Header */}
+          <div
+            style={{
+              padding: '12px 16px',
+              borderBottom: '1px solid rgba(255,255,255,0.1)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
             <span style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Asset Manager</span>
             <button
               onClick={() => setStorageVisible(false)}
-              style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: 20 }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: 20
+              }}
             >
               ×
             </button>
@@ -1084,7 +1173,7 @@ function App() {
                 color: 'white',
                 cursor: 'pointer',
                 fontSize: 14,
-                fontWeight: storageTab === 'browse' ? 'bold' : 'normal',
+                fontWeight: storageTab === 'browse' ? 'bold' : 'normal'
               }}
             >
               Browse
@@ -1100,7 +1189,7 @@ function App() {
                 color: 'white',
                 cursor: 'pointer',
                 fontSize: 14,
-                fontWeight: storageTab === 'upload' ? 'bold' : 'normal',
+                fontWeight: storageTab === 'upload' ? 'bold' : 'normal'
               }}
             >
               Upload
@@ -1127,9 +1216,7 @@ function App() {
       )}
 
       {/* Settings Panel */}
-      {settingsVisible && (
-        <SettingsPanel onClose={() => setSettingsVisible(false)} />
-      )}
+      {settingsVisible && <SettingsPanel onClose={() => setSettingsVisible(false)} />}
 
       {/* Avatar Configurator */}
       {avatarConfiguratorVisible && myClientId && (
@@ -1149,7 +1236,7 @@ function App() {
                 primaryColor: config.primary_color,
                 secondaryColor: config.secondary_color,
                 height: config.height,
-                customModelUrl: config.custom_model_id || '',
+                customModelUrl: config.custom_model_id || ''
               });
               console.log('[App] Avatar update sent to network');
             }
@@ -1212,26 +1299,72 @@ function App() {
           <shadowMaterial opacity={0.3} />
         </mesh>
 
-        {/* Interactive Demo Scene Objects */}
-        {client && myClientId && (
+        {/* Scene-based rendering - Only show selected scene */}
+        {client && myClientId && currentScene === 'interactive' && (
           <InteractiveDemoScene wsClient={client} myClientId={myClientId} />
         )}
 
-        {/* Media Demo Scene - Video and Audio Playback */}
-        {client && myClientId && true && (
+        {client && myClientId && currentScene === 'media' && (
           <MediaDemoScene wsClient={client} myClientId={myClientId || ''} />
+        )}
+
+        {client && myClientId && currentScene === 'grab' && (
+          <GrabDemoScene myClientId={myClientId} sendGrabMessage={sendGrabMessage} />
+        )}
+
+        {client && myClientId && currentScene === 'portal' && (
+          <PortalDemoScene myClientId={myClientId} />
+        )}
+
+        {client && myClientId && currentScene === 'gestures' && (
+          <GestureRecognition
+            enabled={true}
+            onGestureDetected={(gesture, controllerId) => {
+              console.log(`[Gesture] ${controllerId} controller: ${gesture}`);
+            }}
+          />
+        )}
+
+        {client && myClientId && currentScene === 'drawing' && (
+          <>
+            <DrawingCanvas
+              width={1024}
+              height={1024}
+              settings={drawingSettings}
+              onClear={() => console.log('Canvas cleared')}
+              onExport={(dataUrl) => {
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = `drawing-${Date.now()}.png`;
+                link.click();
+              }}
+            />
+            <DrawingTools
+              settings={drawingSettings}
+              onSettingsChange={setDrawingSettings}
+              onClear={() => console.log('Clear canvas')}
+              onUndo={() => console.log('Undo')}
+              onExport={() => {
+                const canvas = document.querySelector('canvas');
+                if (canvas) {
+                  const dataUrl = canvas.toDataURL('image/png');
+                  const link = document.createElement('a');
+                  link.href = dataUrl;
+                  link.download = `drawing-${Date.now()}.png`;
+                  link.click();
+                }
+              }}
+            />
+          </>
         )}
 
         {/* Grab Demo Scene - Object Grabbing System */}
         {client && myClientId && (
-          <GrabDemoScene
-            myClientId={myClientId}
-            sendGrabMessage={sendGrabMessage}
-          />
+          <GrabDemoScene myClientId={myClientId} sendGrabMessage={sendGrabMessage} />
         )}
 
         {/* Entities */}
-        {allEntities.map((entity) => (
+        {allEntities.map((entity) =>
           entity.isPlayer ? (
             entity.avatarConfig ? (
               <NetworkedAvatar
@@ -1266,7 +1399,7 @@ function App() {
                 metalness={0.5}
               />
             </mesh>
-          ))
+          )
         )}
 
         {/* Floating Emojis */}
@@ -1288,6 +1421,12 @@ function App() {
 
       {/* FPS Counter Overlay */}
       <FPSCounter />
+
+      {/* Scene Selector UI */}
+      <SceneSelector currentScene={currentScene} onSceneChange={setCurrentScene} />
+
+      {/* Scene Selector UI */}
+      <SceneSelector currentScene={currentScene} onSceneChange={setCurrentScene} />
 
       {/* Room Management UI */}
       <RoomButton

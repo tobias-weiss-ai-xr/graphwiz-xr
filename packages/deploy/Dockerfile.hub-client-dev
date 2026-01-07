@@ -8,18 +8,25 @@ RUN npm install -g pnpm@8
 
 WORKDIR /app
 
-# Copy package files
-COPY packages/clients/hub-client/package.json packages/clients/hub-client/pnpm-lock.yaml* ./
+# Copy workspace files first (needed for workspace dependencies)
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
 
-# Install dependencies
-RUN pnpm install
+# Copy package files for hub-client and shared dependencies
+COPY packages/clients/hub-client/package.json ./packages/clients/hub-client/
+COPY packages/shared/protocol/package.json ./packages/shared/protocol/
+COPY packages/shared/types/package.json ./packages/shared/types/
+
+# Install dependencies (this populates node_modules in the image)
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
-COPY packages/clients/hub-client ./
+COPY packages/clients/hub-client ./packages/clients/hub-client/
+COPY packages/shared/protocol ./packages/shared/protocol/
+COPY packages/shared/types ./packages/shared/types/
 
 # Expose Vite dev server port
 EXPOSE 5173
 
 # Run development server with HMR enabled
-# --host allows external access (needed for Docker)
-CMD ["pnpm", "dev", "--host", "--port", "5173"]
+# Use npx to ensure vite is found correctly
+CMD ["npx", "vite", "--host", "--port", "5173"]
