@@ -77,8 +77,6 @@ test.describe('Multi-User Avatar Synchronization', () => {
 
     // Monitor for avatar position updates
     // TODO: Add assertions to verify updates were received
-    let _user1ReceivedUpdate = false;
-    let _user2ReceivedUpdate = false;
 
     user1Page.on('console', (msg) => {
       if (
@@ -86,7 +84,7 @@ test.describe('Multi-User Avatar Synchronization', () => {
         msg.text().includes('position') ||
         msg.text().includes('transform')
       ) {
-        _user1ReceivedUpdate = true;
+        // Avatar update received
       }
     });
 
@@ -96,7 +94,7 @@ test.describe('Multi-User Avatar Synchronization', () => {
         msg.text().includes('position') ||
         msg.text().includes('transform')
       ) {
-        _user2ReceivedUpdate = true;
+        // Avatar update received
       }
     });
 

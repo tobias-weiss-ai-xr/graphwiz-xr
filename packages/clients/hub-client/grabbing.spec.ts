@@ -45,13 +45,13 @@ test.describe('Production Health Checks', () => {
     console.log('\n========== TEST: Grab init ==========\n');
 
     const logs: string[] = [];
-    page.on('console', msg => logs.push(msg.text()));
+    page.on('console', (msg) => logs.push(msg.text()));
 
     await page.goto(BASE_URL);
     await page.waitForTimeout(8000);
 
-    const grabLogs = logs.filter(l =>
-      l.includes('Grab') || l.includes('grab') || l.includes('Grabbable')
+    const grabLogs = logs.filter(
+      (l) => l.includes('Grab') || l.includes('grab') || l.includes('Grabbable')
     );
 
     console.log('Grab-related logs:', grabLogs.length);
@@ -66,7 +66,7 @@ test.describe('Production Health Checks', () => {
     console.log('\n========== TEST: WebSocket ==========\n');
 
     const logs: string[] = [];
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       const text = msg.text();
       if (text.includes('WebSocket')) {
         logs.push(text);
@@ -77,7 +77,7 @@ test.describe('Production Health Checks', () => {
     await page.goto(BASE_URL);
     await page.waitForTimeout(8000);
 
-    const wsLogs = logs.filter(l => l.includes('WebSocket'));
+    const wsLogs = logs.filter((l) => l.includes('WebSocket'));
     console.log('WebSocket logs:', wsLogs.length);
 
     expect(wsLogs.length).toBeGreaterThan(0);
@@ -95,9 +95,12 @@ test.describe('Production Health Checks', () => {
     await page.waitForTimeout(5000);
 
     const metrics = await page.evaluate(() => {
-      const navigation = performance.getEntriesByType('navigation')[0] as any;
+      const _navEntries = performance.getEntriesByType('navigation' as any);
+      const navigation = _navEntries[0] as unknown;
+      if (!navigation || typeof navigation !== 'object') return { totalTime: 0 };
+      const nav = navigation as { loadEventEnd?: number; fetchStart?: number };
       return {
-        totalTime: navigation.loadEventEnd - navigation.fetchStart,
+        totalTime: (nav.loadEventEnd ?? 0) - (nav.fetchStart ?? 0)
       };
     });
 

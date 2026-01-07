@@ -93,29 +93,12 @@ test.describe('Networked Avatar Sync - Production', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000); // Wait for React to mount
 
-    // Look for avatar configurator button or panel
-    const avatarButton = page
-      .locator(
-        'button:has-text("Avatar"), button:has-text("Customize"), [data-testid="avatar-button"]'
-      )
-      .first();
-
-    // Avatar configurator might be accessible via keyboard or UI
-    // For now, just verify the page is interactive
-    await expect(page.locator('body')).toBeVisible();
-  });
-
-  test('should render 3D scene with canvas', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
-
-    // Check for Three.js canvas
-    const canvas = page.locator('canvas').first();
-    await expect(canvas).toBeVisible();
+    // Check for Three.js canvas - canvas is implicitly checked by toBeVisible
+    await expect(page.locator('canvas').first()).toBeVisible();
 
     // Verify WebGL context is available
     const hasWebGL = await page.evaluate(() => {
-      const canvas = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext || (window as any).WebGL2RenderingContext);
+      return !!(window.WebGLRenderingContext || window.WebGL2RenderingContext);
     });
 
     expect(hasWebGL).toBeTruthy();
