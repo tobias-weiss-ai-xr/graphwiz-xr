@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./types": "./src/types.ts",
-    "./utils": "./src/utils.ts"
+    "./utils": "./src/utils.ts",
+    "./logger": "./src/logger.ts"
   },
   "scripts": {
     "check": "tsc --noEmit",

@@ -23,6 +23,9 @@ message ClientMessage {
     graphwiz.core.VoiceData voice = 2;
     graphwiz.core.EntityUpdate entity = 3;
     graphwiz.core.ChatMessage chat = 4;
+    KickPlayer kick_player = 10;
+    MutePlayer mute_player = 11;
+    LockRoom lock_room = 12;
   }
 }
 
@@ -34,6 +37,9 @@ message ServerMessage {
     graphwiz.core.EntityUpdate entity_update = 4;
     graphwiz.core.EntityDespawn entity_despawn = 5;
     graphwiz.core.ChatMessage chat = 6;
+    PlayerKicked player_kicked = 10;
+    PlayerMuted player_muted = 11;
+    RoomLocked room_locked = 12;
   }
 }
 
@@ -61,4 +67,40 @@ message LeaveResponse {
 
 message PresenceRequest {
   string room_id = 1;
+}
+
+// Moderation messages
+
+message KickPlayer {
+  string target_client_id = 1;
+  string reason = 2;
+}
+
+message MutePlayer {
+  string target_client_id = 1;
+  bool muted = 2;
+  string reason = 3;
+}
+
+message LockRoom {
+  bool locked = 1;
+  string reason = 2;
+}
+
+message PlayerKicked {
+  string kicked_client_id = 1;
+  string kicked_by_client_id = 2;
+  string reason = 3;
+}
+
+message PlayerMuted {
+  string muted_client_id = 1;
+  bool muted = 2;
+  string reason = 3;
+}
+
+message RoomLocked {
+  bool locked = 1;
+  string locked_by_client_id = 2;
+  string reason = 3;
 }

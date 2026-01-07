@@ -6,6 +6,7 @@ pub mod session;
 pub mod signaling;
 pub mod websocket;
 pub mod handlers;
+pub mod moderation_handlers;
 pub mod routes;
 // pub mod optimization; // Disabled: Agent Looper dependency removed
 

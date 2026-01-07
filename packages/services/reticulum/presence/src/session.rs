@@ -15,12 +15,14 @@ pub struct ClientSession {
     pub room_id: Option<String>,
     pub connected_at: DateTime<Utc>,
     pub last_heartbeat: DateTime<Utc>,
+    pub is_muted: bool,
 }
 
 pub struct SessionManager {
     sessions: Arc<RwLock<HashMap<String, ClientSession>>>,
     room_sessions: Arc<RwLock<HashMap<String, Vec<String>>>>, // room_id -> session_ids
     pending_messages: Arc<RwLock<HashMap<String, Vec<serde_json::Value>>>>, // session_id -> pending messages
+    locked_rooms: Arc<RwLock<HashMap<String, bool>>>, // room_id -> is_locked
     batch_size: usize,
     batch_timeout: Duration,
 }
@@ -31,6 +33,7 @@ impl SessionManager {
             sessions: Arc::new(RwLock::new(HashMap::new())),
             room_sessions: Arc::new(RwLock::new(HashMap::new())),
             pending_messages: Arc::new(RwLock::new(HashMap::new())),
+            locked_rooms: Arc::new(RwLock::new(HashMap::new())),
             batch_size: 50, // Default batch size
             batch_timeout: Duration::from_millis(50), // Flush every 50ms
         }
@@ -263,6 +266,39 @@ impl SessionManager {
 
         Ok(stale_session_ids)
     }
+
+    // ============== Moderation Methods ==============
+
+    /// Mute/unmute a player
+    pub async fn mute_player(&self, session_id: &str, is_muted: bool) -> Result<()> {
+        let mut sessions = self.sessions.write().await;
+        if let Some(session) = sessions.get_mut(session_id) {
+            session.is_muted = is_muted;
+            Ok(())
+        } else {
+            Err(eyre::eyre!("Session not found: {}", session_id))
+        }
+    }
+
+    /// Check if a room is locked
+    pub async fn is_room_locked(&self, room_id: &str) -> bool {
+        let locked_rooms = self.locked_rooms.read().await;
+        locked_rooms.get(room_id).copied().unwrap_or(false)
+    }
+
+    /// Lock/unlock a room
+    pub async fn set_room_locked(&self, room_id: &str, is_locked: bool) -> Result<()> {
+        let mut locked_rooms = self.locked_rooms.write().await;
+        locked_rooms.insert(room_id.to_string(), is_locked);
+        Ok(())
+    }
+
+    /// Check if a session is muted
+    pub async fn is_session_muted(&self, session_id: &str) -> bool {
+        let sessions = self.sessions.read().await;
+        sessions.get(session_id).map(|s| s.is_muted).unwrap_or(false)
+    }
+
 }
 
 impl Default for SessionManager {

@@ -7154,6 +7154,9 @@ export const graphwiz = $root.graphwiz = (() => {
              * @property {graphwiz.core.IVoiceData|null} [voice] ClientMessage voice
              * @property {graphwiz.core.IEntityUpdate|null} [entity] ClientMessage entity
              * @property {graphwiz.core.IChatMessage|null} [chat] ClientMessage chat
+             * @property {graphwiz.networking.IKickPlayer|null} [kickPlayer] ClientMessage kickPlayer
+             * @property {graphwiz.networking.IMutePlayer|null} [mutePlayer] ClientMessage mutePlayer
+             * @property {graphwiz.networking.ILockRoom|null} [lockRoom] ClientMessage lockRoom
              */
 
             /**
@@ -7203,17 +7206,41 @@ export const graphwiz = $root.graphwiz = (() => {
              */
             ClientMessage.prototype.chat = null;
 
+            /**
+             * ClientMessage kickPlayer.
+             * @member {graphwiz.networking.IKickPlayer|null|undefined} kickPlayer
+             * @memberof graphwiz.networking.ClientMessage
+             * @instance
+             */
+            ClientMessage.prototype.kickPlayer = null;
+
+            /**
+             * ClientMessage mutePlayer.
+             * @member {graphwiz.networking.IMutePlayer|null|undefined} mutePlayer
+             * @memberof graphwiz.networking.ClientMessage
+             * @instance
+             */
+            ClientMessage.prototype.mutePlayer = null;
+
+            /**
+             * ClientMessage lockRoom.
+             * @member {graphwiz.networking.ILockRoom|null|undefined} lockRoom
+             * @memberof graphwiz.networking.ClientMessage
+             * @instance
+             */
+            ClientMessage.prototype.lockRoom = null;
+
             // OneOf field names bound to virtual getters and setters
             let $oneOfFields;
 
             /**
              * ClientMessage payload.
-             * @member {"position"|"voice"|"entity"|"chat"|undefined} payload
+             * @member {"position"|"voice"|"entity"|"chat"|"kickPlayer"|"mutePlayer"|"lockRoom"|undefined} payload
              * @memberof graphwiz.networking.ClientMessage
              * @instance
              */
             Object.defineProperty(ClientMessage.prototype, "payload", {
-                get: $util.oneOfGetter($oneOfFields = ["position", "voice", "entity", "chat"]),
+                get: $util.oneOfGetter($oneOfFields = ["position", "voice", "entity", "chat", "kickPlayer", "mutePlayer", "lockRoom"]),
                 set: $util.oneOfSetter($oneOfFields)
             });
 
@@ -7249,6 +7276,12 @@ export const graphwiz = $root.graphwiz = (() => {
                     $root.graphwiz.core.EntityUpdate.encode(message.entity, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                 if (message.chat != null && Object.hasOwnProperty.call(message, "chat"))
                     $root.graphwiz.core.ChatMessage.encode(message.chat, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.kickPlayer != null && Object.hasOwnProperty.call(message, "kickPlayer"))
+                    $root.graphwiz.networking.KickPlayer.encode(message.kickPlayer, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                if (message.mutePlayer != null && Object.hasOwnProperty.call(message, "mutePlayer"))
+                    $root.graphwiz.networking.MutePlayer.encode(message.mutePlayer, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                if (message.lockRoom != null && Object.hasOwnProperty.call(message, "lockRoom"))
+                    $root.graphwiz.networking.LockRoom.encode(message.lockRoom, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                 return writer;
             };
 
@@ -7299,6 +7332,18 @@ export const graphwiz = $root.graphwiz = (() => {
                         }
                     case 4: {
                             message.chat = $root.graphwiz.core.ChatMessage.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 10: {
+                            message.kickPlayer = $root.graphwiz.networking.KickPlayer.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 11: {
+                            message.mutePlayer = $root.graphwiz.networking.MutePlayer.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 12: {
+                            message.lockRoom = $root.graphwiz.networking.LockRoom.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -7375,6 +7420,36 @@ export const graphwiz = $root.graphwiz = (() => {
                             return "chat." + error;
                     }
                 }
+                if (message.kickPlayer != null && message.hasOwnProperty("kickPlayer")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        let error = $root.graphwiz.networking.KickPlayer.verify(message.kickPlayer);
+                        if (error)
+                            return "kickPlayer." + error;
+                    }
+                }
+                if (message.mutePlayer != null && message.hasOwnProperty("mutePlayer")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        let error = $root.graphwiz.networking.MutePlayer.verify(message.mutePlayer);
+                        if (error)
+                            return "mutePlayer." + error;
+                    }
+                }
+                if (message.lockRoom != null && message.hasOwnProperty("lockRoom")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        let error = $root.graphwiz.networking.LockRoom.verify(message.lockRoom);
+                        if (error)
+                            return "lockRoom." + error;
+                    }
+                }
                 return null;
             };
 
@@ -7409,6 +7484,21 @@ export const graphwiz = $root.graphwiz = (() => {
                     if (typeof object.chat !== "object")
                         throw TypeError(".graphwiz.networking.ClientMessage.chat: object expected");
                     message.chat = $root.graphwiz.core.ChatMessage.fromObject(object.chat);
+                }
+                if (object.kickPlayer != null) {
+                    if (typeof object.kickPlayer !== "object")
+                        throw TypeError(".graphwiz.networking.ClientMessage.kickPlayer: object expected");
+                    message.kickPlayer = $root.graphwiz.networking.KickPlayer.fromObject(object.kickPlayer);
+                }
+                if (object.mutePlayer != null) {
+                    if (typeof object.mutePlayer !== "object")
+                        throw TypeError(".graphwiz.networking.ClientMessage.mutePlayer: object expected");
+                    message.mutePlayer = $root.graphwiz.networking.MutePlayer.fromObject(object.mutePlayer);
+                }
+                if (object.lockRoom != null) {
+                    if (typeof object.lockRoom !== "object")
+                        throw TypeError(".graphwiz.networking.ClientMessage.lockRoom: object expected");
+                    message.lockRoom = $root.graphwiz.networking.LockRoom.fromObject(object.lockRoom);
                 }
                 return message;
             };
@@ -7445,6 +7535,21 @@ export const graphwiz = $root.graphwiz = (() => {
                     object.chat = $root.graphwiz.core.ChatMessage.toObject(message.chat, options);
                     if (options.oneofs)
                         object.payload = "chat";
+                }
+                if (message.kickPlayer != null && message.hasOwnProperty("kickPlayer")) {
+                    object.kickPlayer = $root.graphwiz.networking.KickPlayer.toObject(message.kickPlayer, options);
+                    if (options.oneofs)
+                        object.payload = "kickPlayer";
+                }
+                if (message.mutePlayer != null && message.hasOwnProperty("mutePlayer")) {
+                    object.mutePlayer = $root.graphwiz.networking.MutePlayer.toObject(message.mutePlayer, options);
+                    if (options.oneofs)
+                        object.payload = "mutePlayer";
+                }
+                if (message.lockRoom != null && message.hasOwnProperty("lockRoom")) {
+                    object.lockRoom = $root.graphwiz.networking.LockRoom.toObject(message.lockRoom, options);
+                    if (options.oneofs)
+                        object.payload = "lockRoom";
                 }
                 return object;
             };
@@ -7490,6 +7595,9 @@ export const graphwiz = $root.graphwiz = (() => {
              * @property {graphwiz.core.IEntityUpdate|null} [entityUpdate] ServerMessage entityUpdate
              * @property {graphwiz.core.IEntityDespawn|null} [entityDespawn] ServerMessage entityDespawn
              * @property {graphwiz.core.IChatMessage|null} [chat] ServerMessage chat
+             * @property {graphwiz.networking.IPlayerKicked|null} [playerKicked] ServerMessage playerKicked
+             * @property {graphwiz.networking.IPlayerMuted|null} [playerMuted] ServerMessage playerMuted
+             * @property {graphwiz.networking.IRoomLocked|null} [roomLocked] ServerMessage roomLocked
              */
 
             /**
@@ -7555,17 +7663,41 @@ export const graphwiz = $root.graphwiz = (() => {
              */
             ServerMessage.prototype.chat = null;
 
+            /**
+             * ServerMessage playerKicked.
+             * @member {graphwiz.networking.IPlayerKicked|null|undefined} playerKicked
+             * @memberof graphwiz.networking.ServerMessage
+             * @instance
+             */
+            ServerMessage.prototype.playerKicked = null;
+
+            /**
+             * ServerMessage playerMuted.
+             * @member {graphwiz.networking.IPlayerMuted|null|undefined} playerMuted
+             * @memberof graphwiz.networking.ServerMessage
+             * @instance
+             */
+            ServerMessage.prototype.playerMuted = null;
+
+            /**
+             * ServerMessage roomLocked.
+             * @member {graphwiz.networking.IRoomLocked|null|undefined} roomLocked
+             * @memberof graphwiz.networking.ServerMessage
+             * @instance
+             */
+            ServerMessage.prototype.roomLocked = null;
+
             // OneOf field names bound to virtual getters and setters
             let $oneOfFields;
 
             /**
              * ServerMessage payload.
-             * @member {"worldState"|"presence"|"entitySpawn"|"entityUpdate"|"entityDespawn"|"chat"|undefined} payload
+             * @member {"worldState"|"presence"|"entitySpawn"|"entityUpdate"|"entityDespawn"|"chat"|"playerKicked"|"playerMuted"|"roomLocked"|undefined} payload
              * @memberof graphwiz.networking.ServerMessage
              * @instance
              */
             Object.defineProperty(ServerMessage.prototype, "payload", {
-                get: $util.oneOfGetter($oneOfFields = ["worldState", "presence", "entitySpawn", "entityUpdate", "entityDespawn", "chat"]),
+                get: $util.oneOfGetter($oneOfFields = ["worldState", "presence", "entitySpawn", "entityUpdate", "entityDespawn", "chat", "playerKicked", "playerMuted", "roomLocked"]),
                 set: $util.oneOfSetter($oneOfFields)
             });
 
@@ -7605,6 +7737,12 @@ export const graphwiz = $root.graphwiz = (() => {
                     $root.graphwiz.core.EntityDespawn.encode(message.entityDespawn, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
                 if (message.chat != null && Object.hasOwnProperty.call(message, "chat"))
                     $root.graphwiz.core.ChatMessage.encode(message.chat, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.playerKicked != null && Object.hasOwnProperty.call(message, "playerKicked"))
+                    $root.graphwiz.networking.PlayerKicked.encode(message.playerKicked, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                if (message.playerMuted != null && Object.hasOwnProperty.call(message, "playerMuted"))
+                    $root.graphwiz.networking.PlayerMuted.encode(message.playerMuted, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                if (message.roomLocked != null && Object.hasOwnProperty.call(message, "roomLocked"))
+                    $root.graphwiz.networking.RoomLocked.encode(message.roomLocked, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                 return writer;
             };
 
@@ -7663,6 +7801,18 @@ export const graphwiz = $root.graphwiz = (() => {
                         }
                     case 6: {
                             message.chat = $root.graphwiz.core.ChatMessage.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 10: {
+                            message.playerKicked = $root.graphwiz.networking.PlayerKicked.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 11: {
+                            message.playerMuted = $root.graphwiz.networking.PlayerMuted.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 12: {
+                            message.roomLocked = $root.graphwiz.networking.RoomLocked.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -7759,6 +7909,36 @@ export const graphwiz = $root.graphwiz = (() => {
                             return "chat." + error;
                     }
                 }
+                if (message.playerKicked != null && message.hasOwnProperty("playerKicked")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        let error = $root.graphwiz.networking.PlayerKicked.verify(message.playerKicked);
+                        if (error)
+                            return "playerKicked." + error;
+                    }
+                }
+                if (message.playerMuted != null && message.hasOwnProperty("playerMuted")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        let error = $root.graphwiz.networking.PlayerMuted.verify(message.playerMuted);
+                        if (error)
+                            return "playerMuted." + error;
+                    }
+                }
+                if (message.roomLocked != null && message.hasOwnProperty("roomLocked")) {
+                    if (properties.payload === 1)
+                        return "payload: multiple values";
+                    properties.payload = 1;
+                    {
+                        let error = $root.graphwiz.networking.RoomLocked.verify(message.roomLocked);
+                        if (error)
+                            return "roomLocked." + error;
+                    }
+                }
                 return null;
             };
 
@@ -7803,6 +7983,21 @@ export const graphwiz = $root.graphwiz = (() => {
                     if (typeof object.chat !== "object")
                         throw TypeError(".graphwiz.networking.ServerMessage.chat: object expected");
                     message.chat = $root.graphwiz.core.ChatMessage.fromObject(object.chat);
+                }
+                if (object.playerKicked != null) {
+                    if (typeof object.playerKicked !== "object")
+                        throw TypeError(".graphwiz.networking.ServerMessage.playerKicked: object expected");
+                    message.playerKicked = $root.graphwiz.networking.PlayerKicked.fromObject(object.playerKicked);
+                }
+                if (object.playerMuted != null) {
+                    if (typeof object.playerMuted !== "object")
+                        throw TypeError(".graphwiz.networking.ServerMessage.playerMuted: object expected");
+                    message.playerMuted = $root.graphwiz.networking.PlayerMuted.fromObject(object.playerMuted);
+                }
+                if (object.roomLocked != null) {
+                    if (typeof object.roomLocked !== "object")
+                        throw TypeError(".graphwiz.networking.ServerMessage.roomLocked: object expected");
+                    message.roomLocked = $root.graphwiz.networking.RoomLocked.fromObject(object.roomLocked);
                 }
                 return message;
             };
@@ -7849,6 +8044,21 @@ export const graphwiz = $root.graphwiz = (() => {
                     object.chat = $root.graphwiz.core.ChatMessage.toObject(message.chat, options);
                     if (options.oneofs)
                         object.payload = "chat";
+                }
+                if (message.playerKicked != null && message.hasOwnProperty("playerKicked")) {
+                    object.playerKicked = $root.graphwiz.networking.PlayerKicked.toObject(message.playerKicked, options);
+                    if (options.oneofs)
+                        object.payload = "playerKicked";
+                }
+                if (message.playerMuted != null && message.hasOwnProperty("playerMuted")) {
+                    object.playerMuted = $root.graphwiz.networking.PlayerMuted.toObject(message.playerMuted, options);
+                    if (options.oneofs)
+                        object.payload = "playerMuted";
+                }
+                if (message.roomLocked != null && message.hasOwnProperty("roomLocked")) {
+                    object.roomLocked = $root.graphwiz.networking.RoomLocked.toObject(message.roomLocked, options);
+                    if (options.oneofs)
+                        object.payload = "roomLocked";
                 }
                 return object;
             };
@@ -9051,6 +9261,1472 @@ export const graphwiz = $root.graphwiz = (() => {
             };
 
             return PresenceRequest;
+        })();
+
+        networking.KickPlayer = (function() {
+
+            /**
+             * Properties of a KickPlayer.
+             * @memberof graphwiz.networking
+             * @interface IKickPlayer
+             * @property {string|null} [targetClientId] KickPlayer targetClientId
+             * @property {string|null} [reason] KickPlayer reason
+             */
+
+            /**
+             * Constructs a new KickPlayer.
+             * @memberof graphwiz.networking
+             * @classdesc Represents a KickPlayer.
+             * @implements IKickPlayer
+             * @constructor
+             * @param {graphwiz.networking.IKickPlayer=} [properties] Properties to set
+             */
+            function KickPlayer(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * KickPlayer targetClientId.
+             * @member {string} targetClientId
+             * @memberof graphwiz.networking.KickPlayer
+             * @instance
+             */
+            KickPlayer.prototype.targetClientId = "";
+
+            /**
+             * KickPlayer reason.
+             * @member {string} reason
+             * @memberof graphwiz.networking.KickPlayer
+             * @instance
+             */
+            KickPlayer.prototype.reason = "";
+
+            /**
+             * Creates a new KickPlayer instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {graphwiz.networking.IKickPlayer=} [properties] Properties to set
+             * @returns {graphwiz.networking.KickPlayer} KickPlayer instance
+             */
+            KickPlayer.create = function create(properties) {
+                return new KickPlayer(properties);
+            };
+
+            /**
+             * Encodes the specified KickPlayer message. Does not implicitly {@link graphwiz.networking.KickPlayer.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {graphwiz.networking.IKickPlayer} message KickPlayer message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            KickPlayer.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.targetClientId != null && Object.hasOwnProperty.call(message, "targetClientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.targetClientId);
+                if (message.reason != null && Object.hasOwnProperty.call(message, "reason"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.reason);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified KickPlayer message, length delimited. Does not implicitly {@link graphwiz.networking.KickPlayer.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {graphwiz.networking.IKickPlayer} message KickPlayer message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            KickPlayer.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a KickPlayer message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.networking.KickPlayer} KickPlayer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            KickPlayer.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.KickPlayer();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.targetClientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.reason = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a KickPlayer message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.networking.KickPlayer} KickPlayer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            KickPlayer.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a KickPlayer message.
+             * @function verify
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            KickPlayer.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.targetClientId != null && message.hasOwnProperty("targetClientId"))
+                    if (!$util.isString(message.targetClientId))
+                        return "targetClientId: string expected";
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    if (!$util.isString(message.reason))
+                        return "reason: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a KickPlayer message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.networking.KickPlayer} KickPlayer
+             */
+            KickPlayer.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.networking.KickPlayer)
+                    return object;
+                let message = new $root.graphwiz.networking.KickPlayer();
+                if (object.targetClientId != null)
+                    message.targetClientId = String(object.targetClientId);
+                if (object.reason != null)
+                    message.reason = String(object.reason);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a KickPlayer message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {graphwiz.networking.KickPlayer} message KickPlayer
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            KickPlayer.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.targetClientId = "";
+                    object.reason = "";
+                }
+                if (message.targetClientId != null && message.hasOwnProperty("targetClientId"))
+                    object.targetClientId = message.targetClientId;
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    object.reason = message.reason;
+                return object;
+            };
+
+            /**
+             * Converts this KickPlayer to JSON.
+             * @function toJSON
+             * @memberof graphwiz.networking.KickPlayer
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            KickPlayer.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for KickPlayer
+             * @function getTypeUrl
+             * @memberof graphwiz.networking.KickPlayer
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            KickPlayer.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.networking.KickPlayer";
+            };
+
+            return KickPlayer;
+        })();
+
+        networking.MutePlayer = (function() {
+
+            /**
+             * Properties of a MutePlayer.
+             * @memberof graphwiz.networking
+             * @interface IMutePlayer
+             * @property {string|null} [targetClientId] MutePlayer targetClientId
+             * @property {boolean|null} [muted] MutePlayer muted
+             * @property {string|null} [reason] MutePlayer reason
+             */
+
+            /**
+             * Constructs a new MutePlayer.
+             * @memberof graphwiz.networking
+             * @classdesc Represents a MutePlayer.
+             * @implements IMutePlayer
+             * @constructor
+             * @param {graphwiz.networking.IMutePlayer=} [properties] Properties to set
+             */
+            function MutePlayer(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MutePlayer targetClientId.
+             * @member {string} targetClientId
+             * @memberof graphwiz.networking.MutePlayer
+             * @instance
+             */
+            MutePlayer.prototype.targetClientId = "";
+
+            /**
+             * MutePlayer muted.
+             * @member {boolean} muted
+             * @memberof graphwiz.networking.MutePlayer
+             * @instance
+             */
+            MutePlayer.prototype.muted = false;
+
+            /**
+             * MutePlayer reason.
+             * @member {string} reason
+             * @memberof graphwiz.networking.MutePlayer
+             * @instance
+             */
+            MutePlayer.prototype.reason = "";
+
+            /**
+             * Creates a new MutePlayer instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {graphwiz.networking.IMutePlayer=} [properties] Properties to set
+             * @returns {graphwiz.networking.MutePlayer} MutePlayer instance
+             */
+            MutePlayer.create = function create(properties) {
+                return new MutePlayer(properties);
+            };
+
+            /**
+             * Encodes the specified MutePlayer message. Does not implicitly {@link graphwiz.networking.MutePlayer.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {graphwiz.networking.IMutePlayer} message MutePlayer message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MutePlayer.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.targetClientId != null && Object.hasOwnProperty.call(message, "targetClientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.targetClientId);
+                if (message.muted != null && Object.hasOwnProperty.call(message, "muted"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.muted);
+                if (message.reason != null && Object.hasOwnProperty.call(message, "reason"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.reason);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MutePlayer message, length delimited. Does not implicitly {@link graphwiz.networking.MutePlayer.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {graphwiz.networking.IMutePlayer} message MutePlayer message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MutePlayer.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MutePlayer message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.networking.MutePlayer} MutePlayer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MutePlayer.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.MutePlayer();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.targetClientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.muted = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            message.reason = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MutePlayer message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.networking.MutePlayer} MutePlayer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MutePlayer.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MutePlayer message.
+             * @function verify
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MutePlayer.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.targetClientId != null && message.hasOwnProperty("targetClientId"))
+                    if (!$util.isString(message.targetClientId))
+                        return "targetClientId: string expected";
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    if (typeof message.muted !== "boolean")
+                        return "muted: boolean expected";
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    if (!$util.isString(message.reason))
+                        return "reason: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a MutePlayer message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.networking.MutePlayer} MutePlayer
+             */
+            MutePlayer.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.networking.MutePlayer)
+                    return object;
+                let message = new $root.graphwiz.networking.MutePlayer();
+                if (object.targetClientId != null)
+                    message.targetClientId = String(object.targetClientId);
+                if (object.muted != null)
+                    message.muted = Boolean(object.muted);
+                if (object.reason != null)
+                    message.reason = String(object.reason);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MutePlayer message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {graphwiz.networking.MutePlayer} message MutePlayer
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MutePlayer.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.targetClientId = "";
+                    object.muted = false;
+                    object.reason = "";
+                }
+                if (message.targetClientId != null && message.hasOwnProperty("targetClientId"))
+                    object.targetClientId = message.targetClientId;
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    object.muted = message.muted;
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    object.reason = message.reason;
+                return object;
+            };
+
+            /**
+             * Converts this MutePlayer to JSON.
+             * @function toJSON
+             * @memberof graphwiz.networking.MutePlayer
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MutePlayer.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MutePlayer
+             * @function getTypeUrl
+             * @memberof graphwiz.networking.MutePlayer
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MutePlayer.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.networking.MutePlayer";
+            };
+
+            return MutePlayer;
+        })();
+
+        networking.LockRoom = (function() {
+
+            /**
+             * Properties of a LockRoom.
+             * @memberof graphwiz.networking
+             * @interface ILockRoom
+             * @property {boolean|null} [locked] LockRoom locked
+             * @property {string|null} [reason] LockRoom reason
+             */
+
+            /**
+             * Constructs a new LockRoom.
+             * @memberof graphwiz.networking
+             * @classdesc Represents a LockRoom.
+             * @implements ILockRoom
+             * @constructor
+             * @param {graphwiz.networking.ILockRoom=} [properties] Properties to set
+             */
+            function LockRoom(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * LockRoom locked.
+             * @member {boolean} locked
+             * @memberof graphwiz.networking.LockRoom
+             * @instance
+             */
+            LockRoom.prototype.locked = false;
+
+            /**
+             * LockRoom reason.
+             * @member {string} reason
+             * @memberof graphwiz.networking.LockRoom
+             * @instance
+             */
+            LockRoom.prototype.reason = "";
+
+            /**
+             * Creates a new LockRoom instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {graphwiz.networking.ILockRoom=} [properties] Properties to set
+             * @returns {graphwiz.networking.LockRoom} LockRoom instance
+             */
+            LockRoom.create = function create(properties) {
+                return new LockRoom(properties);
+            };
+
+            /**
+             * Encodes the specified LockRoom message. Does not implicitly {@link graphwiz.networking.LockRoom.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {graphwiz.networking.ILockRoom} message LockRoom message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LockRoom.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.locked != null && Object.hasOwnProperty.call(message, "locked"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.locked);
+                if (message.reason != null && Object.hasOwnProperty.call(message, "reason"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.reason);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified LockRoom message, length delimited. Does not implicitly {@link graphwiz.networking.LockRoom.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {graphwiz.networking.ILockRoom} message LockRoom message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            LockRoom.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a LockRoom message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.networking.LockRoom} LockRoom
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LockRoom.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.LockRoom();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.locked = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.reason = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a LockRoom message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.networking.LockRoom} LockRoom
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            LockRoom.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a LockRoom message.
+             * @function verify
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            LockRoom.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.locked != null && message.hasOwnProperty("locked"))
+                    if (typeof message.locked !== "boolean")
+                        return "locked: boolean expected";
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    if (!$util.isString(message.reason))
+                        return "reason: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a LockRoom message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.networking.LockRoom} LockRoom
+             */
+            LockRoom.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.networking.LockRoom)
+                    return object;
+                let message = new $root.graphwiz.networking.LockRoom();
+                if (object.locked != null)
+                    message.locked = Boolean(object.locked);
+                if (object.reason != null)
+                    message.reason = String(object.reason);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a LockRoom message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {graphwiz.networking.LockRoom} message LockRoom
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            LockRoom.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.locked = false;
+                    object.reason = "";
+                }
+                if (message.locked != null && message.hasOwnProperty("locked"))
+                    object.locked = message.locked;
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    object.reason = message.reason;
+                return object;
+            };
+
+            /**
+             * Converts this LockRoom to JSON.
+             * @function toJSON
+             * @memberof graphwiz.networking.LockRoom
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            LockRoom.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for LockRoom
+             * @function getTypeUrl
+             * @memberof graphwiz.networking.LockRoom
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            LockRoom.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.networking.LockRoom";
+            };
+
+            return LockRoom;
+        })();
+
+        networking.PlayerKicked = (function() {
+
+            /**
+             * Properties of a PlayerKicked.
+             * @memberof graphwiz.networking
+             * @interface IPlayerKicked
+             * @property {string|null} [kickedClientId] PlayerKicked kickedClientId
+             * @property {string|null} [kickedByClientId] PlayerKicked kickedByClientId
+             * @property {string|null} [reason] PlayerKicked reason
+             */
+
+            /**
+             * Constructs a new PlayerKicked.
+             * @memberof graphwiz.networking
+             * @classdesc Represents a PlayerKicked.
+             * @implements IPlayerKicked
+             * @constructor
+             * @param {graphwiz.networking.IPlayerKicked=} [properties] Properties to set
+             */
+            function PlayerKicked(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * PlayerKicked kickedClientId.
+             * @member {string} kickedClientId
+             * @memberof graphwiz.networking.PlayerKicked
+             * @instance
+             */
+            PlayerKicked.prototype.kickedClientId = "";
+
+            /**
+             * PlayerKicked kickedByClientId.
+             * @member {string} kickedByClientId
+             * @memberof graphwiz.networking.PlayerKicked
+             * @instance
+             */
+            PlayerKicked.prototype.kickedByClientId = "";
+
+            /**
+             * PlayerKicked reason.
+             * @member {string} reason
+             * @memberof graphwiz.networking.PlayerKicked
+             * @instance
+             */
+            PlayerKicked.prototype.reason = "";
+
+            /**
+             * Creates a new PlayerKicked instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {graphwiz.networking.IPlayerKicked=} [properties] Properties to set
+             * @returns {graphwiz.networking.PlayerKicked} PlayerKicked instance
+             */
+            PlayerKicked.create = function create(properties) {
+                return new PlayerKicked(properties);
+            };
+
+            /**
+             * Encodes the specified PlayerKicked message. Does not implicitly {@link graphwiz.networking.PlayerKicked.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {graphwiz.networking.IPlayerKicked} message PlayerKicked message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            PlayerKicked.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.kickedClientId != null && Object.hasOwnProperty.call(message, "kickedClientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.kickedClientId);
+                if (message.kickedByClientId != null && Object.hasOwnProperty.call(message, "kickedByClientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.kickedByClientId);
+                if (message.reason != null && Object.hasOwnProperty.call(message, "reason"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.reason);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified PlayerKicked message, length delimited. Does not implicitly {@link graphwiz.networking.PlayerKicked.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {graphwiz.networking.IPlayerKicked} message PlayerKicked message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            PlayerKicked.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a PlayerKicked message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.networking.PlayerKicked} PlayerKicked
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            PlayerKicked.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.PlayerKicked();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.kickedClientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.kickedByClientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.reason = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a PlayerKicked message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.networking.PlayerKicked} PlayerKicked
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            PlayerKicked.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a PlayerKicked message.
+             * @function verify
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            PlayerKicked.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.kickedClientId != null && message.hasOwnProperty("kickedClientId"))
+                    if (!$util.isString(message.kickedClientId))
+                        return "kickedClientId: string expected";
+                if (message.kickedByClientId != null && message.hasOwnProperty("kickedByClientId"))
+                    if (!$util.isString(message.kickedByClientId))
+                        return "kickedByClientId: string expected";
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    if (!$util.isString(message.reason))
+                        return "reason: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a PlayerKicked message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.networking.PlayerKicked} PlayerKicked
+             */
+            PlayerKicked.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.networking.PlayerKicked)
+                    return object;
+                let message = new $root.graphwiz.networking.PlayerKicked();
+                if (object.kickedClientId != null)
+                    message.kickedClientId = String(object.kickedClientId);
+                if (object.kickedByClientId != null)
+                    message.kickedByClientId = String(object.kickedByClientId);
+                if (object.reason != null)
+                    message.reason = String(object.reason);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a PlayerKicked message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {graphwiz.networking.PlayerKicked} message PlayerKicked
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            PlayerKicked.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.kickedClientId = "";
+                    object.kickedByClientId = "";
+                    object.reason = "";
+                }
+                if (message.kickedClientId != null && message.hasOwnProperty("kickedClientId"))
+                    object.kickedClientId = message.kickedClientId;
+                if (message.kickedByClientId != null && message.hasOwnProperty("kickedByClientId"))
+                    object.kickedByClientId = message.kickedByClientId;
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    object.reason = message.reason;
+                return object;
+            };
+
+            /**
+             * Converts this PlayerKicked to JSON.
+             * @function toJSON
+             * @memberof graphwiz.networking.PlayerKicked
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            PlayerKicked.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for PlayerKicked
+             * @function getTypeUrl
+             * @memberof graphwiz.networking.PlayerKicked
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            PlayerKicked.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.networking.PlayerKicked";
+            };
+
+            return PlayerKicked;
+        })();
+
+        networking.PlayerMuted = (function() {
+
+            /**
+             * Properties of a PlayerMuted.
+             * @memberof graphwiz.networking
+             * @interface IPlayerMuted
+             * @property {string|null} [mutedClientId] PlayerMuted mutedClientId
+             * @property {boolean|null} [muted] PlayerMuted muted
+             * @property {string|null} [reason] PlayerMuted reason
+             */
+
+            /**
+             * Constructs a new PlayerMuted.
+             * @memberof graphwiz.networking
+             * @classdesc Represents a PlayerMuted.
+             * @implements IPlayerMuted
+             * @constructor
+             * @param {graphwiz.networking.IPlayerMuted=} [properties] Properties to set
+             */
+            function PlayerMuted(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * PlayerMuted mutedClientId.
+             * @member {string} mutedClientId
+             * @memberof graphwiz.networking.PlayerMuted
+             * @instance
+             */
+            PlayerMuted.prototype.mutedClientId = "";
+
+            /**
+             * PlayerMuted muted.
+             * @member {boolean} muted
+             * @memberof graphwiz.networking.PlayerMuted
+             * @instance
+             */
+            PlayerMuted.prototype.muted = false;
+
+            /**
+             * PlayerMuted reason.
+             * @member {string} reason
+             * @memberof graphwiz.networking.PlayerMuted
+             * @instance
+             */
+            PlayerMuted.prototype.reason = "";
+
+            /**
+             * Creates a new PlayerMuted instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {graphwiz.networking.IPlayerMuted=} [properties] Properties to set
+             * @returns {graphwiz.networking.PlayerMuted} PlayerMuted instance
+             */
+            PlayerMuted.create = function create(properties) {
+                return new PlayerMuted(properties);
+            };
+
+            /**
+             * Encodes the specified PlayerMuted message. Does not implicitly {@link graphwiz.networking.PlayerMuted.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {graphwiz.networking.IPlayerMuted} message PlayerMuted message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            PlayerMuted.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.mutedClientId != null && Object.hasOwnProperty.call(message, "mutedClientId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.mutedClientId);
+                if (message.muted != null && Object.hasOwnProperty.call(message, "muted"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.muted);
+                if (message.reason != null && Object.hasOwnProperty.call(message, "reason"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.reason);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified PlayerMuted message, length delimited. Does not implicitly {@link graphwiz.networking.PlayerMuted.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {graphwiz.networking.IPlayerMuted} message PlayerMuted message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            PlayerMuted.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a PlayerMuted message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.networking.PlayerMuted} PlayerMuted
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            PlayerMuted.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.PlayerMuted();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.mutedClientId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.muted = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            message.reason = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a PlayerMuted message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.networking.PlayerMuted} PlayerMuted
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            PlayerMuted.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a PlayerMuted message.
+             * @function verify
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            PlayerMuted.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.mutedClientId != null && message.hasOwnProperty("mutedClientId"))
+                    if (!$util.isString(message.mutedClientId))
+                        return "mutedClientId: string expected";
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    if (typeof message.muted !== "boolean")
+                        return "muted: boolean expected";
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    if (!$util.isString(message.reason))
+                        return "reason: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a PlayerMuted message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.networking.PlayerMuted} PlayerMuted
+             */
+            PlayerMuted.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.networking.PlayerMuted)
+                    return object;
+                let message = new $root.graphwiz.networking.PlayerMuted();
+                if (object.mutedClientId != null)
+                    message.mutedClientId = String(object.mutedClientId);
+                if (object.muted != null)
+                    message.muted = Boolean(object.muted);
+                if (object.reason != null)
+                    message.reason = String(object.reason);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a PlayerMuted message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {graphwiz.networking.PlayerMuted} message PlayerMuted
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            PlayerMuted.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.mutedClientId = "";
+                    object.muted = false;
+                    object.reason = "";
+                }
+                if (message.mutedClientId != null && message.hasOwnProperty("mutedClientId"))
+                    object.mutedClientId = message.mutedClientId;
+                if (message.muted != null && message.hasOwnProperty("muted"))
+                    object.muted = message.muted;
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    object.reason = message.reason;
+                return object;
+            };
+
+            /**
+             * Converts this PlayerMuted to JSON.
+             * @function toJSON
+             * @memberof graphwiz.networking.PlayerMuted
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            PlayerMuted.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for PlayerMuted
+             * @function getTypeUrl
+             * @memberof graphwiz.networking.PlayerMuted
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            PlayerMuted.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.networking.PlayerMuted";
+            };
+
+            return PlayerMuted;
+        })();
+
+        networking.RoomLocked = (function() {
+
+            /**
+             * Properties of a RoomLocked.
+             * @memberof graphwiz.networking
+             * @interface IRoomLocked
+             * @property {boolean|null} [locked] RoomLocked locked
+             * @property {string|null} [lockedByClientId] RoomLocked lockedByClientId
+             * @property {string|null} [reason] RoomLocked reason
+             */
+
+            /**
+             * Constructs a new RoomLocked.
+             * @memberof graphwiz.networking
+             * @classdesc Represents a RoomLocked.
+             * @implements IRoomLocked
+             * @constructor
+             * @param {graphwiz.networking.IRoomLocked=} [properties] Properties to set
+             */
+            function RoomLocked(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * RoomLocked locked.
+             * @member {boolean} locked
+             * @memberof graphwiz.networking.RoomLocked
+             * @instance
+             */
+            RoomLocked.prototype.locked = false;
+
+            /**
+             * RoomLocked lockedByClientId.
+             * @member {string} lockedByClientId
+             * @memberof graphwiz.networking.RoomLocked
+             * @instance
+             */
+            RoomLocked.prototype.lockedByClientId = "";
+
+            /**
+             * RoomLocked reason.
+             * @member {string} reason
+             * @memberof graphwiz.networking.RoomLocked
+             * @instance
+             */
+            RoomLocked.prototype.reason = "";
+
+            /**
+             * Creates a new RoomLocked instance using the specified properties.
+             * @function create
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {graphwiz.networking.IRoomLocked=} [properties] Properties to set
+             * @returns {graphwiz.networking.RoomLocked} RoomLocked instance
+             */
+            RoomLocked.create = function create(properties) {
+                return new RoomLocked(properties);
+            };
+
+            /**
+             * Encodes the specified RoomLocked message. Does not implicitly {@link graphwiz.networking.RoomLocked.verify|verify} messages.
+             * @function encode
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {graphwiz.networking.IRoomLocked} message RoomLocked message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomLocked.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.locked != null && Object.hasOwnProperty.call(message, "locked"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.locked);
+                if (message.lockedByClientId != null && Object.hasOwnProperty.call(message, "lockedByClientId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.lockedByClientId);
+                if (message.reason != null && Object.hasOwnProperty.call(message, "reason"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.reason);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified RoomLocked message, length delimited. Does not implicitly {@link graphwiz.networking.RoomLocked.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {graphwiz.networking.IRoomLocked} message RoomLocked message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RoomLocked.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a RoomLocked message from the specified reader or buffer.
+             * @function decode
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {graphwiz.networking.RoomLocked} RoomLocked
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomLocked.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.graphwiz.networking.RoomLocked();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.locked = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.lockedByClientId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.reason = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a RoomLocked message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {graphwiz.networking.RoomLocked} RoomLocked
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RoomLocked.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a RoomLocked message.
+             * @function verify
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RoomLocked.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.locked != null && message.hasOwnProperty("locked"))
+                    if (typeof message.locked !== "boolean")
+                        return "locked: boolean expected";
+                if (message.lockedByClientId != null && message.hasOwnProperty("lockedByClientId"))
+                    if (!$util.isString(message.lockedByClientId))
+                        return "lockedByClientId: string expected";
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    if (!$util.isString(message.reason))
+                        return "reason: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a RoomLocked message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {graphwiz.networking.RoomLocked} RoomLocked
+             */
+            RoomLocked.fromObject = function fromObject(object) {
+                if (object instanceof $root.graphwiz.networking.RoomLocked)
+                    return object;
+                let message = new $root.graphwiz.networking.RoomLocked();
+                if (object.locked != null)
+                    message.locked = Boolean(object.locked);
+                if (object.lockedByClientId != null)
+                    message.lockedByClientId = String(object.lockedByClientId);
+                if (object.reason != null)
+                    message.reason = String(object.reason);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a RoomLocked message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {graphwiz.networking.RoomLocked} message RoomLocked
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RoomLocked.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.locked = false;
+                    object.lockedByClientId = "";
+                    object.reason = "";
+                }
+                if (message.locked != null && message.hasOwnProperty("locked"))
+                    object.locked = message.locked;
+                if (message.lockedByClientId != null && message.hasOwnProperty("lockedByClientId"))
+                    object.lockedByClientId = message.lockedByClientId;
+                if (message.reason != null && message.hasOwnProperty("reason"))
+                    object.reason = message.reason;
+                return object;
+            };
+
+            /**
+             * Converts this RoomLocked to JSON.
+             * @function toJSON
+             * @memberof graphwiz.networking.RoomLocked
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RoomLocked.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for RoomLocked
+             * @function getTypeUrl
+             * @memberof graphwiz.networking.RoomLocked
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            RoomLocked.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/graphwiz.networking.RoomLocked";
+            };
+
+            return RoomLocked;
         })();
 
         return networking;

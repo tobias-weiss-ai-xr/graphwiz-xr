@@ -1,7 +1,7 @@
 //! Route configuration for presence service
 
 use actix_web::web;
-use crate::{handlers, websocket};
+use crate::{handlers, moderation_handlers, websocket};
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg
@@ -18,5 +18,9 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         // Performance metrics
         .route("/metrics", web::get().to(websocket::get_metrics))
         // WebRTC signaling
-        .route("/signaling", web::post().to(handlers::signaling));
+        .route("/signaling", web::post().to(handlers::signaling))
+        // Moderation routes
+        .route("/moderation/kick", web::post().to(moderation_handlers::kick_player))
+        .route("/moderation/mute", web::post().to(moderation_handlers::mute_player))
+        .route("/moderation/lock", web::post().to(moderation_handlers::lock_room));
 }

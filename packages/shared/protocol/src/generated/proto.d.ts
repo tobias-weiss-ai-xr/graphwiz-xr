@@ -2689,6 +2689,15 @@ export namespace graphwiz {
 
             /** ClientMessage chat */
             chat?: (graphwiz.core.IChatMessage|null);
+
+            /** ClientMessage kickPlayer */
+            kickPlayer?: (graphwiz.networking.IKickPlayer|null);
+
+            /** ClientMessage mutePlayer */
+            mutePlayer?: (graphwiz.networking.IMutePlayer|null);
+
+            /** ClientMessage lockRoom */
+            lockRoom?: (graphwiz.networking.ILockRoom|null);
         }
 
         /** Represents a ClientMessage. */
@@ -2712,8 +2721,17 @@ export namespace graphwiz {
             /** ClientMessage chat. */
             public chat?: (graphwiz.core.IChatMessage|null);
 
+            /** ClientMessage kickPlayer. */
+            public kickPlayer?: (graphwiz.networking.IKickPlayer|null);
+
+            /** ClientMessage mutePlayer. */
+            public mutePlayer?: (graphwiz.networking.IMutePlayer|null);
+
+            /** ClientMessage lockRoom. */
+            public lockRoom?: (graphwiz.networking.ILockRoom|null);
+
             /** ClientMessage payload. */
-            public payload?: ("position"|"voice"|"entity"|"chat");
+            public payload?: ("position"|"voice"|"entity"|"chat"|"kickPlayer"|"mutePlayer"|"lockRoom");
 
             /**
              * Creates a new ClientMessage instance using the specified properties.
@@ -2813,6 +2831,15 @@ export namespace graphwiz {
 
             /** ServerMessage chat */
             chat?: (graphwiz.core.IChatMessage|null);
+
+            /** ServerMessage playerKicked */
+            playerKicked?: (graphwiz.networking.IPlayerKicked|null);
+
+            /** ServerMessage playerMuted */
+            playerMuted?: (graphwiz.networking.IPlayerMuted|null);
+
+            /** ServerMessage roomLocked */
+            roomLocked?: (graphwiz.networking.IRoomLocked|null);
         }
 
         /** Represents a ServerMessage. */
@@ -2842,8 +2869,17 @@ export namespace graphwiz {
             /** ServerMessage chat. */
             public chat?: (graphwiz.core.IChatMessage|null);
 
+            /** ServerMessage playerKicked. */
+            public playerKicked?: (graphwiz.networking.IPlayerKicked|null);
+
+            /** ServerMessage playerMuted. */
+            public playerMuted?: (graphwiz.networking.IPlayerMuted|null);
+
+            /** ServerMessage roomLocked. */
+            public roomLocked?: (graphwiz.networking.IRoomLocked|null);
+
             /** ServerMessage payload. */
-            public payload?: ("worldState"|"presence"|"entitySpawn"|"entityUpdate"|"entityDespawn"|"chat");
+            public payload?: ("worldState"|"presence"|"entitySpawn"|"entityUpdate"|"entityDespawn"|"chat"|"playerKicked"|"playerMuted"|"roomLocked");
 
             /**
              * Creates a new ServerMessage instance using the specified properties.
@@ -3438,6 +3474,648 @@ export namespace graphwiz {
 
             /**
              * Gets the default type url for PresenceRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a KickPlayer. */
+        interface IKickPlayer {
+
+            /** KickPlayer targetClientId */
+            targetClientId?: (string|null);
+
+            /** KickPlayer reason */
+            reason?: (string|null);
+        }
+
+        /** Represents a KickPlayer. */
+        class KickPlayer implements IKickPlayer {
+
+            /**
+             * Constructs a new KickPlayer.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.networking.IKickPlayer);
+
+            /** KickPlayer targetClientId. */
+            public targetClientId: string;
+
+            /** KickPlayer reason. */
+            public reason: string;
+
+            /**
+             * Creates a new KickPlayer instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns KickPlayer instance
+             */
+            public static create(properties?: graphwiz.networking.IKickPlayer): graphwiz.networking.KickPlayer;
+
+            /**
+             * Encodes the specified KickPlayer message. Does not implicitly {@link graphwiz.networking.KickPlayer.verify|verify} messages.
+             * @param message KickPlayer message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.networking.IKickPlayer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified KickPlayer message, length delimited. Does not implicitly {@link graphwiz.networking.KickPlayer.verify|verify} messages.
+             * @param message KickPlayer message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.networking.IKickPlayer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a KickPlayer message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns KickPlayer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.networking.KickPlayer;
+
+            /**
+             * Decodes a KickPlayer message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns KickPlayer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.networking.KickPlayer;
+
+            /**
+             * Verifies a KickPlayer message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a KickPlayer message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns KickPlayer
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.networking.KickPlayer;
+
+            /**
+             * Creates a plain object from a KickPlayer message. Also converts values to other types if specified.
+             * @param message KickPlayer
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.networking.KickPlayer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this KickPlayer to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for KickPlayer
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a MutePlayer. */
+        interface IMutePlayer {
+
+            /** MutePlayer targetClientId */
+            targetClientId?: (string|null);
+
+            /** MutePlayer muted */
+            muted?: (boolean|null);
+
+            /** MutePlayer reason */
+            reason?: (string|null);
+        }
+
+        /** Represents a MutePlayer. */
+        class MutePlayer implements IMutePlayer {
+
+            /**
+             * Constructs a new MutePlayer.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.networking.IMutePlayer);
+
+            /** MutePlayer targetClientId. */
+            public targetClientId: string;
+
+            /** MutePlayer muted. */
+            public muted: boolean;
+
+            /** MutePlayer reason. */
+            public reason: string;
+
+            /**
+             * Creates a new MutePlayer instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MutePlayer instance
+             */
+            public static create(properties?: graphwiz.networking.IMutePlayer): graphwiz.networking.MutePlayer;
+
+            /**
+             * Encodes the specified MutePlayer message. Does not implicitly {@link graphwiz.networking.MutePlayer.verify|verify} messages.
+             * @param message MutePlayer message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.networking.IMutePlayer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MutePlayer message, length delimited. Does not implicitly {@link graphwiz.networking.MutePlayer.verify|verify} messages.
+             * @param message MutePlayer message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.networking.IMutePlayer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MutePlayer message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MutePlayer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.networking.MutePlayer;
+
+            /**
+             * Decodes a MutePlayer message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MutePlayer
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.networking.MutePlayer;
+
+            /**
+             * Verifies a MutePlayer message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MutePlayer message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MutePlayer
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.networking.MutePlayer;
+
+            /**
+             * Creates a plain object from a MutePlayer message. Also converts values to other types if specified.
+             * @param message MutePlayer
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.networking.MutePlayer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MutePlayer to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MutePlayer
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a LockRoom. */
+        interface ILockRoom {
+
+            /** LockRoom locked */
+            locked?: (boolean|null);
+
+            /** LockRoom reason */
+            reason?: (string|null);
+        }
+
+        /** Represents a LockRoom. */
+        class LockRoom implements ILockRoom {
+
+            /**
+             * Constructs a new LockRoom.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.networking.ILockRoom);
+
+            /** LockRoom locked. */
+            public locked: boolean;
+
+            /** LockRoom reason. */
+            public reason: string;
+
+            /**
+             * Creates a new LockRoom instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns LockRoom instance
+             */
+            public static create(properties?: graphwiz.networking.ILockRoom): graphwiz.networking.LockRoom;
+
+            /**
+             * Encodes the specified LockRoom message. Does not implicitly {@link graphwiz.networking.LockRoom.verify|verify} messages.
+             * @param message LockRoom message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.networking.ILockRoom, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified LockRoom message, length delimited. Does not implicitly {@link graphwiz.networking.LockRoom.verify|verify} messages.
+             * @param message LockRoom message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.networking.ILockRoom, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a LockRoom message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns LockRoom
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.networking.LockRoom;
+
+            /**
+             * Decodes a LockRoom message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns LockRoom
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.networking.LockRoom;
+
+            /**
+             * Verifies a LockRoom message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a LockRoom message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns LockRoom
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.networking.LockRoom;
+
+            /**
+             * Creates a plain object from a LockRoom message. Also converts values to other types if specified.
+             * @param message LockRoom
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.networking.LockRoom, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this LockRoom to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for LockRoom
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PlayerKicked. */
+        interface IPlayerKicked {
+
+            /** PlayerKicked kickedClientId */
+            kickedClientId?: (string|null);
+
+            /** PlayerKicked kickedByClientId */
+            kickedByClientId?: (string|null);
+
+            /** PlayerKicked reason */
+            reason?: (string|null);
+        }
+
+        /** Represents a PlayerKicked. */
+        class PlayerKicked implements IPlayerKicked {
+
+            /**
+             * Constructs a new PlayerKicked.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.networking.IPlayerKicked);
+
+            /** PlayerKicked kickedClientId. */
+            public kickedClientId: string;
+
+            /** PlayerKicked kickedByClientId. */
+            public kickedByClientId: string;
+
+            /** PlayerKicked reason. */
+            public reason: string;
+
+            /**
+             * Creates a new PlayerKicked instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PlayerKicked instance
+             */
+            public static create(properties?: graphwiz.networking.IPlayerKicked): graphwiz.networking.PlayerKicked;
+
+            /**
+             * Encodes the specified PlayerKicked message. Does not implicitly {@link graphwiz.networking.PlayerKicked.verify|verify} messages.
+             * @param message PlayerKicked message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.networking.IPlayerKicked, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PlayerKicked message, length delimited. Does not implicitly {@link graphwiz.networking.PlayerKicked.verify|verify} messages.
+             * @param message PlayerKicked message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.networking.IPlayerKicked, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PlayerKicked message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PlayerKicked
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.networking.PlayerKicked;
+
+            /**
+             * Decodes a PlayerKicked message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PlayerKicked
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.networking.PlayerKicked;
+
+            /**
+             * Verifies a PlayerKicked message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PlayerKicked message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PlayerKicked
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.networking.PlayerKicked;
+
+            /**
+             * Creates a plain object from a PlayerKicked message. Also converts values to other types if specified.
+             * @param message PlayerKicked
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.networking.PlayerKicked, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PlayerKicked to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PlayerKicked
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PlayerMuted. */
+        interface IPlayerMuted {
+
+            /** PlayerMuted mutedClientId */
+            mutedClientId?: (string|null);
+
+            /** PlayerMuted muted */
+            muted?: (boolean|null);
+
+            /** PlayerMuted reason */
+            reason?: (string|null);
+        }
+
+        /** Represents a PlayerMuted. */
+        class PlayerMuted implements IPlayerMuted {
+
+            /**
+             * Constructs a new PlayerMuted.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.networking.IPlayerMuted);
+
+            /** PlayerMuted mutedClientId. */
+            public mutedClientId: string;
+
+            /** PlayerMuted muted. */
+            public muted: boolean;
+
+            /** PlayerMuted reason. */
+            public reason: string;
+
+            /**
+             * Creates a new PlayerMuted instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PlayerMuted instance
+             */
+            public static create(properties?: graphwiz.networking.IPlayerMuted): graphwiz.networking.PlayerMuted;
+
+            /**
+             * Encodes the specified PlayerMuted message. Does not implicitly {@link graphwiz.networking.PlayerMuted.verify|verify} messages.
+             * @param message PlayerMuted message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.networking.IPlayerMuted, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PlayerMuted message, length delimited. Does not implicitly {@link graphwiz.networking.PlayerMuted.verify|verify} messages.
+             * @param message PlayerMuted message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.networking.IPlayerMuted, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PlayerMuted message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PlayerMuted
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.networking.PlayerMuted;
+
+            /**
+             * Decodes a PlayerMuted message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PlayerMuted
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.networking.PlayerMuted;
+
+            /**
+             * Verifies a PlayerMuted message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PlayerMuted message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PlayerMuted
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.networking.PlayerMuted;
+
+            /**
+             * Creates a plain object from a PlayerMuted message. Also converts values to other types if specified.
+             * @param message PlayerMuted
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.networking.PlayerMuted, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PlayerMuted to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PlayerMuted
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RoomLocked. */
+        interface IRoomLocked {
+
+            /** RoomLocked locked */
+            locked?: (boolean|null);
+
+            /** RoomLocked lockedByClientId */
+            lockedByClientId?: (string|null);
+
+            /** RoomLocked reason */
+            reason?: (string|null);
+        }
+
+        /** Represents a RoomLocked. */
+        class RoomLocked implements IRoomLocked {
+
+            /**
+             * Constructs a new RoomLocked.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: graphwiz.networking.IRoomLocked);
+
+            /** RoomLocked locked. */
+            public locked: boolean;
+
+            /** RoomLocked lockedByClientId. */
+            public lockedByClientId: string;
+
+            /** RoomLocked reason. */
+            public reason: string;
+
+            /**
+             * Creates a new RoomLocked instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RoomLocked instance
+             */
+            public static create(properties?: graphwiz.networking.IRoomLocked): graphwiz.networking.RoomLocked;
+
+            /**
+             * Encodes the specified RoomLocked message. Does not implicitly {@link graphwiz.networking.RoomLocked.verify|verify} messages.
+             * @param message RoomLocked message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: graphwiz.networking.IRoomLocked, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RoomLocked message, length delimited. Does not implicitly {@link graphwiz.networking.RoomLocked.verify|verify} messages.
+             * @param message RoomLocked message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: graphwiz.networking.IRoomLocked, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RoomLocked message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RoomLocked
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): graphwiz.networking.RoomLocked;
+
+            /**
+             * Decodes a RoomLocked message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RoomLocked
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): graphwiz.networking.RoomLocked;
+
+            /**
+             * Verifies a RoomLocked message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RoomLocked message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RoomLocked
+             */
+            public static fromObject(object: { [k: string]: any }): graphwiz.networking.RoomLocked;
+
+            /**
+             * Creates a plain object from a RoomLocked message. Also converts values to other types if specified.
+             * @param message RoomLocked
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: graphwiz.networking.RoomLocked, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RoomLocked to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RoomLocked
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */
