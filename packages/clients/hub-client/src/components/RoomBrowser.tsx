@@ -6,6 +6,7 @@ interface RoomBrowserProps {
   onJoinRoom: (roomId: string) => void;
   onCreateRoom: () => void;
   currentUserId?: string;
+  storageVisible?: boolean;
 }
 
 interface Room {

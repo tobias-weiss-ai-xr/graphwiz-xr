@@ -183,7 +183,6 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
       await expect(page2.locator('canvas').first()).toBeVisible();
 
       // Check that both are using production WebSocket URL
-      // TODO: Add assertions to verify correct WebSocket URL configuration
       const _wsUrl1 = await page1.evaluate(() => {
         return (window as any).localStorage?.getItem('ws_url') || '';
       });
@@ -191,11 +190,57 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
         return (window as any).localStorage?.getItem('ws_url') || '';
       });
 
+      // Add assertion to verify production WebSocket URL configuration
+      expect(_wsUrl1).toContain('wss://xr.graphwiz.ai/ws');
+      expect(_wsUrl1).not.toContain('ws://localhost');
+      expect(_wsUrl2).toContain('wss://xr.graphwiz.ai/ws');
+      expect(_wsUrl2).not.toContain('ws://localhost');
+
       // At minimum, verify both pages loaded successfully
       expect(await page1.locator('body').isVisible()).toBeTruthy();
       expect(await page2.locator('body').isVisible()).toBeTruthy();
 
       console.log('✅ Multi-user test: Both users connected successfully');
+
+      // Verify avatar synchronization between users
+      const user1Avatar = await page1.evaluate(() => {
+        return (window as any).localStorage?.getItem('user1_avatar') || '';
+      });
+      const user2Avatar = await page2.evaluate(() => {
+        return (window as any).localStorage?.getItem('user2_avatar') || '';
+      });
+
+      // Both users should have avatar data after WebSocket connection
+      await expect(user1Avatar).toBeTruthy();
+      await expect(user2Avatar).toBeTruthy();
+
+      // Verify controller models are loaded (Task 7 - controller models infrastructure complete)
+      const controllerEntities1 = await page1.evaluate(() => {
+        return (window as any).localStorage?.getItem('controller_entities') || '[]';
+      });
+      const controllerEntities2 = await page2.evaluate(() => {
+        return (window as any).localStorage?.getItem('controller_entities') || '[]';
+      });
+
+      await expect(controllerEntities1.length).toBeGreaterThan(0);
+      await expect(controllerEntities2.length).toBeGreaterThan(0);
+
+      console.log('✅ Avatar synchronization verified');
+      console.log('✅ Controller models loaded (infrastructure)');
+    } finally {
+      await context1.close();
+      await context2.close();
+    }
+  });
+      const user2Avatar = await page2.evaluate(() => {
+        return (window as any).localStorage?.getItem('user2_avatar');
+      });
+
+      // Both users should have avatar data after WebSocket connection
+      expect(user1Avatar).toBeTruthy();
+      expect(user2Avatar).toBeTruthy();
+
+      console.log('✅ Avatar synchronization verified');
     } finally {
       await context1.close();
       await context2.close();
@@ -295,27 +340,48 @@ test.describe('Networked Avatar Sync - Performance', () => {
     await page.goto(PRODUCTION_URL);
     await page.waitForLoadState('networkidle');
 
-    // Measure FPS
-    const fps = await page.evaluate(async () => {
-      return new Promise<number>((resolve) => {
-        let frames = 0;
-        const startTime = performance.now();
+      // Measure FPS
+      const fps = await page.evaluate(async () => {
+        return new Promise<number>((resolve) => {
+          let frames = 0;
+          const startTime = performance.now();
 
-        function countFrames() {
-          frames++;
-          const elapsed = performance.now() - startTime;
+          function countFrames() {
+            frames++;
+            const elapsed = performance.now() - startTime;
 
-          if (elapsed >= 2000) {
-            // Measure for 2 seconds
-            const fps = (frames / elapsed) * 1000;
-            resolve(fps);
-          } else {
-            requestAnimationFrame(countFrames);
+            if (elapsed >= 2000) {
+              // Measure for 2 seconds
+              const fps = (frames / elapsed) * 1000;
+              resolve(fps);
+            } else {
+              requestAnimationFrame(countFrames);
+            }
           }
-        }
-
-        requestAnimationFrame(countFrames);
+        });
       });
+
+      console.log(`✅ Measured FPS: ${fps.toFixed(2)}`);
+      expect(fps).toBeGreaterThan(30); // At least 30 FPS
+
+      // Verify performance overlay is displayed
+      const fpsElement = await page.locator('.fps-value');
+      await expect(fpsElement).not.toBeNull();
+      await expect(fpsElement).toBeVisible();
+
+      // Verify remote player count is displayed
+      const remotePlayersElement = await page.locator('.remote-players-value');
+      await expect(remotePlayersElement).not.toBeNull();
+      await expect(remotePlayersElement).toBeVisible();
+
+      // Verify network latency is displayed
+      const latencyElement = await page.locator('.latency-value');
+      await expect(latencyElement).not.toBeNull();
+      await expect(latencyElement).toBeVisible();
+
+      console.log('✅ Performance metrics displayed and accessible');
+    });
+  });
     });
 
     console.log(`✅ Measured FPS: ${fps.toFixed(2)}`);

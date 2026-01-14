@@ -7,7 +7,7 @@
 import { MessageParser, MessageBuilder } from '@graphwiz/protocol';
 import type { Message, MessageType, ClientHello, PositionUpdate } from '@graphwiz/protocol';
 import { v4 as uuidv4 } from 'uuid';
-import { createLogger, LogLevel } from '@graphwiz/types';
+import { createLogger } from '@graphwiz/types';
 
 const logger = createLogger('WebSocketClient');
 
@@ -57,14 +57,14 @@ export class WebSocketClient {
         });
 
         const wsUrl = `${this.config.presenceUrl}/ws/${this.config.roomId}?${params.toString()}`;
-        logger.log('[WebSocketClient] Connecting to:', wsUrl);
+        logger.info('[WebSocketClient] Connecting to:', wsUrl);
 
         this.ws = new WebSocket(wsUrl);
 
         this.ws.binaryType = 'arraybuffer';
 
         this.ws.onopen = () => {
-          logger.log('[WebSocketClient] WebSocket connected');
+          logger.info('[WebSocketClient] WebSocket connected');
           this.isConnected = true;
           this.reconnectAttempts = 0;
 
@@ -92,7 +92,7 @@ export class WebSocketClient {
         };
 
         this.ws.onclose = (event) => {
-          logger.log('[WebSocketClient] WebSocket disconnected:', event.code, event.reason);
+          logger.info('[WebSocketClient] WebSocket disconnected:', event.code, event.reason);
           this.isConnected = false;
 
           // Clear ping interval
@@ -155,7 +155,7 @@ export class WebSocketClient {
       // Only log important message types (not position updates which are sent at 20Hz)
       if (message.type !== 10) {
         // 10 = POSITION_UPDATE
-        logger.log('[WebSocketClient] Sent message type:', message.type);
+        logger.debug('[WebSocketClient] Sent message type:', message.type);
       }
     } catch (error) {
       logger.error('[WebSocketClient] Failed to send message:', error);
@@ -333,7 +333,7 @@ export class WebSocketClient {
 
     this.send(message);
 
-    logger.log('[WebSocketClient] Sent avatar update:', avatarConfig);
+    logger.debug('[WebSocketClient] Sent avatar update:', avatarConfig);
   }
 
   /**

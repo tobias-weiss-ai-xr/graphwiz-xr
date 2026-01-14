@@ -20,6 +20,7 @@
   "dependencies": {
     "@graphwiz/protocol": "workspace:*",
     "@graphwiz/types": "workspace:*",
+    "@graphwiz/ui-kit": "workspace:*",
     "@react-three/drei": "^9.99.0",
     "@react-three/fiber": "^8.15.12",
     "@react-three/postprocessing": "^2.16.0",

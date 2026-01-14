@@ -245,12 +245,15 @@ where
     }
 }
 
-struct LogVisitor<'a>(&'a mut String);
+struct LogVisitor<'a> {
+    field: &'a mut String,
+}
 
 impl<'a> tracing::field::Visit for LogVisitor<'a> {
-    fn record_debug(&mut self, field: &tracing::field::Field, value: &dyn std::fmt::Debug) {
-        if self.0.is_empty() {
-            *self.0 = format!("{:?}", value);
+    fn record_debug(&mut self, _field: &tracing::field::Field, value: &dyn std::fmt::Debug) {
+        if _field.is_empty() {
+            *_field = format!("{:?}", value);
         }
+    }
     }
 }

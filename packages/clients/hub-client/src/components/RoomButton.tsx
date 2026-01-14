@@ -3,14 +3,21 @@ interface RoomButtonProps {
   onOpenBrowser: () => void;
   onOpenSettings: () => void;
   onLeaveRoom: () => void;
+  storageVisible?: boolean;
 }
 
 export function RoomButton({
   currentRoomId,
   onOpenBrowser,
   onOpenSettings,
-  onLeaveRoom
+  onLeaveRoom,
+  storageVisible
 }: RoomButtonProps) {
+  // Hide button when storage panel is open
+  if (storageVisible !== undefined && storageVisible) {
+    return null;
+  }
+
   return (
     <button
       onClick={currentRoomId ? onOpenSettings : onOpenBrowser}

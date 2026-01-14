@@ -132,7 +132,7 @@ services:
     privileged: true
     command: ['cargo', 'watch', '-x', 'run -p reticulum-storage --bin reticulum-storage']
 
-  # Hub Client (Vite dev server with hot reload)
+  # Hub Client (Vite dev server - no hot reload on Windows due to volume mount issues)
   hub-client:
     build:
       context: ../../
@@ -148,10 +148,6 @@ services:
       NODE_ENV: development
     ports:
       - '${HUB_CLIENT_PORT:-5173}:5173'
-    volumes:
-      - ../../packages/clients/hub-client:/app/packages/clients/hub-client:cached
-      - ../../packages/shared/protocol:/app/packages/shared/protocol:cached
-      - ../../packages/shared/types:/app/packages/shared/types:cached
     depends_on:
       - postgres
       - redis

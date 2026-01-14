@@ -3,13 +3,11 @@
  */
 
 import { UserSettings, DEFAULT_SETTINGS } from './user-settings';
-import { createLogger } from '@graphwiz/types';
+import { createLogger } from '@graphwiz/types/logger';
 
 const SETTINGS_KEY = 'graphwiz-user-settings';
 
 const logger = createLogger('SettingsManager');
-
-const SETTINGS_KEY = 'graphwiz-user-settings';
 
 export class SettingsManager {
   private settings: UserSettings;

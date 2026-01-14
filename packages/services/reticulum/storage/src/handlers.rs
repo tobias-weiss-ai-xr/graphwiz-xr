@@ -280,7 +280,9 @@ pub async fn upload_asset(
             Err(e) => {
                 log::error!("Failed to store file: {}", e);
                 // Clean up temp file
-                let _ = std::fs::remove_file(&temp_file_path);
+                if let Err(cleanup_err) = std::fs::remove_file(&temp_file_path) {
+                    log::warn!("Failed to clean up temp file {}: {}", temp_file_path.display(), cleanup_err);
+                }
                 return HttpResponse::InternalServerError().json(serde_json::json!({
                     "error": "storage_error",
                     "message": "Failed to store file"
@@ -485,7 +487,9 @@ pub async fn upload_asset(
         Err(e) => {
             log::error!("Failed to store file: {}", e);
             // Clean up temp file
-            let _ = std::fs::remove_file(&temp_file_path);
+            if let Err(cleanup_err) = std::fs::remove_file(&temp_file_path) {
+                log::warn!("Failed to clean up temp file {}: {}", temp_file_path.display(), cleanup_err);
+            }
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "error": "storage_error",
                 "message": "Failed to store file"

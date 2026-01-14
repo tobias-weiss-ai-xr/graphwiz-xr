@@ -4,7 +4,7 @@ use reticulum_core::{add_log, LogLevel};
 
 #[tokio::main]
 async fn main() {
-    println!("Generating sample logs...");
+    log::info!("Generating sample logs...");
 
     let services = ["auth", "hub", "presence", "sfu", "storage"];
     let levels = [LogLevel::Debug, LogLevel::Info, LogLevel::Warn, LogLevel::Error];
@@ -24,5 +24,5 @@ async fn main() {
         }
     }
 
-    println!("Sample logs generated!");
+    log::info!("Sample logs generated!");
 }

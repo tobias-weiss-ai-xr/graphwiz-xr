@@ -25,6 +25,6 @@ impl MigratorTrait for Migrator {
             Box::new(m20250101_000006_add_profile_settings::Migration),
             Box::new(m20250101_000007_create_assets::Migration),
             Box::new(m20250101_000008_create_upload_sessions::Migration),
-        ]
-    }
+            ]
+        }
 }

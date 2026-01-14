@@ -8,7 +8,7 @@ pub mod websocket;
 pub mod handlers;
 pub mod moderation_handlers;
 pub mod routes;
-// pub mod optimization; // Disabled: Agent Looper dependency removed
+pub mod optimization;
 
 // Production-ready features
 // Temporarily disabled for initial compilation

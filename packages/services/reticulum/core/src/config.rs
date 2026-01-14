@@ -68,7 +68,7 @@ impl Config {
         let mut cfg: Config = config.try_deserialize().unwrap_or_else(|_| Config {
             server: ServerConfig {
                 host: "0.0.0.0".to_string(),
-                port: 4000,
+                port: 8003,
                 workers: None,
             },
             database: DatabaseConfig {

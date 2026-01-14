@@ -58,13 +58,16 @@ pub async fn get_user_cached(
     let user_id = path.into_inner();
     let cache_key = reticulum_core::cache_keys::user(user_id);
 
-    // Try cache first
+        // Try cache first
     if let Ok(Some(cached_user)) = cache.get::<super::models::User>(&cache_key).await {
         log::info!("Cache hit for user {}", user_id);
         return HttpResponse::Ok().json(json!({
             "user": cached_user
         }));
     }
+
+    // Log cache miss before proceeding
+    log::info!("Cache miss for user {}, fetching from database", user_id);
 
     log::info!("Cache miss for user {}, fetching from database", user_id);
 
@@ -81,9 +84,11 @@ pub async fn get_user_cached(
     };
 
     match reticulum_core::UserModel::find_by_id(&db, user_id).await {
-        Ok(Some(user)) => {
+            Ok(Some(user)) => {
             // Cache for 5 minutes
-            let _ = cache.set(&cache_key, &user, Some(ttl::MEDIUM)).await;
+            if let Err(cache_err) = cache.set(&cache_key, &user, Some(ttl::MEDIUM)).await {
+                log::warn!("Failed to cache user {}: {}", user_id, cache_err);
+            }
 
             HttpResponse::Ok().json(json!({
                 "user": user

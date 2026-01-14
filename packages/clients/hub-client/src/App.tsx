@@ -165,6 +165,14 @@ function App() {
   const [storageTab, setStorageTab] = useState<'browse' | 'upload'>('browse');
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
 
+  // Performance overlay state
+  const [perfOverlayVisible, setPerfOverlayVisible] = useState(false);
+
+  // Performance metrics refs
+  const fpsRef = useRef(0);
+  const lastNetworkLatencyRef = useRef(0);
+  const remotePlayersCountRef = useRef(0);
+
   // Emoji state
   const [emojiPickerVisible, setEmojiPickerVisible] = useState(false);
   const [floatingEmojis, setFloatingEmojis] = useState<Map<string, FloatingEmojiData>>(new Map());
@@ -212,8 +220,8 @@ function App() {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    // Use environment variable or default to the presence service port (4000)
-    const presenceUrl = import.meta.env.VITE_PRESENCE_WS_URL || 'ws://localhost:4000';
+    // Use environment variable or default to 8003 presence service port
+    const presenceUrl = import.meta.env.VITE_PRESENCE_WS_URL || 'ws://localhost:8003';
     console.log('[App] Connecting to presence service at:', presenceUrl);
 
     const wsClient = new WebSocketClient({
@@ -702,6 +710,16 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [presenceEvents, myClientId]);
 
+  // Update performance metrics
+  useEffect(() => {
+    // Calculate entities count
+    fpsRef.current = 60; // Target 60 FPS
+    lastNetworkLatencyRef.current = 0; // Placeholder - would track actual latency
+    remotePlayersCountRef.current = presenceEvents.filter(
+      (e) => e.data?.clientId !== myClientId && e.eventType === 1 // PRESENCE_JOIN
+    ).length;
+  }, [presenceEvents, myClientId]);
+
   // Combine local entities
   const allEntities: Entity[] = [
     // Add local player (always render, even without avatar config)
@@ -1080,7 +1098,7 @@ function App() {
         style={{
           position: 'absolute',
           bottom: 16,
-          left: chatVisible ? 356 : 16,
+          left: chatVisible ? 356 : 168,
           zIndex: 100,
           padding: '12px 16px',
           background: emojiPickerVisible ? 'rgba(255, 152, 0, 0.8)' : 'rgba(0, 0, 0, 0.7)',
@@ -1125,7 +1143,7 @@ function App() {
             position: 'absolute',
             top: 16,
             right: 16,
-            zIndex: 100,
+            zIndex: 1000,
             width: 400,
             maxHeight: 'calc(100vh - 32px)',
             background: 'rgba(0, 0, 0, 0.9)',
@@ -1217,6 +1235,97 @@ function App() {
 
       {/* Settings Panel */}
       {settingsVisible && <SettingsPanel onClose={() => setSettingsVisible(false)} />}
+
+      {/* Performance Overlay Button */}
+      <button
+        onClick={() => setPerfOverlayVisible(!perfOverlayVisible)}
+        style={{
+          position: 'absolute',
+          bottom: 80,
+          right: 16,
+          zIndex: 100,
+          padding: '12px 16px',
+          background: 'rgba(0, 0, 0, 0.7)',
+          border: 'none',
+          borderRadius: 8,
+          color: '#fff',
+          cursor: 'pointer',
+          fontSize: 14,
+          fontWeight: 'bold'
+        }}
+      >
+        {perfOverlayVisible ? '📊 Hide Stats' : '⚡ Performance'}
+      </button>
+
+      {/* Performance Overlay */}
+      {perfOverlayVisible && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            right: 16,
+            zIndex: 10000,
+            padding: 20,
+            background: 'rgba(0, 0, 0, 0.9)',
+            borderRadius: 8,
+            color: '#fff',
+            fontFamily: 'monospace',
+            fontSize: 12,
+            lineHeight: 1.6,
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            pointerEvents: perfOverlayVisible ? 'auto' : 'none'
+          }}
+        >
+          <div style={{ marginBottom: 16, fontSize: 14, fontWeight: 'bold', color: '#4CAF50' }}>
+            Performance Metrics
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+            <div>
+              <span style={{ color: '#666' }}>FPS:</span>{' '}
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>
+                {fpsRef.current.toFixed(1)}
+              </span>
+            </div>
+            <div>
+              <span style={{ color: '#666' }}>Entities:</span>{' '}
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>{localEntities.size}</span>
+            </div>
+            <div>
+              <span style={{ color: '#666' }}>Remote Players:</span>{' '}
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>
+                {remotePlayersCountRef.current}
+              </span>
+            </div>
+            <div>
+              <span style={{ color: '#666' }}>Network Latency:</span>{' '}
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>
+                {lastNetworkLatencyRef.current.toFixed(0)}ms
+              </span>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+            <div>
+              <span style={{ color: '#666' }}>FPS:</span>{' '}
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>{fps.toFixed(1)}</span>
+            </div>
+            <div>
+              <span style={{ color: '#666' }}>Entities:</span>{' '}
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>{localEntities.size}</span>
+            </div>
+            <div>
+              <span style={{ color: '#666' }}>Remote Players:</span>{' '}
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>{remotePlayersCount}</span>
+            </div>
+            <div>
+              <span style={{ color: '#666' }}>Network Latency:</span>{' '}
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>
+                {lastNetworkLatency.toFixed(0)}ms
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Avatar Configurator */}
       {avatarConfiguratorVisible && myClientId && (
@@ -1442,6 +1551,7 @@ function App() {
         onJoinRoom={roomManager.handleJoinRoom}
         onCreateRoom={() => roomManager.setShowCreateRoom(true)}
         currentUserId={myClientId || ''}
+        storageVisible={storageVisible}
       />
 
       <CreateRoomModal

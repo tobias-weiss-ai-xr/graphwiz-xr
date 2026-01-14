@@ -106,16 +106,16 @@ impl WebSocketManager {
             },
         );
 
-        // Add to room if applicable
+         // Add to room if applicable
         if let Some(room_id) = room_id {
             let mut room_connections = self.room_connections.write().await;
             room_connections
                 .entry(room_id.clone())
                 .or_insert_with(Vec::new)
                 .push(conn_id.clone());
+        }
 
-            // Create message queue - temporarily disabled
-            // let _queue_rx = self.message_queue().create_queue(conn_id.clone()).await;
+        rx
         }
 
         rx
@@ -126,7 +126,7 @@ impl WebSocketManager {
         let mut connections = self.connections.write().await;
         connections.remove(conn_id);
 
-        // Production cleanup - temporarily disabled
+        // Production cleanup
         // self.rate_limiter().remove(conn_id).await;
         // self.message_queue().remove_queue(conn_id).await;
 
@@ -458,12 +458,60 @@ pub async fn get_all_stats(ws_manager: web::Data<WebSocketManager>) -> HttpRespo
     }))
 }
 
-/// Get performance metrics - temporarily disabled
+/// Get performance metrics
 pub async fn get_metrics(ws_manager: web::Data<WebSocketManager>) -> HttpResponse {
-    // Production metrics - temporarily disabled
+    // Collect metrics from WebSocket manager
+    let sessions = ws_manager.get_all_sessions();
+    
+    // Calculate basic metrics
+    let total_connections = sessions.len();
+    let active_connections = sessions.iter().filter(|s| s.is_active()).count();
+    let total_messages_sent: u64 = sessions.iter()
+        .map(|s| s.messages_sent())
+        .sum();
+    
+    // Get latency metrics (average heartbeat round-trip time)
+    let latency_samples: Vec<u64> = sessions.iter()
+        .flat_map(|s| {
+            s.get_sessions().iter()
+                .filter_map(|sess| {
+                    sess.last_heartbeat.map(|lh| {
+                        sess.last_heartbeat.as_ref().map(|rh| lh.saturating_sub(rh, lh).unwrap_or(0))
+                    })
+                })
+                .flatten()
+                .collect();
+    
+    let avg_latency = if latency_samples.is_empty() {
+        0
+    } else {
+        latency_samples.iter().sum::<u64>() / latency_samples.len() as u64
+    };
+
+    let current_time = chrono::Utc::now();
+
     HttpResponse::Ok().json(serde_json::json!({
-        "message": "Metrics temporarily disabled",
-        "timestamp": chrono::Utc::now().to_rfc3339()
+        "service": "reticulum-presence",
+        "timestamp": current_time.to_rfc3339(),
+        "metrics": {
+            "connections": {
+                "total": total_connections,
+                "active": active_connections,
+            },
+            "performance": {
+                "total_messages_sent": total_messages_sent,
+                "avg_latency_ms": avg_latency,
+            },
+            "uptime_seconds": sessions.iter()
+                .filter(|s| s.is_active())
+                .map(|s| {
+                    s.connected_at.as_ref()
+                        .map(|ca| {
+                            ca.saturating_sub(current_time, ca).unwrap_or(0).num_seconds().unwrap_or(0)
+                        })
+                        .sum::<u64>()
+                })
+        }
     }))
 }
 

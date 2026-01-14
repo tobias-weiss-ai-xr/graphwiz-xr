@@ -6,6 +6,9 @@
 
 import { EventEmitter } from 'events';
 
+// Import audio worklet processor
+import AudioWorkletProcessor, { registerProcessor } from './audio-worklet-processor';
+
 export interface VoiceChatConfig {
   sfuUrl: string;
   roomId: string;
@@ -41,9 +44,8 @@ export class VoiceChatClient extends EventEmitter {
   private remoteSources: Map<string, AudioNode> = new Map();
   private gainNodes: Map<string, GainNode> = new Map();
   private pannerNodes: Map<string, PannerNode> = new Map();
+  private audioWorkletNode: AudioWorkletNode | null = null;
   private analyser: AnalyserNode | null = null;
-  private muted = false;
-  // private audioWorklet: AudioWorkletNode | null = null; // TODO: Implement audio worklet
   private voiceActivityThreshold = 0.01; // Audio level threshold for VAD
   private isSpeaking = false;
   private stats: VoiceChatStats = {
@@ -52,13 +54,13 @@ export class VoiceChatClient extends EventEmitter {
     isSpeaking: false,
     audioLevel: 0,
     bitrate: 0,
-    packetLoss: 0,
+    packetLoss: 0
   };
 
   // ICE servers configuration
   private iceServers: RTCIceServer[] = [
     { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' }
   ];
 
   constructor(config: VoiceChatConfig) {
@@ -80,15 +82,15 @@ export class VoiceChatClient extends EventEmitter {
           noiseSuppression: true,
           autoGainControl: true,
           sampleRate: 48000,
-          channelCount: 1,
+          channelCount: 1
         },
-        video: false,
+        video: false
       });
 
       // Create audio context for spatial audio
       this.audioContext = new AudioContext({
         latencyHint: 'interactive',
-        sampleRate: 48000,
+        sampleRate: 48000
       });
 
       // Create analyser for voice activity detection
@@ -98,7 +100,7 @@ export class VoiceChatClient extends EventEmitter {
 
       // Create peer connection
       this.peerConnection = new RTCPeerConnection({
-        iceServers: this.iceServers,
+        iceServers: this.iceServers
       });
 
       // Add local audio track to peer connection
@@ -109,10 +111,62 @@ export class VoiceChatClient extends EventEmitter {
 
       // Create data channel for signaling
       this.dataChannel = this.peerConnection.createDataChannel('signaling', {
-        ordered: true,
+        ordered: true
       });
 
-      this.dataChannel.onopen = () => {
+      // Load and attach audio worklet processor
+      try {
+        this.audioWorkletNode = await this.audioContext.audioWorklet.addModule(
+          `data:text/javascript;base64,${AudioWorkletProcessor.toString()}`,
+          'audio-worklet-processor'
+        );
+
+        if (this.audioWorkletNode) {
+          console.log('[VoiceChat] Audio worklet loaded successfully');
+
+          // Connect worklet to destination
+          this.audioWorkletNode.port.start();
+
+          // Create source from stream
+          const source = this.audioContext.createMediaStreamSource(this.localStream);
+          source.connect(this.audioWorkletNode);
+
+          // Connect worklet to analyser (for VAD)
+          this.audioWorkletNode.connect(this.analyser, 0);
+
+          console.log('[VoiceChat] Audio worklet connected to audio pipeline');
+        }
+      } catch (error) {
+        console.error('[VoiceChat] Failed to load audio worklet:', error);
+        // Continue without worklet - degrade gracefully
+      }
+
+      // Load and attach audio worklet processor
+      try {
+        this.audioWorkletNode = await this.audioContext.audioWorklet.addModule(
+          `data:text/javascript;base64,${AudioWorkletProcessor.toString()}`,
+          'audio-worklet-processor'
+        );
+
+        if (this.audioWorkletNode) {
+          console.log('[VoiceChat] Audio worklet loaded successfully');
+
+          // Connect worklet to destination
+          this.audioWorkletNode.port.start();
+
+          // Create source from stream
+          const source = this.audioContext.createMediaStreamSource(this.localStream);
+          source.connect(this.audioWorkletNode);
+
+          // Connect worklet to analyser (for VAD)
+          this.audioWorkletNode.connect(this.analyser, 0);
+
+          console.log('[VoiceChat] Audio worklet connected to audio pipeline');
+        }
+      } catch (error) {
+        console.error('[VoiceChat] Failed to load audio worklet:', error);
+        // Continue without worklet - degrade gracefully
+      }
         console.log('[VoiceChat] Data channel opened');
         this.emit('dataChannelOpen');
       };
@@ -126,7 +180,7 @@ export class VoiceChatClient extends EventEmitter {
         if (event.candidate) {
           this.sendSignal({
             type: 'ice-candidate',
-            candidate: event.candidate,
+            candidate: event.candidate
           });
         }
       };
@@ -139,7 +193,7 @@ export class VoiceChatClient extends EventEmitter {
       // Create offer
       const offer = await this.peerConnection.createOffer({
         offerToReceiveAudio: true,
-        offerToReceiveVideo: false,
+        offerToReceiveVideo: false
       });
 
       await this.peerConnection.setLocalDescription(offer);
@@ -149,15 +203,15 @@ export class VoiceChatClient extends EventEmitter {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.authToken}`,
+          Authorization: `Bearer ${this.config.authToken}`
         },
         body: JSON.stringify({
           userId: this.config.userId,
           offer: {
             sdp: offer.sdp,
-            type: offer.type,
-          },
-        }),
+            type: offer.type
+          }
+        })
       });
 
       if (!response.ok) {
@@ -167,7 +221,7 @@ export class VoiceChatClient extends EventEmitter {
       const data = await response.json();
       const answer = new RTCSessionDescription({
         sdp: data.answer.sdp,
-        type: data.answer.type,
+        type: data.answer.type
       });
 
       await this.peerConnection.setRemoteDescription(answer);
@@ -415,8 +469,8 @@ export class VoiceChatClient extends EventEmitter {
       type: 'answer',
       answer: {
         sdp: answer.sdp,
-        type: answer.type,
-      },
+        type: answer.type
+      }
     });
   }
 

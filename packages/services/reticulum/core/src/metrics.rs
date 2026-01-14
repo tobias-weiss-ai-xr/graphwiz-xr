@@ -97,11 +97,11 @@ impl MetricsStorage {
             avg_active_rooms: if !active_rooms.is_empty() {
                 active_rooms.iter().sum::<i32>() as f64 / active_rooms.len() as f64
             } else { 0.0 },
-            max_active_rooms: active_rooms.iter().cloned().unwrap_or(0),
+            max_active_rooms: active_rooms.iter().cloned().unwrap_or_default(0),
             avg_active_users: if !active_users.is_empty() {
                 active_users.iter().sum::<i32>() as f64 / active_users.len() as f64
             } else { 0.0 },
-            max_active_users: active_users.iter().cloned().unwrap_or(0),
+            max_active_users: active_users.iter().cloned().unwrap_or_default(0),
             avg_latency_ms: if !latencies.is_empty() {
                 latencies.iter().sum::<f64>() / latencies.len() as f64
             } else { 0.0 },
@@ -150,18 +150,24 @@ lazy_static! {
 
 /// Get metrics for admin dashboard
 pub fn get_metrics() -> MetricsSummary {
-    let metrics = GLOBAL_METRICS.read().unwrap();
+    let metrics = GLOBAL_METRICS.read()
+        .map_err(|_| log::error!("Metrics RwLock is poisoned"))
+        .expect("Metrics RwLock should never be poisoned");
     metrics.get_summary()
 }
 
 /// Add metrics data point (called by services)
 pub fn add_metrics_point(point: MetricDataPoint) {
-    let mut metrics = GLOBAL_METRICS.write().unwrap();
+    let mut metrics = GLOBAL_METRICS.write()
+        .map_err(|_| log::error!("Metrics RwLock is poisoned"))
+        .expect("Metrics RwLock should never be poisoned");
     metrics.add_data_point(point);
 }
 
 /// Clear all metrics
 pub fn clear_metrics() {
-    let mut metrics = GLOBAL_METRICS.write().unwrap();
+    let mut metrics = GLOBAL_METRICS.write()
+        .map_err(|_| log::error!("Metrics RwLock is poisoned"))
+        .expect("Metrics RwLock should never be poisoned");
     metrics.clear();
 }

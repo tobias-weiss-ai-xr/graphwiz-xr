@@ -11,22 +11,27 @@ WORKDIR /app
 # Copy workspace files first (needed for workspace dependencies)
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
 
-# Copy package files for hub-client and shared dependencies
+# Copy package files for workspace packages
 COPY packages/clients/hub-client/package.json ./packages/clients/hub-client/
+COPY packages/clients/ui-kit/package.json ./packages/clients/ui-kit/
 COPY packages/shared/protocol/package.json ./packages/shared/protocol/
 COPY packages/shared/types/package.json ./packages/shared/types/
 
-# Install dependencies (this populates node_modules in the image)
-RUN pnpm install --frozen-lockfile
-
-# Copy source code
-COPY packages/clients/hub-client ./packages/clients/hub-client/
+# Copy source code for workspace packages BEFORE install
 COPY packages/shared/protocol ./packages/shared/protocol/
 COPY packages/shared/types ./packages/shared/types/
+COPY packages/clients/ui-kit ./packages/clients/ui-kit/
+COPY packages/clients/hub-client ./packages/clients/hub-client/
+
+# Install dependencies with hoisted linking for Docker compatibility
+RUN pnpm install --frozen-lockfile --shamefully-hoist
+
+# Build ui-kit dependency
+RUN cd /app/packages/clients/ui-kit && pnpm run build
 
 # Expose Vite dev server port
 EXPOSE 5173
 
 # Run development server with HMR enabled
-# Use npx to ensure vite is found correctly
-CMD ["npx", "vite", "--host", "--port", "5173"]
+# Use full path to vite from root node_modules
+CMD ["sh", "-c", "cd /app/packages/clients/hub-client && /app/node_modules/.bin/vite --host --port 5173"]

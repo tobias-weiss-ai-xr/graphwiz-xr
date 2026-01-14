@@ -19,8 +19,14 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route("/metrics", web::get().to(websocket::get_metrics))
         // WebRTC signaling
         .route("/signaling", web::post().to(handlers::signaling))
+        // Message queue management (NEW)
+        .route("/queue/batch-config", web::post().to(handlers::set_batch_config))
+        .route("/queue/depth-limit", web::post().to(handlers::set_queue_depth))
+        .route("/queue/stats/{session_id}", web::get().to(handlers::get_queue_stats))
+        .route("/queue/stats", web::get().to(handlers::get_all_queue_stats))
+        .route("/queue/rate-limit/{session_id}", web::post().to(handlers::set_rate_limit))
         // Moderation routes
         .route("/moderation/kick", web::post().to(moderation_handlers::kick_player))
         .route("/moderation/mute", web::post().to(moderation_handlers::mute_player))
         .route("/moderation/lock", web::post().to(moderation_handlers::lock_room));
-}
+    }

@@ -38,13 +38,13 @@ impl S3StorageBackend {
 
         let access_key_id = std::env::var("AWS_ACCESS_KEY_ID")
             .ok_or_else(|_| {
-                eprintln!("AWS_ACCESS_KEY_ID not set, using mock mode");
+                log::warn!("AWS_ACCESS_KEY_ID not set, using mock mode");
                 "test_key_id"
             })?;
 
         let secret_access_key = std::env::var("AWS_SECRET_ACCESS_KEY")
             .ok_or_else(|_| {
-                eprintln!("AWS_SECRET_ACCESS_KEY not set, using mock mode");
+                log::warn!("AWS_SECRET_ACCESS_KEY not set, using mock mode");
                 "test_secret_key"
             })?;
 

@@ -34,29 +34,56 @@ pub async fn save_room(
 
     // Get existing room
     match core_models::RoomModel::find_by_room_id(&db, &room_id).await {
-        Ok(Some(_room)) => {
-            // Serialize room state to JSON
-            let room_state_json = serde_json::to_string(&RoomState {
-                room_id: room_id.clone(),
-                name: body.name.clone(),
-                description: body.description.clone(),
-                entities: vec![], // TODO: Fetch from room state
-                environment: EnvironmentSettings {
-                    lighting_type: "default".to_string(),
-                    skybox_url: None,
-                    ambient_color: [0.5, 0.5, 0.5],
-                    background_color: [0.1, 0.1, 0.15],
-                    fog_enabled: false,
-                    fog_color: [0.5, 0.5, 0.5],
-                    fog_density: 0.0,
-                },
-                last_modified: chrono::Utc::now().naive_utc(),
+        Ok(Some(room)) => {
+            let name = body.name.clone().unwrap_or_else(|| room.name.clone());
+            let description = body.description.clone().or(room.description.clone());
+
+            // Get all entities for this room
+            let entities_json = match core_models::EntityModel::find_by_room_id(&db, &room_id).await {
+                Ok(entities) => {
+                    serde_json::to_value(&entities).unwrap_or_else(|_| serde_json::json!([]))
+                }
+                Err(e) => {
+                    log::warn!("Failed to fetch entities for room {}: {}", room_id, e);
+                    serde_json::json!([])
+                }
+            };
+
+            let environment_json = json!(EnvironmentSettings {
+                lighting_type: "default".to_string(),
+                skybox_url: None,
+                ambient_color: [0.5, 0.5, 0.5],
+                background_color: [0.1, 0.1, 0.15],
+                fog_enabled: false,
+                fog_color: [0.5, 0.5, 0.5],
+                fog_density: 0.0,
             });
 
-            // Update room description if provided
+            // Save room state to database
+            match core_models::RoomStateDbModel::save_room_state(
+                &db,
+                &room_id,
+                name.clone(),
+                description.clone(),
+                entities_json,
+                environment_json,
+            )
+            .await
+            {
+                Ok(_) => log::info!("Room state saved for {}", room_id),
+                Err(e) => {
+                    log::error!("Failed to save room state: {}", e);
+                    return HttpResponse::InternalServerError().json(json!({
+                        "error": "save_failed",
+                        "message": "Failed to save room state"
+                    }));
+                }
+            }
+
+            // Update room metadata if provided
             if body.name.is_some() || body.description.is_some() {
                 let now = chrono::Utc::now().naive_utc();
-                let mut active_model: core_models::rooms::ActiveModel = _room.into();
+                let mut active_model: core_models::rooms::ActiveModel = room.into();
 
                 if let Some(name) = body.name {
                     active_model.name = sea_orm::ActiveValue::Set(name);
@@ -73,8 +100,6 @@ pub async fn save_room(
                     Err(e) => log::error!("Failed to update room metadata: {}", e),
                 }
             }
-
-            // Store room state in a separate table (TODO: create room_states table)
 
             HttpResponse::Ok().json(json!({
                 "success": true,
@@ -105,28 +130,77 @@ pub async fn load_room(
 ) -> HttpResponse {
     let room_id = path.into_inner();
 
-    // TODO: Fetch room state from room_states table
-    // For now, return empty room state
-
-    HttpResponse::Ok().json(json!({
-        "success": true,
-        "room_state": RoomState {
-            room_id: room_id.clone(),
-            name: "Loaded Room".to_string(),
-            description: None,
-            entities: vec![],
-            environment: EnvironmentSettings {
-                lighting_type: "default".to_string(),
-                skybox_url: None,
-                ambient_color: [0.5, 0.5, 0.5],
-                background_color: [0.1, 0.1, 0.15],
-                fog_enabled: false,
-                fog_color: [0.5, 0.5, 0.5],
-                fog_density: 0.0,
-            },
-            last_modified: chrono::Utc::now().naive_utc(),
+    // Connect to database
+    let db = match db::connect(&config).await {
+        Ok(db) => db,
+        Err(e) => {
+            log::error!("Database connection failed: {}", e);
+            return HttpResponse::InternalServerError().json(json!({
+                "error": "database_error",
+                "message": "Failed to connect to database"
+            }));
         }
-    }))
+    };
+
+    // Fetch room state from room_states table
+    match core_models::RoomStateDbModel::find_by_room_id(&db, &room_id).await {
+        Ok(Some(room_state)) => {
+            let entities: Vec<super::room_persistence::EntityState> =
+                serde_json::from_value(room_state.entities).unwrap_or_default();
+
+            let environment: EnvironmentSettings =
+                serde_json::from_value(room_state.environment).unwrap_or(EnvironmentSettings {
+                    lighting_type: "default".to_string(),
+                    skybox_url: None,
+                    ambient_color: [0.5, 0.5, 0.5],
+                    background_color: [0.1, 0.1, 0.15],
+                    fog_enabled: false,
+                    fog_color: [0.5, 0.5, 0.5],
+                    fog_density: 0.0,
+                });
+
+            HttpResponse::Ok().json(json!({
+                "success": true,
+                "room_state": RoomState {
+                    room_id: room_state.room_id,
+                    name: room_state.name,
+                    description: room_state.description,
+                    entities,
+                    environment,
+                    last_modified: room_state.last_modified.naive_utc(),
+                }
+            }))
+        }
+        Ok(None) => {
+            log::warn!("Room state not found for {}, returning empty state", room_id);
+            HttpResponse::Ok().json(json!({
+                "success": true,
+                "room_state": RoomState {
+                    room_id: room_id.clone(),
+                    name: "New Room".to_string(),
+                    description: None,
+                    entities: vec![],
+                    environment: EnvironmentSettings {
+                        lighting_type: "default".to_string(),
+                        skybox_url: None,
+                        ambient_color: [0.5, 0.5, 0.5],
+                        background_color: [0.1, 0.1, 0.15],
+                        fog_enabled: false,
+                        fog_color: [0.5, 0.5, 0.5],
+                        fog_density: 0.0,
+                    },
+                    last_modified: chrono::Utc::now().naive_utc(),
+                }
+            }))
+        }
+        Err(e) => {
+            log::error!("Failed to load room state: {}", e);
+            HttpResponse::InternalServerError().json(json!({
+                "error": "internal_error",
+                "message": "Failed to load room state"
+            }))
+        }
+    }
 }
 
 /// Get room templates

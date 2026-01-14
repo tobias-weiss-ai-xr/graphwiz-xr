@@ -13,7 +13,7 @@ import { TransformSystem } from '../ecs/systems/transform-system';
 import { World } from '../ecs/world';
 import { assetLoader } from './assets';
 import type { EngineConfig } from './config';
-import { createLogger, LogLevel } from '@graphwiz/types';
+import { createLogger } from '@graphwiz/types';
 
 const logger = createLogger('Engine');
 
@@ -58,7 +58,7 @@ export class Engine {
     this.lastTime = performance.now();
     this.tick();
 
-    logger.log('[Engine] Started');
+    logger.info('[Engine] Started');
   }
 
   /**
@@ -69,13 +69,11 @@ export class Engine {
       return;
     }
 
-    this.isRunning = false;
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
     }
-
-    logger.log('[Engine] Stopped');
+    this.isRunning = false;
+    logger.info('[Engine] Stopped');
   }
 
   /**

@@ -80,8 +80,15 @@ pub async fn kick_player(
                         }
                     });
 
-                    // TODO: Broadcast to all room members
-                    // For now, just return success
+                    // Broadcast to all room members
+                    match session_manager.broadcast_to_room(&req.room_id, kick_notification).await {
+                        Ok(count) => {
+                            log::info!("Kick notification broadcasted to {} room members", count);
+                        }
+                        Err(e) => {
+                            log::error!("Failed to broadcast kick notification: {}", e);
+                        }
+                    }
 
                     HttpResponse::Ok().json(json!({
                         "success": true,
@@ -139,8 +146,15 @@ pub async fn mute_player(
                 }
             });
 
-            // TODO: Broadcast to all room members
-            // For now, just return success
+            // Broadcast to all room members
+            match session_manager.broadcast_to_room(&req.room_id, mute_notification).await {
+                Ok(count) => {
+                    log::info!("Mute notification broadcasted to {} room members", count);
+                }
+                Err(e) => {
+                    log::error!("Failed to broadcast mute notification: {}", e);
+                }
+            }
 
             HttpResponse::Ok().json(json!({
                 "success": true,
@@ -187,8 +201,15 @@ pub async fn lock_room(
                 }
             });
 
-            // TODO: Broadcast to all room members
-            // For now, just return success
+            // Broadcast to all room members
+            match session_manager.broadcast_to_room(&req.room_id, lock_notification).await {
+                Ok(count) => {
+                    log::info!("Lock notification broadcasted to {} room members", count);
+                }
+                Err(e) => {
+                    log::error!("Failed to broadcast lock notification: {}", e);
+                }
+            }
 
             HttpResponse::Ok().json(json!({
                 "success": true,
