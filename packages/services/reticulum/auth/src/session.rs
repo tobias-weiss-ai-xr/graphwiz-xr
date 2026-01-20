@@ -78,8 +78,8 @@ pub struct SessionManager {
 impl SessionManager {
     /// Create a new session manager from Redis URL
     pub async fn from_url(redis_url: &str) -> Result<Self, SessionError> {
-        let client = redis::Client::open(redis_url)
-            .map_err(|e| SessionError::RedisError(e.to_string()))?;
+        let client =
+            redis::Client::open(redis_url).map_err(|e| SessionError::RedisError(e.to_string()))?;
 
         let conn = client
             .get_connection_manager()
@@ -101,7 +101,8 @@ impl SessionManager {
         pipe.set(&key, &serialized);
         pipe.expire(&key, SESSION_TTL_SECS);
 
-        let _: () = pipe.query_async(&mut self.client)
+        let _: () = pipe
+            .query_async(&mut self.client)
             .await
             .map_err(|e| SessionError::RedisError(e.to_string()))?;
 
@@ -112,7 +113,8 @@ impl SessionManager {
     pub async fn get_session(&mut self, session_id: &str) -> Result<Session, SessionError> {
         let key = format!("{}{}", SESSION_PREFIX, session_id);
 
-        let serialized: Option<String> = self.client
+        let serialized: Option<String> = self
+            .client
             .get(&key)
             .await
             .map_err(|e| SessionError::RedisError(e.to_string()))?;
@@ -126,14 +128,17 @@ impl SessionManager {
                 let now = chrono::Utc::now().timestamp();
                 if now > session.expires_at {
                     // Clean up expired session
-                    let _: () = self.client.del(&key).await
+                    let _: () = self
+                        .client
+                        .del(&key)
+                        .await
                         .map_err(|e| SessionError::RedisError(e.to_string()))?;
                     return Err(SessionError::Expired);
                 }
 
                 Ok(session)
             }
-            None => Err(SessionError::NotFound)
+            None => Err(SessionError::NotFound),
         }
     }
 
@@ -142,7 +147,8 @@ impl SessionManager {
         let session = self.get_session(session_id).await?;
 
         let key = format!("{}{}", SESSION_PREFIX, session_id);
-        let _: () = self.client
+        let _: () = self
+            .client
             .expire(&key, SESSION_TTL_SECS)
             .await
             .map_err(|e| SessionError::RedisError(e.to_string()))?;
@@ -153,7 +159,8 @@ impl SessionManager {
     /// Revoke/delete a session
     pub async fn revoke_session(&mut self, session_id: &str) -> Result<(), SessionError> {
         let key = format!("{}{}", SESSION_PREFIX, session_id);
-        let _: () = self.client
+        let _: () = self
+            .client
             .del(&key)
             .await
             .map_err(|e| SessionError::RedisError(e.to_string()))?;
@@ -165,7 +172,8 @@ impl SessionManager {
     pub async fn revoke_user_sessions(&mut self, user_id: i32) -> Result<usize, SessionError> {
         // Find all session keys for this user
         let pattern = format!("{}*", SESSION_PREFIX);
-        let keys: Vec<String> = self.client
+        let keys: Vec<String> = self
+            .client
             .keys(&pattern)
             .await
             .map_err(|e| SessionError::RedisError(e.to_string()))?;
@@ -173,7 +181,8 @@ impl SessionManager {
         let mut revoked = 0;
         for key in keys {
             // Get session to check user_id
-            let serialized: Option<String> = self.client
+            let serialized: Option<String> = self
+                .client
                 .get(&key)
                 .await
                 .map_err(|e| SessionError::RedisError(e.to_string()))?;
@@ -181,7 +190,8 @@ impl SessionManager {
             if let Some(data) = serialized {
                 if let Ok(session) = serde_json::from_str::<Session>(&data) {
                     if session.user_id == user_id {
-                        let _: () = self.client
+                        let _: () = self
+                            .client
                             .del(&key)
                             .await
                             .map_err(|e| SessionError::RedisError(e.to_string()))?;
@@ -197,7 +207,8 @@ impl SessionManager {
     /// Clean up expired sessions
     pub async fn cleanup_expired(&mut self) -> Result<usize, SessionError> {
         let pattern = format!("{}*", SESSION_PREFIX);
-        let keys: Vec<String> = self.client
+        let keys: Vec<String> = self
+            .client
             .keys(&pattern)
             .await
             .map_err(|e| SessionError::RedisError(e.to_string()))?;
@@ -206,7 +217,8 @@ impl SessionManager {
         let mut cleaned = 0;
 
         for key in keys {
-            let serialized: Option<String> = self.client
+            let serialized: Option<String> = self
+                .client
                 .get(&key)
                 .await
                 .map_err(|e| SessionError::RedisError(e.to_string()))?;
@@ -214,7 +226,8 @@ impl SessionManager {
             if let Some(data) = serialized {
                 if let Ok(session) = serde_json::from_str::<Session>(&data) {
                     if now > session.expires_at {
-                        let _: () = self.client
+                        let _: () = self
+                            .client
                             .del(&key)
                             .await
                             .map_err(|e| SessionError::RedisError(e.to_string()))?;

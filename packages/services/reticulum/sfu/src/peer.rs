@@ -1,6 +1,10 @@
 //! WebRTC Peer Connection Management
 
-use super::{config::SfuConfig, error::{SfuError, SfuResult}, rtp::RtpPacket};
+use super::{
+    config::SfuConfig,
+    error::{SfuError, SfuResult},
+    rtp::RtpPacket,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -67,7 +71,8 @@ impl SfuPeer {
     /// Remove a track from this peer
     pub async fn remove_track(&self, track_id: &str) -> SfuResult<()> {
         let mut tracks = self.tracks.write().await;
-        tracks.remove(track_id)
+        tracks
+            .remove(track_id)
             .ok_or_else(|| SfuError::TrackError(format!("Track not found: {}", track_id)))?;
         Ok(())
     }
@@ -192,7 +197,11 @@ impl PeerConnection {
 
     /// Handle incoming RTP packet
     pub async fn handle_rtp(&self, packet: RtpPacket) -> SfuResult<()> {
-        log::trace!("Received RTP packet from peer {}, SSRC: {}", self.peer_id, packet.header.ssrc);
+        log::trace!(
+            "Received RTP packet from peer {}, SSRC: {}",
+            self.peer_id,
+            packet.header.ssrc
+        );
         Ok(())
     }
 
@@ -205,9 +214,10 @@ impl PeerConnection {
 
     /// Generate SFU answer SDP (simplified - production would use webrtc crate)
     async fn generate_sfu_answer_sdp(&self) -> SfuResult<String> {
-        let _remote_sdp = self.remote_description.as_ref().ok_or_else(|| {
-            SfuError::InvalidSdp("Remote description not set".to_string())
-        })?;
+        let _remote_sdp = self
+            .remote_description
+            .as_ref()
+            .ok_or_else(|| SfuError::InvalidSdp("Remote description not set".to_string()))?;
 
         // In production, this would parse the offer and create a proper answer
         // For now, return a minimal SDP answer

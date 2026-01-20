@@ -2,9 +2,9 @@
 
 use actix_web::web;
 
-use crate::handlers;
 use crate::admin_handlers;
 use crate::cached_handlers;
+use crate::handlers;
 use crate::metrics_handlers;
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {

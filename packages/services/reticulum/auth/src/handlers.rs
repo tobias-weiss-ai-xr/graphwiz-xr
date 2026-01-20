@@ -10,13 +10,10 @@ use reticulum_core::{db, models as core_models};
 use crate::jwt::{generate_access_token, generate_refresh_token, hash_password, verify_password};
 use crate::magic_link::{MagicLinkManager, MagicLinkRequest, MagicLinkResponse};
 use crate::models::{AuthResponse, LoginRequest, RegisterRequest, UserInfo};
-use crate::oauth::{self, OAuthManager, OAuthProvider, OAuthError};
+use crate::oauth::{self, OAuthError, OAuthManager, OAuthProvider};
 
 /// Register a new user
-pub async fn register(
-    config: web::Data<Config>,
-    req: web::Json<RegisterRequest>,
-) -> HttpResponse {
+pub async fn register(config: web::Data<Config>, req: web::Json<RegisterRequest>) -> HttpResponse {
     // Validate request
     if let Err(errors) = req.validate() {
         return HttpResponse::BadRequest().json(json!({
@@ -151,10 +148,7 @@ pub async fn register(
 }
 
 /// Login with email and password
-pub async fn login(
-    config: web::Data<Config>,
-    req: web::Json<LoginRequest>,
-) -> HttpResponse {
+pub async fn login(config: web::Data<Config>, req: web::Json<LoginRequest>) -> HttpResponse {
     // Validate request
     if let Err(errors) = req.validate() {
         return HttpResponse::BadRequest().json(json!({
@@ -176,22 +170,23 @@ pub async fn login(
     };
 
     // Find user by email - need Model for password hash
-    let user_record = match core_models::users::UserModel::find_by_email_with_hash(&db, &req.email).await {
-        Ok(Some(record)) => record,
-        Ok(None) => {
-            return HttpResponse::Unauthorized().json(json!({
-                "error": "auth_error",
-                "message": "Invalid email or password"
-            }));
-        }
-        Err(e) => {
-            log::error!("Failed to find user: {}", e);
-            return HttpResponse::InternalServerError().json(json!({
-                "error": "internal_error",
-                "message": "Failed to process login"
-            }));
-        }
-    };
+    let user_record =
+        match core_models::users::UserModel::find_by_email_with_hash(&db, &req.email).await {
+            Ok(Some(record)) => record,
+            Ok(None) => {
+                return HttpResponse::Unauthorized().json(json!({
+                    "error": "auth_error",
+                    "message": "Invalid email or password"
+                }));
+            }
+            Err(e) => {
+                log::error!("Failed to find user: {}", e);
+                return HttpResponse::InternalServerError().json(json!({
+                    "error": "internal_error",
+                    "message": "Failed to process login"
+                }));
+            }
+        };
 
     // Verify password
     if verify_password(&req.password, &user_record.password_hash).is_err() {
@@ -550,9 +545,7 @@ pub async fn send_magic_link(
 
     // Send magic link
     match manager.send_magic_link(req.into_inner()).await {
-        Ok(response) => {
-            HttpResponse::Ok().json(response)
-        }
+        Ok(response) => HttpResponse::Ok().json(response),
         Err(e) => {
             log::error!("Failed to send magic link: {:?}", e);
             HttpResponse::InternalServerError().json(json!({
@@ -711,33 +704,31 @@ pub async fn validate_session(
 
     // Create session manager and validate session
     match crate::session::SessionManager::from_url(&redis_url).await {
-        Ok(mut manager) => {
-            match manager.get_session(session_id).await {
-                Ok(session) => {
-                    let user_info = UserInfo::from(session);
-                    HttpResponse::Ok().json(user_info)
-                }
-                Err(crate::session::SessionError::NotFound) => {
-                    HttpResponse::Unauthorized().json(json!({
-                        "error": "invalid_session",
-                        "message": "Session not found"
-                    }))
-                }
-                Err(crate::session::SessionError::Expired) => {
-                    HttpResponse::Unauthorized().json(json!({
-                        "error": "session_expired",
-                        "message": "Session has expired"
-                    }))
-                }
-                Err(e) => {
-                    log::error!("Session validation error: {:?}", e);
-                    HttpResponse::InternalServerError().json(json!({
-                        "error": "internal_error",
-                        "message": "Failed to validate session"
-                    }))
-                }
+        Ok(mut manager) => match manager.get_session(session_id).await {
+            Ok(session) => {
+                let user_info = UserInfo::from(session);
+                HttpResponse::Ok().json(user_info)
             }
-        }
+            Err(crate::session::SessionError::NotFound) => {
+                HttpResponse::Unauthorized().json(json!({
+                    "error": "invalid_session",
+                    "message": "Session not found"
+                }))
+            }
+            Err(crate::session::SessionError::Expired) => {
+                HttpResponse::Unauthorized().json(json!({
+                    "error": "session_expired",
+                    "message": "Session has expired"
+                }))
+            }
+            Err(e) => {
+                log::error!("Session validation error: {:?}", e);
+                HttpResponse::InternalServerError().json(json!({
+                    "error": "internal_error",
+                    "message": "Failed to validate session"
+                }))
+            }
+        },
         Err(e) => {
             log::error!("Failed to connect to Redis: {:?}", e);
             HttpResponse::InternalServerError().json(json!({
@@ -777,30 +768,26 @@ pub async fn refresh_session(
 
     // Create session manager and refresh session
     match crate::session::SessionManager::from_url(&redis_url).await {
-        Ok(mut manager) => {
-            match manager.refresh_session(session_id).await {
-                Ok(session) => {
-                    HttpResponse::Ok().json(json!({
-                        "session_id": session.id,
-                        "expires_at": session.expires_at,
-                        "message": "Session refreshed"
-                    }))
-                }
-                Err(crate::session::SessionError::NotFound) => {
-                    HttpResponse::Unauthorized().json(json!({
-                        "error": "invalid_session",
-                        "message": "Session not found"
-                    }))
-                }
-                Err(e) => {
-                    log::error!("Session refresh error: {:?}", e);
-                    HttpResponse::InternalServerError().json(json!({
-                        "error": "internal_error",
-                        "message": "Failed to refresh session"
-                    }))
-                }
+        Ok(mut manager) => match manager.refresh_session(session_id).await {
+            Ok(session) => HttpResponse::Ok().json(json!({
+                "session_id": session.id,
+                "expires_at": session.expires_at,
+                "message": "Session refreshed"
+            })),
+            Err(crate::session::SessionError::NotFound) => {
+                HttpResponse::Unauthorized().json(json!({
+                    "error": "invalid_session",
+                    "message": "Session not found"
+                }))
             }
-        }
+            Err(e) => {
+                log::error!("Session refresh error: {:?}", e);
+                HttpResponse::InternalServerError().json(json!({
+                    "error": "internal_error",
+                    "message": "Failed to refresh session"
+                }))
+            }
+        },
         Err(e) => {
             log::error!("Failed to connect to Redis: {:?}", e);
             HttpResponse::InternalServerError().json(json!({
@@ -812,10 +799,7 @@ pub async fn refresh_session(
 }
 
 /// Logout (revoke a session)
-pub async fn logout(
-    config: web::Data<Config>,
-    req: web::Json<serde_json::Value>,
-) -> HttpResponse {
+pub async fn logout(config: web::Data<Config>, req: web::Json<serde_json::Value>) -> HttpResponse {
     // Extract session_id from request
     let session_id = match req.get("session_id").and_then(|s| s.as_str()) {
         Some(s) => s,
@@ -840,22 +824,18 @@ pub async fn logout(
 
     // Create session manager and revoke session
     match crate::session::SessionManager::from_url(&redis_url).await {
-        Ok(mut manager) => {
-            match manager.revoke_session(session_id).await {
-                Ok(_) => {
-                    HttpResponse::Ok().json(json!({
-                        "message": "Logged out successfully"
-                    }))
-                }
-                Err(e) => {
-                    log::error!("Session revocation error: {:?}", e);
-                    HttpResponse::InternalServerError().json(json!({
-                        "error": "internal_error",
-                        "message": "Failed to logout"
-                    }))
-                }
+        Ok(mut manager) => match manager.revoke_session(session_id).await {
+            Ok(_) => HttpResponse::Ok().json(json!({
+                "message": "Logged out successfully"
+            })),
+            Err(e) => {
+                log::error!("Session revocation error: {:?}", e);
+                HttpResponse::InternalServerError().json(json!({
+                    "error": "internal_error",
+                    "message": "Failed to logout"
+                }))
             }
-        }
+        },
         Err(e) => {
             log::error!("Failed to connect to Redis: {:?}", e);
             HttpResponse::InternalServerError().json(json!({
@@ -905,23 +885,19 @@ pub async fn logout_all(
 
     // Create session manager and revoke all sessions
     match crate::session::SessionManager::from_url(&redis_url).await {
-        Ok(mut manager) => {
-            match manager.revoke_user_sessions(user_id).await {
-                Ok(count) => {
-                    HttpResponse::Ok().json(json!({
-                        "message": "Logged out from all devices",
-                        "sessions_revoked": count
-                    }))
-                }
-                Err(e) => {
-                    log::error!("Session revocation error: {:?}", e);
-                    HttpResponse::InternalServerError().json(json!({
-                        "error": "internal_error",
-                        "message": "Failed to logout from all devices"
-                    }))
-                }
+        Ok(mut manager) => match manager.revoke_user_sessions(user_id).await {
+            Ok(count) => HttpResponse::Ok().json(json!({
+                "message": "Logged out from all devices",
+                "sessions_revoked": count
+            })),
+            Err(e) => {
+                log::error!("Session revocation error: {:?}", e);
+                HttpResponse::InternalServerError().json(json!({
+                    "error": "internal_error",
+                    "message": "Failed to logout from all devices"
+                }))
             }
-        }
+        },
         Err(e) => {
             log::error!("Failed to connect to Redis: {:?}", e);
             HttpResponse::InternalServerError().json(json!({

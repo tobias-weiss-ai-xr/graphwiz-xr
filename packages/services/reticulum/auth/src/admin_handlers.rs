@@ -1,15 +1,13 @@
 //! Admin log handlers
 
-use actix_web::{web, HttpResponse, HttpRequest};
-use serde_json::json;
+use actix_web::{web, HttpRequest, HttpResponse};
 use chrono::Utc;
+use serde_json::json;
 
-use reticulum_core::{Config, LogStore, LogsQuery, LogsResponse, LogLevel, add_log};
+use reticulum_core::{add_log, Config, LogLevel, LogStore, LogsQuery, LogsResponse};
 
 /// Restart a specific service
-pub async fn restart_service(
-    path: web::Path<String>,
-) -> HttpResponse {
+pub async fn restart_service(path: web::Path<String>) -> HttpResponse {
     let service_name = path.into_inner();
 
     log::info!("Received restart request for service: {}", service_name);
@@ -47,7 +45,11 @@ pub async fn restart_service(
     match result {
         Ok(output) => {
             if output.status.success() {
-                log::info!("Successfully restarted service: {} (container: {})", service_name, service_container_name);
+                log::info!(
+                    "Successfully restarted service: {} (container: {})",
+                    service_name,
+                    service_container_name
+                );
                 HttpResponse::Ok().json(json!({
                     "success": true,
                     "message": format!("Service '{}' is restarting. This may take 10-30 seconds.", service_name)
@@ -64,7 +66,10 @@ pub async fn restart_service(
 
                 match fallback_result {
                     Ok(fb_output) => {
-                        if fb_output.status.success() || String::from_utf8_lossy(&fb_output.stderr).contains("no process found") {
+                        if fb_output.status.success()
+                            || String::from_utf8_lossy(&fb_output.stderr)
+                                .contains("no process found")
+                        {
                             log::info!("Used fallback method to restart service: {}", service_name);
                             HttpResponse::Ok().json(json!({
                                 "success": true,
@@ -88,7 +93,11 @@ pub async fn restart_service(
             }
         }
         Err(e) => {
-            log::error!("Failed to execute docker restart for {}: {}", service_name, e);
+            log::error!(
+                "Failed to execute docker restart for {}: {}",
+                service_name,
+                e
+            );
             HttpResponse::InternalServerError().json(json!({
                 "success": false,
                 "message": format!("Failed to execute restart command for service '{}': {}", service_name, e)
@@ -123,7 +132,11 @@ pub async fn restart_all_services() -> HttpResponse {
                 }
             }
             Err(e) => {
-                log::error!("Failed to execute docker restart for {}: {}", service_name, e);
+                log::error!(
+                    "Failed to execute docker restart for {}: {}",
+                    service_name,
+                    e
+                );
                 failed_services.push(service_name.to_string());
             }
         }
@@ -137,7 +150,11 @@ pub async fn restart_all_services() -> HttpResponse {
             "restarted_services": services
         }))
     } else {
-        log::warn!("Partial restart: {}/{} services succeeded", success_count, services.len());
+        log::warn!(
+            "Partial restart: {}/{} services succeeded",
+            success_count,
+            services.len()
+        );
         HttpResponse::PartialContent().json(json!({
             "success": true,
             "message": format!("Restarted {}/{} services. Failed services: {:?}", success_count, services.len(), failed_services),
@@ -154,10 +171,7 @@ pub async fn fetch_logs(
     req: HttpRequest,
 ) -> HttpResponse {
     // Get service name from URL
-    let service_name = req
-        .match_info()
-        .get("service_name")
-        .unwrap_or("auth");
+    let service_name = req.match_info().get("service_name").unwrap_or("auth");
 
     let log_store = reticulum_core::get_log_store(service_name);
 
@@ -176,9 +190,7 @@ pub async fn fetch_logs(
 }
 
 /// Fetch logs from all services
-pub async fn fetch_all_logs(
-    query: web::Query<LogsQuery>,
-) -> HttpResponse {
+pub async fn fetch_all_logs(query: web::Query<LogsQuery>) -> HttpResponse {
     let services = ["auth", "hub", "presence", "sfu", "storage"];
 
     let mut all_entries = Vec::new();
@@ -237,9 +249,7 @@ pub async fn fetch_all_logs(
 }
 
 /// Export logs as JSON
-pub async fn export_logs(
-    query: web::Query<LogsQuery>,
-) -> HttpResponse {
+pub async fn export_logs(query: web::Query<LogsQuery>) -> HttpResponse {
     let services = if let Some(ref service) = query.service {
         vec![service.as_str()]
     } else {
@@ -284,13 +294,8 @@ pub async fn export_logs(
 }
 
 /// Clear logs for a service
-pub async fn clear_logs(
-    req: HttpRequest,
-) -> HttpResponse {
-    let service_name = req
-        .match_info()
-        .get("service_name")
-        .unwrap_or("auth");
+pub async fn clear_logs(req: HttpRequest) -> HttpResponse {
+    let service_name = req.match_info().get("service_name").unwrap_or("auth");
 
     let log_store = reticulum_core::get_log_store(service_name);
     log_store.clear().await;
@@ -400,12 +405,10 @@ pub async fn toggle_user_status(
                 }
             }
         }
-        Ok(None) => {
-            HttpResponse::NotFound().json(json!({
-                "error": "not_found",
-                "message": format!("User {} not found", user_id)
-            }))
-        }
+        Ok(None) => HttpResponse::NotFound().json(json!({
+            "error": "not_found",
+            "message": format!("User {} not found", user_id)
+        })),
         Err(e) => {
             log::error!("Failed to find user: {}", e);
             HttpResponse::InternalServerError().json(json!({
@@ -450,7 +453,12 @@ pub async fn update_user_role(
     // Grant role to user
     match reticulum_core::RoleModel::grant_role(&db, user_id, user_role, body.granted_by).await {
         Ok(role_assignment) => {
-            log::info!("Role {} granted to user {} by {}", body.role, user_id, body.granted_by);
+            log::info!(
+                "Role {} granted to user {} by {}",
+                body.role,
+                user_id,
+                body.granted_by
+            );
             HttpResponse::Ok().json(json!({
                 "message": format!("Role '{}' assigned to user {}", body.role, user_id),
                 "role_assignment": role_assignment
@@ -467,10 +475,7 @@ pub async fn update_user_role(
 }
 
 /// Revoke user role
-pub async fn revoke_user_role(
-    config: web::Data<Config>,
-    path: web::Path<i32>,
-) -> HttpResponse {
+pub async fn revoke_user_role(config: web::Data<Config>, path: web::Path<i32>) -> HttpResponse {
     let user_id = path.into_inner();
 
     // Connect to database

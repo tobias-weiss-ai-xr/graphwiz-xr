@@ -1,7 +1,7 @@
 //! HTTP Routes Configuration for SFU Service
 
-use actix_web::{web, Scope};
 use super::handlers;
+use actix_web::{web, Scope};
 
 /// Configure SFU service routes
 pub fn configure_routes(app: &mut web::ServiceConfig) {
@@ -9,14 +9,13 @@ pub fn configure_routes(app: &mut web::ServiceConfig) {
         web::scope("/api/v1")
             .service(health_routes())
             .service(room_routes())
-            .service(peer_routes())
+            .service(peer_routes()),
     );
 }
 
 /// Health check routes
 fn health_routes() -> Scope {
-    web::scope("/health")
-        .route("", web::get().to(handlers::health_check))
+    web::scope("/health").route("", web::get().to(handlers::health_check))
 }
 
 /// Room management routes
@@ -35,5 +34,8 @@ fn peer_routes() -> Scope {
         .route("/offer", web::post().to(handlers::handle_offer))
         .route("/ice", web::post().to(handlers::handle_ice_candidate))
         .route("/track", web::post().to(handlers::add_track))
-        .route("/{room_id}/{peer_id}", web::delete().to(handlers::leave_room))
+        .route(
+            "/{room_id}/{peer_id}",
+            web::delete().to(handlers::leave_room),
+        )
 }

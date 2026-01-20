@@ -132,8 +132,14 @@ impl RtpForwarder {
 
     /// Register a peer's SSRC
     pub async fn register_ssrc(&self, peer_id: &str, ssrc: u32) {
-        self.ssrc_to_peer.write().await.insert(ssrc, peer_id.to_string());
-        self.peer_to_ssrc.write().await.insert(peer_id.to_string(), ssrc);
+        self.ssrc_to_peer
+            .write()
+            .await
+            .insert(ssrc, peer_id.to_string());
+        self.peer_to_ssrc
+            .write()
+            .await
+            .insert(peer_id.to_string(), ssrc);
         log::debug!("Registered SSRC {} for peer {}", ssrc, peer_id);
     }
 
@@ -404,7 +410,13 @@ mod tests {
         forwarder.register_ssrc("peer1", 123456).await;
         forwarder.register_ssrc("peer2", 234567).await;
 
-        assert_eq!(forwarder.get_peer_id(123456).await, Some("peer1".to_string()));
-        assert_eq!(forwarder.get_peer_id(234567).await, Some("peer2".to_string()));
+        assert_eq!(
+            forwarder.get_peer_id(123456).await,
+            Some("peer1".to_string())
+        );
+        assert_eq!(
+            forwarder.get_peer_id(234567).await,
+            Some("peer2".to_string())
+        );
     }
 }

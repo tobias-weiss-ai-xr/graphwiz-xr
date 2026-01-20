@@ -95,7 +95,11 @@ impl AvatarRepository {
     }
 
     /// List all avatars (for admin/debugging)
-    pub async fn list_avatars(&self, limit: i64, offset: i64) -> Result<Vec<AvatarRecord>, sqlx::Error> {
+    pub async fn list_avatars(
+        &self,
+        limit: i64,
+        offset: i64,
+    ) -> Result<Vec<AvatarRecord>, sqlx::Error> {
         sqlx::query_as!(
             AvatarRecord,
             r#"

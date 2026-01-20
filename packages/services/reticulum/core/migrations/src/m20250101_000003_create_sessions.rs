@@ -12,7 +12,12 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Sessions::Table)
                     .if_not_exists()
-                    .col(&mut ColumnDef::new(Sessions::Id).integer().auto_increment().primary_key())
+                    .col(
+                        &mut ColumnDef::new(Sessions::Id)
+                            .integer()
+                            .auto_increment()
+                            .primary_key(),
+                    )
                     .col(&mut ColumnDef::new(Sessions::SessionId).string())
                     .col(&mut ColumnDef::new(Sessions::UserId).string())
                     .col(&mut ColumnDef::new(Sessions::RoomId).string().null())

@@ -1,9 +1,13 @@
 //! Historical metrics API endpoints
 
-use actix_web::{web, HttpResponse, HttpRequest};
+use actix_web::{web, HttpRequest, HttpResponse};
 use serde_json::json;
 
-use reticulum_core::{Config, db, metrics::{get_metrics, add_metrics_point, MetricsSummary}};
+use reticulum_core::{
+    db,
+    metrics::{add_metrics_point, get_metrics, MetricsSummary},
+    Config,
+};
 
 /// Get historical metrics summary
 pub async fn get_historical_metrics(

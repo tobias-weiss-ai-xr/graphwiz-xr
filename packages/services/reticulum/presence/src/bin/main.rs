@@ -3,8 +3,8 @@
 //!
 //! WebSocket presence server for real-time messaging
 
-use reticulum_presence::PresenceService;
 use reticulum_core::Config;
+use reticulum_presence::PresenceService;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

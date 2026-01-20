@@ -12,7 +12,12 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Assets::Table)
                     .if_not_exists()
-                    .col(&mut ColumnDef::new(Assets::Id).integer().auto_increment().primary_key())
+                    .col(
+                        &mut ColumnDef::new(Assets::Id)
+                            .integer()
+                            .auto_increment()
+                            .primary_key(),
+                    )
                     .col(&mut ColumnDef::new(Assets::AssetId).string().not_null())
                     .col(&mut ColumnDef::new(Assets::OwnerId).string().not_null())
                     .col(&mut ColumnDef::new(Assets::AssetType).string().not_null())
@@ -29,7 +34,7 @@ impl MigrationTrait for Migration {
                             .name("fk_assets_owner")
                             .from(Assets::Table, Assets::OwnerId)
                             .to(Users::Table, Users::Id)
-                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
             )

@@ -3,13 +3,13 @@
 //! Handles WebRTC media forwarding for video/audio streaming.
 //! Implements Selective Forwarding Unit architecture for optimal performance.
 
-pub mod peer;
-pub mod room;
-pub mod rtp;
-pub mod handlers;
-pub mod routes;
 pub mod config;
 pub mod error;
+pub mod handlers;
+pub mod peer;
+pub mod room;
+pub mod routes;
+pub mod rtp;
 // pub mod optimization;  // Disabled: Agent Looper dependency removed
 
 use actix_web::{web, App, HttpServer};
@@ -19,8 +19,8 @@ use tokio::sync::RwLock;
 
 use room::RoomManager;
 
-pub use error::SfuError;
 pub use config::SfuConfig;
+pub use error::SfuError;
 
 /// Main SFU Service
 pub struct SfuService {

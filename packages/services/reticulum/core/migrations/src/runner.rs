@@ -2,8 +2,8 @@
 //!
 //! Provides functions to run database migrations programmatically
 
+use sea_orm::{ConnectionTrait, Database, DbConn};
 use sea_orm_migration::prelude::*;
-use sea_orm::{Database, DbConn, ConnectionTrait};
 use std::env;
 
 /// Run all pending migrations
@@ -156,8 +156,9 @@ mod tests {
     #[tokio::test]
     #[ignore] // Requires database connection
     async fn test_migration_runner() {
-        let db_url = env::var("TEST_DATABASE_URL")
-            .unwrap_or_else(|_| "postgresql://postgres:postgres@localhost/test_reticulum".to_string());
+        let db_url = env::var("TEST_DATABASE_URL").unwrap_or_else(|_| {
+            "postgresql://postgres:postgres@localhost/test_reticulum".to_string()
+        });
 
         // This test requires a running database
         // run_migrations(&db_url).await.unwrap();

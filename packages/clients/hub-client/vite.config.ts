@@ -11,6 +11,8 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    host: true,
+    allowedHosts: ['xr.graphwiz.ai', 'localhost', '.localhost'],
     proxy: {
       '/api': {
         target: 'http://localhost:4000',

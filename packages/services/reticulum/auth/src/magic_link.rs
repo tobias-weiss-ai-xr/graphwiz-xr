@@ -9,7 +9,7 @@ use lettre::{Message, SmtpTransport, Transport};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use reticulum_core::{DatabaseConnection, models as core_models};
+use reticulum_core::{models as core_models, DatabaseConnection};
 
 /// Magic link token configuration
 const MAGIC_LINK_EXPIRATION_MINUTES: i64 = 15;
@@ -56,8 +56,7 @@ pub struct EmailConfig {
 impl EmailConfig {
     /// Load from environment variables
     pub fn from_env() -> Result<Self, String> {
-        let smtp_host = std::env::var("SMTP_HOST")
-            .unwrap_or_else(|_| "smtp.gmail.com".to_string());
+        let smtp_host = std::env::var("SMTP_HOST").unwrap_or_else(|_| "smtp.gmail.com".to_string());
 
         let smtp_port = std::env::var("SMTP_PORT")
             .unwrap_or_else(|_| "587".to_string())
@@ -70,11 +69,11 @@ impl EmailConfig {
         let smtp_password = std::env::var("SMTP_PASSWORD")
             .map_err(|_| "SMTP_PASSWORD environment variable not set".to_string())?;
 
-        let from_email = std::env::var("SMTP_FROM")
-            .unwrap_or_else(|_| "noreply@graphwiz.dev".to_string());
+        let from_email =
+            std::env::var("SMTP_FROM").unwrap_or_else(|_| "noreply@graphwiz.dev".to_string());
 
-        let from_name = std::env::var("SMTP_FROM_NAME")
-            .unwrap_or_else(|_| "GraphWiz-XR".to_string());
+        let from_name =
+            std::env::var("SMTP_FROM_NAME").unwrap_or_else(|_| "GraphWiz-XR".to_string());
 
         Ok(Self {
             smtp_host,
@@ -117,8 +116,8 @@ impl MagicLinkManager {
 
     /// Create a magic link URL
     pub fn create_magic_link(&self, token: &str, redirect_url: Option<&str>) -> String {
-        let base_url = std::env::var("APP_BASE_URL")
-            .unwrap_or_else(|_| "http://localhost:5173".to_string());
+        let base_url =
+            std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:5173".to_string());
 
         let mut link = format!("{}/auth/verify-magic-link?token={}", base_url, token);
 
@@ -130,12 +129,10 @@ impl MagicLinkManager {
     }
 
     /// Send magic link email
-    pub fn send_magic_link_email(
-        &self,
-        email: &str,
-        link: &str,
-    ) -> Result<(), MagicLinkError> {
-        let email_config = self.email_config.as_ref()
+    pub fn send_magic_link_email(&self, email: &str, link: &str) -> Result<(), MagicLinkError> {
+        let email_config = self
+            .email_config
+            .as_ref()
             .ok_or(MagicLinkError::EmailNotConfigured)?;
 
         // Build email message
@@ -181,26 +178,33 @@ impl MagicLinkManager {
     ) -> Result<MagicLinkResponse, MagicLinkError> {
         // Validate request
         if !request.is_valid() {
-            return Err(MagicLinkError::ValidationError("Invalid email format".to_string()));
+            return Err(MagicLinkError::ValidationError(
+                "Invalid email format".to_string(),
+            ));
         }
 
         // Check if user exists
-        let user_exists = match core_models::UserModel::find_by_email(&self.db, &request.email).await {
-            Ok(Some(_)) => true,
-            Ok(None) => false,
-            Err(e) => {
-                log::error!("Failed to check user existence: {}", e);
-                return Err(MagicLinkError::DatabaseError(e.to_string()));
-            }
-        };
+        let user_exists =
+            match core_models::UserModel::find_by_email(&self.db, &request.email).await {
+                Ok(Some(_)) => true,
+                Ok(None) => false,
+                Err(e) => {
+                    log::error!("Failed to check user existence: {}", e);
+                    return Err(MagicLinkError::DatabaseError(e.to_string()));
+                }
+            };
 
         // For security, always return success even if user doesn't exist
         // This prevents email enumeration attacks
         if !user_exists {
-            log::warn!("Magic link requested for non-existent email: {}", request.email);
+            log::warn!(
+                "Magic link requested for non-existent email: {}",
+                request.email
+            );
             return Ok(MagicLinkResponse {
                 success: true,
-                message: "If an account exists with this email, a magic link has been sent.".to_string(),
+                message: "If an account exists with this email, a magic link has been sent."
+                    .to_string(),
             });
         }
 
@@ -209,8 +213,8 @@ impl MagicLinkManager {
         let expires_at = Utc::now() + Duration::minutes(MAGIC_LINK_EXPIRATION_MINUTES);
 
         // Store token in database using SeaORM
-        use sea_orm::{ActiveEnum, IntoActiveModel};
         use reticulum_core::models::magic_link_tokens;
+        use sea_orm::{ActiveEnum, IntoActiveModel};
 
         let token_model = magic_link_tokens::ActiveModel {
             token: ActiveEnum::Set(token.clone()),
@@ -239,7 +243,8 @@ impl MagicLinkManager {
 
         Ok(MagicLinkResponse {
             success: true,
-            message: "If an account exists with this email, a magic link has been sent.".to_string(),
+            message: "If an account exists with this email, a magic link has been sent."
+                .to_string(),
         })
     }
 
@@ -248,8 +253,8 @@ impl MagicLinkManager {
         &self,
         token: &str,
     ) -> Result<core_models::users::User, MagicLinkError> {
-        use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, ActiveEnum, IntoActiveModel};
         use reticulum_core::models::magic_link_tokens;
+        use sea_orm::{ActiveEnum, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter};
 
         // Look up the token in the database
         let token_record = match magic_link_tokens::Entity::find()
@@ -361,9 +366,8 @@ mod tests {
 
     #[test]
     fn test_create_magic_link() {
-        let manager = MagicLinkManager::new(
-            sea_orm::Database::connect("sqlite::memory:").await.unwrap()
-        );
+        let manager =
+            MagicLinkManager::new(sea_orm::Database::connect("sqlite::memory:").await.unwrap());
 
         let link = manager.create_magic_link("test_token", Some("/dashboard"));
         assert!(link.contains("test_token"));

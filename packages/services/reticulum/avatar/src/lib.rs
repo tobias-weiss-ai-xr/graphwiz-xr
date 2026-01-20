@@ -2,10 +2,10 @@
 //!
 //! Handles avatar configuration and customization for users
 
+pub mod db;
+pub mod handlers;
 pub mod models;
 pub mod routes;
-pub mod handlers;
-pub mod db;
 
 use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;

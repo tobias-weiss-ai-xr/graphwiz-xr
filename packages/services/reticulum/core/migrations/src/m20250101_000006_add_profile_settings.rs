@@ -13,18 +13,31 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(UserSettings::Table)
                     .if_not_exists()
-                    .col(&mut ColumnDef::new(UserSettings::Id).integer().auto_increment().primary_key())
+                    .col(
+                        &mut ColumnDef::new(UserSettings::Id)
+                            .integer()
+                            .auto_increment()
+                            .primary_key(),
+                    )
                     .col(&mut ColumnDef::new(UserSettings::UserId).integer().not_null())
                     .col(&mut ColumnDef::new(UserSettings::Key).string().not_null())
                     .col(&mut ColumnDef::new(UserSettings::Value).string().not_null())
-                    .col(&mut ColumnDef::new(UserSettings::CreatedAt).timestamp().not_null())
-                    .col(&mut ColumnDef::new(UserSettings::UpdatedAt).timestamp().not_null())
+                    .col(
+                        &mut ColumnDef::new(UserSettings::CreatedAt)
+                            .timestamp()
+                            .not_null(),
+                    )
+                    .col(
+                        &mut ColumnDef::new(UserSettings::UpdatedAt)
+                            .timestamp()
+                            .not_null(),
+                    )
                     .foreign_key(
                         sea_query::ForeignKey::create()
                             .name("fk_user_settings_user_id")
                             .from(UserSettings::Table, UserSettings::UserId)
                             .to(Users::Table, Users::Id)
-                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
             )

@@ -5,7 +5,7 @@
 use super::{
     config::SfuConfig,
     error::{SfuError, SfuResult},
-    peer::{IceCandidate, MediaKind, SfuPeer, SessionDescription},
+    peer::{IceCandidate, MediaKind, SessionDescription, SfuPeer},
     rtp::{RtpForwarder, RtpPacket, SimulcastLayer},
 };
 use serde::{Deserialize, Serialize};
@@ -156,7 +156,10 @@ impl SfuRoom {
     /// Handle incoming RTP packet
     pub async fn handle_rtp(&self, from_peer_id: &str, packet: RtpPacket) -> SfuResult<()> {
         // Forward to all other peers
-        let targets = self.forwarder.forward_packet(&packet, &[from_peer_id.to_string()]).await;
+        let targets = self
+            .forwarder
+            .forward_packet(&packet, &[from_peer_id.to_string()])
+            .await;
 
         for (target_peer_id, packet) in targets {
             if let Ok(target_peer) = self.get_peer(&target_peer_id).await {
@@ -239,10 +242,15 @@ impl RoomManager {
         {
             let rooms = self.rooms.read().await;
             if rooms.contains_key(&id) {
-                return Err(SfuError::InternalError(format!("Room {} already exists", id)));
+                return Err(SfuError::InternalError(format!(
+                    "Room {} already exists",
+                    id
+                )));
             }
             if rooms.len() >= self.config.max_rooms {
-                return Err(SfuError::InternalError("Maximum room count reached".to_string()));
+                return Err(SfuError::InternalError(
+                    "Maximum room count reached".to_string(),
+                ));
             }
         }
 
@@ -317,7 +325,10 @@ mod tests {
         let config = SfuConfig::default();
         let manager = RoomManager::new(config);
 
-        let room = manager.create_room("room-1".to_string(), "Test Room".to_string()).await.unwrap();
+        let room = manager
+            .create_room("room-1".to_string(), "Test Room".to_string())
+            .await
+            .unwrap();
 
         assert_eq!(room.id, "room-1");
         assert_eq!(room.peer_count().await, 0);

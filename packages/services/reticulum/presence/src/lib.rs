@@ -2,12 +2,12 @@
 //!
 //! Handles WebTransport/WebRTC signaling, presence tracking, and real-time messaging
 
-pub mod session;
-pub mod signaling;
-pub mod websocket;
 pub mod handlers;
 pub mod moderation_handlers;
 pub mod routes;
+pub mod session;
+pub mod signaling;
+pub mod websocket;
 // pub mod optimization; // Disabled: Agent Looper dependency removed
 
 // Production-ready features

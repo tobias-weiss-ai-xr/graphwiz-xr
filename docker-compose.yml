@@ -281,13 +281,20 @@ services:
     ports:
       - '5173:5173'
     networks:
+      - traefik-public
       - graphwiz-internal
     environment:
-      - VITE_API_BASE_URL=http://localhost:8000/api/v1/auth
-      - VITE_HUB_API_URL=http://localhost:8002/api/v1/hub
-      - VITE_PRESENCE_WS_URL=ws://localhost:4000
-      - VITE_SFU_URL=http://localhost:8004/api/v1/sfu
+      - VITE_API_BASE_URL=https://xr.graphwiz.ai/api/auth
+      - VITE_HUB_API_URL=https://xr.graphwiz.ai/api/hub
+      - VITE_PRESENCE_WS_URL=wss://xr.graphwiz.ai/ws
+      - VITE_SFU_URL=https://xr.graphwiz.ai/api/sfu
       - VITE_ROOM_ID=lobby
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.hub-client.rule=Host(`xr.graphwiz.ai`)'
+      - 'traefik.http.routers.hub-client.entrypoints=websecure'
+      - 'traefik.http.services.hub-client.loadbalancer.server.port=5173'
+      - 'traefik.http.routers.hub-client.tls.certresolver=letsencrypt'
   # ============================================================================
   # ADMIN CLIENT (Optional - for dashboard/admin panel)
   # ============================================================================

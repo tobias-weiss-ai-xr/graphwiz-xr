@@ -1,7 +1,7 @@
 //! Integration tests for reticulum-core
 
 use reticulum_core::{
-    hash_password, verify_password, validate_password_strength, Config, Error, JwtManager,
+    hash_password, validate_password_strength, verify_password, Config, Error, JwtManager,
     PasswordHasher, TokenType,
 };
 use uuid::Uuid;
@@ -61,7 +61,9 @@ fn test_jwt_token_full_cycle() {
     assert!(!token_pair.refresh_token.is_empty());
 
     // Validate access token
-    let access_claims = manager.validate_access_token(&token_pair.access_token).unwrap();
+    let access_claims = manager
+        .validate_access_token(&token_pair.access_token)
+        .unwrap();
     assert_eq!(access_claims.sub, user_id.to_string());
     assert_eq!(access_claims.token_type, TokenType::Access);
 

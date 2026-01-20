@@ -6,8 +6,8 @@ use validator::Validate;
 
 use crate::db::AvatarRepository;
 use crate::models::{
-    AvatarConfig, BodyType, CustomAvatarRequest, DefaultAvatarResponse,
-    UpdateAvatarRequest, UserAvatarResponse,
+    AvatarConfig, BodyType, CustomAvatarRequest, DefaultAvatarResponse, UpdateAvatarRequest,
+    UserAvatarResponse,
 };
 
 /// Health check
@@ -53,10 +53,7 @@ pub async fn get_default_avatar(config: web::Data<Config>) -> HttpResponse {
 }
 
 /// Get user's avatar configuration
-pub async fn get_user_avatar(
-    config: web::Data<Config>,
-    path: web::Path<String>,
-) -> HttpResponse {
+pub async fn get_user_avatar(config: web::Data<Config>, path: web::Path<String>) -> HttpResponse {
     let user_id = match uuid::Uuid::parse_str(&path.into_inner()) {
         Ok(id) => id,
         Err(e) => {
@@ -192,8 +189,14 @@ pub async fn update_user_avatar(
     let updated_avatar = AvatarConfig {
         user_id,
         body_type: req.body_type.unwrap_or(existing_avatar.body_type),
-        primary_color: req.primary_color.clone().unwrap_or(existing_avatar.primary_color),
-        secondary_color: req.secondary_color.clone().unwrap_or(existing_avatar.secondary_color),
+        primary_color: req
+            .primary_color
+            .clone()
+            .unwrap_or(existing_avatar.primary_color),
+        secondary_color: req
+            .secondary_color
+            .clone()
+            .unwrap_or(existing_avatar.secondary_color),
         height: req.height.unwrap_or(existing_avatar.height),
         custom_model_id: req.custom_model_id.or(existing_avatar.custom_model_id),
         metadata: req.metadata.clone().unwrap_or(existing_avatar.metadata),

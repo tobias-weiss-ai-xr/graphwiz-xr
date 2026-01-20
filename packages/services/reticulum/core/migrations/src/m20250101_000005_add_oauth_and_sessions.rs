@@ -1,5 +1,5 @@
 use sea_orm_migration::prelude::*;
-use sea_query::{ColumnDef, Index, Table, PgInterval};
+use sea_query::{ColumnDef, Index, PgInterval, Table};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -16,7 +16,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Users::Role)
                             .string()
                             .not_null()
-                            .default("USER")
+                            .default("USER"),
                     )
                     .to_owned(),
             )
@@ -30,21 +30,38 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(OAuthAccounts::Table)
                     .if_not_exists()
-                    .col(&mut ColumnDef::new(OAuthAccounts::Id).integer().auto_increment().primary_key())
+                    .col(
+                        &mut ColumnDef::new(OAuthAccounts::Id)
+                            .integer()
+                            .auto_increment()
+                            .primary_key(),
+                    )
                     .col(&mut ColumnDef::new(OAuthAccounts::Provider).string().not_null())
-                    .col(&mut ColumnDef::new(OAuthAccounts::ProviderUserId).string().not_null())
+                    .col(
+                        &mut ColumnDef::new(OAuthAccounts::ProviderUserId)
+                            .string()
+                            .not_null(),
+                    )
                     .col(&mut ColumnDef::new(OAuthAccounts::UserId).integer().not_null())
                     .col(&mut ColumnDef::new(OAuthAccounts::AccessToken).string().null())
                     .col(&mut ColumnDef::new(OAuthAccounts::RefreshToken).string().null())
                     .col(&mut ColumnDef::new(OAuthAccounts::ExpiresAt).timestamp().null())
-                    .col(&mut ColumnDef::new(OAuthAccounts::CreatedAt).timestamp().not_null())
-                    .col(&mut ColumnDef::new(OAuthAccounts::UpdatedAt).timestamp().not_null())
+                    .col(
+                        &mut ColumnDef::new(OAuthAccounts::CreatedAt)
+                            .timestamp()
+                            .not_null(),
+                    )
+                    .col(
+                        &mut ColumnDef::new(OAuthAccounts::UpdatedAt)
+                            .timestamp()
+                            .not_null(),
+                    )
                     .foreign_key(
                         sea_query::ForeignKey::create()
                             .name("fk_oauth_accounts_user_id")
                             .from(OAuthAccounts::Table, OAuthAccounts::UserId)
                             .to(Users::Table, Users::Id)
-                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
             )
@@ -122,12 +139,25 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(MagicLinkTokens::Table)
                     .if_not_exists()
-                    .col(&mut ColumnDef::new(MagicLinkTokens::Id).integer().auto_increment().primary_key())
+                    .col(
+                        &mut ColumnDef::new(MagicLinkTokens::Id)
+                            .integer()
+                            .auto_increment()
+                            .primary_key(),
+                    )
                     .col(&mut ColumnDef::new(MagicLinkTokens::Token).string().not_null())
                     .col(&mut ColumnDef::new(MagicLinkTokens::Email).string().not_null())
-                    .col(&mut ColumnDef::new(MagicLinkTokens::ExpiresAt).timestamp().not_null())
+                    .col(
+                        &mut ColumnDef::new(MagicLinkTokens::ExpiresAt)
+                            .timestamp()
+                            .not_null(),
+                    )
                     .col(&mut ColumnDef::new(MagicLinkTokens::UsedAt).timestamp().null())
-                    .col(&mut ColumnDef::new(MagicLinkTokens::CreatedAt).timestamp().not_null())
+                    .col(
+                        &mut ColumnDef::new(MagicLinkTokens::CreatedAt)
+                            .timestamp()
+                            .not_null(),
+                    )
                     .to_owned(),
             )
             .await?;

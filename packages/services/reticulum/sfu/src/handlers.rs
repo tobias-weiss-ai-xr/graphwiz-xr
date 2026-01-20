@@ -3,7 +3,7 @@
 use super::{
     config::SfuConfig,
     error::SfuError,
-    peer::{IceCandidate, MediaKind, MediaTrack, SfuPeer, SessionDescription},
+    peer::{IceCandidate, MediaKind, MediaTrack, SessionDescription, SfuPeer},
     room::{RoomManager, RoomStats},
 };
 use actix_web::{web, HttpRequest, HttpResponse};
@@ -173,7 +173,10 @@ pub async fn join_room(
     }
 
     // Create new peer
-    let _user_id = req.user_id.clone().unwrap_or_else(|| Uuid::new_v4().to_string());
+    let _user_id = req
+        .user_id
+        .clone()
+        .unwrap_or_else(|| Uuid::new_v4().to_string());
     let peer_id = Uuid::new_v4().to_string();
     let peer = Arc::new(SfuPeer::new(
         peer_id.clone(),
@@ -347,10 +350,7 @@ pub async fn get_room_stats(state: web::Data<AppState>) -> HttpResponse {
 }
 
 /// Get statistics for a specific room
-pub async fn get_room_info(
-    state: web::Data<AppState>,
-    path: web::Path<String>,
-) -> HttpResponse {
+pub async fn get_room_info(state: web::Data<AppState>, path: web::Path<String>) -> HttpResponse {
     let room_id = path.into_inner();
     let room_manager = state.room_manager.read().await;
 

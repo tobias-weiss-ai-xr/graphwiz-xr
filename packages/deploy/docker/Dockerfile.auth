@@ -21,6 +21,7 @@ COPY packages/services/reticulum/auth packages/services/reticulum/auth
 COPY packages/services/reticulum/hub packages/services/reticulum/hub
 COPY packages/services/reticulum/presence packages/services/reticulum/presence
 COPY packages/services/reticulum/sfu packages/services/reticulum/sfu
+COPY packages/services/reticulum/avatar packages/services/reticulum/avatar
 
 # Build the auth service binary
 RUN cargo build --release -p reticulum-auth

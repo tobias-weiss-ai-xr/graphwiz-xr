@@ -121,10 +121,7 @@ impl RoleModel {
     }
 
     /// Revoke role from user
-    pub async fn revoke_role(
-        db: &DatabaseConnection,
-        user_id: i32,
-    ) -> crate::Result<()> {
+    pub async fn revoke_role(db: &DatabaseConnection, user_id: i32) -> crate::Result<()> {
         Entity::delete_many()
             .filter(Column::UserId.eq(user_id))
             .exec(db)
@@ -136,7 +133,8 @@ impl RoleModel {
     pub async fn list_all_with_roles(
         db: &DatabaseConnection,
     ) -> crate::Result<Vec<(crate::models::User, Option<RoleAssignment>)>> {
-        use sea_orm::{FromQueryResult, JoinType};
+        use crate::models::users::Entity as UsersEntity;
+        use sea_orm::{FromQueryResult, JoinType, QuerySelect};
 
         #[derive(FromQueryResult, Serialize, Deserialize)]
         struct UserRoleResult {
@@ -145,9 +143,9 @@ impl RoleModel {
         }
 
         let results = Entity::find()
-            .left_join(Users::Table)
+            .left_join(UsersEntity)
             .select_only()
-            .column(Users::Id)
+            .column(UsersEntity::Id)
             .column_as(Column::Role, "role")
             .into_model::<UserRoleResult>()
             .all(db)

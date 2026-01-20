@@ -8,11 +8,11 @@ pub mod config;
 pub mod handlers;
 pub mod jwt;
 pub mod magic_link;
+pub mod metrics_handlers;
 pub mod models;
 pub mod oauth;
 pub mod routes;
 pub mod session;
-pub mod metrics_handlers;
 // pub mod optimization;  // Disabled: Agent Looper dependency removed
 
 use actix_web::{web, App, HttpServer};
@@ -20,7 +20,7 @@ use reticulum_core::Config;
 
 use routes::configure_routes;
 
-    pub struct AuthService {
+pub struct AuthService {
     config: Config,
     cache: Option<CacheManager>,
 }
@@ -35,7 +35,10 @@ impl AuthService {
                     Some(cache)
                 }
                 Err(e) => {
-                    log::warn!("Failed to initialize Redis cache, running without cache: {}", e);
+                    log::warn!(
+                        "Failed to initialize Redis cache, running without cache: {}",
+                        e
+                    );
                     None
                 }
             }
@@ -44,10 +47,7 @@ impl AuthService {
             None
         };
 
-        Self {
-            config,
-            cache,
-        }
+        Self { config, cache }
     }
 
     pub async fn run(self) -> std::io::Result<()> {

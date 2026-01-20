@@ -15,7 +15,10 @@ fn main() -> Result<(), Error> {
     let config = Config::load_or_default()?;
     println!("   Server: {}:{}", config.server.host, config.server.port);
     println!("   Database URL: {}", config.database.url);
-    println!("   JWT Expiration: {} seconds\n", config.auth.jwt_expiration);
+    println!(
+        "   JWT Expiration: {} seconds\n",
+        config.auth.jwt_expiration
+    );
 
     // Example 2: Password validation and hashing
     println!("2. Password handling...");

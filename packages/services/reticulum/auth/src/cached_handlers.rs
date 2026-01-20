@@ -1,10 +1,10 @@
 //! Cached handlers for performance optimization
 
 use actix_web::{web, HttpResponse};
+use reticulum_core::{cache_keys, ttl, CacheManager, Config};
 use serde_json::json;
-use reticulum_core::{Config, CacheManager, cache_keys, ttl};
 
-use super::admin_handlers::{list_users, toggle_user_status, update_user_role, revoke_user_role};
+use super::admin_handlers::{list_users, revoke_user_role, toggle_user_status, update_user_role};
 
 /// List users with caching
 pub async fn list_users_cached(
@@ -16,13 +16,13 @@ pub async fn list_users_cached(
         reticulum_core::cache_keys::user_list(
             query.page.unwrap_or(1),
             query.per_page.unwrap_or(50),
-            search
+            search,
         )
     } else {
         reticulum_core::cache_keys::user_list(
             query.page.unwrap_or(1),
             query.per_page.unwrap_or(50),
-            ""
+            "",
         )
     };
 
@@ -89,12 +89,10 @@ pub async fn get_user_cached(
                 "user": user
             }))
         }
-        Ok(None) => {
-            HttpResponse::NotFound().json(json!({
-                "error": "not_found",
-                "message": format!("User {} not found", user_id)
-            }))
-        }
+        Ok(None) => HttpResponse::NotFound().json(json!({
+            "error": "not_found",
+            "message": format!("User {} not found", user_id)
+        })),
         Err(e) => {
             log::error!("Failed to fetch user: {}", e);
             HttpResponse::InternalServerError().json(json!({

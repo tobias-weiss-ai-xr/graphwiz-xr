@@ -1,11 +1,11 @@
 //! Session management for WebTransport connections
 
+use chrono::{DateTime, Duration, Utc};
 use reticulum_core::Result;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use chrono::{DateTime, Utc, Duration};
-use serde::{Serialize, Deserialize};
 
 #[derive(Clone)]
 pub struct ClientSession {
@@ -22,7 +22,7 @@ pub struct SessionManager {
     sessions: Arc<RwLock<HashMap<String, ClientSession>>>,
     room_sessions: Arc<RwLock<HashMap<String, Vec<String>>>>, // room_id -> session_ids
     pending_messages: Arc<RwLock<HashMap<String, Vec<serde_json::Value>>>>, // session_id -> pending messages
-    locked_rooms: Arc<RwLock<HashMap<String, bool>>>, // room_id -> is_locked
+    locked_rooms: Arc<RwLock<HashMap<String, bool>>>,                       // room_id -> is_locked
     batch_size: usize,
     batch_timeout: Duration,
 }
@@ -34,7 +34,7 @@ impl SessionManager {
             room_sessions: Arc::new(RwLock::new(HashMap::new())),
             pending_messages: Arc::new(RwLock::new(HashMap::new())),
             locked_rooms: Arc::new(RwLock::new(HashMap::new())),
-            batch_size: 50, // Default batch size
+            batch_size: 50,                           // Default batch size
             batch_timeout: Duration::from_millis(50), // Flush every 50ms
         }
     }
@@ -50,7 +50,8 @@ impl SessionManager {
         // Add to room if applicable
         if let Some(ref room_id) = session.room_id {
             let mut room_sessions = self.room_sessions.write().await;
-            room_sessions.entry(room_id.clone())
+            room_sessions
+                .entry(room_id.clone())
                 .or_insert_with(Vec::new())
                 .push(session_id);
         }
@@ -124,7 +125,11 @@ impl SessionManager {
 
         if let Some(messages) = pending.remove(session_id) {
             if !messages.is_empty() {
-                log::info!("Flushing {} messages for session {}", messages.len(), session_id);
+                log::info!(
+                    "Flushing {} messages for session {}",
+                    messages.len(),
+                    session_id
+                );
 
                 // In a real implementation, send to clients here
                 // For now, we just log them
@@ -296,9 +301,11 @@ impl SessionManager {
     /// Check if a session is muted
     pub async fn is_session_muted(&self, session_id: &str) -> bool {
         let sessions = self.sessions.read().await;
-        sessions.get(session_id).map(|s| s.is_muted).unwrap_or(false)
+        sessions
+            .get(session_id)
+            .map(|s| s.is_muted)
+            .unwrap_or(false)
     }
-
 }
 
 impl Default for SessionManager {

@@ -66,9 +66,16 @@ pub async fn kick_player(
             }
 
             // Disconnect the session
-            match session_manager.unregister_session(&req.target_client_id).await {
+            match session_manager
+                .unregister_session(&req.target_client_id)
+                .await
+            {
                 Ok(_) => {
-                    log::info!("Player {} kicked from room {}", req.target_client_id, req.room_id);
+                    log::info!(
+                        "Player {} kicked from room {}",
+                        req.target_client_id,
+                        req.room_id
+                    );
 
                     // Broadcast kick notification to room
                     let kick_notification = json!({
@@ -97,12 +104,10 @@ pub async fn kick_player(
                 }
             }
         }
-        None => {
-            HttpResponse::NotFound().json(json!({
-                "success": false,
-                "message": format!("Player {} not found", req.target_client_id)
-            }))
-        }
+        None => HttpResponse::NotFound().json(json!({
+            "success": false,
+            "message": format!("Player {} not found", req.target_client_id)
+        })),
     }
 }
 
@@ -121,9 +126,13 @@ pub async fn mute_player(
         req.reason
     );
 
-    match session_manager.mute_player(&req.target_client_id, req.muted).await {
+    match session_manager
+        .mute_player(&req.target_client_id, req.muted)
+        .await
+    {
         Ok(_) => {
-            log::info!("Player {} {} in room {}",
+            log::info!(
+                "Player {} {} in room {}",
                 req.target_client_id,
                 if req.muted { "muted" } else { "unmuted" },
                 req.room_id
@@ -172,9 +181,16 @@ pub async fn lock_room(
         req.reason
     );
 
-    match session_manager.set_room_locked(&req.room_id, req.locked).await {
+    match session_manager
+        .set_room_locked(&req.room_id, req.locked)
+        .await
+    {
         Ok(_) => {
-            log::info!("Room {} {}", req.room_id, if req.locked { "locked" } else { "unlocked" });
+            log::info!(
+                "Room {} {}",
+                req.room_id,
+                if req.locked { "locked" } else { "unlocked" }
+            );
 
             // Broadcast lock notification to room
             let lock_notification = json!({

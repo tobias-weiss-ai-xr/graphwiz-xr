@@ -21,9 +21,17 @@ pub enum SignalingMessageType {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum SignalingPayload {
-    Offer { sdp: String },
-    Answer { sdp: String },
-    IceCandidate { candidate: String, sdp_mid: String, sdp_mline_index: u16 },
+    Offer {
+        sdp: String,
+    },
+    Answer {
+        sdp: String,
+    },
+    IceCandidate {
+        candidate: String,
+        sdp_mid: String,
+        sdp_mline_index: u16,
+    },
     Hangup,
 }
 
@@ -40,14 +48,27 @@ impl SignalingServer {
     /// Handle a WebRTC offer from a client
     pub async fn handle_offer(&self, room_id: &str, from_client: &str, _offer: &str) -> Result<()> {
         // Broadcast offer to other clients in the room
-        log::info!("Received WebRTC offer from {} in room {}", from_client, room_id);
+        log::info!(
+            "Received WebRTC offer from {} in room {}",
+            from_client,
+            room_id
+        );
         Ok(())
     }
 
     /// Handle a WebRTC answer from a client
-    pub async fn handle_answer(&self, room_id: &str, from_client: &str, _answer: &str) -> Result<()> {
+    pub async fn handle_answer(
+        &self,
+        room_id: &str,
+        from_client: &str,
+        _answer: &str,
+    ) -> Result<()> {
         // Send answer to the target client
-        log::info!("Received WebRTC answer from {} in room {}", from_client, room_id);
+        log::info!(
+            "Received WebRTC answer from {} in room {}",
+            from_client,
+            room_id
+        );
         Ok(())
     }
 
@@ -60,7 +81,11 @@ impl SignalingServer {
         _sdp_mid: &str,
         _sdp_mline_index: u16,
     ) -> Result<()> {
-        log::info!("Received ICE candidate from {} in room {}", from_client, room_id);
+        log::info!(
+            "Received ICE candidate from {} in room {}",
+            from_client,
+            room_id
+        );
         Ok(())
     }
 

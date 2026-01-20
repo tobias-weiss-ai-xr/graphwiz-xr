@@ -1,7 +1,7 @@
 //! Route configuration for presence service
 
-use actix_web::web;
 use crate::{handlers, moderation_handlers, websocket};
+use actix_web::web;
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg

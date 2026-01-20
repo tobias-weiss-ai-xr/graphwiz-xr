@@ -3,8 +3,8 @@
 //! These tests require a test database to run properly.
 //! For now, we'll test the business logic without a real database.
 
+use reticulum_auth::jwt::{generate_access_token, hash_password, validate_token, verify_password};
 use reticulum_auth::models::{LoginRequest, RegisterRequest, UserInfo};
-use reticulum_auth::jwt::{hash_password, verify_password, generate_access_token, validate_token};
 use reticulum_core::Config;
 
 #[cfg(test)]
@@ -196,9 +196,9 @@ mod tests {
     #[test]
     fn test_minimal_registration_data() {
         let registration = RegisterRequest {
-            display_name: "AB".to_string(),  // Minimum 2 characters
+            display_name: "AB".to_string(), // Minimum 2 characters
             email: "a@b.c".to_string(),
-            password: "12345678".to_string(),  // Minimum 8 characters
+            password: "12345678".to_string(), // Minimum 8 characters
         };
 
         // Validate all fields
@@ -209,11 +209,7 @@ mod tests {
 
     #[test]
     fn test_weak_passwords_still_work() {
-        let weak_passwords = vec![
-            "12345678",
-            "abcdefgh",
-            "password1",
-        ];
+        let weak_passwords = vec!["12345678", "abcdefgh", "password1"];
 
         for password in weak_passwords {
             let result = hash_password(password);

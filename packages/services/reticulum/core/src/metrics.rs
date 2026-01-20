@@ -1,6 +1,6 @@
 //! Historical metrics storage
 
-use chrono::{DateTime, Utc, Duration};
+use chrono::{DateTime, Duration, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -78,17 +78,20 @@ impl MetricsStorage {
             return MetricsSummary::default();
         }
 
-        let active_rooms = self.data_points
+        let active_rooms = self
+            .data_points
             .iter()
             .map(|p| p.active_rooms)
             .collect::<Vec<_>>();
 
-        let active_users = self.data_points
+        let active_users = self
+            .data_points
             .iter()
             .map(|p| p.active_users)
             .collect::<Vec<_>>();
 
-        let latencies = self.data_points
+        let latencies = self
+            .data_points
             .iter()
             .map(|p| p.avg_latency_ms)
             .collect::<Vec<_>>();
@@ -96,16 +99,22 @@ impl MetricsStorage {
         MetricsSummary {
             avg_active_rooms: if !active_rooms.is_empty() {
                 active_rooms.iter().sum::<i32>() as f64 / active_rooms.len() as f64
-            } else { 0.0 },
-            max_active_rooms: active_rooms.iter().cloned().unwrap_or(0),
+            } else {
+                0.0
+            },
+            max_active_rooms: active_rooms.iter().copied().max().unwrap_or(0),
             avg_active_users: if !active_users.is_empty() {
                 active_users.iter().sum::<i32>() as f64 / active_users.len() as f64
-            } else { 0.0 },
-            max_active_users: active_users.iter().cloned().unwrap_or(0),
+            } else {
+                0.0
+            },
+            max_active_users: active_users.iter().copied().max().unwrap_or(0),
             avg_latency_ms: if !latencies.is_empty() {
                 latencies.iter().sum::<f64>() / latencies.len() as f64
-            } else { 0.0 },
-            max_latency_ms: latencies.iter().cloned().unwrap_or(0.0),
+            } else {
+                0.0
+            },
+            max_latency_ms: latencies.iter().copied().max().unwrap_or(0.0),
             total_points: self.data_points.len(),
         }
     }

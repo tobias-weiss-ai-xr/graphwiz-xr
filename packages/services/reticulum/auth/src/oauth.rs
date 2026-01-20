@@ -3,17 +3,14 @@
 //! Supports OAuth2 authentication with GitHub, Google, and Discord
 
 use oauth2::{
-    AuthorizationCode, ClientId, ClientSecret, CsrfToken, RedirectUrl, Scope,
-    TokenResponse, TokenUrl,
-    basic::BasicClient,
-    reqwest::async_http_client,
-    AuthUrl, TokenType,
+    basic::BasicClient, reqwest::async_http_client, AuthUrl, AuthorizationCode, ClientId,
+    ClientSecret, CsrfToken, RedirectUrl, Scope, TokenResponse, TokenType, TokenUrl,
 };
 use serde::{Deserialize, Serialize};
 use std::env;
 use thiserror::Error;
 
-use reticulum_core::{DatabaseConnection, models as core_models};
+use reticulum_core::{models as core_models, DatabaseConnection};
 
 // Use OAuthProvider directly from core_models
 pub use core_models::OAuthProvider;
@@ -185,7 +182,13 @@ impl OAuthManager {
                     email: Some(user.email.clone()),
                     name: Some(user.name),
                     avatar_url: user.picture,
-                    username: Some(user.email.split('@').next().unwrap_or(&user.email).to_string()),
+                    username: Some(
+                        user.email
+                            .split('@')
+                            .next()
+                            .unwrap_or(&user.email)
+                            .to_string(),
+                    ),
                 })
             }
             OAuthProvider::Discord => {
@@ -296,38 +299,38 @@ pub async fn link_or_create_user(
         existing_user
     } else {
         // Create new user
-        let display_name = user_info
-            .name
-            .clone()
-            .unwrap_or_else(|| user_info.username.clone().unwrap_or_else(|| "User".to_string()));
+        let display_name = user_info.name.clone().unwrap_or_else(|| {
+            user_info
+                .username
+                .clone()
+                .unwrap_or_else(|| "User".to_string())
+        });
 
         let email = user_info.email.unwrap_or_else(|| {
-            format!("{}@{}.oauth.local", user_info.provider_id, provider.env_prefix())
+            format!(
+                "{}@{}.oauth.local",
+                user_info.provider_id,
+                provider.env_prefix()
+            )
         });
 
         // Generate a random password (user won't use it)
-        let password_hash =
-            reticulum_core::auth::hash_password(&uuid::Uuid::new_v4().to_string())
-                .map_err(|e| OAuthError::InternalError(e.to_string()))?;
+        let password_hash = reticulum_core::auth::hash_password(&uuid::Uuid::new_v4().to_string())
+            .map_err(|e| OAuthError::InternalError(e.to_string()))?;
 
         let avatar_url = user_info.avatar_url;
 
-        match core_models::UserModel::create(
-            db,
-            display_name,
-            email.clone(),
-            password_hash,
-        )
-        .await
-        {
+        match core_models::UserModel::create(db, display_name, email.clone(), password_hash).await {
             Ok(mut user) => {
                 // Update avatar if provided
                 if let Some(avatar) = avatar_url {
-                    if let Err(e) = core_models::UserModel::update_avatar(db, user.id, avatar).await {
+                    if let Err(e) = core_models::UserModel::update_avatar(db, user.id, avatar).await
+                    {
                         log::warn!("Failed to update avatar: {}", e);
                     }
                     // Refetch user
-                    if let Ok(Some(updated)) = core_models::UserModel::find_by_id(db, user.id).await {
+                    if let Ok(Some(updated)) = core_models::UserModel::find_by_id(db, user.id).await
+                    {
                         user = updated;
                     }
                 }
@@ -371,11 +374,26 @@ mod tests {
 
     #[test]
     fn test_oauth_provider_from_str() {
-        assert_eq!(OAuthProvider::from_str("github"), Some(OAuthProvider::Github));
-        assert_eq!(OAuthProvider::from_str("GitHub"), Some(OAuthProvider::Github));
-        assert_eq!(OAuthProvider::from_str("GITHUB"), Some(OAuthProvider::Github));
-        assert_eq!(OAuthProvider::from_str("google"), Some(OAuthProvider::Google));
-        assert_eq!(OAuthProvider::from_str("discord"), Some(OAuthProvider::Discord));
+        assert_eq!(
+            OAuthProvider::from_str("github"),
+            Some(OAuthProvider::Github)
+        );
+        assert_eq!(
+            OAuthProvider::from_str("GitHub"),
+            Some(OAuthProvider::Github)
+        );
+        assert_eq!(
+            OAuthProvider::from_str("GITHUB"),
+            Some(OAuthProvider::Github)
+        );
+        assert_eq!(
+            OAuthProvider::from_str("google"),
+            Some(OAuthProvider::Google)
+        );
+        assert_eq!(
+            OAuthProvider::from_str("discord"),
+            Some(OAuthProvider::Discord)
+        );
         assert_eq!(OAuthProvider::from_str("unknown"), None);
     }
 

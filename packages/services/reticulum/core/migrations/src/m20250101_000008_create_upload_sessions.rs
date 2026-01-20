@@ -12,28 +12,73 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(UploadSessions::Table)
                     .if_not_exists()
-                    .col(&mut ColumnDef::new(UploadSessions::Id).integer().auto_increment().primary_key())
-                    .col(&mut ColumnDef::new(UploadSessions::SessionId).string().not_null())
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::Id)
+                            .integer()
+                            .auto_increment()
+                            .primary_key(),
+                    )
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::SessionId)
+                            .string()
+                            .not_null(),
+                    )
                     .col(&mut ColumnDef::new(UploadSessions::OwnerId).string().not_null())
                     .col(&mut ColumnDef::new(UploadSessions::FileName).string().not_null())
-                    .col(&mut ColumnDef::new(UploadSessions::AssetType).string().not_null())
-                    .col(&mut ColumnDef::new(UploadSessions::FileSize).big_integer().not_null())
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::AssetType)
+                            .string()
+                            .not_null(),
+                    )
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::FileSize)
+                            .big_integer()
+                            .not_null(),
+                    )
                     .col(&mut ColumnDef::new(UploadSessions::MimeType).string().not_null())
-                    .col(&mut ColumnDef::new(UploadSessions::ChunkSize).integer().not_null())
-                    .col(&mut ColumnDef::new(UploadSessions::TotalChunks).integer().not_null())
-                    .col(&mut ColumnDef::new(UploadSessions::UploadedChunks).json().not_null())
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::ChunkSize)
+                            .integer()
+                            .not_null(),
+                    )
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::TotalChunks)
+                            .integer()
+                            .not_null(),
+                    )
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::UploadedChunks)
+                            .json()
+                            .not_null(),
+                    )
                     .col(&mut ColumnDef::new(UploadSessions::Status).string().not_null())
-                    .col(&mut ColumnDef::new(UploadSessions::IsPublic).boolean().default(false))
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::IsPublic)
+                            .boolean()
+                            .default(false),
+                    )
                     .col(&mut ColumnDef::new(UploadSessions::Metadata).json().null())
-                    .col(&mut ColumnDef::new(UploadSessions::CreatedAt).timestamp().not_null())
-                    .col(&mut ColumnDef::new(UploadSessions::UpdatedAt).timestamp().not_null())
-                    .col(&mut ColumnDef::new(UploadSessions::CompletedAt).timestamp().null())
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::CreatedAt)
+                            .timestamp()
+                            .not_null(),
+                    )
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::UpdatedAt)
+                            .timestamp()
+                            .not_null(),
+                    )
+                    .col(
+                        &mut ColumnDef::new(UploadSessions::CompletedAt)
+                            .timestamp()
+                            .null(),
+                    )
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk_upload_sessions_owner")
                             .from(UploadSessions::Table, UploadSessions::OwnerId)
                             .to(Users::Table, Users::Id)
-                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
             )

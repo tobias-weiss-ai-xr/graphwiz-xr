@@ -195,8 +195,9 @@ impl WebSocketManager {
     pub async fn send_to_connection(&self, conn_id: &str, message: WsMessage) -> Result<()> {
         let connections = self.connections.read().await;
         if let Some(tx) = connections.get(conn_id) {
-            tx.send(message)
-                .map_err(|e| reticulum_core::Error::internal(format!("Failed to send message: {}", e)))?;
+            tx.send(message).map_err(|e| {
+                reticulum_core::Error::internal(format!("Failed to send message: {}", e))
+            })?;
         }
         Ok(())
     }
@@ -266,7 +267,9 @@ pub async fn websocket_handler(
     let (response, mut session, mut msg_stream) = actix_ws::handle(&req, stream)?;
 
     // Register connection and get channel for sending
-    let mut rx = ws_manager.add_connection(conn_id.clone(), Some(room_id.clone()), user_id, client_id).await;
+    let mut rx = ws_manager
+        .add_connection(conn_id.clone(), Some(room_id.clone()), user_id, client_id)
+        .await;
 
     let conn_id_clone = conn_id.clone();
     let room_id_clone = room_id.clone();
@@ -364,7 +367,11 @@ pub async fn websocket_handler(
         .send_to_connection(&conn_id, WsMessage::Text(hello_message))
         .await;
 
-    log::info!("WebSocket connection established: {} in room {}", conn_id, room_id);
+    log::info!(
+        "WebSocket connection established: {} in room {}",
+        conn_id,
+        room_id
+    );
 
     Ok(response)
 }
@@ -466,4 +473,3 @@ pub async fn get_metrics(ws_manager: web::Data<WebSocketManager>) -> HttpRespons
         "timestamp": chrono::Utc::now().to_rfc3339()
     }))
 }
-
