@@ -325,9 +325,6 @@ pub enum MagicLinkError {
 
     #[error("Token already used")]
     TokenAlreadyUsed,
-
-    // Error: Magic link functionality not fully implemented yet
-    // TODO: IMPLEMENTED: Basic token verification and user authentication
 }
 
 /// Generate random bytes for tokens

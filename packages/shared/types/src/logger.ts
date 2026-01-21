@@ -21,7 +21,7 @@ export class Logger {
 
   private shouldLog(level: LogLevel): boolean {
     // In development, log everything
-    if (import.meta.env?.DEV === 'true') {
+    if (import.meta.env?.DEV == 'true') {
       return true;
     }
 

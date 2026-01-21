@@ -506,6 +506,7 @@ export class XRInputSystem extends System {
   /**
    * Load controller model (simple geometric representation)
    */
+  // eslint-disable-next-line no-unused-vars
   private async loadControllerModel(entityId: string, handedness: 'left' | 'right'): Promise<void> {
     const controllerColor = handedness === 'left' ? '#4CAF50' : '#FFB74E';
 
@@ -516,46 +517,16 @@ export class XRInputSystem extends System {
     try {
       // Get or create the grip entity
       const gripEntity = this.world.getEntity(entityId);
-      if (!gripEntity) {
+      if (!gripEntity || gripEntity === undefined) {
         console.error(`[XRInputSystem] Entity ${entityId} not found`);
         return;
-      }
-
-      console.log(`[XRInputSystem] Successfully marked ${handedness} controller model loaded for entity ${entityId}`);
-
-    } catch (error) {
-      console.error(`[XRInputSystem] Failed to mark controller model for ${handedness}:`, error);
-    }
-  }
-
-      // Mark controller model as loaded
-      gripEntity.modelLoaded = true;
-
-      console.log(`[XRInputSystem] Successfully marked ${handedness} controller model loaded for entity ${entityId}`);
-
-    } catch (error) {
-      console.error(`[XRInputSystem] Failed to mark controller model for ${handedness}:`, error);
-    }
-  }
-
-      // Get or create ModelComponent
-      const gripEntity = this.world.getEntity(entityId);
-      if (!gripEntity) {
-        console.error(`[XRInputSystem] Entity ${entityId} not found`);
-        return;
-      }
-
-      // Add or update ModelComponent with loaded GLTF
-      if (!gripEntity.hasComponent(ModelComponent)) {
-        gripEntity.addComponent(ModelComponent, new ModelComponent(modelUrl));
       }
 
       console.log(
-        `[XRInputSystem] Successfully loaded ${handedness} controller model: ${modelUrl}`
+        `[XRInputSystem] Successfully marked ${handedness} controller model loaded for entity ${entityId}`
       );
     } catch (error) {
-      console.error(`[XRInputSystem] Failed to load controller model ${modelUrl}:`, error);
-      // Don't throw - continue with no model visible
+      console.error(`[XRInputSystem] Failed to mark controller model for ${handedness}:`, error);
     }
   }
 

@@ -209,6 +209,12 @@ impl PeerConnection {
             SfuError::InvalidSdp("Remote description not set".to_string())
         })?;
 
+        // Generate unique ICE credentials from UUIDs for security
+        let ice_ufrag_audio = Uuid::new_v4().to_string().split('-').next().unwrap_or("");
+        let ice_pwd_audio = Uuid::new_v4().to_string();
+        let ice_ufrag_video = Uuid::new_v4().to_string().split('-').next().unwrap_or("");
+        let ice_pwd_video = Uuid::new_v4().to_string();
+
         // In production, this would parse the offer and create a proper answer
         // For now, return a minimal SDP answer
         Ok(format!(
@@ -243,10 +249,10 @@ impl PeerConnection {
              a=sendrecv\r\n\
              a=rtcp-mux\r\n\
              a=rtpmap:96 VP8/90000\r\n",
-            Uuid::new_v4().to_string().split('-').next().unwrap_or("XXXX"),
-            Uuid::new_v4().to_string(),
-            Uuid::new_v4().to_string().split('-').next().unwrap_or("XXXX"),
-            Uuid::new_v4().to_string()
+            ice_ufrag_audio,
+            ice_pwd_audio,
+            ice_ufrag_video,
+            ice_pwd_video
         ))
     }
 }

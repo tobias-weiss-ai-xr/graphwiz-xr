@@ -1,6 +1,8 @@
 //! Role model for user permissions
 
 use sea_orm::entity::prelude::*;
+use sea_orm::{ActiveValue, QuerySelect, Select};
+use super::users::Entity as UsersEntity;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -39,7 +41,6 @@ impl From<Model> for RoleAssignment {
         }
     }
 }
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum UserRole {
@@ -66,7 +67,6 @@ impl UserRole {
         }
     }
 }
-
 pub struct RoleModel;
 
 impl RoleModel {
@@ -136,46 +136,38 @@ impl RoleModel {
     pub async fn list_all_with_roles(
         db: &DatabaseConnection,
     ) -> crate::Result<Vec<(crate::models::User, Option<RoleAssignment>)>> {
-        use sea_orm::{FromQueryResult, JoinType};
-
-        #[derive(FromQueryResult, Serialize, Deserialize)]
-        struct UserRoleResult {
-            user_id: i32,
-            role: Option<String>,
-        }
-
-        let results = Entity::find()
-            .left_join(Users::Table)
-            .select_only()
-            .column(Users::Id)
-            .column_as(Column::Role, "role")
-            .into_model::<UserRoleResult>()
-            .all(db)
-            .await?;
+        let users = crate::models::UserModel::find_all(db).await?;
 
         let mut result = Vec::new();
 
-        for user_role_result in results {
-            let user = crate::models::UserModel::find_by_id(db, user_role_result.user_id)
-                .await?
-                .ok_or_else(|| {
-                    crate::Error::not_found(&format!("User {}", user_role_result.user_id))
-                })?;
+        for user in users {
+            let role_assignment = Entity::find()
+                .filter(Column::UserId.eq(user.id))
+                .one(db)
+                .await?;
 
-            let role = if let Some(role_str) = user_role_result.role {
-                let role_assignment = Entity::find()
-                    .filter(Column::UserId.eq(user_role_result.user_id))
-                    .one(db)
-                    .await?;
-
-                role_assignment.map(RoleAssignment::from)
-            } else {
-                None
-            };
-
+            let role = role_assignment.as_ref().and_then(|r| r.as_ref().map(|a| a.role.clone()));
             result.push((user, role));
         }
 
         Ok(result)
     }
 }
+
+        let users = crate::models::UserModel::find_all(db).await?;
+
+        let mut result = Vec::new();
+
+        for user in users {
+            let role_assignment = Entity::find()
+                .filter(Column::UserId.eq(user.id))
+                .one(db)
+                .await?;
+
+            let role = role_assignment.as_ref().and_then(|r| r.as_ref().map(|a| a.role.clone()));
+
+            result.push((user, role));
+        }
+
+
+

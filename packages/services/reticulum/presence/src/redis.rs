@@ -4,12 +4,228 @@ use reticulum_core::Result;
 use std::sync::Arc;
 use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
+use redis::AsyncCommands;
+use redis::aio::Connection;
+use serde_json;
 
 /// Redis configuration
 #[derive(Clone, Debug)]
 pub struct RedisConfig {
     pub url: String,
     pub channel_prefix: String,
+}
+
+impl Default for RedisConfig {
+    fn default() -> Self {
+        Self {
+            url: "redis://127.0.0.1:6379".to_string(),
+            channel_prefix: "graphwiz".to_string(),
+        }
+    }
+}
+
+/// Message to broadcast via Redis pub/sub
+#[derive(Clone, Debug)]
+pub struct PubSubMessage {
+    pub room_id: String,
+    pub message_type: PubSubMessageType,
+    pub data: Vec<u8>,
+    pub exclude_connection: Option<String>,
+    pub timestamp: i64,
+}
+
+impl PubSubMessage {
+    /// Convert to JSON for Redis pub/sub
+    pub fn to_json(&self) -> Result<String, serde_json::Error> {
+        let json = json!({
+            "room_id": self.room_id,
+            "type": format!("{:?}", self.message_type),
+            "data": self.data,
+            "exclude_connection": self.exclude_connection,
+            "timestamp": self.timestamp,
+        });
+        serde_json::to_string(&json)
+    }
+}
+
+#[derive(Clone, Debug)]
+pub enum PubSubMessageType {
+    Broadcast,
+    PresenceEvent,
+    SystemNotification,
+}
+
+/// Redis pub/sub manager for scaling
+pub struct RedisPubSub {
+    config: RedisConfig,
+    client: Arc<redis::Client>,
+    _subscriber_task: Option<JoinHandle<()>>,
+}
+
+impl RedisPubSub {
+    /// Create a new Redis pub/sub manager
+    ///
+    /// # Arguments
+    /// * `config` - Redis connection configuration
+    /// * `message_receiver` - Channel to receive published messages
+    pub async fn new(
+        config: RedisConfig,
+        mut message_receiver: mpsc::Receiver<PubSubMessage>,
+    ) -> Result<Self> {
+        log::info!("Initializing Redis pub/sub: {}", config.url);
+
+        // Connect to Redis with connection pooling
+        let client = redis::Client::open(config.url.clone())
+            .map_err(|e| reticulum_core::error::Error::RedisError(format!("Failed to connect to Redis: {}", e)))?;
+
+        let client = Arc::new(client);
+
+        // Test connection
+        let mut conn = client
+            .get_async_connection()
+            .await
+            .map_err(|e| reticulum_core::error::Error::RedisError(format!("Failed to get async connection: {}", e)))?;
+
+        redis::cmd("PING")
+            .query_async::<_, String>(&mut conn)
+            .await
+            .map_err(|e| reticulum_core::error::Error::RedisError(format!("Redis ping failed: {}", e)))?;
+
+        log::info!("Successfully connected to Redis at {}", config.url);
+
+        // Spawn a task to handle publishing messages
+        let client_clone = client.clone();
+        let config_clone = config.clone();
+        let _subscriber_task = Some(tokio::spawn(async move {
+            while let Some(msg) = message_receiver.recv().await {
+                if let Err(e) = Self::publish_message(&client_clone, &config_clone, &msg).await {
+                    log::error!("Failed to publish message: {}", e);
+                }
+            }
+        }));
+
+        Ok(Self {
+            config,
+            client,
+            _subscriber_task,
+        })
+    }
+
+    /// Publish a message to Redis
+    async fn publish_message(
+        client: &redis::Client,
+        config: &RedisConfig,
+        msg: &PubSubMessage,
+    ) -> Result<()> {
+        // Serialize message to JSON
+        let json_str = msg.to_json()
+            .map_err(|e| reticulum_core::error::Error::SerializationError(format!("Failed to serialize message: {}", e)))?;
+
+        // Build channel name: {prefix}:room:{room_id}
+        let channel = format!(
+            "{}:room:{}",
+            config.channel_prefix,
+            msg.room_id.replace('/', ":")
+        );
+
+        // Get async connection
+        let mut conn = client
+            .get_async_connection()
+            .await
+            .map_err(|e| reticulum_core::Error::RedisError(format!("Failed to get async connection: {}", e)))?;
+
+        // Publish to Redis channel
+        let _: () = redis::cmd("PUBLISH")
+            .arg(&channel)
+            .arg(&json_str)
+            .query_async(&mut conn)
+            .await
+            .map_err(|e| reticulum_core::Error::RedisError(format!("Failed to publish to Redis: {}", e)))?;
+
+        log::debug!(
+            "Published to Redis channel {}: {} bytes",
+            channel,
+            msg.data.len()
+        );
+
+        Ok(())
+    }
+
+    /// Subscribe to a Redis channel for room messages
+    pub async fn subscribe_room(
+        &self,
+        room_id: &str,
+        callback: impl Fn(serde_json::Value) + Send + Sync + 'static,
+    ) -> Result<JoinHandle<()>> {
+        let channel = format!(
+            "{}:room:{}",
+            self.config.channel_prefix,
+            room_id.replace('/', ":")
+        );
+
+        let client_clone = self.client.clone();
+        let channel_clone = channel.clone();
+
+        Ok(tokio::spawn(async move {
+            let pubsub = client_clone.as_pubsub();
+            let mut conn = match client_clone.get_async_connection().await {
+                Ok(c) => c,
+                Err(e) => {
+                    log::error!("Failed to get Redis connection for subscription: {}", e);
+                    return;
+                }
+            };
+
+            if let Err(e) = pubsub.subscribe(&channel_clone).async_query(&mut conn).await {
+                log::error!("Failed to subscribe to Redis channel {}: {}", channel_clone, e);
+                return;
+            }
+
+            log::info!("Subscribed to Redis channel: {}", channel_clone);
+
+            // Process messages
+            let msg_stream = pubsub.on_message();
+            while let Some(msg) = msg_stream.next().await {
+                match msg {
+                    redis::AsyncMessage::Data(data) => {
+                        if let Ok(value) = serde_json::from_slice(&data.get_payload_bytes()) {
+                            callback(value);
+                        }
+                    }
+                    redis::AsyncMessage::Subscribe(channel, count) => {
+                        log::debug!("Subscribed to {} (count: {})", channel, count);
+                    }
+                    redis::AsyncMessage::Unsubscribe(channel) => {
+                        log::debug!("Unsubscribed from {}", channel);
+                        break;
+                    }
+                    _ => {}
+                }
+            }
+        }))
+    }
+
+    /// Publish presence update for a user in a room
+    pub async fn publish_presence_update(
+        &self,
+        room_id: &str,
+        user_id: &str,
+        event: &str,
+    ) -> Result<()> {
+        let message = PubSubMessage {
+            room_id: room_id.to_string(),
+            message_type: PubSubMessageType::PresenceEvent,
+            data: serde_json::to_vec(&json!({
+                "user_id": user_id,
+                "event": event,
+            }))
+            .unwrap(),
+            exclude_connection: None,
+            timestamp: chrono::Utc::now().timestamp(),
+        };
+
+        Self::publish_message(&self.client, &self.config, &message).await
+    }
 }
 
 impl Default for RedisConfig {

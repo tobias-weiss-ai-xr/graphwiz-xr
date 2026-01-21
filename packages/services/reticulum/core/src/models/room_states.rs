@@ -1,6 +1,7 @@
 //! Room state model
 
 use sea_orm::entity::prelude::*;
+use sea_orm::{ActiveValue, DeleteResult, QuerySelect};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -32,7 +33,7 @@ impl ActiveModelBehavior for ActiveModel {}
 
 impl RoomStateModel {
     pub async fn find_by_room_id(db: &DatabaseConnection, room_id: &str) -> Result<Option<Model>, DbErr> {
-        RoomState::find()
+        Entity::find()
             .filter(Column::RoomId.eq(room_id))
             .one(db)
             .await
@@ -48,29 +49,29 @@ impl RoomStateModel {
     ) -> Result<Model, DbErr> {
         let now = chrono::Utc::now();
 
-        match RoomState::find()
+        match Entity::find()
             .filter(Column::RoomId.eq(room_id))
             .one(db)
             .await?
         {
             Some(existing) => {
                 let mut active_model: ActiveModel = existing.into();
-                active_model.name = Set(name);
-                active_model.description = Set(description);
-                active_model.entities = Set(entities);
-                active_model.environment = Set(environment);
-                active_model.last_modified = Set(now.into());
+                active_model.name = ActiveValue::Set(name);
+                active_model.description = ActiveValue::Set(description);
+                active_model.entities = ActiveValue::Set(entities);
+                active_model.environment = ActiveValue::Set(environment);
+                active_model.last_modified = ActiveValue::Set(now.into());
                 active_model.update(db).await
             }
             None => {
                 let new_room_state = ActiveModel {
-                    id: Set(Uuid::new_v4()),
-                    room_id: Set(room_id.to_string()),
-                    name,
-                    description,
-                    entities: Set(entities),
-                    environment: Set(environment),
-                    last_modified: Set(now.into()),
+                    id: ActiveValue::Set(Uuid::new_v4()),
+                    room_id: ActiveValue::Set(room_id.to_string()),
+                    name: ActiveValue::Set(name),
+                    description: ActiveValue::Set(description),
+                    entities: ActiveValue::Set(entities),
+                    environment: ActiveValue::Set(environment),
+                    last_modified: ActiveValue::Set(now.into()),
                 };
                 new_room_state.insert(db).await
             }
@@ -78,7 +79,7 @@ impl RoomStateModel {
     }
 
     pub async fn delete_by_room_id(db: &DatabaseConnection, room_id: &str) -> Result<DeleteResult, DbErr> {
-        RoomState::delete_many()
+        Entity::delete_many()
             .filter(Column::RoomId.eq(room_id))
             .exec(db)
             .await

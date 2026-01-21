@@ -84,8 +84,9 @@ impl LogStore {
         entries.push(entry);
 
         // Trim to max entries if needed
-        if entries.len() > self.max_entries {
-            entries.drain(0..entries.len() - self.max_entries);
+        let len = entries.len();
+        if len > self.max_entries {
+            entries.drain(0..len - self.max_entries);
         }
     }
 
@@ -209,6 +210,11 @@ pub async fn add_log(service: &str, level: LogLevel, message: &str, context: Opt
     store.add_entry(entry).await;
 }
 
+/// Visitor for extracting log message from tracing events
+struct LogVisitor<'a> {
+    message: &'a mut String,
+}
+
 /// Custom tracing layer that captures logs
 pub struct LogCaptureLayer {
     service: String,
@@ -232,28 +238,27 @@ where
         _ctx: tracing_subscriber::layer::Context<'_, S>,
     ) {
         let mut message = String::new();
-        event.record(&mut LogVisitor(&mut message));
+        event.record(&mut LogVisitor { message: &mut message });
 
         let level = LogLevel::from_tracing_level(&event.metadata().level());
 
         // Spawn async task to add log (non-blocking)
         let service = self.service.clone();
-        let message_clone = message.clone();
         tokio::spawn(async move {
-            add_log(&service, level, &message_clone, None).await;
+            add_log(&service, level, &message, None).await;
         });
     }
 }
 
+/// Visitor for extracting log message from tracing events
 struct LogVisitor<'a> {
-    field: &'a mut String,
+    message: &'a mut String,
 }
 
 impl<'a> tracing::field::Visit for LogVisitor<'a> {
     fn record_debug(&mut self, _field: &tracing::field::Field, value: &dyn std::fmt::Debug) {
-        if _field.is_empty() {
-            *_field = format!("{:?}", value);
+        if _field.name().is_empty() {
+            *self.message = format!("{:?}", value);
         }
-    }
     }
 }

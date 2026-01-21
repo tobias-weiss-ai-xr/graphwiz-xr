@@ -45,14 +45,14 @@ impl CacheManager {
     }
 
     /// Get cached value
-    pub async fn get<T: for<'de> Deserialize<'de>>(&self, key: &str) -> Result<Option<T>> {
+    pub async fn get<T: for<'de> Deserialize<'de> + Serialize>(&self, key: &str) -> Result<Option<T>> {
         if let Some(ref client) = self.client {
             let mut conn = client.clone();
-            let value: Option<String> = conn.get(key).await
+            let value: Option<String> = redis::cmd("GET").arg(key).query_async(&mut conn).await
                 .context(format!("Failed to get cache key: {}", key))?;
 
-            if let Some(json) = value {
-                let entry: CacheEntry<T> = serde_json::from_str(&json)
+            if let Some(ref json) = value {
+                let entry: CacheEntry<T> = serde_json::from_str(json)
                     .context("Failed to deserialize cache entry")?;
 
                 // Check expiration
@@ -87,8 +87,13 @@ impl CacheManager {
                 .context("Failed to serialize cache entry")?;
 
             let mut conn = client.clone();
-            conn.set_ex(key, json, ttl.as_secs() as usize).await
+            redis::cmd("SET").arg(key).arg(json).query_async(&mut conn).await
                 .context(format!("Failed to set cache key: {}", key))?;
+
+            if let Some(ttl) = ttl {
+                redis::cmd("EXPIRE").arg(key).arg(ttl.as_secs()).query_async(&mut conn).await
+                    .context(format!("Failed to set expiration for cache key: {}", key))?;
+            }
         }
 
         Ok(())
@@ -98,7 +103,7 @@ impl CacheManager {
     pub async fn delete(&self, key: &str) -> Result<()> {
         if let Some(ref client) = self.client {
             let mut conn = client.clone();
-            conn.del(key).await
+            redis::cmd("DEL").arg(key).query_async(&mut conn).await
                 .context(format!("Failed to delete cache key: {}", key))?;
         }
 
@@ -109,7 +114,7 @@ impl CacheManager {
     pub async fn clear(&self) -> Result<()> {
         if let Some(ref client) = self.client {
             let mut conn = client.clone();
-            redis::cmd("FLUSHDB").query_async(&mut conn).await
+            redis::cmd("FLUSHDB").query_async::<_, ()>(&mut conn).await
                 .context("Failed to clear Redis cache")?;
         }
 
@@ -134,10 +139,10 @@ impl CacheManager {
                 let json = serde_json::to_string(&entry)
                     .context("Failed to serialize cache entry")?;
 
-                pipe.set_ex(key, json, ttl.as_secs() as usize);
+                pipe.set_ex(key, json, ttl.as_secs() as u64);
             }
 
-            pipe.query_async(&mut conn).await
+            pipe.query_async::<_, ()>(&mut conn).await
                 .context("Failed to set multiple cache keys")?;
         }
 
@@ -145,15 +150,15 @@ impl CacheManager {
     }
 
     /// Get multiple values
-    pub async fn get_many<T: for<'de> Deserialize<'de>>(&self, keys: Vec<&str>) -> Result<Vec<Option<T>>> {
+    pub async fn get_many<T: for<'de> Deserialize<'de> + Serialize + Clone>(&self, keys: Vec<&str>) -> Result<Vec<Option<T>>> {
         if let Some(ref client) = self.client {
             let mut conn = client.clone();
             let mut results = Vec::new();
 
             for key in keys {
-                let value: Option<String> = conn.get(key).await.ok().flatten();
-                if let Some(json) = value {
-                    let entry: CacheEntry<T> = serde_json::from_str(&json).ok();
+                let value: Option<String> = redis::AsyncCommands::get(&mut conn, key).await.ok().flatten();
+                if let Some(ref json) = value {
+                    let entry: Option<CacheEntry<T>> = serde_json::from_str(json).ok();
                     if let Some(ref entry) = entry {
                         // Check expiration
                         if let Some(expires_at) = entry.expires_at {

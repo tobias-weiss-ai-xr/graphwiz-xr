@@ -106,10 +106,12 @@ impl From<Model> for UploadSession {
         let uploaded_chunks: Vec<i32> = model
             .uploaded_chunks
             .as_array()
-            .into_iter()
-            .filter_map(|v: i32| v.as_i64())
-            .map(|i: i as i32)
-            .collect()
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|v| v.as_i64())
+                    .map(|i| i as i32)
+                    .collect()
+            })
             .unwrap_or_default();
 
         Self {
@@ -210,10 +212,8 @@ impl UploadSessionModel {
         let now = chrono::Utc::now().naive_utc();
         let completed_at = if is_complete { Some(now) } else { None };
 
-        // Manually convert Vec<i32> to JSON string for error reporting
-        let uploaded_chunks_str = format!("{:?}", uploaded_chunks);
-        let uploaded_chunks_json = serde_json::json!(uploaded_chunks_str)
-            .map_err(|_| Error::Serialization(format!("Failed to serialize uploaded_chunks: {}", uploaded_chunks_str)))?;
+        // Convert uploaded chunks to JSON value
+        let uploaded_chunks_json = serde_json::json!(uploaded_chunks);
 
         let updated = Entity::update_many()
             .filter(Column::SessionId.eq(session_id))

@@ -1,6 +1,6 @@
 //! Simple instancing utility for 3D optimization
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 
 interface InstancedProps {
@@ -41,7 +41,11 @@ export function useInstancedMeshes(props: InstancedProps[]) {
           mesh.geometry.dispose();
         }
         if (mesh && mesh.material) {
-          mesh.material.dispose();
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((mat: THREE.Material) => mat.dispose());
+          } else {
+            mesh.material.dispose();
+          }
         }
         meshesRef.current.delete(key);
       }

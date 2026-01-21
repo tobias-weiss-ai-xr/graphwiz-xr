@@ -25,7 +25,7 @@ export function RoomButton({
         position: 'absolute',
         bottom: 16,
         right: 16,
-        zIndex: 100,
+        zIndex: 105,
         padding: '12px 16px',
         background: currentRoomId ? 'rgba(76, 175, 80, 0.8)' : 'rgba(33, 150, 243, 0.8)',
         border: 'none',

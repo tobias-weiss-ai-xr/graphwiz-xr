@@ -12,7 +12,8 @@ path = "src/bin/main.rs"
 reticulum-core = { path = "../core" }
 graphwiz-protocol = { path = "../../../shared/protocol" }
 
-# Agent Looper (optional)
+# Redis
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
 
 # Workspace
 tokio.workspace = true
@@ -36,8 +37,7 @@ futures = "0.3"
 actix-ws = "0.3"
 tokio-tungstenite = "0.21"
 
-# Networking & WebTransport
-wtransport = "0.1"
+# Networking & WebTransport - using local implementation instead of external wtransport
 
 # Protocol
 prost.workspace = true

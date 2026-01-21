@@ -23,6 +23,7 @@ pub struct SessionManager {
     room_sessions: Arc<RwLock<HashMap<String, Vec<String>>>>, // room_id -> session_ids
     pending_messages: Arc<RwLock<HashMap<String, Vec<serde_json::Value>>>>, // session_id -> pending messages
     locked_rooms: Arc<RwLock<HashMap<String, bool>>>, // room_id -> is_locked
+    flush_tracker: Arc<RwLock<FlushTracker>>, // Track flush times per session
     batch_size: usize,
     max_batch_size: usize,           // Maximum allowed batch size
     batch_timeout: Duration,
@@ -42,6 +43,28 @@ pub struct QueueStats {
     pub queue_depth: usize,
     pub is_rate_limited: bool,
     pub last_flush: DateTime<Utc>,
+}
+
+/// Track flush times per session
+#[derive(Clone)]
+struct FlushTracker {
+    last_flush_time: HashMap<String, DateTime<Utc>>, // session_id -> last_flush
+}
+
+impl FlushTracker {
+    fn new() -> Self {
+        Self {
+            last_flush_time: HashMap::new(),
+        }
+    }
+
+    fn update(&mut self, session_id: &str) {
+        self.last_flush_time.insert(session_id.to_string(), chrono::Utc::now());
+    }
+
+    fn get_last_flush(&self, session_id: &str) -> Option<DateTime<Utc>> {
+        self.last_flush_time.get(session_id).cloned()
+    }
 }
 
 impl RateLimiter {
@@ -85,8 +108,9 @@ impl SessionManager {
             room_sessions: Arc::new(RwLock::new(HashMap::new())),
             pending_messages: Arc::new(RwLock::new(HashMap::new())),
             locked_rooms: Arc::new(RwLock::new(HashMap::new())),
+            flush_tracker: Arc::new(RwLock::new(FlushTracker::new())),
             batch_size: 50, // Default batch size
-            max_batch_size: 100, // Maximum allowed batch size (configurable)
+            max_batch_size:100, // Maximum allowed batch size (configurable)
             batch_timeout: Duration::from_millis(50), // Flush every 50ms
             max_queue_depth: 1000, // Maximum queue depth per session
             rate_limits: Arc::new(RwLock::new(HashMap::new())),
@@ -107,6 +131,7 @@ impl SessionManager {
             room_sessions: Arc::new(RwLock::new(HashMap::new())),
             pending_messages: Arc::new(RwLock::new(HashMap::new())),
             locked_rooms: Arc::new(RwLock::new(HashMap::new())),
+            flush_tracker: Arc::new(RwLock::new(FlushTracker::new())),
             batch_size,
             max_batch_size,
             batch_timeout,
@@ -255,6 +280,10 @@ impl SessionManager {
             if !messages.is_empty() {
                 log::info!("Flushing {} messages for session {}", messages.len(), session_id);
 
+                // Update flush tracker
+                let mut flush_tracker = self.flush_tracker.write().await;
+                flush_tracker.update(session_id);
+
                 // In a real implementation, send to clients here
                 // For now, we just log them
                 for msg in messages {
@@ -276,6 +305,10 @@ impl SessionManager {
         let messages = pending.get(session_id);
 
         if let Some(msgs) = messages {
+            let flush_tracker = self.flush_tracker.read().await;
+            let last_flush = flush_tracker.get_last_flush(session_id)
+                .unwrap_or(chrono::Utc::now());
+
             Some(QueueStats {
                 queue_depth: msgs.len(),
                 is_rate_limited: {
@@ -284,7 +317,7 @@ impl SessionManager {
                         .map(|rl| rl.message_count >= rl.max_messages)
                         .unwrap_or(false)
                 },
-                last_flush: chrono::Utc::now(), // TODO: Track actual flush times
+                last_flush,
             })
         } else {
             None
@@ -362,174 +395,6 @@ impl SessionManager {
             }
         })
     }
-}
-
-pub struct SessionManager {
-    sessions: Arc<RwLock<HashMap<String, ClientSession>>>,
-    room_sessions: Arc<RwLock<HashMap<String, Vec<String>>>>, // room_id -> session_ids
-}
-
-impl SessionManager {
-    pub fn new() -> Self {
-        Self {
-            sessions: Arc::new(RwLock::new(HashMap::new())),
-            room_sessions: Arc::new(RwLock::new(HashMap::new())),
-        }
-    }
-
-    /// Register a new client session
-    pub async fn register_session(&self, session: ClientSession) -> Result<()> {
-        let mut sessions = self.sessions.write().await;
-        let session_id = session.session_id.clone();
-
-        // Add to sessions map
-        sessions.insert(session_id.clone(), session.clone());
-
-        // Add to room if applicable
-        if let Some(ref room_id) = session.room_id {
-            let mut room_sessions = self.room_sessions.write().await;
-            room_sessions
-                .entry(room_id.clone())
-                .or_insert_with(Vec::new)
-                .push(session_id);
-        }
-
-        Ok(())
-    }
-
-    /// Unregister a session
-    pub async fn unregister_session(&self, session_id: &str) -> Result<Option<ClientSession>> {
-        let mut sessions = self.sessions.write().await;
-
-        if let Some(session) = sessions.remove(session_id) {
-            // Remove from room_sessions
-            if let Some(room_id) = &session.room_id {
-                let mut room_sessions = self.room_sessions.write().await;
-                if let Some(session_ids) = room_sessions.get_mut(room_id) {
-                    session_ids.retain(|id| id != session_id);
-                    if session_ids.is_empty() {
-                        room_sessions.remove(room_id);
-                    }
-                }
-            }
-
-            Ok(Some(session))
-        } else {
-            Ok(None)
-        }
-    }
-
-    /// Get a session by ID
-    pub async fn get_session(&self, session_id: &str) -> Option<ClientSession> {
-        let sessions = self.sessions.read().await;
-        sessions.get(session_id).cloned()
-    }
-
-    /// Get all sessions in a room
-    pub async fn get_room_sessions(&self, room_id: &str) -> Vec<ClientSession> {
-        let session_ids = {
-            let room_sessions = self.room_sessions.read().await;
-            room_sessions.get(room_id).cloned().unwrap_or_default()
-        };
-
-        let sessions = self.sessions.read().await;
-        session_ids
-            .iter()
-            .filter_map(|id| sessions.get(id).cloned())
-            .collect()
-    }
-
-    /// Update session heartbeat
-    pub async fn update_heartbeat(&self, session_id: &str) -> Result<()> {
-        let mut sessions = self.sessions.write().await;
-        if let Some(session) = sessions.get_mut(session_id) {
-            session.last_heartbeat = chrono::Utc::now();
-        }
-        Ok(())
-    }
-
-    /// Clean up stale sessions
-    pub async fn cleanup_stale_sessions(&self, timeout_secs: i64) -> Result<Vec<String>> {
-        let cutoff = chrono::Utc::now() - chrono::Duration::seconds(timeout_secs);
-        let mut stale_session_ids = Vec::new();
-
-        {
-            let sessions = self.sessions.read().await;
-            for (session_id, session) in sessions.iter() {
-                if session.last_heartbeat < cutoff {
-                    stale_session_ids.push(session_id.clone());
-                }
-            }
-        }
-
-        // Unregister stale sessions
-        for session_id in &stale_session_ids {
-            self.unregister_session(session_id).await?;
-        }
-
-        Ok(stale_session_ids)
-    }
-
-    // ============== Moderation Methods ==============
-
-    /// Mute/unmute a player
-    pub async fn mute_player(&self, session_id: &str, is_muted: bool) -> Result<()> {
-        let mut sessions = self.sessions.write().await;
-        if let Some(session) = sessions.get_mut(session_id) {
-            session.is_muted = is_muted;
-            Ok(())
-        } else {
-            Err(eyre::eyre!("Session not found: {}", session_id))
-        }
-    }
-
-    /// Check if a room is locked
-    pub async fn is_room_locked(&self, room_id: &str) -> bool {
-        let locked_rooms = self.locked_rooms.read().await;
-        locked_rooms.get(room_id).copied().unwrap_or(false)
-    }
-
-    /// Lock/unlock a room
-    pub async fn set_room_locked(&self, room_id: &str, is_locked: bool) -> Result<()> {
-        let mut locked_rooms = self.locked_rooms.write().await;
-        locked_rooms.insert(room_id.to_string(), is_locked);
-        Ok(())
-    }
-
-    /// Check if a session is muted
-    pub async fn is_session_muted(&self, session_id: &str) -> bool {
-        let sessions = self.sessions.read().await;
-        sessions.get(session_id).map(|s| s.is_muted).unwrap_or(false)
-    }
-
-    /// Broadcast message to all sessions in a room
-    pub async fn broadcast_to_room(&self, room_id: &str, message: serde_json::Value) -> Result<usize> {
-        let session_ids = {
-            let room_sessions = self.room_sessions.read().await;
-            room_sessions.get(room_id).cloned().unwrap_or_default()
-        };
-
-        if session_ids.is_empty() {
-            return Ok(0);
-        }
-
-        // Add message to each session's batch
-        for session_id in &session_ids {
-            if let Err(e) = self.add_to_batch(session_id, message.clone()).await {
-                log::error!("Failed to add message to batch for session {}: {}", session_id, e);
-            }
-        }
-
-        Ok(session_ids.len())
-    }
-
-    /// Send message to a specific session
-    pub async fn send_to_session(&self, session_id: &str, message: serde_json::Value) -> Result<()> {
-        self.add_to_batch(session_id, message).await
-            .map_err(|e| eyre::eyre!("Failed to send message: {}", e))?;
-        Ok(())
-    }
-
 }
 
 impl Default for SessionManager {

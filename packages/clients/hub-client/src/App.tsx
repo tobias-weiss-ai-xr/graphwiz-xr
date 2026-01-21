@@ -196,68 +196,75 @@ function App() {
     isDrawing: false
   });
 
-  // Room manager
-  const roomManager = useRoomManager(client);
-
-  // Grab system state
-  const grabbedEntityId = useRef<string | null>(null);
-
-  // Player movement state
+  // Player state
   const [playerPosition, setPlayerPosition] = useState<[number, number, number]>([0, 0, 0]);
-  const [playerRotation, setPlayerRotation] = useState<number>(0); // Y-axis rotation (from Q/E)
-  const [cameraRotation, setCameraRotation] = useState<number>(0); // Camera azimuth angle (from mouse)
-  const keysPressed = useRef<Set<string>>(new Set());
-  const movementSpeed = 0.1;
-  const rotationSpeed = 0.03;
-
-  // Interpolation state for remote players
+  const [playerRotation, setPlayerRotation] = useState(0);
   const [interpolatedPositions, setInterpolatedPositions] = useState<
     Map<string, [number, number, number]>
   >(new Map());
+  const keysPressed = useRef<Set<string>>(new Set());
+  const cameraRotation = useRef(0);
+  const movementSpeed = 0.1;
+  const rotationSpeed = 0.05;
+  const interpolationFactor = 0.15;
+
+  // Physics state
+  const grabbedEntityId = useRef<string | null>(null);
+
+  // Interpolation refs
   const targetPositionsRef = useRef<Map<string, [number, number, number]>>(new Map());
   const lastUpdateTimeRef = useRef<Map<string, number>>(new Map());
-  const interpolationFactor = 0.15; // 15% interpolation per frame (smooth)
 
-  // Initialize WebSocket connection
+  // Room manager
+  const roomManager = useRoomManager(client);
+
+  // Initialize WebSocket connection - create ONLY ONCE, reuse across re-renders
+  const wsClient = useRef<WebSocketClient | null>(null);
+  const userId = useRef<string>(`user-${Math.floor(Math.random() * 10000)}`);
+  const displayName = useRef<string>(`Player-${Math.floor(Math.random() * 1000)}`);
+
   useEffect(() => {
     // Use environment variable or default to 8003 presence service port
     const presenceUrl = import.meta.env.VITE_PRESENCE_WS_URL || 'ws://localhost:8003';
     console.log('[App] Connecting to presence service at:', presenceUrl);
 
-    const wsClient = new WebSocketClient({
-      presenceUrl,
-      roomId: import.meta.env.VITE_ROOM_ID || 'lobby',
-      userId: `user-${Math.floor(Math.random() * 10000)}`,
-      displayName: `Player-${Math.floor(Math.random() * 1000)}`
-    });
-
-    setClient(wsClient);
-    setConnecting(true);
-
-    // Connect to server
-    wsClient
-      .connect()
-      .then(() => {
-        setConnected(true);
-        setConnecting(false);
-        const clientId = wsClient.getClientId();
-        console.log('[App] Connected to presence server');
-        console.log('[App] Client ID:', clientId);
-        if (clientId) {
-          setMyClientId(clientId);
-        } else {
-          console.error('[App] Client ID is null after connection!');
-        }
-      })
-      .catch((err) => {
-        console.error('[App] Failed to connect:', err);
-        setError(err instanceof Error ? err.message : String(err));
-        setConnecting(false);
+    // Create WebSocketClient only if it doesn't exist
+    if (!wsClient.current) {
+      wsClient.current = new WebSocketClient({
+        presenceUrl,
+        roomId: import.meta.env.VITE_ROOM_ID || 'lobby',
+        userId: userId.current,
+        displayName: displayName.current
       });
 
+      setClient(wsClient.current);
+      setConnecting(true);
+
+      // Connect to server
+      wsClient.current
+        ?.connect()
+        .then(() => {
+          setConnected(true);
+          setConnecting(false);
+          const clientId = wsClient.current?.getClientId();
+          console.log('[App] Connected to presence server');
+          console.log('[App] Client ID:', clientId);
+          if (clientId) {
+            setMyClientId(clientId);
+          } else {
+            console.error('[App] Client ID is null after connection!');
+          }
+        })
+        .catch((err) => {
+          console.error('[App] Failed to connect:', err);
+          setError(err instanceof Error ? err.message : String(err));
+          setConnecting(false);
+        });
+    }
+
     // Set up message handlers - use function to get current client ID
-    const getMyClientId = () => wsClient.getClientId() || myClientId;
-    const unsubscribePresence = wsClient.on(MessageType.PRESENCE_JOIN, (message: any) => {
+    const getMyClientId = () => client?.getClientId() || myClientId;
+    const unsubscribePresence = wsClient.current.on(MessageType.PRESENCE_JOIN, (message: any) => {
       if (message.payload) {
         setPresenceEvents((prev) => {
           const filtered = prev.filter((e) => e.clientId !== message.payload.clientId);
@@ -270,7 +277,7 @@ function App() {
       }
     });
 
-    const unsubscribeChat = wsClient.on(MessageType.CHAT_MESSAGE, (message: any) => {
+    const unsubscribeChat = wsClient.current.on(MessageType.CHAT_MESSAGE, (message: any) => {
       if (message.payload) {
         setMessages((prev) => [
           ...prev,
@@ -282,7 +289,7 @@ function App() {
       }
     });
 
-    const unsubscribeEmoji = wsClient.on(MessageType.EMOJI_REACTION, (message: any) => {
+    const unsubscribeEmoji = wsClient.current.on(MessageType.EMOJI_REACTION, (message: any) => {
       if (message.payload) {
         const payload = message.payload as EmojiReaction;
         const newEmoji: FloatingEmojiData = {
@@ -309,34 +316,37 @@ function App() {
     });
 
     // Handle presence updates (including avatar updates)
-    const unsubscribePresenceUpdate = wsClient.on(MessageType.PRESENCE_UPDATE, (message: any) => {
-      console.log('[App] ========== PRESENCE_UPDATE RECEIVED ==========');
-      console.log('[App] Presence update message:', message);
+    const unsubscribePresenceUpdate = wsClient.current.on(
+      MessageType.PRESENCE_UPDATE,
+      (message: any) => {
+        console.log('[App] ========== PRESENCE_UPDATE RECEIVED ==========');
+        console.log('[App] Presence update message:', message);
 
-      if (message.payload) {
-        console.log('[App] Presence update for client:', message.payload.clientId);
+        if (message.payload) {
+          console.log('[App] Presence update for client:', message.payload.clientId);
 
-        setPresenceEvents((prev) => {
-          const existing = prev.find((e) => e.clientId === message.payload.clientId);
-          if (existing) {
-            console.log('[App] Updating existing presence for', message.payload.clientId);
-            // Update existing presence
-            return prev.map((e) =>
-              e.clientId === message.payload.clientId ? { ...e, data: message.payload } : e
-            );
-          } else {
-            console.log('[App] Adding new presence for', message.payload.clientId);
-            // Add new presence
-            return [...prev, { clientId: message.payload.clientId, data: message.payload }];
-          }
-        });
-      } else {
-        console.log('[App] PRESENCE_UPDATE missing payload');
+          setPresenceEvents((prev) => {
+            const existing = prev.find((e) => e.clientId === message.payload.clientId);
+            if (existing) {
+              console.log('[App] Updating existing presence for', message.payload.clientId);
+              // Update existing presence
+              return prev.map((e) =>
+                e.clientId === message.payload.clientId ? { ...e, data: message.payload } : e
+              );
+            } else {
+              console.log('[App] Adding new presence for', message.payload.clientId);
+              // Add new presence
+              return [...prev, { clientId: message.payload.clientId, data: message.payload }];
+            }
+          });
+        } else {
+          console.log('[App] PRESENCE_UPDATE missing payload');
+        }
       }
-    });
+    );
 
     // Handle entity spawn (create 3D avatars for other players)
-    const unsubscribeEntitySpawn = wsClient.on(MessageType.ENTITY_SPAWN, (message: any) => {
+    const unsubscribeEntitySpawn = wsClient.current.on(MessageType.ENTITY_SPAWN, (message: any) => {
       console.log('[App] ========== ENTITY_SPAWN RECEIVED ==========');
       console.log('[App] Full message:', JSON.stringify(message, null, 2));
       console.log('[App] Message payload:', message.payload);
@@ -399,55 +409,58 @@ function App() {
 
     // Handle position updates (update avatar positions from network)
     let positionUpdateCount = 0;
-    const unsubscribePositionUpdate = wsClient.on(MessageType.POSITION_UPDATE, (message: any) => {
-      const myId = getMyClientId();
+    const unsubscribePositionUpdate = wsClient.current.on(
+      MessageType.POSITION_UPDATE,
+      (message: any) => {
+        const myId = getMyClientId();
 
-      if (message.payload && message.payload.entityId) {
-        const entityId = message.payload.entityId;
-        const position = message.payload.position;
+        if (message.payload && message.payload.entityId) {
+          const entityId = message.payload.entityId;
+          const position = message.payload.position;
 
-        // Skip if it's the local player
-        if (entityId === myId) {
-          return;
-        }
+          // Skip if it's the local player
+          if (entityId === myId) {
+            return;
+          }
 
-        // Update target position for interpolation
-        if (position && typeof position.x === 'number') {
-          const newPos: [number, number, number] = [position.x, position.y || 0, position.z || 0];
+          // Update target position for interpolation
+          if (position && typeof position.x === 'number') {
+            const newPos: [number, number, number] = [position.x, position.y || 0, position.z || 0];
 
-          // Store under entityId for interpolation
-          targetPositionsRef.current.set(entityId, newPos);
+            // Store under entityId for interpolation
+            targetPositionsRef.current.set(entityId, newPos);
 
-          // Also update presenceEvents state to trigger re-render
-          setPresenceEvents((prev) => {
-            return prev.map((p) => {
-              // Check if this presence event matches the entity
-              // We need to match by checking if this entity's position is being updated
-              const hasMatchingEntityId = p.clientId === entityId;
-              if (hasMatchingEntityId) {
-                return {
-                  ...p,
-                  data: {
-                    ...p.data,
-                    position: { x: position.x, y: position.y || 0, z: position.z || 0 }
-                  }
-                };
-              }
-              return p;
+            // Also update presenceEvents state to trigger re-render
+            setPresenceEvents((prev) => {
+              return prev.map((p) => {
+                // Check if this presence event matches the entity
+                // We need to match by checking if this entity's position is being updated
+                const hasMatchingEntityId = p.clientId === entityId;
+                if (hasMatchingEntityId) {
+                  return {
+                    ...p,
+                    data: {
+                      ...p.data,
+                      position: { x: position.x, y: position.y || 0, z: position.z || 0 }
+                    }
+                  };
+                }
+                return p;
+              });
             });
-          });
 
-          // Log every 60 updates (~3 seconds)
-          positionUpdateCount++;
-          if (positionUpdateCount % 60 === 0) {
-            console.log(`[App] Received ${positionUpdateCount} position updates for ${entityId}`);
+            // Log every 60 updates (~3 seconds)
+            positionUpdateCount++;
+            if (positionUpdateCount % 60 === 0) {
+              console.log(`[App] Received ${positionUpdateCount} position updates for ${entityId}`);
+            }
           }
         }
       }
-    });
+    );
 
     // Handle OBJECT_GRAB messages
-    const unsubscribeObjectGrab = wsClient.on(MessageType.OBJECT_GRAB, (message: any) => {
+    const unsubscribeObjectGrab = wsClient.current.on(MessageType.OBJECT_GRAB, (message: any) => {
       console.log('[App] ========== OBJECT_GRAB RECEIVED ==========');
       if (message.payload) {
         const { entityId, clientId } = message.payload;
@@ -461,18 +474,28 @@ function App() {
     });
 
     // Handle OBJECT_RELEASE messages
-    const unsubscribeObjectRelease = wsClient.on(MessageType.OBJECT_RELEASE, (message: any) => {
-      console.log('[App] ========== OBJECT_RELEASE RECEIVED ==========');
-      if (message.payload) {
-        const { entityId, clientId, velocity } = message.payload;
-        console.log('[App] Entity', entityId, 'released by', clientId, 'with velocity:', velocity);
+    const unsubscribeObjectRelease = wsClient.current.on(
+      MessageType.OBJECT_RELEASE,
+      (message: any) => {
+        console.log('[App] ========== OBJECT_RELEASE RECEIVED ==========');
+        if (message.payload) {
+          const { entityId, clientId, velocity } = message.payload;
+          console.log(
+            '[App] Entity',
+            entityId,
+            'released by',
+            clientId,
+            'with velocity:',
+            velocity
+          );
 
-        // Clear grab state
-        if (grabbedEntityId.current === entityId) {
-          grabbedEntityId.current = null;
+          // Clear grab state
+          if (grabbedEntityId.current === entityId) {
+            grabbedEntityId.current = null;
+          }
         }
       }
-    });
+    );
 
     // Cleanup on unmount
     return () => {
@@ -484,7 +507,7 @@ function App() {
       unsubscribePositionUpdate();
       unsubscribeObjectGrab();
       unsubscribeObjectRelease();
-      wsClient.disconnect();
+      wsClient.current?.disconnect();
     };
   }, []);
 
@@ -608,9 +631,15 @@ function App() {
 
         // Calculate forward/backward and left/right based on CAMERA rotation (where player is looking)
         // Use cameraRotation for WASD movement so player moves in direction they're facing
-        const forward = [Math.sin(cameraRotation), Math.cos(cameraRotation)] as [number, number];
+        const forward = [Math.sin(cameraRotation.current), Math.cos(cameraRotation.current)] as [
+          number,
+          number
+        ];
         // Right vector (perpendicular to forward)
-        const right = [Math.cos(cameraRotation), -Math.sin(cameraRotation)] as [number, number];
+        const right = [Math.cos(cameraRotation.current), -Math.sin(cameraRotation.current)] as [
+          number,
+          number
+        ];
 
         // WASD movement
         if (keysPressed.current.has('w')) {
@@ -1307,7 +1336,9 @@ function App() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
             <div>
               <span style={{ color: '#666' }}>FPS:</span>{' '}
-              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>{fps.toFixed(1)}</span>
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>
+                {fpsRef.current.toFixed(1)}
+              </span>
             </div>
             <div>
               <span style={{ color: '#666' }}>Entities:</span>{' '}
@@ -1315,12 +1346,14 @@ function App() {
             </div>
             <div>
               <span style={{ color: '#666' }}>Remote Players:</span>{' '}
-              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>{remotePlayersCount}</span>
+              <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>
+                {remotePlayersCountRef.current}
+              </span>
             </div>
             <div>
               <span style={{ color: '#666' }}>Network Latency:</span>{' '}
               <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>
-                {lastNetworkLatency.toFixed(0)}ms
+                {lastNetworkLatencyRef.current.toFixed(0)}ms
               </span>
             </div>
           </div>
@@ -1375,7 +1408,7 @@ function App() {
           targetPosition={playerPosition}
           targetRotation={playerRotation}
           enabled={true}
-          onCameraRotationChange={setCameraRotation}
+          onCameraRotationChange={(rotation: number) => (cameraRotation.current = rotation)}
         />
 
         {/* Lighting */}

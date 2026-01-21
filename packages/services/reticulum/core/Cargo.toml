@@ -32,6 +32,9 @@ argon2.workspace = true
 # Caching
 redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
 
+# Static initialization
+lazy_static = "1.4"
+
 # Local dependencies
 reticulum-migrations = { path = "migrations" }
 

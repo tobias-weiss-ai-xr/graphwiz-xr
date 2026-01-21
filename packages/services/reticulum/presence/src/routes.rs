@@ -9,6 +9,7 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route("/health", web::get().to(handlers::health))
         // Connection routes
         .route("/connect", web::post().to(handlers::connect))
+        .route("/webtransport/connect", web::post().to(handlers::connect_webtransport))
         // Room presence
         .route("/rooms/{room_id}/clients", web::get().to(handlers::get_room_clients))
         // WebSocket routes
@@ -29,4 +30,4 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route("/moderation/kick", web::post().to(moderation_handlers::kick_player))
         .route("/moderation/mute", web::post().to(moderation_handlers::mute_player))
         .route("/moderation/lock", web::post().to(moderation_handlers::lock_room));
-    }
+}

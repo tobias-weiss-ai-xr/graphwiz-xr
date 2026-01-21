@@ -9,12 +9,6 @@ use std::sync::Arc;
 use tokio::sync::{mpsc, RwLock};
 use uuid::Uuid;
 
-// Production-ready features - temporarily disabled
-// use crate::auth::{validate_websocket_auth, WsAuthContext};
-// use crate::rate_limit::MetricRateLimiter;
-// use crate::metrics::PerformanceMonitor;
-// use crate::queue::MessageQueue;
-
 /// WebSocket message types
 #[derive(Clone, Debug)]
 pub enum WsMessage {
@@ -22,6 +16,97 @@ pub enum WsMessage {
     Binary(Vec<u8>),
     Close,
 }
+
+/// WebSocket connection info
+#[derive(Clone)]
+pub struct WebSocketConnection {
+    pub id: String,
+    pub room_id: Option<String>,
+    pub connected_at: chrono::DateTime<chrono::Utc>,
+    pub user_id: Option<String>,
+    pub client_id: Option<String>,
+}
+
+/// WebSocket connection manager
+#[derive(Clone)]
+pub struct WebSocketManager {
+    connections: Arc<RwLock<HashMap<String, mpsc::UnboundedSender<WsMessage>>>>,
+    connection_info: Arc<RwLock<HashMap<String, WebSocketConnection>>>,
+    room_connections: Arc<RwLock<HashMap<String, Vec<String>>>>,
+}
+
+impl WebSocketManager {
+    pub fn new() -> Self {
+        Self {
+            connections: Arc::new(RwLock::new(HashMap::new())),
+            connection_info: Arc::new(RwLock::new(HashMap::new())),
+            room_connections: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+
+    /// Add a new connection
+    pub async fn add_connection(
+        &self,
+        conn_id: String,
+        room_id: Option<String>,
+        user_id: Option<String>,
+        client_id: Option<String>,
+    ) -> mpsc::UnboundedReceiver<WsMessage> {
+        let (tx, rx) = mpsc::unbounded_channel();
+
+        // Store sender
+        let mut connections = self.connections.write().await;
+        connections.insert(conn_id.clone(), tx);
+
+        // Store connection info
+        let mut connection_info = self.connection_info.write().await;
+        connection_info.insert(
+            conn_id.clone(),
+            WebSocketConnection {
+                id: conn_id.clone(),
+                room_id: room_id.clone(),
+                connected_at: chrono::Utc::now(),
+                user_id,
+                client_id,
+            },
+        );
+
+        // Add to room if applicable
+        if let Some(room_id) = room_id {
+            let mut room_connections = self.room_connections.write().await;
+            room_connections
+                .entry(room_id.clone())
+                .or_insert_with(Vec::new)
+                .push(conn_id.clone());
+        }
+
+        rx
+    }
+
+    /// Remove a connection
+    pub async fn remove_connection(&self, conn_id: &str) -> Option<WebSocketConnection> {
+        let mut connections = self.connections.write().await;
+        connections.remove(conn_id);
+
+        // Remove from room
+        let mut connection_info = self.connection_info.write().await;
+        if let Some(conn) = connection_info.remove(conn_id) {
+            // Remove from room
+            if let Some(room_id) = &conn.room_id {
+                let mut room_connections = self.room_connections.write().await;
+                if let Some(conns) = room_connections.get_mut(room_id) {
+                    conns.retain(|id| id != conn_id);
+                    if conns.is_empty() {
+                        room_connections.remove(room_id);
+                    }
+                }
+            }
+        }
+        Some(conn)
+        else {
+            None
+        }
+    }
 
 /// WebSocket connection info
 #[derive(Clone)]

@@ -12,6 +12,7 @@ pub mod roles;
 pub mod room_states;
 
 pub use users::{User, UserModel};
+pub use users::Entity as UsersEntity;
 pub use rooms::{Room, RoomModel};
 pub use sessions::{Session, SessionModel};
 pub use entities::{EntityData, EntityModel, Vector3, Quaternion};
@@ -20,4 +21,4 @@ pub use magic_link_tokens::{MagicLinkTokenModel, Entity as MagicLinkTokenEntity,
 pub use assets::{Asset, AssetModel, AssetType};
 pub use upload_sessions::{UploadSession, UploadSessionModel, UploadStatus};
 pub use roles::{RoleAssignment, RoleModel, UserRole};
-pub use room_states::{RoomState as RoomStateModel, RoomStateModel as RoomStateDbModel};
+pub use room_states::{Model as RoomStateModel, RoomStateModel as RoomStateDbModel};
