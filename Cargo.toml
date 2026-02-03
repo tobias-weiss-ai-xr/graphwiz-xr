@@ -6,6 +6,7 @@ members = [
     "packages/services/reticulum/auth",
     "packages/services/reticulum/hub",
     "packages/services/reticulum/presence",
+    "packages/services/reticulum/storage",
     "packages/services/reticulum/sfu",
     "packages/services/reticulum/avatar",
 ]

@@ -1,57 +1,27 @@
 //! Storage backend abstraction for file operations
 //!
-//! Supports two backends:
-//! 1. Local filesystem (default, always available)
-//! 2. AWS S3 (optional, requires AWS credentials)
+//! Supports local filesystem storage (only backend available)
 //!
-//! To use S3 storage, set these environment variables:
-//! - AWS_REGION (e.g., us-east-1)
-//! - AWS_ACCESS_KEY_ID
-//! - AWS_SECRET_ACCESS_KEY
-//! - S3_BUCKET_NAME (optional, defaults to graphwiz-xr-assets)
-//! - USE_S3_STORAGE (true to enable S3, false to use local)
+//! To configure storage, set these environment variables:
+//! - STORAGE_BASE_PATH (defaults to ./storage)
 
 use async_trait::async_trait;
-use std::env;
 use std::path::Path;
 use uuid::Uuid;
-
-#[derive(Debug, Clone)]
-pub enum StorageBackendType {
-    Local,
-    S3,
-}
 
 /// Configuration for storage backend
 #[derive(Debug, Clone)]
 pub struct StorageConfig {
-    pub backend_type: StorageBackendType,
-    pub s3_bucket: Option<String>,
+    pub base_path: String,
 }
 
 impl StorageConfig {
     /// Create default storage configuration
     pub fn new() -> Self {
-        let use_s3 = std::env::var("USE_S3_STORAGE")
-            .unwrap_or_else(|_| "false".to_string())
-            == "true";
+        let base_path = std::env::var("STORAGE_BASE_PATH")
+            .unwrap_or_else(|_| "./storage".to_string());
 
-        let backend_type = if use_s3 {
-            StorageBackendType::S3
-        } else {
-            StorageBackendType::Local
-        };
-
-        let s3_bucket = if use_s3 {
-            std::env::var("S3_BUCKET_NAME").ok()
-        } else {
-            None
-        };
-
-        Self {
-            backend_type,
-            s3_bucket,
-        }
+        Self { base_path }
     }
 }
 
@@ -104,12 +74,34 @@ pub trait StorageBackend: Send + Sync {
 
     /// Check if a file exists
     async fn file_exists(&self, path: &str) -> StorageResult<bool>;
+
+    /// Clean up old temporary files
+    async fn cleanup_temp_files(&self);
+
+    /// Store a chunk for a chunked upload
+    async fn store_chunk(
+        &self,
+        owner_id: &str,
+        session_id: &str,
+        chunk_number: i32,
+        data: Vec<u8>,
+    ) -> StorageResult<String>;
+
+    /// Merge all chunks for a session into a final file
+    async fn merge_chunks(
+        &self,
+        owner_id: &str,
+        session_id: &str,
+    ) -> StorageResult<MergedFile>;
+
+/// Clean up all chunks for a session
+    async fn cleanup_chunks(&self, owner_id: &str, session_id: &str) -> StorageResult<()>;
 }
 
-impl Default for StorageBackendType {
-    fn default() -> Self {
-        StorageBackendType::Local
-    }
+#[derive(Debug, Clone, Default)]
+pub enum StorageBackendType {
+    #[default]
+    Local,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -130,104 +122,11 @@ pub enum StorageError {
     Storage(String),
 
     #[error("S3 configuration error: {0}")]
+    #[allow(dead_code)]
     S3Config(String),
 
     #[error("S3 error: {0}")]
     S3Error(String),
-}
-
-pub type StorageResult<T> = Result<T, StorageError>;
-
-/// Information about a stored file
-#[derive(Debug, Clone)]
-pub struct StoredFile {
-    pub path: String,
-    pub size: u64,
-    pub mime_type: String,
-}
-
-/// Configuration for storage backend
-#[derive(Debug, Clone)]
-pub struct StorageConfig {
-    pub backend_type: StorageBackendType,
-    pub s3_bucket: Option<String>,
-}
-
-impl StorageConfig {
-    pub fn new() -> Self {
-        let use_s3 = std::env::var("USE_S3_STORAGE")
-            .unwrap_or_else(|_| "false".to_string())
-            == "true" || std::env::var("AWS_ACCESS_KEY_ID").is_ok();
-
-        let backend_type = if use_s3 {
-            StorageBackendType::S3
-        } else {
-            StorageBackendType::Local
-        };
-
-        let s3_bucket = if use_s3 {
-            std::env::var("S3_BUCKET_NAME").ok()
-        } else {
-            None
-        };
-
-        Self {
-            backend_type,
-            s3_bucket,
-        }
-    }
-}
-
-/// Storage backend trait - allows switching between local and cloud storage
-#[async_trait]
-pub trait StorageBackend: Send + Sync {
-    /// Get a temporary file path for virus scanning
-    /// Returns a path in a temp directory that will be cleaned up later
-    async fn get_temp_path(
-        &self,
-        owner_id: &str,
-        asset_id: &str,
-        file_name: &str,
-    ) -> Option<String>;
-
-    /// Store a file and return its storage path
-    async fn store_file(
-        &self,
-        owner_id: &str,
-        asset_id: &str,
-        file_name: &str,
-        data: Vec<u8>,
-        mime_type: &str,
-        max_size: u64,
-    ) -> StorageResult<StoredFile>;
-
-    /// Retrieve a file's contents
-    async fn get_file(&self, path: &str) -> StorageResult<Vec<u8>>;
-
-    /// Delete a file
-    async fn delete_file(&self, path: &str) -> StorageResult<()>;
-
-    /// Check if a file exists
-    async fn file_exists(&self, path: &str) -> StorageResult<bool>;
-
-    /// Store a chunk for a chunked upload
-    async fn store_chunk(
-        &self,
-        owner_id: &str,
-        session_id: &str,
-        chunk_number: i32,
-        data: Vec<u8>,
-    ) -> StorageResult<String>;
-
-    /// Merge all chunks for a session into a final file
-    async fn merge_chunks(
-        &self,
-        owner_id: &str,
-        session_id: &str,
-    ) -> StorageResult<MergedFile>;
-
-    /// Clean up all chunks for a session
-    async fn cleanup_chunks(&self, owner_id: &str, session_id: &str) -> StorageResult<()>;
 }
 
 /// Local filesystem storage implementation
@@ -236,96 +135,12 @@ pub struct LocalStorageBackend {
 }
 
 impl LocalStorageBackend {
-    pub fn new(base_path: impl Into<String>) -> Self {
-        Self {
-            base_path: base_path.into(),
-        }
-    }
-
-    fn build_path(&self, owner_id: &str, asset_id: &str, file_name: &str) -> String {
-        format!(
-            "{}/{}/{}/{}",
-            self.base_path.trim_end_matches('/'),
-            owner_id,
-            asset_id,
-            file_name
-        )
-    }
-
-    fn build_temp_path(&self, owner_id: &str, asset_id: &str, file_name: &str) -> String {
-        let temp_dir = Path::new(&self.base_path)
-            .join(owner_id)
-            .join("temp");
-
-        // Create temp directory if needed
-        if let Err(e) = tokio::fs::create_dir_all(&temp_dir).await {
-            log::error!("Failed to create temp directory: {}", e);
-        } else {
-            log::debug!("Temp directory exists or created: {:?}", temp_dir);
-        }
-
-        temp_dir.join(asset_id).join(file_name).to_string_lossy().to_string()
-    }
-
-    async fn get_temp_path(
-        &self,
-        _owner_id: &str,
-        _asset_id: &str,
-        _file_name: &str,
-    ) -> Option<String> {
-        // Local storage doesn't need temp files
-        None
-    }
-
-    fn validate_magic_bytes(&self, data: &[u8], mime_type: &str) -> bool {
-        match mime_type {
-            "model/gltf-binary" if data.len() > 4 => {
-                // GLB files start with "glTF"
-                &data[0..4] == b"glTF"
-            }
-            "image/png" if data.len() > 8 => {
-                // PNG magic bytes: 89 50 4E 47 0D 0A 1A 0A
-                &data[0..8] == [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
-            }
-            "image/jpeg" if data.len() > 2 => {
-                // JPEG magic bytes: FF D8
-                data[0] == 0xFF && data[1] == 0xD8
-            }
-            "image/gif" if data.len() > 6 => {
-                // GIF magic bytes: GIF87a or GIF89a
-                &data[0..4] == b"GIF8"
-            }
-            "image/webp" if data.len() > 12 => {
-                // WebP starts with RIFF....WEBP
-                &data[0..4] == b"RIFF" && &data[8..12] == b"WEBP"
-            }
-            "audio/mpeg" | "audio/mp3" if data.len() > 3 => {
-                // MP3 starts with ID3 tag or sync bytes
-                &data[0..3] == b"ID3" || (data[0] == 0xFF && (data[1] & 0xE0) == 0xE0)
-            }
-            "audio/ogg" if data.len() > 4 => {
-                // OGG starts with OggS
-                &data[0..4] == b"OggS"
-            }
-            "audio/wave" | "audio/wav" if data.len() > 12 => {
-                // WAV starts with RIFF....WAVE
-                &data[0..4] == b"RIFF" && &data[8..12] == b"WAVE"
-            }
-            "video/mp4" if data.len() > 12 => {
-                // MP4 starts with ftyp (in a box)
-                // Most MP4 files start with: 00 00 00 xx 66 74 79 70
-                &data[4..8] == b"ftyp"
-            }
-            "video/webm" if data.len() > 4 => {
-                // WebM starts with EBML header
-                &data[0..4] == b"\x1A\x45\xDF\xA3"
-            }
-            _ => true, // Allow unknown types for extensibility
-        }
+    pub fn new(base_path: String) -> Self {
+        Self { base_path }
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl StorageBackend for LocalStorageBackend {
     async fn get_temp_path(
         &self,
@@ -372,14 +187,11 @@ impl StorageBackend for LocalStorageBackend {
                         }
                     }
                 }
-                _ => {}
             }
             Err(e) => log::error!("Failed to read temp directory: {}", e),
         }
     }
 
-        Some(temp_dir.join(asset_id).join(file_name).to_string_lossy().to_string())
-    }
     async fn store_file(
         &self,
         owner_id: &str,
@@ -431,7 +243,7 @@ impl StorageBackend for LocalStorageBackend {
     async fn get_file(&self, path: &str) -> StorageResult<Vec<u8>> {
         tokio::fs::read(path)
             .await
-            .map_err(|e| StorageError::FileNotFound(path.to_string()))
+            .map_err(|_e| StorageError::FileNotFound(path.to_string()))
     }
 
     async fn delete_file(&self, path: &str) -> StorageResult<()> {

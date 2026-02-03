@@ -3,6 +3,10 @@ name = "reticulum-avatar"
 version.workspace = true
 edition.workspace = true
 
+[[bin]]
+name = "reticulum-avatar"
+path = "src/main.rs"
+
 [dependencies]
 # Core
 reticulum-core = { path = "../core" }

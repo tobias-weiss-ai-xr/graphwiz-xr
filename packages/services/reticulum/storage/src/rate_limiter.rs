@@ -3,7 +3,7 @@
 //! Enforces upload limits per user to prevent abuse
 
 use actix_web::{
-    dev::{ServiceRequest, ServiceResponse, Transform},
+    dev::{Service, ServiceRequest, ServiceResponse, Transform},
     Error, HttpMessage,
 };
 use futures_util::future::{ok, Ready};
@@ -15,29 +15,29 @@ use std::time::{Duration, Instant};
 
 /// Rate limiting state
 #[derive(Clone)]
-struct RateLimitState {
+pub struct RateLimitState {
     user_requests: HashMap<String, Vec<Instant>>,
 }
 
 impl RateLimitState {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             user_requests: HashMap::new(),
         }
     }
 
     /// Check if user has exceeded rate limit
-    fn check_rate_limit(&mut self, user_id: &str, max_requests: usize, window: Duration) -> Result<(), String> {
+    pub fn check_rate_limit(&mut self, user_id: &str, max_requests: usize, window: Duration) -> Result<(), String> {
         let now = Instant::now();
         let user_id_str = user_id.to_string();
 
         // Get or create request timestamps for this user
         let timestamps = self.user_requests.entry(user_id_str).or_insert_with(Vec::new);
 
-        // Remove timestamps older than the window
+        // Remove timestamps older than window
         timestamps.retain(|&ts| now.duration_since(ts) < window);
 
-        // Check if user has exceeded the limit
+        // Check if user has exceeded limit
         if timestamps.len() >= max_requests {
             return Err(format!(
                 "Rate limit exceeded. Maximum {} uploads per {:?}",
@@ -53,7 +53,7 @@ impl RateLimitState {
     }
 
     /// Cleanup old timestamps periodically (to prevent memory leaks)
-    fn cleanup_old_timestamps(&mut self, window: Duration) {
+    pub fn cleanup_old_timestamps(&mut self, window: Duration) {
         let now = Instant::now();
         for timestamps in self.user_requests.values_mut() {
             timestamps.retain(|&ts| now.duration_since(ts) < window);
@@ -87,7 +87,7 @@ impl RateLimiter {
 
 impl<S, B> Transform<S, ServiceRequest> for RateLimiter
 where
-    S: actix_web::Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
     B: 'static,
 {
@@ -110,9 +110,9 @@ pub struct RateLimiterMiddleware<S> {
     limiter: RateLimiter,
 }
 
-impl<S, B> actix_web::Service<ServiceRequest> for RateLimiterMiddleware<S>
+impl<S, B> Service<ServiceRequest> for RateLimiterMiddleware<S>
 where
-    S: actix_web::Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
     B: 'static,
 {
@@ -146,23 +146,27 @@ where
         };
 
         // Clone for async move
-        let limiter = self.limiter.clone();
+        let rate_limiter = RateLimiter {
+            max_requests: self.max_requests,
+            window: self.window,
+            state: self.state.clone(),
+        };
 
         Box::pin(async move {
             // Check rate limit
-            let mut state = limiter.state.lock().await;
+            let mut state: tokio::sync::MutexGuard<RateLimitState> = rate_limiter.state.lock().await;
 
-            match state.check_rate_limit(&user_id, limiter.max_requests, limiter.window) {
+            match state.check_rate_limit(&user_id, rate_limiter.max_requests, rate_limiter.window) {
                 Ok(()) => {
                     // Within rate limit, proceed with request
                     drop(state); // Release lock before calling service
 
                     // Periodically cleanup old timestamps (every 100 requests)
-                    if state.user_requests.len() > limiter.max_requests * 2 {
-                        state.cleanup_old_timestamps(limiter.window);
+                    if state.user_requests.len() > rate_limiter.max_requests * 2 {
+                        state.cleanup_old_timestamps(rate_limiter.window);
                     }
 
-                    let fut = limiter.service.call(req);
+                    let fut = self.service.call(req);
                     let res = fut.await?;
                     Ok(res)
                 }
@@ -173,9 +177,9 @@ where
                     let rate_limited_response = actix_web::HttpResponse::TooManyRequests().json(serde_json::json!({
                         "error": "rate_limit_exceeded",
                         "message": msg,
-                        "retry_after": limiter.window.as_secs(),
+                        "retry_after": rate_limiter.window.as_secs(),
                     }));
-                    Ok(rate_limited_response.into_response<B>())
+                    Ok(rate_limited_response)
                 }
             }
         })

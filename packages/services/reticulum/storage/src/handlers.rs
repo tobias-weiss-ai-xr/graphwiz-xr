@@ -5,11 +5,13 @@ use actix_multipart::Multipart;
 use futures_util::TryStreamExt;
 use reticulum_core::{db, models as core_models, Config};
 use reticulum_core::models::assets::{AssetModel, AssetType};
+use std::fmt::Display;
 use std::sync::Arc;
 use std::path::Path;
 use uuid::Uuid;
+use chrono::Utc;
 
-use crate::storage_backend::{StorageBackend, StorageConfig, StoredFile, StorageBackendType};
+use crate::storage_backend::{StorageBackend, StorageConfig, StoredFile};
 use crate::virus_scanner::scan_file_for_viruses;
 
 /// Upload response
@@ -850,25 +852,13 @@ pub async fn list_assets(
     let per_page = query.per_page.unwrap_or(20);
 
     // Execute query
-    let assets = match AssetModel::find_by_user_id(&db, &user_id, page, per_page).await {
-        Ok(assets) => assets,
+    let (assets, total) = match AssetModel::list_by_owner(&db, &user_id, None, page, per_page).await {
+        Ok(result) => result,
         Err(e) => {
             log::error!("Failed to list assets: {}", e);
             return HttpResponse::InternalServerError().json(serde_json::json!({
                 "error": "internal_error",
                 "message": "Failed to retrieve assets"
-            }));
-        }
-    };
-
-    // Get total count
-    let total = match AssetModel::count_by_user_id(&db, &user_id).await {
-        Ok(count) => count as u64,
-        Err(e) => {
-            log::error!("Failed to count assets: {}", e);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
-                "error": "internal_error",
-                "message": "Failed to count assets"
             }));
         }
     };

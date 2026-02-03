@@ -3,6 +3,10 @@ name = "reticulum-storage"
 version.workspace = true
 edition.workspace = true
 
+[[bin]]
+name = "reticulum-storage"
+path = "src/main.rs"
+
 [dependencies]
 # Core
 reticulum-core = { path = "../core" }
@@ -30,10 +34,6 @@ mime = "0.3"
 mime_guess = "2.0"
 tokio-util = { version = "0.7", features = ["io"] }
 futures-util = "0.3"
-
-# S3 storage (optional)
-aws-sdk-s3 = { version = "1.119.0", optional = true }
-aws-config = { version = "1.1.7", optional = true }
 
 # Async
 async-trait.workspace = true

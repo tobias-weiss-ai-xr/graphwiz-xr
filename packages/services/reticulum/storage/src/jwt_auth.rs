@@ -7,6 +7,7 @@ use actix_web::{
     error::{ErrorUnauthorized, Error},
     FromRequest, HttpMessage, HttpResponse,
 };
+use actix_web::dev::Service;
 use futures_util::future::{ok, Ready};
 use jsonwebtoken::{decode, Validation, DecodingKey};
 use std::future::ready;
@@ -40,7 +41,7 @@ impl JwtAuth {
 
 impl<S, B> Transform<S, ServiceRequest> for JwtAuth
 where
-    S: actix_web::Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
     B: 'static,
 {
@@ -63,9 +64,9 @@ pub struct JwtAuthMiddleware<S> {
     config: Arc<Config>,
 }
 
-impl<S, B> actix_web::Service<ServiceRequest> for JwtAuthMiddleware<S>
+impl<S, B> Service<ServiceRequest> for JwtAuthMiddleware<S>
 where
-    S: actix_web::Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
     B: 'static,
 {
@@ -117,7 +118,7 @@ where
                                     "error": "invalid_token",
                                     "message": "Invalid user ID in token"
                                 }));
-                                Box::pin(async move { Ok(unauthorized_response.into_response<B>()) })
+                                Box::pin(async move { Ok(actix_web::dev::ServiceResponse::new(unauthorized_response)) })
                             }
                         }
                     }
@@ -127,7 +128,7 @@ where
                             "error": "invalid_token",
                             "message": "Invalid or expired JWT token"
                         }));
-                        Box::pin(async move { Ok(unauthorized_response.into_response<B>()) })
+                        Box::pin(async move { Ok(unauthorized_response.into_response::<B>()) })
                     }
                 }
             } else {
@@ -136,7 +137,7 @@ where
                     "error": "invalid_auth_format",
                     "message": "Authorization header must be 'Bearer <token>'"
                 }));
-                Box::pin(async move { Ok(unauthorized_response.into_response<B>()) })
+                Box::pin(async move { Ok(unauthorized_response.into_response::<B>()) })
             }
         } else {
             log::warn!("Missing authorization header");
@@ -144,7 +145,7 @@ where
                 "error": "missing_auth",
                 "message": "Authorization header required"
             }));
-            Box::pin(async move { Ok(unauthorized_response.into_response<B>()) })
+            Box::pin(async move { Ok(unauthorized_response.into_response::<B>()) })
         }
     }
 }

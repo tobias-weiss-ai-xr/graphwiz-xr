@@ -1,8 +1,7 @@
 //! Role model for user permissions
 
 use sea_orm::entity::prelude::*;
-use sea_orm::{ActiveValue, QuerySelect, Select};
-use super::users::Entity as UsersEntity;
+use sea_orm::ActiveValue::Set;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -92,14 +91,12 @@ impl RoleModel {
     ) -> crate::Result<RoleAssignment> {
         let now = chrono::Utc::now().naive_utc();
 
-        // Check if user already has a role
         let existing = Entity::find()
             .filter(Column::UserId.eq(user_id))
             .one(db)
             .await?;
 
         if let Some(existing_role) = existing {
-            // Update existing role
             let mut active_model: ActiveModel = existing_role.into();
             active_model.role = Set(role.as_str().to_string());
             active_model.granted_by = Set(granted_by);
@@ -107,7 +104,6 @@ impl RoleModel {
             let result = active_model.update(db).await?;
             Ok(RoleAssignment::from(result))
         } else {
-            // Create new role assignment
             let model = ActiveModel {
                 user_id: Set(user_id),
                 role: Set(role.as_str().to_string()),
@@ -121,10 +117,7 @@ impl RoleModel {
     }
 
     /// Revoke role from user
-    pub async fn revoke_role(
-        db: &DatabaseConnection,
-        user_id: i32,
-    ) -> crate::Result<()> {
+    pub async fn revoke_role(db: &DatabaseConnection, user_id: i32) -> crate::Result<()> {
         Entity::delete_many()
             .filter(Column::UserId.eq(user_id))
             .exec(db)
@@ -146,28 +139,10 @@ impl RoleModel {
                 .one(db)
                 .await?;
 
-            let role = role_assignment.as_ref().and_then(|r| r.as_ref().map(|a| a.role.clone()));
+            let role = role_assignment.map(|a| RoleAssignment::from(a));
             result.push((user, role));
         }
 
         Ok(result)
     }
 }
-
-        let users = crate::models::UserModel::find_all(db).await?;
-
-        let mut result = Vec::new();
-
-        for user in users {
-            let role_assignment = Entity::find()
-                .filter(Column::UserId.eq(user.id))
-                .one(db)
-                .await?;
-
-            let role = role_assignment.as_ref().and_then(|r| r.as_ref().map(|a| a.role.clone()));
-
-            result.push((user, role));
-        }
-
-
-

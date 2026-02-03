@@ -1,8 +1,8 @@
 //! User model
 
 use sea_orm::entity::prelude::*;
-use sea_orm::ColumnTrait;
 use sea_orm::ActiveValue::Set;
+use sea_orm::ColumnTrait;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -62,7 +62,10 @@ impl UserModel {
         Ok(result.map(User::from))
     }
 
-    pub async fn find_by_email(db: &DatabaseConnection, email: &str) -> crate::Result<Option<User>> {
+    pub async fn find_by_email(
+        db: &DatabaseConnection,
+        email: &str,
+    ) -> crate::Result<Option<User>> {
         let result = Entity::find()
             .filter(Column::Email.eq(email))
             .one(db)
@@ -71,7 +74,10 @@ impl UserModel {
     }
 
     /// Find user by email and return the full Model with password_hash for authentication
-    pub async fn find_by_email_with_hash(db: &DatabaseConnection, email: &str) -> crate::Result<Option<Model>> {
+    pub async fn find_by_email_with_hash(
+        db: &DatabaseConnection,
+        email: &str,
+    ) -> crate::Result<Option<Model>> {
         let result = Entity::find()
             .filter(Column::Email.eq(email))
             .filter(Column::IsActive.eq(true))
@@ -116,5 +122,10 @@ impl UserModel {
 
         let result = model.update(db).await?;
         Ok(User::from(result))
+    }
+
+    pub async fn find_all(db: &DatabaseConnection) -> crate::Result<Vec<User>> {
+        let results = Entity::find().all(db).await?;
+        Ok(results.into_iter().map(User::from).collect())
     }
 }
