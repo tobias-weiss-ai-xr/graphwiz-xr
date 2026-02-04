@@ -139,12 +139,12 @@ pub struct LocalStorageBackend {
         Self { base_path }
     }
 
-    fn build_path(&self, owner_id: &str, asset_id: &str, file_name: &str) -> String {
+    fn build_path(&self, _owner_id: &str, _asset_id: &str, _file_name: &str) -> String {
         format!(
             "{}/{}/{}",
             self.base_path.trim_end_matches('/'),
-            owner_id,
-            asset_id
+            _owner_id,
+            _asset_id
         )
     }
 
