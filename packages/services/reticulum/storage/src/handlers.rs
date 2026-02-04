@@ -836,7 +836,6 @@ pub async fn list_assets(
         })
         .collect();
 
-    let response = ListAssetsResponse {
         assets: asset_infos,
         total,
         page,
