@@ -870,12 +870,15 @@ pub async fn list_assets(
     };
 
     HttpResponse::Ok().json(response)
+
 }
 
 /// Health check
-pub async fn health() -> HttpResponse {
-    HttpResponse::Ok().json(serde_json::json!({
-        "status": "healthy",
-        "service": "reticulum-storage"
-    }))
-}
+//pub async fn health() -> HttpResponse {
+//    HttpResponse::Ok().json(serde_json::json!({
+//        "status": "healthy",
+//        "service": "reticulum-storage"
+//    }))
+//}
+
+
