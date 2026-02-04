@@ -326,8 +326,7 @@ pub async fn upload_asset(
             }))
         }
     }
-}
-    };
+
 
     let db = match db::connect(&config).await {
         Ok(db) => db,
