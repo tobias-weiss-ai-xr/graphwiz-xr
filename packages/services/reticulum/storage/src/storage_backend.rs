@@ -134,9 +134,36 @@ pub struct LocalStorageBackend {
     base_path: String,
 }
 
-impl LocalStorageBackend {
+    impl LocalStorageBackend {
     pub fn new(base_path: String) -> Self {
         Self { base_path }
+    }
+
+    fn build_path(&self, owner_id: &str, asset_id: &str, file_name: &str) -> String {
+        format!(
+            "{}/{}/{}",
+            self.base_path.trim_end_matches('/'),
+            owner_id,
+            asset_id
+        )
+    }
+
+    fn validate_magic_bytes(&self, data: &[u8], mime_type: &str) -> bool {
+        match mime_type {
+            "model/gltf-binary" | "model/gltf+json" => {
+                data.len() >= 4 && (data.starts_with(b"glTF") || data.starts_with(b"{"))
+            }
+            "image/png" => data.len() >= 8 && &data[0..8] == b"\x89PNG\r\n\x1a\n",
+            "image/jpeg" => data.len() >= 2 && data[0..2] == [0xFF, 0xD8],
+            "image/gif" => data.len() >= 6 && (data[0..6] == b"GIF87a" || data[0..6] == b"GIF89a"),
+            "image/webp" => data.len() >= 12 && &data[0..4] == b"RIFF" && &data[8..12] == b"WEBP",
+            "audio/mpeg" => data.len() >= 3 && &data[0..3] == b"ID3",
+            "audio/ogg" => data.len() >= 4 && &data[0..4] == b"OggS",
+            "audio/wav" => data.len() >= 12 && &data[0..4] == b"RIFF" && &data[8..12] == b"WAVE",
+            "video/mp4" => data.len() >= 12 && &data[4..8] == b"ftyp",
+            "video/webm" => data.len() >= 4 && &data[0..4] == b"\x1a\x45\xdf\xa3",
+            _ => true,
+        }
     }
 }
 

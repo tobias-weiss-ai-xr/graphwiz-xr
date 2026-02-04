@@ -8,7 +8,7 @@ use std::sync::Arc;
 use std::path::Path;
 use uuid::Uuid;
 
-use crate::storage_backend::{StorageBackend, StorageConfig, StoredFile};
+use crate::storage_backend::{StorageBackend, StoredFile};
 use crate::virus_scanner::scan_file_for_viruses;
 
 #[derive(Debug, serde::Deserialize)]
@@ -73,6 +73,7 @@ pub async fn initiate_chunked_upload(
     let default_chunk_size = 10 * 1024 * 1024;
     let chunk_size = request_data.chunk_size.unwrap_or(default_chunk_size).max(5 * 1024 * 1024).min(20 * 1024 * 1024);
 
+    let asset_type = AssetType::from_str(&asset_type_str);
     let max_size = asset_type.max_size();
     if file_size > max_size {
         return HttpResponse::BadRequest().json(serde_json::json!({
@@ -87,79 +88,6 @@ pub async fn initiate_chunked_upload(
     match UploadSessionModel::create(
         &db,
         session_id.clone(),
-        user_id,
-        file_name.clone(),
-        asset_type_str.clone(),
-        file_size,
-        mime_type.clone(),
-        chunk_size,
-        total_chunks,
-        is_public,
-        metadata.clone(),
-    )
-    .await
-    {
-        Ok(_) => {
-            // Create response with references (no additional clones)
-            let response = InitiateUploadResponse {
-                session_id: &session_id,
-                file_name,
-                file_size,
-                chunk_size,
-                total_chunks,
-                upload_url: format!("/storage/chunked-upload/{}/chunk", session_id),
-                resume_url: format!("/storage/chunked-upload/{}", session_id),
-                complete_url: format!("/storage/chunked-upload/{}/complete", session_id),
-                cancel_url: format!("/storage/chunked-upload/{}/cancel", session_id),
-            };
-            HttpResponse::Created().json(response)
-        }
-        Err(e) => {
-            log::error!("Failed to create upload session: {}", e);
-            HttpResponse::InternalServerError().json(serde_json::json!({
-                "error": "internal_error",
-                "message": "Failed to create upload session"
-            }))
-        }
-    }
-}
-
-    let db = match db::connect(&config).await {
-        Ok(db) => db,
-        Err(e) => {
-            log::error!("Database connection failed: {}", e);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
-                "error": "database_error",
-                "message": "Failed to connect to database"
-            }));
-        }
-    };
-
-    let file_name = request_data.file_name.clone();
-    let file_size = request_data.file_size;
-    let asset_type_str = request_data.asset_type.clone();
-    let asset_type = AssetType::from_str(&asset_type_str);
-    let mime_type = request_data.mime_type.clone();
-    let is_public = request_data.is_public.unwrap_or(false);
-    let metadata = request_data.metadata.clone();
-
-    let default_chunk_size = 10 * 1024 * 1024;
-    let chunk_size = request_data.chunk_size.unwrap_or(default_chunk_size).max(5 * 1024 * 1024).min(20 * 1024 * 1024);
-
-    let max_size = asset_type.max_size();
-    if file_size > max_size {
-        return HttpResponse::BadRequest().json(serde_json::json!({
-            "error": "validation_error",
-            "message": format!("File too large. Maximum size: {} bytes", max_size)
-        }));
-    }
-
-    let total_chunks = ((file_size as f64) / (chunk_size as f64)).ceil() as i32;
-    let session_id = Uuid::new_v4().to_string();
-
-    match UploadSessionModel::create(
-        &db,
-        session_id,
         user_id,
         file_name.clone(),
         asset_type_str.clone(),
@@ -194,6 +122,7 @@ pub async fn initiate_chunked_upload(
             }))
         }
     }
+}
 
 #[derive(Debug, serde::Deserialize)]
 pub struct UploadChunkQuery {
@@ -213,7 +142,6 @@ pub async fn upload_chunk(
     req: HttpRequest,
     config: web::Data<Config>,
     storage_backend: web::Data<Arc<dyn StorageBackend>>,
-    storage_config: web::Data<StorageConfig>,
     session_id: web::Path<String>,
     query: web::Query<UploadChunkQuery>,
     mut payload: Multipart,
@@ -421,7 +349,7 @@ pub async fn get_upload_session(
         total_chunks: session.total_chunks,
         progress,
         status: session.status.as_str().to_string(),
-        created_at: session.created_at.to_rfc3339(),
+        created_at: chrono::Utc::from_utc_datetime(&session.created_at).to_rfc3339(),
     };
     HttpResponse::Ok().json(response)
 }
