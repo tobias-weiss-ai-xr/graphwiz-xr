@@ -122,7 +122,6 @@ pub async fn upload_asset(
                 "error": "unauthorized",
                 "message": "User not authenticated"
             }));
-        }
     };
 
     let db = match db::connect(&config).await {
@@ -133,7 +132,6 @@ pub async fn upload_asset(
                 "error": "database_error",
                 "message": "Failed to connect to database"
             }));
-        }
     };
 
     let mut file_name = String::new();
@@ -190,9 +188,9 @@ pub async fn upload_asset(
                     // Unknown field, skip
                     while let Some(_) = field.try_next().await.unwrap_or(None) {}
                 }
-            }
         }
     }
+
 
     // Validate file size
     let max_size = asset_type.max_size() as u64;
@@ -201,7 +199,6 @@ pub async fn upload_asset(
             "error": "validation_error",
             "message": format!("File too large. Maximum size: {} bytes", max_size)
         }));
-    }
 
     // Validate file extension
     let allowed_extensions: &[&str] = match asset_type {
@@ -222,7 +219,6 @@ pub async fn upload_asset(
             "error": "validation_error",
             "message": format!("Invalid file extension .{} for type {:?}", file_ext, asset_type)
         }));
-    }
 
     // Detect MIME type
     let mime_type = mime_guess::from_path(&file_name)
@@ -250,7 +246,6 @@ pub async fn upload_asset(
                 "error": "internal_error",
                 "message": "Failed to prepare virus scan"
             }));
-        }
     };
 
     // Write file to temp location for scanning
@@ -260,7 +255,6 @@ pub async fn upload_asset(
                 "error": "scan_error",
                 "message": "Failed to prepare file for scanning"
             }));
-    }
 
     // Perform virus scan
     if let Err(e) = scan_file_for_viruses(&temp_file_path).await {
@@ -271,7 +265,6 @@ pub async fn upload_asset(
             "error": "scan_error",
             "message": "Virus scan failed"
         }));
-    }
 
     // Store file
     let stored_file = match storage_backend
@@ -336,7 +329,6 @@ pub async fn upload_asset(
                 "error": "database_error",
                 "message": "Failed to connect to database"
             }));
-        }
     };
 
     let mut file_name = String::new();
@@ -404,7 +396,6 @@ pub async fn upload_asset(
             "error": "validation_error",
             "message": format!("File too large. Maximum size: {} bytes", max_size)
         }));
-    }
 
     // Validate file extension
     let allowed_extensions: &[&str] = match asset_type {
@@ -453,7 +444,6 @@ pub async fn upload_asset(
                 "error": "internal_error",
                 "message": "Failed to prepare virus scan"
             }));
-        }
     };
 
     // Write file to temp location for scanning
@@ -463,7 +453,6 @@ pub async fn upload_asset(
             "error": "internal_error",
             "message": "Failed to prepare file for scanning"
         }));
-    }
 
     // Perform virus scan
     if let Err(e) = scan_file_for_viruses(&temp_file_path).await {
@@ -485,7 +474,6 @@ pub async fn upload_asset(
         .await
     {
         Ok(file) => file,
-        Err(e) => {
             log::error!("Failed to store file: {}", e);
             // Clean up temp file
             if let Err(cleanup_err) = std::fs::remove_file(&temp_file_path) {
@@ -549,7 +537,6 @@ pub async fn get_asset(
                 "message": "User not authenticated"
             }));
         }
-    };
 
     let db = match db::connect(&config).await {
         Ok(db) => db,
