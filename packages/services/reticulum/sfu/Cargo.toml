@@ -9,6 +9,14 @@ license.workspace = true
 # Workspace dependencies
 reticulum-core = { path = "../core" }
 
+[lib]
+name = "reticulum_sfu"
+path = "src/lib.rs"
+
+[[bin]]
+name = "reticulum-sfu"
+path = "src/main.rs"
+
 # Agent Looper (optional)
 
 tokio = { workspace = true }
