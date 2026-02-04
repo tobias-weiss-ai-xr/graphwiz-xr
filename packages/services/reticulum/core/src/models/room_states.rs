@@ -31,8 +31,13 @@ pub enum Relation {
 
 impl ActiveModelBehavior for ActiveModel {}
 
+pub struct RoomStateModel;
+
 impl RoomStateModel {
-    pub async fn find_by_room_id(db: &DatabaseConnection, room_id: &str) -> Result<Option<Model>, DbErr> {
+    pub async fn find_by_room_id(
+        db: &DatabaseConnection,
+        room_id: &str,
+    ) -> Result<Option<Model>, DbErr> {
         Entity::find()
             .filter(Column::RoomId.eq(room_id))
             .one(db)
@@ -78,7 +83,10 @@ impl RoomStateModel {
         }
     }
 
-    pub async fn delete_by_room_id(db: &DatabaseConnection, room_id: &str) -> Result<DeleteResult, DbErr> {
+    pub async fn delete_by_room_id(
+        db: &DatabaseConnection,
+        room_id: &str,
+    ) -> Result<DeleteResult, DbErr> {
         Entity::delete_many()
             .filter(Column::RoomId.eq(room_id))
             .exec(db)

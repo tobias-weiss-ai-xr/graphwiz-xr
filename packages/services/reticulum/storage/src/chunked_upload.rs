@@ -123,7 +123,6 @@ pub async fn initiate_chunked_upload(
         }
     }
 }
-    };
 
     let db = match db::connect(&config).await {
         Ok(db) => db,
@@ -195,7 +194,6 @@ pub async fn initiate_chunked_upload(
             }))
         }
     }
-}
 
 #[derive(Debug, serde::Deserialize)]
 pub struct UploadChunkQuery {

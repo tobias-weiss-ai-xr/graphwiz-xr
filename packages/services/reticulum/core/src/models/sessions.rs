@@ -48,7 +48,10 @@ impl From<Model> for Session {
 pub struct SessionModel;
 
 impl SessionModel {
-    pub async fn find_by_session_id(db: &DatabaseConnection, session_id: &str) -> crate::Result<Option<Session>> {
+    pub async fn find_by_session_id(
+        db: &DatabaseConnection,
+        session_id: &str,
+    ) -> crate::Result<Option<Session>> {
         let result = Entity::find()
             .filter(Column::SessionId.eq(session_id))
             .filter(Column::IsActive.eq(true))
@@ -58,7 +61,10 @@ impl SessionModel {
         Ok(result.map(Session::from))
     }
 
-    pub async fn find_by_user(db: &DatabaseConnection, user_id: &str) -> crate::Result<Vec<Session>> {
+    pub async fn find_by_user(
+        db: &DatabaseConnection,
+        user_id: &str,
+    ) -> crate::Result<Vec<Session>> {
         let results = Entity::find()
             .filter(Column::UserId.eq(user_id))
             .filter(Column::IsActive.eq(true))
@@ -67,7 +73,10 @@ impl SessionModel {
         Ok(results.into_iter().map(Session::from).collect())
     }
 
-    pub async fn find_by_room(db: &DatabaseConnection, room_id: &str) -> crate::Result<Vec<Session>> {
+    pub async fn find_by_room(
+        db: &DatabaseConnection,
+        room_id: &str,
+    ) -> crate::Result<Vec<Session>> {
         let results = Entity::find()
             .filter(Column::RoomId.eq(room_id))
             .filter(Column::IsActive.eq(true))

@@ -16,8 +16,17 @@ use aws_sdk_s3::{
     types::{Delete, DeleteObjects, ObjectIdentifier},
 };
 use aws_config::defaults::BehaviorVersion;
+use aws_sdk_s3::{
+    Client as S3Client,
+    config::BehaviorVersion,
+    error::SdkError,
+    operation::HeadObjectError,
+    primitives::{ByteStream, ByteStreamError},
+    types::{Delete, DeleteObjects, ObjectIdentifier},
+};
 use std::path::Path;
 use std::time::Duration;
+use crate::storage_backend::{MergedFile};
 use tokio::io::AsyncWriteExt;
 use tokio::time::timeout;
 
@@ -311,5 +320,35 @@ impl StorageBackend for S3StorageBackend {
         _file_name: &str,
     ) -> Option<String> {
         None
+    }
+
+    /// Clean up old temporary files (not applicable to S3)
+    async fn cleanup_temp_files(&self) {
+        // S3 doesn't use temp files locally
+    }
+
+    /// Store a chunk for a chunked upload (not applicable to S3)
+    async fn store_chunk(
+        &self,
+        _owner_id: &str,
+        _session_id: &str,
+        _chunk_number: i32,
+        _data: Vec<u8>,
+    ) -> Result<String, StorageError> {
+        Err(StorageError::Storage("Chunked uploads not supported for S3 storage".to_string()))
+    }
+
+    /// Merge all chunks for a session into a final file (not applicable to S3)
+    async fn merge_chunks(
+        &self,
+        _owner_id: &str,
+        _session_id: &str,
+    ) -> Result<MergedFile, StorageError> {
+        Err(StorageError::Storage("Chunked uploads not supported for S3 storage".to_string()))
+    }
+
+    /// Clean up all chunks for a session (not applicable to S3)
+    async fn cleanup_chunks(&self, _owner_id: &str, _session_id: &str) -> Result<(), StorageError> {
+        Err(StorageError::Storage("Chunked uploads not supported for S3 storage".to_string()))
     }
 }

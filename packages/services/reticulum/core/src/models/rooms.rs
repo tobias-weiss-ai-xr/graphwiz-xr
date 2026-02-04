@@ -70,7 +70,10 @@ impl From<Model> for Room {
 pub struct RoomModel;
 
 impl RoomModel {
-    pub async fn find_by_room_id(db: &DatabaseConnection, room_id: &str) -> crate::Result<Option<Room>> {
+    pub async fn find_by_room_id(
+        db: &DatabaseConnection,
+        room_id: &str,
+    ) -> crate::Result<Option<Room>> {
         let result = Entity::find()
             .filter(Column::RoomId.eq(room_id))
             .filter(Column::IsActive.eq(true))
@@ -113,9 +116,7 @@ impl RoomModel {
     }
 
     pub async fn list_all(db: &DatabaseConnection) -> crate::Result<Vec<Room>> {
-        let results = Entity::find()
-            .all(db)
-            .await?;
+        let results = Entity::find().all(db).await?;
         Ok(results.into_iter().map(Room::from).collect())
     }
 

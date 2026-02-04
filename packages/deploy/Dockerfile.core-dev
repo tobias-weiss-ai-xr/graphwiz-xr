@@ -1,5 +1,6 @@
-# Dockerfile for Core API Development with Hot Reload
+# Dockerfile for Reticulum Services Development with Hot Reload
 # Uses cargo-watch for automatic recompilation on file changes
+# NOTE: Hot reload disabled on Windows due to volume mount issues
 
 FROM rust:latest
 
@@ -51,5 +52,6 @@ COPY packages/services/reticulum/storage packages/services/reticulum/storage
 EXPOSE 8000
 
 # Run with cargo-watch for hot reload
-# Run presence service (currently the only service with a main.rs)
+# Run presence, storage, and avatar services (all have main.rs)
+# NOTE: Hot reload disabled on Windows due to volume mount issues
 CMD ["cargo", "watch", "-x", "run -p reticulum-presence --bin reticulum-presence"]

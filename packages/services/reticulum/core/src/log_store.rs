@@ -3,10 +3,10 @@
 //! Collects and stores log entries from services
 //! with filtering and querying capabilities
 
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use serde::{Deserialize, Serialize};
-use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 /// Log level
@@ -160,32 +160,16 @@ impl LogStore {
 }
 
 /// Global log store instance (one per service)
-static LOG_STORES: once_cell::sync::Lazy<
-    std::collections::HashMap<String, Arc<LogStore>>
-> = once_cell::sync::Lazy::new(|| {
-    let mut map = std::collections::HashMap::new();
-    map.insert(
-        "auth".to_string(),
-        Arc::new(LogStore::new(10000)),
-    );
-    map.insert(
-        "hub".to_string(),
-        Arc::new(LogStore::new(10000)),
-    );
-    map.insert(
-        "presence".to_string(),
-        Arc::new(LogStore::new(10000)),
-    );
-    map.insert(
-        "sfu".to_string(),
-        Arc::new(LogStore::new(10000)),
-    );
-    map.insert(
-        "storage".to_string(),
-        Arc::new(LogStore::new(10000)),
-    );
-    map
-});
+static LOG_STORES: once_cell::sync::Lazy<std::collections::HashMap<String, Arc<LogStore>>> =
+    once_cell::sync::Lazy::new(|| {
+        let mut map = std::collections::HashMap::new();
+        map.insert("auth".to_string(), Arc::new(LogStore::new(10000)));
+        map.insert("hub".to_string(), Arc::new(LogStore::new(10000)));
+        map.insert("presence".to_string(), Arc::new(LogStore::new(10000)));
+        map.insert("sfu".to_string(), Arc::new(LogStore::new(10000)));
+        map.insert("storage".to_string(), Arc::new(LogStore::new(10000)));
+        map
+    });
 
 /// Get log store for a service
 pub fn get_log_store(service: &str) -> Arc<LogStore> {
@@ -196,7 +180,12 @@ pub fn get_log_store(service: &str) -> Arc<LogStore> {
 }
 
 /// Add a log entry to the store
-pub async fn add_log(service: &str, level: LogLevel, message: &str, context: Option<serde_json::Value>) {
+pub async fn add_log(
+    service: &str,
+    level: LogLevel,
+    message: &str,
+    context: Option<serde_json::Value>,
+) {
     let entry = LogEntry {
         id: Uuid::new_v4().to_string(),
         timestamp: Utc::now(),
@@ -238,7 +227,9 @@ where
         _ctx: tracing_subscriber::layer::Context<'_, S>,
     ) {
         let mut message = String::new();
-        event.record(&mut LogVisitor { message: &mut message });
+        event.record(&mut LogVisitor {
+            message: &mut message,
+        });
 
         let level = LogLevel::from_tracing_level(&event.metadata().level());
 
@@ -248,11 +239,6 @@ where
             add_log(&service, level, &message, None).await;
         });
     }
-}
-
-/// Visitor for extracting log message from tracing events
-struct LogVisitor<'a> {
-    message: &'a mut String,
 }
 
 impl<'a> tracing::field::Visit for LogVisitor<'a> {

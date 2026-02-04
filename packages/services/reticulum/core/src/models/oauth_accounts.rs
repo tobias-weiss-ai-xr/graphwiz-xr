@@ -1,8 +1,8 @@
 //! OAuth Account model
 
 use sea_orm::entity::prelude::*;
-use sea_orm::ColumnTrait;
 use sea_orm::ActiveValue::Set;
+use sea_orm::ColumnTrait;
 use serde::{Deserialize, Serialize};
 
 /// OAuth provider types
@@ -115,10 +115,7 @@ impl OAuthAccountModel {
         Ok(result)
     }
 
-    pub async fn find_by_user(
-        db: &DatabaseConnection,
-        user_id: i32,
-    ) -> crate::Result<Vec<Model>> {
+    pub async fn find_by_user(db: &DatabaseConnection, user_id: i32) -> crate::Result<Vec<Model>> {
         let result = Entity::find()
             .filter(Column::UserId.eq(user_id))
             .all(db)

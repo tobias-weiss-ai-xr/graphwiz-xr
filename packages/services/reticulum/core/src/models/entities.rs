@@ -12,8 +12,8 @@ pub struct Model {
     pub room_id: String,
     pub template_id: String,
     pub owner_id: String,
-    pub position: Json, // Vector3
-    pub rotation: Json, // Quaternion
+    pub position: Json,   // Vector3
+    pub rotation: Json,   // Quaternion
     pub components: Json, // Map<String, Value>
     pub created_at: DateTime,
     pub updated_at: DateTime,
@@ -57,12 +57,25 @@ impl From<Model> for EntityData {
         // For now, use a workaround by serializing and deserializing
 
         let position: Vector3 = serde_json::from_value(
-            serde_json::to_value(&model.position).unwrap_or(serde_json::json!({"x": 0.0, "y": 0.0, "z": 0.0}))
-        ).unwrap_or(Vector3 { x: 0.0, y: 0.0, z: 0.0 });
+            serde_json::to_value(&model.position)
+                .unwrap_or(serde_json::json!({"x": 0.0, "y": 0.0, "z": 0.0})),
+        )
+        .unwrap_or(Vector3 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        });
 
         let rotation: Quaternion = serde_json::from_value(
-            serde_json::to_value(&model.rotation).unwrap_or(serde_json::json!({"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}))
-        ).unwrap_or(Quaternion { x: 0.0, y: 0.0, z: 0.0, w: 1.0 });
+            serde_json::to_value(&model.rotation)
+                .unwrap_or(serde_json::json!({"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0})),
+        )
+        .unwrap_or(Quaternion {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+            w: 1.0,
+        });
 
         let components = serde_json::to_value(&model.components)
             .unwrap_or(serde_json::Value::Object(serde_json::Map::new()));
@@ -82,7 +95,10 @@ impl From<Model> for EntityData {
 pub struct EntityModel;
 
 impl EntityModel {
-    pub async fn find_by_room(db: &DatabaseConnection, room_id: &str) -> crate::Result<Vec<EntityData>> {
+    pub async fn find_by_room(
+        db: &DatabaseConnection,
+        room_id: &str,
+    ) -> crate::Result<Vec<EntityData>> {
         let results = Entity::find()
             .filter(Column::RoomId.eq(room_id))
             .all(db)
@@ -90,7 +106,10 @@ impl EntityModel {
         Ok(results.into_iter().map(EntityData::from).collect())
     }
 
-    pub async fn find_by_entity_id(db: &DatabaseConnection, entity_id: &str) -> crate::Result<Option<EntityData>> {
+    pub async fn find_by_entity_id(
+        db: &DatabaseConnection,
+        entity_id: &str,
+    ) -> crate::Result<Option<EntityData>> {
         let result = Entity::find()
             .filter(Column::EntityId.eq(entity_id))
             .one(db)

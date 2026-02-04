@@ -74,9 +74,9 @@ impl AssetType {
     pub fn max_size(&self) -> i64 {
         match self {
             AssetType::Model => 100 * 1024 * 1024,  // 100MB
-            AssetType::Texture => 10 * 1024 * 1024,  // 10MB
-            AssetType::Audio => 50 * 1024 * 1024,    // 50MB
-            AssetType::Video => 200 * 1024 * 1024,   // 200MB
+            AssetType::Texture => 10 * 1024 * 1024, // 10MB
+            AssetType::Audio => 50 * 1024 * 1024,   // 50MB
+            AssetType::Video => 200 * 1024 * 1024,  // 200MB
         }
     }
 
@@ -187,7 +187,10 @@ impl AssetModel {
         Ok(Asset::from(result))
     }
 
-    pub async fn find_by_asset_id(db: &DatabaseConnection, asset_id: &str) -> crate::Result<Option<Asset>> {
+    pub async fn find_by_asset_id(
+        db: &DatabaseConnection,
+        asset_id: &str,
+    ) -> crate::Result<Option<Asset>> {
         let result = Entity::find()
             .filter(Column::AssetId.eq(asset_id))
             .one(db)
@@ -215,7 +218,11 @@ impl AssetModel {
         Ok((results.into_iter().map(Asset::from).collect(), total_pages))
     }
 
-    pub async fn delete(db: &DatabaseConnection, asset_id: &str, owner_id: &str) -> crate::Result<bool> {
+    pub async fn delete(
+        db: &DatabaseConnection,
+        asset_id: &str,
+        owner_id: &str,
+    ) -> crate::Result<bool> {
         let result = Entity::delete_many()
             .filter(Column::AssetId.eq(asset_id))
             .filter(Column::OwnerId.eq(owner_id))

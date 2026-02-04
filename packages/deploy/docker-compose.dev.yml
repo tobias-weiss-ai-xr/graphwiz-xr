@@ -1,9 +1,10 @@
 # GraphWiz-XR Development Docker Compose
-# Hot-reload enabled setup for local development
+# Hot-reload enabled setup for local development (Linux/Mac only)
+# NOTE: Hot reload disabled on Windows due to volume mount issues
 #
 # Usage:
 #   docker compose -f docker-compose.dev.yml up -d
-#   docker compose -f docker-compose.dev.yml logs -f hub-client core-api
+#   docker compose -f docker-compose.dev.yml logs -f hub-client presence-service storage-service avatar-service
 #   docker compose -f docker-compose.dev.yml down
 
 services:
@@ -35,13 +36,15 @@ services:
     image: redis:7-alpine
     container_name: graphwiz-redis-dev
     restart: unless-stopped
-    command: redis-server --appendonly yes
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-graphwiz_dev_redis}
+    command: redis-server --requirepass ${REDIS_PASSWORD:-graphwiz_dev_redis} --appendonly yes
     ports:
       - '${REDIS_PORT:-6379}:6379'
     volumes:
       - redis_dev_data:/data
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD:-graphwiz_dev_redis}', 'ping']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -64,25 +67,24 @@ services:
     networks:
       - graphwiz-dev-network
 
-  # Core API Service (Rust with hot reload)
-  core-api:
+  # Presence Service (Rust with hot reload)
+  presence-service:
     build:
       context: ../../
       dockerfile: packages/deploy/Dockerfile.core-dev
-    container_name: graphwiz-core-api-dev
+    container_name: graphwiz-presence-dev
     restart: unless-stopped
     environment:
       RUST_LOG: ${RUST_LOG:-debug}
       DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: redis://:${REDIS_PASSWORD:-graphwiz_dev_redis}@redis:6379
       SERVER_HOST: 0.0.0.0
-      SERVER_PORT: 8000
+      SERVER_PORT: 8003
       JWT_SECRET: ${JWT_SECRET:-graphwiz_dev_secret_change_in_production}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400}
       PROTOC: /usr/bin/protoc
     ports:
-      - '8000:8000'
-      - '4000:4000'
+      - '8003:8003'
     volumes:
       - ../../packages/services/reticulum:/app/packages/services/reticulum:cached
       - cargo_registry:/usr/local/cargo/registry
@@ -96,6 +98,11 @@ services:
     networks:
       - graphwiz-dev-network
     privileged: true
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8003/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Storage Service (Rust with hot reload)
   storage-service:
@@ -107,7 +114,7 @@ services:
     environment:
       RUST_LOG: ${RUST_LOG:-debug}
       DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: redis://:${REDIS_PASSWORD:-graphwiz_dev_redis}@redis:6379
       SERVER_HOST: 0.0.0.0
       SERVER_PORT: 8005
       JWT_SECRET: ${JWT_SECRET:-graphwiz_dev_secret_change_in_production}
@@ -131,6 +138,47 @@ services:
       - graphwiz-dev-network
     privileged: true
     command: ['cargo', 'watch', '-x', 'run -p reticulum-storage --bin reticulum-storage']
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8005/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Avatar Service (Rust with hot reload)
+  avatar-service:
+    build:
+      context: ../../
+      dockerfile: packages/deploy/Dockerfile.core-dev
+    container_name: graphwiz-avatar-dev
+    restart: unless-stopped
+    environment:
+      RUST_LOG: ${RUST_LOG:-debug}
+      DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-graphwiz_dev_redis}@redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8006
+      JWT_SECRET: ${JWT_SECRET:-graphwiz_dev_secret_change_in_production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400}
+      PROTOC: /usr/bin/protoc
+    ports:
+      - '8006:8006'
+    volumes:
+      - ../../packages/services/reticulum:/app/packages/services/reticulum:cached
+      - cargo_registry:/usr/local/cargo/registry
+      - cargo_git:/usr/local/cargo/git
+      - target_cache:/app/target
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - graphwiz-dev-network
+    privileged: true
+    command: ['cargo', 'watch', '-x', 'run -p reticulum-avatar --bin reticulum-avatar']
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8006/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Hub Client (Vite dev server - no hot reload on Windows due to volume mount issues)
   hub-client:
@@ -151,6 +199,9 @@ services:
     depends_on:
       - postgres
       - redis
+      - presence-service
+      - storage-service
+      - avatar-service
     networks:
       - graphwiz-dev-network
 

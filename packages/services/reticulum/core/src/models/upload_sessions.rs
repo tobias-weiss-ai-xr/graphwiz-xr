@@ -217,10 +217,7 @@ impl UploadSessionModel {
 
         let updated = Entity::update_many()
             .filter(Column::SessionId.eq(session_id))
-            .col_expr(
-                Column::UploadedChunks,
-                Expr::value(uploaded_chunks_json),
-            )
+            .col_expr(Column::UploadedChunks, Expr::value(uploaded_chunks_json))
             .col_expr(Column::Status, Expr::value(new_status.as_str()))
             .col_expr(Column::UpdatedAt, Expr::value(now))
             .col_expr(Column::CompletedAt, Expr::value(completed_at))

@@ -1,8 +1,8 @@
 //! Magic Link Token model
 
 use sea_orm::entity::prelude::*;
-use sea_orm::ColumnTrait;
 use sea_orm::ActiveValue::Set;
+use sea_orm::ColumnTrait;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -58,10 +58,7 @@ impl MagicLinkTokenModel {
         Ok(result.rows_affected)
     }
 
-    pub async fn mark_used(
-        db: &DatabaseConnection,
-        token_id: i32,
-    ) -> crate::Result<Model> {
+    pub async fn mark_used(db: &DatabaseConnection, token_id: i32) -> crate::Result<Model> {
         let now = chrono::Utc::now().naive_utc();
         let model = ActiveModel {
             id: Set(token_id),
