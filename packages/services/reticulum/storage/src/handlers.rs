@@ -225,7 +225,7 @@ pub async fn upload_asset(
         .store_file(&user_id, &asset_id, &file_name, file_data, &mime_type, max_size)
         .await
     {
-            Ok(file) => file,
+        Ok(file) => file.path,
             Err(e) => {
                 log::error!("Failed to store file: {}", e);
                 // Clean up temp file
