@@ -11,7 +11,7 @@ use std::path::Path;
 use uuid::Uuid;
 use chrono::Utc;
 
-use crate::storage_backend::{StorageBackend, StoredFile};
+use crate::storage_backend::{StorageBackend, StorageConfig, StoredFile};
 use crate::virus_scanner::scan_file_for_viruses;
 
 /// Upload response
@@ -57,6 +57,7 @@ pub async fn upload_asset(
     req: HttpRequest,
     config: web::Data<Config>,
     storage_backend: web::Data<Arc<dyn StorageBackend>>,
+    storage_config: web::Data<StorageConfig>,
     mut payload: Multipart,
 ) -> HttpResponse {
     // Extract user_id from request extensions (set by JWT auth middleware)
@@ -229,7 +230,7 @@ pub async fn upload_asset(
                 log::error!("Failed to store file: {}", e);
                 // Clean up temp file
                 if let Err(cleanup_err) = tokio::fs::remove_file(&temp_file_path).await {
-                    log::warn!("Failed to clean up temp file {}: {}", temp_file_path, cleanup_err);
+                    log::warn!("Failed to clean up temp file {}: {}", format!("{}", temp_file_path), cleanup_err);
                 }
                 return HttpResponse::InternalServerError().json(serde_json::json!({
                     "error": "storage_error",
@@ -328,7 +329,7 @@ pub async fn get_asset(
         "file_size": asset.file_size,
         "mime_type": asset.mime_type,
         "is_public": asset.is_public,
-        "created_at": chrono::Utc::from_utc_datetime(&asset.created_at).to_rfc3339(),
+        "created_at": chrono::Utc::from_utc_naive(asset.created_at).to_rfc3339(),
     }))
 }
 
@@ -536,7 +537,7 @@ pub async fn list_assets(
             file_size: asset.file_size,
             mime_type: asset.mime_type.clone(),
             is_public: asset.is_public,
-            created_at: chrono::Utc::from_utc_datetime(&asset.created_at).to_rfc3339(),
+            created_at: chrono::Utc::from_utc_naive(asset.created_at).to_rfc3339(),
         })
         .collect();
 
