@@ -201,27 +201,40 @@ pub async fn upload_asset(
     };
 
     // Write file to temp location for scanning
-    if let Err(e) = tokio::fs::write(&temp_file_path, &file_data).await {
-        log::error!("Failed to write temp file for virus scan: {}", e);
-        return HttpResponse::InternalServerError().json(serde_json::json!({
-                "error": "scan_error",
-                "message": "Failed to prepare file for scanning"
-            }));
+            if let Err(e) = tokio::fs::write(&temp_file_path, &file_data).await {
+                log::error!("Failed to write temp file for virus scan: {}", e);
+                return HttpResponse::InternalServerError().json(serde_json::json!({
+                    "error": "scan_error",
+                    "message": "Failed to prepare file for scanning"
+                }));
     }
 
-    // Perform virus scan
-    if let Err(e) = scan_file_for_viruses(&temp_file_path).await {
-        log::error!("Virus scan failed: {}", e);
-        // Clean up temp file
-        let _ = tokio::fs::remove_file(&temp_file_path).await;
-        return HttpResponse::InternalServerError().json(serde_json::json!({
-            "error": "scan_error",
-            "message": "Virus scan failed"
-        }));
+    // Write file to temp location for scanning
+            if let Err(e) = tokio::fs::write(&temp_file_path, &file_data).await {
+                log::error!("Failed to write temp file for virus scan: {}", e);
+                return HttpResponse::InternalServerError().json(serde_json::json!({
+                    "error": "scan_error",
+                    "message": "Failed to prepare file for scanning"
+                }));
+            }
+
+            // Perform virus scan
+            if let Err(e) = scan_file_for_viruses(&temp_file_path).await {
+                log::error!("Virus scan failed: {}", e);
+                // Clean up temp file
+                let _ = tokio::fs::remove_file(&temp_file_path).await;
+                return HttpResponse::InternalServerError().json(serde_json::json!({
+                    "error": "scan_error",
+                    "message": "Virus scan failed"
+                }));
+            }
+
+            // Clean up temp file
+            let _ = tokio::fs::remove_file(&temp_file_path).await;
+        }
     }
 
     // Store file
-    let stored_file = match storage_backend
         .store_file(&user_id, &asset_id, &file_name, file_data, &mime_type, max_size)
         .await
     {
