@@ -231,7 +231,6 @@ pub async fn upload_asset(
 
             // Clean up temp file
             let _ = tokio::fs::remove_file(&temp_file_path).await;
-        }
     }
 
     // Store file
