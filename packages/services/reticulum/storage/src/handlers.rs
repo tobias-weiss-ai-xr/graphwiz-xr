@@ -650,7 +650,6 @@ pub async fn delete_asset(
                 "message": "User not authenticated"
             }));
         }
-    };
     let db = match db::connect(&config).await {
         Ok(db) => db,
         Err(e) => {
