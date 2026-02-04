@@ -4,7 +4,7 @@ use actix_web::{web, FromRequest, HttpMessage, HttpRequest, HttpResponse};
 use actix_multipart::Multipart;
 use futures_util::TryStreamExt;
 use reticulum_core::{db, models as core_models, Config};
-use reticulum_core::models::assets::{AssetModel, AssetType};
+use reticulum_core::models::assets::{etModel, AssetType};
 use std::fmt::Display;
 use std::sync::Arc;
 use std::path::Path;
