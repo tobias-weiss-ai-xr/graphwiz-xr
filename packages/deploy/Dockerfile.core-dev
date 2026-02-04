@@ -35,8 +35,8 @@ RUN mkdir -p packages/services/reticulum/core/src && \
     echo "fn main() {}" > packages/services/reticulum/storage/src/main.rs
 
 # Build dependencies (cache this layer)
-RUN cargo build --bin reticulum-core && \
-    cargo build --bin reticulum-storage
+RUN cargo build --bin reticulum-core
+
 
 # Remove dummy files
 RUN rm -rf packages/services/reticulum/*/src/*.rs
@@ -47,6 +47,10 @@ COPY packages/services/reticulum/auth packages/services/reticulum/auth
 COPY packages/services/reticulum/hub packages/services/reticulum/hub
 COPY packages/services/reticulum/presence packages/services/reticulum/presence
 COPY packages/services/reticulum/storage packages/services/reticulum/storage
+
+# Build storage service (fresh, no cache from previous build)
+RUN cargo build --bin reticulum-storage
+
 
 # Expose port
 EXPOSE 8000
