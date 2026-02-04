@@ -1,6 +1,6 @@
 //! HTTP handlers for storage service
 
-use actix_web::{web, FromRequest, HttpRequest, HttpResponse};
+use actix_web::{web, FromRequest, HttpMessage, HttpRequest, HttpResponse};
 use actix_multipart::Multipart;
 use futures_util::TryStreamExt;
 use reticulum_core::{db, models as core_models, Config};
@@ -201,7 +201,7 @@ pub async fn upload_asset(
     };
 
     // Write file to temp location for scanning
-    if let Err(e) = std::fs::write(&temp_file_path, &file_data).await {
+    if let Err(e) = tokio::fs::write(&temp_file_path, &file_data).await {
         log::error!("Failed to write temp file for virus scan: {}", e);
         return HttpResponse::InternalServerError().json(serde_json::json!({
                 "error": "scan_error",
@@ -213,7 +213,7 @@ pub async fn upload_asset(
     if let Err(e) = scan_file_for_viruses(&temp_file_path).await {
         log::error!("Virus scan failed: {}", e);
         // Clean up temp file
-        let _ = std::fs::remove_file(&temp_file_path);
+        let _ = tokio::fs::remove_file(&temp_file_path).await;
         return HttpResponse::InternalServerError().json(serde_json::json!({
             "error": "scan_error",
             "message": "Virus scan failed"
@@ -229,8 +229,8 @@ pub async fn upload_asset(
             Err(e) => {
                 log::error!("Failed to store file: {}", e);
                 // Clean up temp file
-                if let Err(cleanup_err) = std::fs::remove_file(&temp_file_path) {
-                    log::warn!("Failed to clean up temp file {}: {}", temp_file_path.display(), cleanup_err);
+                if let Err(cleanup_err) = tokio::fs::remove_file(&temp_file_path).await {
+                    log::warn!("Failed to clean up temp file {}: {}", format!("{}", temp_file_path), cleanup_err);
                 }
                 return HttpResponse::InternalServerError().json(serde_json::json!({
                     "error": "storage_error",
@@ -329,7 +329,7 @@ pub async fn get_asset(
         "file_size": asset.file_size,
         "mime_type": asset.mime_type,
         "is_public": asset.is_public,
-        "created_at": asset.created_at.to_rfc3339(),
+        "created_at": chrono::Utc::from_utc_naive(asset.created_at).to_rfc3339(),
     }))
 }
 
@@ -391,7 +391,7 @@ pub async fn download_asset(
     match storage_backend.get_file(&asset.file_path).await {
         Ok(data) => {
             HttpResponse::Ok()
-                .content_type(&asset.mime_type)
+                .content_type(asset.mime_type.clone())
                 .insert_header(("Content-Disposition", format!("attachment; filename=\"{}\"", asset.file_name)))
                 .body(data)
         }
@@ -512,7 +512,6 @@ pub async fn list_assets(
     };
 
     // Build query filters
-    let mut query = core_models::ActiveModel::find_by_id(user_id);
     let page = query.page.unwrap_or(1);
     let per_page = query.per_page.unwrap_or(20);
 
@@ -538,7 +537,7 @@ pub async fn list_assets(
             file_size: asset.file_size,
             mime_type: asset.mime_type.clone(),
             is_public: asset.is_public,
-            created_at: asset.created_at.to_rfc3339(),
+            created_at: chrono::Utc::from_utc_naive(asset.created_at).to_rfc3339(),
         })
         .collect();
 

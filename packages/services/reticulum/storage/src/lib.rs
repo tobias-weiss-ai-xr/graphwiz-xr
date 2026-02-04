@@ -8,7 +8,7 @@ pub mod storage_backend;
 pub mod jwt_auth;
 pub mod rate_limiter;
 pub mod virus_scanner;
-pub mod chunked_upload;
+// pub mod chunked_upload;
 
 use actix_web::{web, App, HttpServer};
 use reticulum_core::Config;
@@ -19,7 +19,7 @@ use storage_backend::{LocalStorageBackend, StorageBackend, StorageConfig};
 
 pub use jwt_auth::JwtAuth;
 pub use rate_limiter::RateLimiter;
-use tokio::time::{Duration, interval, sleep};
+use tokio::time::{Duration, interval};
 
 pub struct StorageService {
     config: Config,

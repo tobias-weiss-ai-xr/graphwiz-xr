@@ -81,7 +81,7 @@ fn is_suspicious_file_type(file_path: &Path) -> bool {
     ];
 
     if let Some(ext) = file_name.rsplit('.').next() {
-        if suspicious_extensions.iter().any(|s| s == ext.to_lowercase()) {
+        if suspicious_extensions.iter().any(|s| *s == ext.to_lowercase()) {
             return true;
         }
     }
