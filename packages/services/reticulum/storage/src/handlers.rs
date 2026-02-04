@@ -122,7 +122,6 @@ pub async fn upload_asset(
                 "error": "unauthorized",
                 "message": "User not authenticated"
             }));
-    };
 
     let db = match db::connect(&config).await {
         Ok(db) => db,
@@ -132,7 +131,6 @@ pub async fn upload_asset(
                 "error": "database_error",
                 "message": "Failed to connect to database"
             }));
-    };
 
     let mut file_name = String::new();
     let mut file_data = Vec::new();
@@ -206,7 +204,6 @@ pub async fn upload_asset(
         AssetType::Texture => &["png", "jpg", "jpeg", "gif", "webp"],
         AssetType::Audio => &["mp3", "ogg", "wav"],
         AssetType::Video => &["mp4", "webm"],
-    };
 
     let file_ext = file_name
         .rsplit('.')
@@ -246,7 +243,6 @@ pub async fn upload_asset(
                 "error": "internal_error",
                 "message": "Failed to prepare virus scan"
             }));
-    };
 
     // Write file to temp location for scanning
     if let Err(e) = std::fs::write(&temp_file_path, &file_data).await {
@@ -283,7 +279,6 @@ pub async fn upload_asset(
                     "message": "Failed to store file"
                 }));
             }
-        };
 
     // Create database record
     match AssetModel::create(
@@ -308,7 +303,6 @@ pub async fn upload_asset(
                 file_size: stored_file.size as i64,
                 mime_type: stored_file.mime_type.clone(),
                 download_url: format!("/storage/assets/{}/download", asset_id),
-            };
             HttpResponse::Created().json(response)
         }
         Err(e) => {
@@ -329,7 +323,6 @@ pub async fn upload_asset(
                 "error": "database_error",
                 "message": "Failed to connect to database"
             }));
-    };
 
     let mut file_name = String::new();
     let mut file_data = Vec::new();
@@ -402,7 +395,6 @@ pub async fn upload_asset(
         AssetType::Texture => &["png", "jpg", "jpeg", "gif", "webp"],
         AssetType::Audio => &["mp3", "ogg", "wav"],
         AssetType::Video => &["mp4", "webm"],
-    };
 
     let file_ext = file_name
         .rsplit('.')
@@ -443,7 +435,6 @@ pub async fn upload_asset(
                 "error": "internal_error",
                 "message": "Failed to prepare virus scan"
             }));
-    };
 
     // Write file to temp location for scanning
     if let Err(e) = std::fs::write(&temp_file_path, &file_data).await {
@@ -483,7 +474,6 @@ pub async fn upload_asset(
                 "message": "Failed to store file"
             }));
         }
-    };
 
     // Create database record
     match AssetModel::create(
@@ -508,7 +498,6 @@ pub async fn upload_asset(
                 file_size: stored_file.size as i64,
                 mime_type: stored_file.mime_type,
                 download_url: format!("/storage/assets/{}/download", asset_id),
-            };
             HttpResponse::Created().json(response)
         }
         Err(e) => {
@@ -547,7 +536,6 @@ pub async fn get_asset(
             }));
         }
     };
-
     let asset_id = asset_id.into_inner();
 
     let asset = match AssetModel::find_by_asset_id(&db, &asset_id).await {
@@ -565,7 +553,6 @@ pub async fn get_asset(
                 "message": "Failed to get asset"
             }));
         }
-    };
 
     HttpResponse::Ok().json(serde_json::json!({
         "asset_id": asset.asset_id,
@@ -594,7 +581,6 @@ pub async fn download_asset(
                 "message": "User not authenticated"
             }));
         }
-    };
 
     let db = match db::connect(&config).await {
         Ok(db) => db,
@@ -605,7 +591,6 @@ pub async fn download_asset(
                 "message": "Failed to connect to database"
             }));
         }
-    };
 
     let asset_id = asset_id.into_inner();
 
@@ -624,7 +609,6 @@ pub async fn download_asset(
                 "message": "Failed to get asset"
             }));
         }
-    };
 
     if asset.owner_id != user_id && !asset.is_public {
         return HttpResponse::Forbidden().json(serde_json::json!({
@@ -667,7 +651,6 @@ pub async fn delete_asset(
             }));
         }
     };
-
     let db = match db::connect(&config).await {
         Ok(db) => db,
         Err(e) => {
@@ -677,7 +660,6 @@ pub async fn delete_asset(
                 "message": "Failed to connect to database"
             }));
         }
-    };
 
     let asset_id = asset_id.into_inner();
 
@@ -696,7 +678,6 @@ pub async fn delete_asset(
                 "message": "Failed to get asset"
             }));
         }
-    };
 
     if asset.owner_id != user_id {
         return HttpResponse::Forbidden().json(serde_json::json!({
@@ -736,7 +717,6 @@ pub async fn delete_asset(
                 "message": "User not authenticated"
             }));
         }
-    };
 
     let db = match db::connect(&config).await {
         Ok(db) => db,
@@ -747,7 +727,6 @@ pub async fn delete_asset(
                 "message": "Failed to connect to database"
             }));
         }
-    };
 
     let asset_id = asset_id.into_inner();
 
@@ -767,7 +746,6 @@ pub async fn delete_asset(
                 "message": "Failed to get asset"
             }));
         }
-    };
 
     // Verify ownership
     if asset.owner_id != user_id {
@@ -818,7 +796,6 @@ pub async fn list_assets(
                 "message": "User not authenticated"
             }));
         }
-    };
 
     let db = match db::connect(&config).await {
         Ok(db) => db,
@@ -829,7 +806,6 @@ pub async fn list_assets(
                 "message": "Failed to connect to database"
             }));
         }
-    };
 
     // Build query filters
     let mut query = core_models::ActiveModel::find_by_id(user_id);
@@ -846,7 +822,6 @@ pub async fn list_assets(
                 "message": "Failed to retrieve assets"
             }));
         }
-    };
 
     // Build response
     let asset_infos: Vec<AssetInfo> = assets
@@ -867,7 +842,6 @@ pub async fn list_assets(
         total,
         page,
         per_page,
-    };
 
     HttpResponse::Ok().json(response)
 
