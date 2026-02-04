@@ -384,10 +384,9 @@ pub async fn upload_asset(
                 _ => {
                     // Unknown field, skip
                     while let Some(_) = field.try_next().await.unwrap_or(None) {}
-                }
-            }
-        }
+         }
     }
+
 
     // Validate file size
     let max_size = asset_type.max_size() as u64;
