@@ -234,6 +234,7 @@ pub async fn upload_asset(
     }
 
     // Store file
+    let stored_file = match storage_backend
         .store_file(&user_id, &asset_id, &file_name, file_data, &mime_type, max_size)
         .await
     {
@@ -281,7 +282,6 @@ pub async fn upload_asset(
             log::error!("Failed to create asset record: {}", e);
             HttpResponse::InternalServerError().json(serde_json::json!({
                 "error": "internal_error",
-                "message": "Failed to create asset record"
             }))
         }
     }
