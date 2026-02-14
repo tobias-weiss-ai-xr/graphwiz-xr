@@ -460,7 +460,7 @@ export class MultiClientFuzzer {
     const results: TestResult[] = [];
     const clients = await this.simulateMultipleClients(clientCount);
 
-    for (let [clientId, _] of clients) {
+    for (const [clientId, _] of clients) {
       for (let i = 0; i < updatesPerClient; i++) {
         const config = new AvatarFuzzer().randomFuzzy();
         const result = await this.fuzzer.runTest(config);

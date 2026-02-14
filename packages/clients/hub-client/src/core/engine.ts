@@ -5,15 +5,17 @@
  * Manages the ECS world, renderer, and systems.
  */
 
+import { createLogger } from '@graphwiz/types';
+
 import { AnimationSystem } from '../ecs/systems/animation-system';
 import { AudioSystem } from '../ecs/systems/audio-system';
 import { BillboardSystem } from '../ecs/systems/billboard-system';
 import { PhysicsSystem } from '../ecs/systems/physics-system';
 import { TransformSystem } from '../ecs/systems/transform-system';
 import { World } from '../ecs/world';
+
 import { assetLoader } from './assets';
 import type { EngineConfig } from './config';
-import { createLogger } from '@graphwiz/types';
 
 const logger = createLogger('Engine');
 

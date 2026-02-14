@@ -2,9 +2,11 @@
  * Tests for XR Input Manager
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import * as THREE from 'three';
 import { EventEmitter } from 'events';
+
+import * as THREE from 'three';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { XRInputManager, ControllerState, ButtonState } from '../xr-input-manager';
 
 // Mock XRSession

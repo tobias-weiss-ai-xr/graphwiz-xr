@@ -83,7 +83,7 @@ export function lerpVector3(a: Vector3, b: Vector3, t: number): Vector3 {
  * Spherical linear interpolation for quaternions
  */
 export function slerpQuaternion(qa: Quaternion, qb: Quaternion, t: number): Quaternion {
-  let cosHalfTheta = qa.x * qb.x + qa.y * qb.y + qa.z * qb.z + qa.w * qb.w;
+  const cosHalfTheta = qa.x * qb.x + qa.y * qb.y + qa.z * qb.z + qa.w * qb.w;
 
   if (cosHalfTheta >= 1.0) {
     return qa;

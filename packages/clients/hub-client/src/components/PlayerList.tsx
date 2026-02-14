@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { ModerationClient } from '../moderation-client';
 
 export interface PlayerInfo {

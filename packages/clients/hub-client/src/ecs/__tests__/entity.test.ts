@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { Entity, World, TransformComponent } from '../index';
 
 describe('Entity', () => {

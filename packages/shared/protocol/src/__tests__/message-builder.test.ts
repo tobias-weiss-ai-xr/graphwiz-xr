@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
+
 import { MessageBuilder, MessageType } from '../index';
 import type { Vector3, Quaternion, PositionUpdate, ChatMessage, EntitySpawn } from '../types';
 

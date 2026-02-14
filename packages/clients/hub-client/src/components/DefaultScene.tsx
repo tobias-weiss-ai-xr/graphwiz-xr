@@ -1,6 +1,7 @@
-import { NetworkedAvatar } from './NetworkedAvatar';
 import { Text } from '@react-three/drei';
 import { useState, useEffect } from 'react';
+
+import { NetworkedAvatar } from './NetworkedAvatar';
 
 interface DefaultSceneProps {
   clientId: string;

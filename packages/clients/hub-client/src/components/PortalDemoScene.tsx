@@ -1,6 +1,7 @@
-import { useState } from 'react';
 import { Text } from '@react-three/drei';
+import { useState } from 'react';
 import * as THREE from 'three';
+
 import { Portal } from './Portal';
 
 interface PortalDemoSceneProps {

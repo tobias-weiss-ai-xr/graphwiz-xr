@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { fetchHistoricalMetrics, type MetricsSummary, type MetricDataPoint } from './api-client';
 
 export default function HistoricalMetrics() {

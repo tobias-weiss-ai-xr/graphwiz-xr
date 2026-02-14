@@ -404,7 +404,7 @@ export class XRInputSystem extends System {
     /**
      * Load controller model (simple geometric representation)
      */
-    // eslint-disable-next-line no-unused-vars
+     
     async loadControllerModel(entityId, handedness) {
         const controllerColor = handedness === 'left' ? '#4CAF50' : '#FFB74E';
         console.log(`[XRInputSystem] Loading ${handedness} controller model (simple geometry) for entity ${entityId}`);

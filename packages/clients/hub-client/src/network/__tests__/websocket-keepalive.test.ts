@@ -5,6 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { WebSocketClient } from '../websocket-client';
 
 describe('WebSocketClient Keep-Alive', () => {

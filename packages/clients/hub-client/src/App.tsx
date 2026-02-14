@@ -1,14 +1,12 @@
-/* eslint-disable react/no-unknown-property */
+ 
 import { MessageType, EmojiReaction } from '@graphwiz/protocol';
 import { Grid, PerspectiveCamera, Text } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useState, useCallback, useEffect, useRef } from 'react';
 
 import { AvatarConfigurator } from './avatar';
-import { GrabDemoScene } from './components/GrabDemoScene';
-import { CameraController } from './components/CameraController';
-import { getAvatarPersistence } from './avatar/persistence';
 import type { AvatarConfig } from './avatar/api';
+import { getAvatarPersistence } from './avatar/persistence';
 import {
   RoomBrowser,
   CreateRoomModal,
@@ -16,21 +14,23 @@ import {
   RoomButton,
   SceneSelector
 } from './components';
+import { CameraController } from './components/CameraController';
+import { DrawingCanvas, DrawingSettings } from './components/DrawingCanvas';
+import { DrawingTools } from './components/DrawingTools';
 import { EmojiPicker } from './components/EmojiPicker';
 import { FloatingEmoji } from './components/FloatingEmoji';
 import { FPSCounter } from './components/FPSCounter';
+import { GestureRecognition } from './components/GestureRecognition';
+import { GrabDemoScene } from './components/GrabDemoScene';
 import { InteractiveDemoScene } from './components/InteractiveDemoScene';
 import { MediaDemoScene } from './components/MediaDemoScene';
-import { PortalDemoScene } from './components/PortalDemoScene';
-import { GestureRecognition } from './components/GestureRecognition';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
+import { PortalDemoScene } from './components/PortalDemoScene';
+import type { SceneType } from './components/SceneSelector';
 import { useRoomManager } from './hooks/useRoomManager';
 import { WebSocketClient } from './network/websocket-client';
 import { SettingsPanel } from './settings';
 import { AssetBrowser, AssetUploader, Asset } from './storage';
-import { DrawingCanvas, DrawingSettings } from './components/DrawingCanvas';
-import { DrawingTools } from './components/DrawingTools';
-import type { SceneType } from './components/SceneSelector';
 
 interface Entity {
   id: string;

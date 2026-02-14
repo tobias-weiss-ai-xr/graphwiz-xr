@@ -8,12 +8,12 @@ import {
   emergencyShutdown,
   type SystemStatistics
 } from './api-client';
+import HistoricalMetrics from './HistoricalMetrics';
 import LogsViewer from './LogsViewer';
 import RestartModal from './RestartModal';
-import UserManagement from './UserManagement';
 import RoomManagement from './RoomManagement';
 import RoomPersistence from './RoomPersistence';
-import HistoricalMetrics from './HistoricalMetrics';
+import UserManagement from './UserManagement';
 
 interface ServiceStatusUI {
   name: string;

@@ -2,9 +2,10 @@
  * Message Builder for GraphWiz-XR protocol
  */
 
+import { v4 as uuidv4 } from 'uuid';
+
 import type { Message, PositionUpdate } from './types.js';
 import { MessageType } from './types.js';
-import { v4 as uuidv4 } from 'uuid';
 
 export class MessageBuilder {
   /**

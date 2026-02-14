@@ -1,8 +1,8 @@
+import { ErrorBoundary } from '@graphwiz/ui-kit';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import App from './App';
-import { ErrorBoundary } from '@graphwiz/ui-kit';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -3,9 +3,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { VoiceSystem, VoiceParticipantComponent, VoiceLocalComponent, VoiceSystemConfig } from '../voice-system';
-import { VoiceChatClient } from '../voice-chat-client';
+
 import { World, Entity, TransformComponent } from '../../ecs';
+import { VoiceChatClient } from '../voice-chat-client';
+import { VoiceSystem, VoiceParticipantComponent, VoiceLocalComponent, VoiceSystemConfig } from '../voice-system';
 
 // Mock VoiceChatClient
 class MockVoiceChatClient {

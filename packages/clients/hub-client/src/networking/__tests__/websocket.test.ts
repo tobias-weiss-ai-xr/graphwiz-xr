@@ -5,12 +5,13 @@
  * These tests can run with a mock server or against a real Presence service.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { WebSocketClient } from '../../network/websocket-client';
-import { NetworkClient } from '../../network/client';
 import { MessageParser, MessageBuilder } from '@graphwiz/protocol';
 import { MessageType } from '@graphwiz/protocol';
 import type { Message } from '@graphwiz/protocol';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
+import { NetworkClient } from '../../network/client';
+import { WebSocketClient } from '../../network/websocket-client';
 
 // Mock WebSocket for testing
 class MockWebSocket {

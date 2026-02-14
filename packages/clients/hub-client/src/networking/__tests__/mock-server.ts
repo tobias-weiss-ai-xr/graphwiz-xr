@@ -5,10 +5,10 @@
  * for testing purposes without needing the full Rust backend.
  */
 
-import { WebSocketServer, WebSocket } from 'ws';
-import { v4 as uuidv4 } from 'uuid';
 import type { Message } from '@graphwiz-xr/protocol';
 import { MessageType } from '@graphwiz-xr/protocol';
+import { v4 as uuidv4 } from 'uuid';
+import { WebSocketServer, WebSocket } from 'ws';
 
 interface ClientConnection {
   id: string;

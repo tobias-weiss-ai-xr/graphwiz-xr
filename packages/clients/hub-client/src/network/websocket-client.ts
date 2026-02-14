@@ -6,8 +6,8 @@
 
 import { MessageParser, MessageBuilder } from '@graphwiz/protocol';
 import type { Message, MessageType, ClientHello, PositionUpdate } from '@graphwiz/protocol';
-import { v4 as uuidv4 } from 'uuid';
 import { createLogger } from '@graphwiz/types';
+import { v4 as uuidv4 } from 'uuid';
 
 const logger = createLogger('WebSocketClient');
 

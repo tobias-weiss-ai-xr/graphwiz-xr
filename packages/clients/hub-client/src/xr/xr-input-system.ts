@@ -506,7 +506,7 @@ export class XRInputSystem extends System {
   /**
    * Load controller model (simple geometric representation)
    */
-  // eslint-disable-next-line no-unused-vars
+   
   private async loadControllerModel(entityId: string, handedness: 'left' | 'right'): Promise<void> {
     console.log(
       `[XRInputSystem] Loading ${handedness} controller model (simple geometry) for entity ${entityId}`

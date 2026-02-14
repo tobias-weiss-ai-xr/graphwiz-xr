@@ -4,11 +4,12 @@
  * Comprehensive tests for Cannon.js physics integration.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as CANNON from 'cannon-es';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { Engine } from '../../core';
-import { PhysicsSystem, PhysicsBodyComponent, PhysicsWorld } from '../../physics';
 import { TransformComponent } from '../../ecs';
+import { PhysicsSystem, PhysicsBodyComponent, PhysicsWorld } from '../../physics';
 
 // Make CANNON available globally for tests
 (globalThis as any).CANNON = CANNON;

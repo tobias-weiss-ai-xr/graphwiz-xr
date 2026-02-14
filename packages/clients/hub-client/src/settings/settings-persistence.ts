@@ -2,8 +2,9 @@
  * Settings Persistence Manager
  */
 
-import { UserSettings, DEFAULT_SETTINGS } from './user-settings';
 import { createLogger } from '@graphwiz/types/logger';
+
+import { UserSettings, DEFAULT_SETTINGS } from './user-settings';
 
 const SETTINGS_KEY = 'graphwiz-user-settings';
 

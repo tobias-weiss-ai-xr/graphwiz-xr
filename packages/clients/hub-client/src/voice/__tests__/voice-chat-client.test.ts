@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { VoiceChatClient, VoiceChatConfig, VoiceChatStats } from '../voice-chat-client';
 
 // Mock MediaStream
