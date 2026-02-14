@@ -21,12 +21,14 @@ export class Logger {
 
   private shouldLog(level: LogLevel): boolean {
     // In development, log everything
-    if (import.meta.env?.DEV == 'true') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const env = (import.meta as any).env;
+    if (env?.DEV) {
       return true;
     }
 
     // In production, only log warnings and errors
-    if (import.meta.env?.MODE === 'production') {
+    if (env?.MODE === 'production') {
       return level === LogLevel.WARN || level === LogLevel.ERROR;
     }
 

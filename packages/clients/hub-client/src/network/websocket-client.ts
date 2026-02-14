@@ -92,7 +92,10 @@ export class WebSocketClient {
         };
 
         this.ws.onclose = (event) => {
-          logger.info('[WebSocketClient] WebSocket disconnected:', event.code, event.reason);
+          logger.info('[WebSocketClient] WebSocket disconnected:', {
+            code: event.code,
+            reason: event.reason
+          });
           this.isConnected = false;
 
           // Clear ping interval

@@ -42,6 +42,9 @@ export class VoiceChatClient extends EventEmitter {
   private gainNodes: Map<string, GainNode> = new Map();
   private voiceActivityThreshold = 0.01; // Audio level threshold for VAD
   private isSpeaking = false;
+  private analyser: AnalyserNode | null = null;
+  private pannerNodes: Map<string, PannerNode> = new Map();
+  private muted: boolean = false;
   private stats: VoiceChatStats = {
     isConnected: false,
     isMuted: false,
@@ -108,34 +111,9 @@ export class VoiceChatClient extends EventEmitter {
         ordered: true
       });
 
-      // Create source from stream
+      // Create source from stream and connect to analyser for VAD
       const source = this.audioContext.createMediaStreamSource(this.localStream);
-      // Load and attach audio worklet processor
-      try {
-        this.audioWorkletNode = await this.audioContext.audioWorklet.addModule(
-          `data:text/javascript;base64,${AudioWorkletProcessor.toString()}`,
-          'audio-worklet-processor'
-        );
-
-        if (this.audioWorkletNode) {
-          console.log('[VoiceChat] Audio worklet loaded successfully');
-
-          // Connect worklet to destination
-          this.audioWorkletNode.port.start();
-
-          // Create source from stream
-          const source = this.audioContext.createMediaStreamSource(this.localStream);
-          source.connect(this.audioWorkletNode);
-
-          // Connect worklet to analyser (for VAD)
-          this.audioWorkletNode.connect(this.analyser, 0);
-
-          console.log('[VoiceChat] Audio worklet connected to audio pipeline');
-        }
-      } catch (error) {
-        console.error('[VoiceChat] Failed to load audio worklet:', error);
-        // Continue without worklet - degrade gracefully
-      }
+      source.connect(this.analyser);
 
       // Set up data channel event handlers
       this.dataChannel.onopen = () => {

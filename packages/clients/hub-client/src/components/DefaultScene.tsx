@@ -1,7 +1,6 @@
-import { NetworkedAvatar, NetworkedAvatarConfig } from './NetworkedAvatar';
+import { NetworkedAvatar } from './NetworkedAvatar';
 import { Text } from '@react-three/drei';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 interface DefaultSceneProps {
   clientId: string;
@@ -75,12 +74,21 @@ export function DefaultScene({ clientId, wsClient }: DefaultSceneProps) {
           return (
             <NetworkedAvatar
               key={id}
-              position={entity.position}
-              rotation={entity.rotation}
-              scale={entity.scale}
+              position={
+                Array.isArray(entity.position)
+                  ? entity.position
+                  : [entity.position.x, entity.position.y, entity.position.z]
+              }
+              rotation={[entity.rotation.x, entity.rotation.y, entity.rotation.z]}
               displayName={entity.displayName}
-              avatarConfig={entity.avatarConfig}
-              isLocalPlayer={id === clientId}
+              avatarConfig={
+                entity.avatarConfig || {
+                  body_type: 'human',
+                  primary_color: '#4CAF50',
+                  secondary_color: '#81C784',
+                  height: 1.7
+                }
+              }
             />
           );
         }
@@ -109,12 +117,9 @@ export function DefaultScene({ clientId, wsClient }: DefaultSceneProps) {
       >
         Welcome to GraphWiz-XR!
         {'\n\n'}
-        <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>Default Scene</span>
+        Default Scene
         {'\n'}
         Use the Scene Selector to switch to interactive demos.
-        {'\n'}
-        Your avatar is rendered as{' '}
-        {entity.isPlayer ? 'local player (You)' : `remote (${entity.displayName})`}
       </Text>
     </group>
   );

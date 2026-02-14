@@ -508,16 +508,18 @@ export class XRInputSystem extends System {
    */
   // eslint-disable-next-line no-unused-vars
   private async loadControllerModel(entityId: string, handedness: 'left' | 'right'): Promise<void> {
-    const controllerColor = handedness === 'left' ? '#4CAF50' : '#FFB74E';
-
     console.log(
       `[XRInputSystem] Loading ${handedness} controller model (simple geometry) for entity ${entityId}`
     );
 
     try {
       // Get or create the grip entity
+      if (!this.world) {
+        console.error('[XRInputSystem] World not initialized');
+        return;
+      }
       const gripEntity = this.world.getEntity(entityId);
-      if (!gripEntity || gripEntity === undefined) {
+      if (!gripEntity) {
         console.error(`[XRInputSystem] Entity ${entityId} not found`);
         return;
       }
