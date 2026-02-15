@@ -33,7 +33,7 @@ async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function measureLatency(fn: () Promise<any>): Promise<{duration: number, result: any}> {
+async function measureLatency(fn: () => Promise<any>): Promise<{duration: number, result: any}> {
   const start = Date.now();
   const result = await fn();
   const duration = Date.now() - start;

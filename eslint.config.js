@@ -16,10 +16,20 @@ export default tseslint.config(
       '**/coverage/**',
       '**/*.config.js',
       '**/*.config.ts',
+      '**/*.cjs',
+      '**/*.mjs',
+      '**/*.js',
+      '**/*.d.ts',
       '**/.turbo/**',
       '**/target/**',
       '**/packages/shared/protocol/src/generated/**',
-      'eslint.config.js'
+      'eslint.config.js',
+      'tests/**',
+      '**/e2e/**',
+      '**/__tests__/**',
+      '**/*.test.ts',
+      '**/*.spec.ts',
+      '**/scripts/**'
     ]
   },
   eslint.configs.recommended,
