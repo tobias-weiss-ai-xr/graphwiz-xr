@@ -1,4 +1,3 @@
- 
 import { MessageType, EmojiReaction } from '@graphwiz/protocol';
 import { Grid, PerspectiveCamera, Text } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -26,6 +25,7 @@ import { InteractiveDemoScene } from './components/InteractiveDemoScene';
 import { MediaDemoScene } from './components/MediaDemoScene';
 import { NetworkedAvatar, NetworkedAvatarConfig } from './components/NetworkedAvatar';
 import { PortalDemoScene } from './components/PortalDemoScene';
+import { DefaultScene } from './scenes/DefaultScene';
 import type { SceneType } from './components/SceneSelector';
 import { useRoomManager } from './hooks/useRoomManager';
 import { WebSocketClient } from './network/websocket-client';
@@ -1442,6 +1442,10 @@ function App() {
         </mesh>
 
         {/* Scene-based rendering - Only show selected scene */}
+        {client && myClientId && currentScene === 'default' && (
+          <DefaultScene wsClient={client} myClientId={myClientId} />
+        )}
+
         {client && myClientId && currentScene === 'interactive' && (
           <InteractiveDemoScene wsClient={client} myClientId={myClientId} />
         )}

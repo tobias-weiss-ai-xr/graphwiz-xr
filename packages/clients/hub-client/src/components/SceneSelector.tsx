@@ -19,7 +19,7 @@ const SCENES: { id: SceneType; name: string; icon: string; description: string }
     id: 'default',
     name: 'Default',
     icon: '🏠',
-    description: 'Basic avatar movement and chat'
+    description: 'Interactive room with lamp toggle'
   },
   {
     id: 'interactive',
