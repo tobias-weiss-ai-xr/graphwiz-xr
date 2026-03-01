@@ -25,9 +25,7 @@ test.describe('Networked Avatar Sync - Production', () => {
         const timeout = setTimeout(() => resolve(false), 5000);
 
         // Listen for console logs about WebSocket connection
-        const originalLog = console.log;
         const logs: string[] = [];
-        console.log = (...args) => {
           logs.push(args.join(' '));
           originalLog.apply(console, args);
 
@@ -39,7 +37,6 @@ test.describe('Networked Avatar Sync - Production', () => {
             )
           ) {
             clearTimeout(timeout);
-            console.log = originalLog;
             resolve(true);
           }
         };
@@ -52,7 +49,6 @@ test.describe('Networked Avatar Sync - Production', () => {
             )
           ) {
             clearTimeout(timeout);
-            console.log = originalLog;
             resolve(true);
           }
         }, 1000);
@@ -91,7 +87,7 @@ test.describe('Networked Avatar Sync - Production', () => {
 
   test('should load avatar configurator', async ({ page }) => {
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000); // Wait for React to mount
+    ; // Wait for React to mount
 
     // Check for Three.js canvas - canvas is implicitly checked by toBeVisible
     await expect(page.locator('canvas').first()).toBeVisible();
@@ -106,7 +102,7 @@ test.describe('Networked Avatar Sync - Production', () => {
 
   test('should support keyboard navigation', async ({ page }) => {
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(1000);
+    ;
 
     // Test movement keys
     await page.keyboard.press('w');
@@ -124,12 +120,12 @@ test.describe('Networked Avatar Sync - Production', () => {
 
   test('should handle avatar customization', async ({ page }) => {
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
+    ;
 
     // Try to open avatar configurator (might be keyboard-based or UI button)
     // For now, verify the app doesn't crash
     await page.keyboard.press('c'); // Common shortcut for customization
-    await page.waitForTimeout(500);
+    ;
 
     await expect(page.locator('body')).toBeVisible();
   });
@@ -200,7 +196,6 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
       expect(await page1.locator('body').isVisible()).toBeTruthy();
       expect(await page2.locator('body').isVisible()).toBeTruthy();
 
-      console.log('✅ Multi-user test: Both users connected successfully');
 
       // Verify avatar synchronization between users
       const user1Avatar = await page1.evaluate(() => {
@@ -225,22 +220,6 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
       await expect(controllerEntities1.length).toBeGreaterThan(0);
       await expect(controllerEntities2.length).toBeGreaterThan(0);
 
-      console.log('✅ Avatar synchronization verified');
-      console.log('✅ Controller models loaded (infrastructure)');
-    } finally {
-      await context1.close();
-      await context2.close();
-    }
-  });
-      const user2Avatar = await page2.evaluate(() => {
-        return (window as any).localStorage?.getItem('user2_avatar');
-      });
-
-      // Both users should have avatar data after WebSocket connection
-      expect(user1Avatar).toBeTruthy();
-      expect(user2Avatar).toBeTruthy();
-
-      console.log('✅ Avatar synchronization verified');
     } finally {
       await context1.close();
       await context2.close();
@@ -259,7 +238,7 @@ test.describe('Networked Avatar Sync - Multi-User', () => {
       await page.keyboard.down('Control');
       await page.keyboard.press(type[0]); // First letter of avatar type
       await page.keyboard.up('Control');
-      await page.waitForTimeout(200);
+      
     }
 
     // Verify app remains stable
@@ -300,7 +279,6 @@ test.describe('Networked Avatar Sync - Performance', () => {
     // Production should load within 5 seconds
     expect(loadTime).toBeLessThan(5000);
 
-    console.log(`✅ Production load time: ${loadTime}ms`);
   });
 
   test('should have acceptable bundle size', async ({ page }) => {
@@ -323,16 +301,13 @@ test.describe('Networked Avatar Sync - Performance', () => {
     await page.goto(PRODUCTION_URL);
     await page.waitForLoadState('networkidle');
 
-    console.log('JavaScript bundles loaded:');
     jsFiles.forEach((file) => {
-      console.log(`  ${file.name}: ${(file.size / 1024).toFixed(2)} KB`);
     });
 
     // Main bundle should be under 1MB
     const mainBundle = jsFiles.find((f) => f.name.includes('index-'));
     if (mainBundle) {
       expect(mainBundle.size).toBeLessThan(1024 * 1024); // 1MB
-      console.log(`✅ Main bundle size: ${(mainBundle.size / 1024).toFixed(2)} KB`);
     }
   });
 
@@ -340,56 +315,52 @@ test.describe('Networked Avatar Sync - Performance', () => {
     await page.goto(PRODUCTION_URL);
     await page.waitForLoadState('networkidle');
 
-      // Measure FPS
-      const fps = await page.evaluate(async () => {
-        return new Promise<number>((resolve) => {
-          let frames = 0;
-          const startTime = performance.now();
+    // Measure FPS
+    const fps = await page.evaluate(async () => {
+      return new Promise<number>((resolve) => {
+        let frames = 0;
+        const startTime = performance.now();
 
-          function countFrames() {
-            frames++;
-            const elapsed = performance.now() - startTime;
+        function countFrames() {
+          frames++;
+          const elapsed = performance.now() - startTime;
 
-            if (elapsed >= 2000) {
-              // Measure for 2 seconds
-              const fps = (frames / elapsed) * 1000;
-              resolve(fps);
-            } else {
-              requestAnimationFrame(countFrames);
-            }
+          if (elapsed >= 2000) {
+            // Measure for 2 seconds
+            const fps = (frames / elapsed) * 1000;
+            resolve(fps);
+          } else {
+            requestAnimationFrame(countFrames);
           }
-        });
+        }
+
+        // Start counting frames
+        requestAnimationFrame(countFrames);
       });
-
-      console.log(`✅ Measured FPS: ${fps.toFixed(2)}`);
-      expect(fps).toBeGreaterThan(30); // At least 30 FPS
-
-      // Verify performance overlay is displayed
-      const fpsElement = await page.locator('.fps-value');
-      await expect(fpsElement).not.toBeNull();
-      await expect(fpsElement).toBeVisible();
-
-      // Verify remote player count is displayed
-      const remotePlayersElement = await page.locator('.remote-players-value');
-      await expect(remotePlayersElement).not.toBeNull();
-      await expect(remotePlayersElement).toBeVisible();
-
-      // Verify network latency is displayed
-      const latencyElement = await page.locator('.latency-value');
-      await expect(latencyElement).not.toBeNull();
-      await expect(latencyElement).toBeVisible();
-
-      console.log('✅ Performance metrics displayed and accessible');
-    });
-  });
     });
 
-    console.log(`✅ Measured FPS: ${fps.toFixed(2)}`);
     expect(fps).toBeGreaterThan(30); // At least 30 FPS
+
+    // Verify performance overlay is displayed
+    const fpsElement = await page.locator('.fps-value');
+    await expect(fpsElement).not.toBeNull();
+    await expect(fpsElement).toBeVisible();
+
+    // Verify remote player count is displayed
+    const remotePlayersElement = await page.locator('.remote-players-value');
+    await expect(remotePlayersElement).not.toBeNull();
+    await expect(remotePlayersElement).toBeVisible();
+
+    // Verify network latency is displayed
+    const latencyElement = await page.locator('.latency-value');
+    await expect(latencyElement).not.toBeNull();
+    await expect(latencyElement).toBeVisible();
+
   });
 });
 
 test.describe('Networked Avatar Sync - Security', () => {
+
   test('should use secure WebSocket (WSS)', async ({ page }) => {
     await page.goto(PRODUCTION_URL);
     await page.waitForLoadState('networkidle');
@@ -398,9 +369,7 @@ test.describe('Networked Avatar Sync - Security', () => {
     const usesWSS = await page.evaluate(() => {
       // Check for WebSocket connection attempts
       let foundWSS = false;
-      const originalLog = console.log;
 
-      console.log = (...args) => {
         const message = args.join(' ');
         if (message.includes('wss://xr.graphwiz.ai/ws')) {
           foundWSS = true;
@@ -410,7 +379,6 @@ test.describe('Networked Avatar Sync - Security', () => {
 
       // Restore after delay
       setTimeout(() => {
-        console.log = originalLog;
       }, 1000);
 
       return foundWSS;

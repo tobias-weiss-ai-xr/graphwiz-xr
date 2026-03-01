@@ -4,6 +4,8 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useState, useCallback, useEffect, useRef } from 'react';
 
 import { AvatarConfigurator } from './avatar';
+import { PlayerAvatar } from './components/PlayerAvatar';
+import { DemoScene } from './components/DemoScene';
 import type { AvatarConfig } from './avatar/api';
 import { getAvatarPersistence } from './avatar/persistence';
 import {
@@ -48,42 +50,14 @@ interface FloatingEmojiData {
   position: [number, number, number];
 }
 
-function PlayerAvatar({
-  position,
-  rotation,
-  displayName
-}: {
-  position: [number, number, number];
-  rotation: [number, number, number];
-  displayName: string;
-}) {
-  return (
-    <group position={position} rotation={rotation}>
-      {/* Body */}
-      <mesh castShadow>
-        <capsuleGeometry args={[0.3, 0.8, 8, 16]} />
-        <meshStandardMaterial color="#4CAF50" />
-      </mesh>
-      {/* Head */}
-      <mesh position={[0, 0.7, 0]} castShadow>
-        <sphereGeometry args={[0.2, 16, 16]} />
-        <meshStandardMaterial color="#FFCC80" />
-      </mesh>
-      {/* Name tag */}
-      <Text
-        position={[0, 1.2, 0]}
-        fontSize={0.2}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.02}
-        outlineColor="#000000"
-      >
-        {displayName}
-      </Text>
-    </group>
-  );
-}
+// PlayerAvatar is imported from './components/PlayerAvatar' for enhanced features:
+// - Gentle up/down floating animation
+// - Hover effect with glowing circle indicator
+// - Color customization
+// This inline definition is kept for backward compatibility only.
+
+// PlayerAvatar is imported from './components/PlayerAvatar' and used in the render.
+// The inline component has been replaced to allow the imported version to be used.
 
 /**
  * InterpolationUpdater Component

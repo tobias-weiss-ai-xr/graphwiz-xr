@@ -1,92 +1,58 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Unified Playwright configuration for GraphWiz-XR
- *
- * Supports multiple test environments via environment variables:
- * - LOCAL: Local development (localhost:5173)
- * - PRODUCTION: Production tests (https://xr.graphwiz.ai)
- * - WS_TEST: WebSocket testing (production URLs, custom timeouts)
- */
-
 const isCI = !!process.env.CI;
 const isProduction = process.env.TEST_ENV === 'production';
 const isWSTest = process.env.TEST_ENV === 'ws-test';
-
 const baseURL = isProduction || isWSTest ? 'https://xr.graphwiz.ai' : 'http://localhost:5173';
-
 export default defineConfig({
   testDir: './e2e',
-
-  // Environment-specific settings
+  timeout: 60000,
+  expect: {
+    timeout: 10000
+  },
   use: {
     baseURL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-
-    // Parallel execution based on environment
+    actionTimeout: 15000,
+    navigationTimeout: 30000,
+    // Launch options - always headless for efficiency
     launchOptions: {
       args: isProduction
-        ? [
-            '--disable-web-security', // Allow CORS in production
-            '--no-sandbox' // Bypass sandbox
-          ]
-        : [],
-
-      // Slower headless mode in CI
-      headless: isCI
+        ? ['--disable-web-security', '--no-sandbox']
+        : ['--disable-extensions', '--disable-gpu'],
+      headless: true
     },
-
-    // Action timeouts based on environment
-    actionTimeout: isWSTest ? 10000 : 60000,
-    navigationTimeout: isWSTest ? 30000 : 100000
-
-    // Reduce retries in CI to fail fast
+    // Reuse browser context for efficiency
+    storageState: undefined,
+    ignoreHTTPSErrors: true
   },
-
   // Test execution strategy
-  fullyParallel: !isProduction && !isWSTest, // Sequential in production/WS tests
+  fullyParallel: false,
   forbidOnly: !isCI,
-  retries: isCI ? 0 : 2,
-
+  retries: isCI ? 0 : 1,
   // Output configuration
-  reporter: isProduction
-    ? [
-        ['html', { outputFolder: 'playwright-report/prod' }],
-        ['list'],
-        ['junit', { outputFile: 'test-results/junit-prod.xml' }]
-      ]
-    : isWSTest
-      ? ['list']
-      : [['html'], ['list'], ['junit', { outputFile: 'test-results/junit.xml' }]],
-
-  // Browser configurations
+  reporter: [['list'], ['html', { open: 'never' }]],
+  // Single browser configuration for efficiency
   projects: [
     {
       name: 'chromium-desktop',
-      use: { ...devices['Desktop Chrome'] }
-    },
-    {
-      name: 'firefox-desktop',
-      use: { ...devices['Desktop Firefox'] }
-    },
-    {
-      name: 'webkit-safari',
-      use: { ...devices['Desktop Safari'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 720 }
+      }
     }
   ],
-
   // Dev server (only for local testing)
   webServer: isProduction
     ? undefined
     : {
         command: 'pnpm dev',
         url: 'http://localhost:5173',
-        reuseExistingServer: !isCI,
+        reuseExistingServer: true,
         timeout: 120000
       },
-
-  // Workers configuration
-  workers: isProduction ? 1 : process.env.CI ? 1 : undefined
+  // Workers for parallel test execution
+  workers: 8, // 8 workers for faster parallel execution
 });

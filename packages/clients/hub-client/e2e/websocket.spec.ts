@@ -29,12 +29,7 @@ test.describe('WebSocket Connection', () => {
       (log.includes('error') || log.includes('failed') || log.includes('disconnected'))
     );
 
-    console.log('=== WebSocket Logs ===');
-    logs.filter(log => log.includes('WebSocket')).forEach(log => console.log(log));
 
-    console.log('\n=== Connection Status ===');
-    console.log('Connected:', wsConnected);
-    console.log('Errors:', wsErrors.length);
 
     // Take screenshot for debugging
     await page.screenshot({ path: 'test-results/websocket-test.png', fullPage: true });
