@@ -175,4 +175,17 @@ test.describe('Player Movement - Direction Fix', () => {
 
     console.log('\n✅ Q/E rotation verified!\n');
   });
+
+
+/**
+ * @DEPRECATED - Legacy movement tests
+ * 
+ * These tests are deprecated and kept for historical reference only.
+ * They reference old movement controls UI (http://localhost:3008) which no longer exists.
+ * 
+ * Current movement functionality is tested in:
+ * - keyboard-navigation.spec.ts (7 tests)
+ * - networked-avatar-sync.spec.ts (8 tests)
+ * - multi-user-sync.spec.ts (6 tests)
+ */
 });

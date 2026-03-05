@@ -244,4 +244,16 @@ test.describe('Multiplayer Movement - Production', () => {
 
     console.log('\n✅ Two players can coexist!\n');
   });
+
+
+/**
+ * @DEPRECATED - Legacy multiplayer production tests
+ * 
+ * These tests are deprecated and kept for historical reference only.
+ * They test features that have been refactored into newer test files.
+ * 
+ * Current multiplayer functionality is tested in:
+ * - networked-avatar-sync.spec.ts (8 tests)
+ * - multi-user-sync.spec.ts (6 tests)
+ */
 });

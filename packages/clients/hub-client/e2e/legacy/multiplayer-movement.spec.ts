@@ -410,4 +410,16 @@ test.describe('Multiplayer Movement Synchronization', () => {
 
     console.log('\n✅ Player count tracking working!\n');
   });
+
+
+/**
+ * @DEPRECATED - Legacy multiplayer movement tests
+ * 
+ * These tests are deprecated and kept for historical reference only.
+ * They test movement controls UI that no longer exists.
+ * 
+ * Current multiplayer functionality is tested in:
+ * - networked-avatar-sync.spec.ts (8 tests)
+ * - multi-user-sync.spec.ts (6 tests)
+ */
 });
