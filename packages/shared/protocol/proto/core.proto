@@ -128,6 +128,7 @@ message PresenceData {
   Vector3 position = 3;
   Quaternion rotation = 4;
   AvatarConfig avatar_config = 5;
+  string host_client_id = 6;  // Host for the room, if applicable
 }
 
 message PlayerSnapshot {

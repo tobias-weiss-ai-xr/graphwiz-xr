@@ -1219,6 +1219,9 @@ export namespace graphwiz {
 
             /** PresenceData avatarConfig */
             avatarConfig?: (graphwiz.core.IAvatarConfig|null);
+
+            /** PresenceData hostClientId */
+            hostClientId?: (string|null);
         }
 
         /** Represents a PresenceData. */
@@ -1244,6 +1247,9 @@ export namespace graphwiz {
 
             /** PresenceData avatarConfig. */
             public avatarConfig?: (graphwiz.core.IAvatarConfig|null);
+
+            /** PresenceData hostClientId. */
+            public hostClientId: string;
 
             /**
              * Creates a new PresenceData instance using the specified properties.

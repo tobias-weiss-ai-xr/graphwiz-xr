@@ -3278,6 +3278,7 @@ export const graphwiz = $root.graphwiz = (() => {
              * @property {graphwiz.core.IVector3|null} [position] PresenceData position
              * @property {graphwiz.core.IQuaternion|null} [rotation] PresenceData rotation
              * @property {graphwiz.core.IAvatarConfig|null} [avatarConfig] PresenceData avatarConfig
+             * @property {string|null} [hostClientId] PresenceData hostClientId
              */
 
             /**
@@ -3336,6 +3337,14 @@ export const graphwiz = $root.graphwiz = (() => {
             PresenceData.prototype.avatarConfig = null;
 
             /**
+             * PresenceData hostClientId.
+             * @member {string} hostClientId
+             * @memberof graphwiz.core.PresenceData
+             * @instance
+             */
+            PresenceData.prototype.hostClientId = "";
+
+            /**
              * Creates a new PresenceData instance using the specified properties.
              * @function create
              * @memberof graphwiz.core.PresenceData
@@ -3369,6 +3378,8 @@ export const graphwiz = $root.graphwiz = (() => {
                     $root.graphwiz.core.Quaternion.encode(message.rotation, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                 if (message.avatarConfig != null && Object.hasOwnProperty.call(message, "avatarConfig"))
                     $root.graphwiz.core.AvatarConfig.encode(message.avatarConfig, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                if (message.hostClientId != null && Object.hasOwnProperty.call(message, "hostClientId"))
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.hostClientId);
                 return writer;
             };
 
@@ -3423,6 +3434,10 @@ export const graphwiz = $root.graphwiz = (() => {
                         }
                     case 5: {
                             message.avatarConfig = $root.graphwiz.core.AvatarConfig.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 6: {
+                            message.hostClientId = reader.string();
                             break;
                         }
                     default:
@@ -3481,6 +3496,9 @@ export const graphwiz = $root.graphwiz = (() => {
                     if (error)
                         return "avatarConfig." + error;
                 }
+                if (message.hostClientId != null && message.hasOwnProperty("hostClientId"))
+                    if (!$util.isString(message.hostClientId))
+                        return "hostClientId: string expected";
                 return null;
             };
 
@@ -3515,6 +3533,8 @@ export const graphwiz = $root.graphwiz = (() => {
                         throw TypeError(".graphwiz.core.PresenceData.avatarConfig: object expected");
                     message.avatarConfig = $root.graphwiz.core.AvatarConfig.fromObject(object.avatarConfig);
                 }
+                if (object.hostClientId != null)
+                    message.hostClientId = String(object.hostClientId);
                 return message;
             };
 
@@ -3537,6 +3557,7 @@ export const graphwiz = $root.graphwiz = (() => {
                     object.position = null;
                     object.rotation = null;
                     object.avatarConfig = null;
+                    object.hostClientId = "";
                 }
                 if (message.displayName != null && message.hasOwnProperty("displayName"))
                     object.displayName = message.displayName;
@@ -3548,6 +3569,8 @@ export const graphwiz = $root.graphwiz = (() => {
                     object.rotation = $root.graphwiz.core.Quaternion.toObject(message.rotation, options);
                 if (message.avatarConfig != null && message.hasOwnProperty("avatarConfig"))
                     object.avatarConfig = $root.graphwiz.core.AvatarConfig.toObject(message.avatarConfig, options);
+                if (message.hostClientId != null && message.hasOwnProperty("hostClientId"))
+                    object.hostClientId = message.hostClientId;
                 return object;
             };
 
