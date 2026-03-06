@@ -5,15 +5,16 @@
  * features like chat, emoji, and basic interactions.
  */
 
-import { useRef, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Text, useCursor } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+import { useRef as _useRef, useState } from 'react';
+
 import { PlayerAvatar } from './PlayerAvatar';
 
 export interface DemoSceneProps {
-  myClientId?: string;
+  myClientId?: string; // eslint-disable-line @typescript-eslint/no-unused-vars
   displayName?: string;
-  isMultiplayer?: boolean;
+  isMultiplayer?: boolean; // eslint-disable-line @typescript-eslint/no-unused-vars
 }
 
 function InteractiveBox({ 
@@ -38,8 +39,10 @@ function InteractiveBox({
         onClick={() => setClicked(!clicked)}
         castShadow
       >
-        <boxGeometry args={[clicked ? [0.8, 0.8, 0.8] : [1, 1, 1], 1, 1]} />
-        <meshStandardMaterial 
+  <boxGeometry 
+        args={[clicked ? 0.8 : 1, clicked ? 0.8 : 1, clicked ? 0.8 : 1, 1, 1]}
+      />
+      <meshStandardMaterial
           color={clicked ? '#FF5722' : color}
           metalness={0.3}
           roughness={0.7}
@@ -154,9 +157,9 @@ function SceneFloor() {
 }
 
 export function DemoScene({ 
-  myClientId, 
+  myClientId: _myClientId, // Variable kept for future implementation
   displayName = 'Player',
-  isMultiplayer = false 
+  isMultiplayer: _isMultiplayer // Variable kept for future implementation
 }: DemoSceneProps) {
   return (
     <Canvas 

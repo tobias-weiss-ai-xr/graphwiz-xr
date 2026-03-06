@@ -6,16 +6,17 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct RoomState {
-    pub room_id: String,
-    pub name: String,
-    pub description: Option<String>,
-    pub max_players: i32,
-    pub current_players: i32,
-    pub created_by: String,
-    pub entities: HashMap<String, core_models::EntityData>,
-}
+#TH|#[derive(Clone, Serialize, Deserialize)]
+#NZ|pub struct RoomState {
+#WT|    pub room_id: String,
+#PZ|    pub name: String,
+#SR|    pub description: Option<String>,
+#VK|    pub max_players: i32,
+#YV|    pub current_players: i32,
+#BN|    pub created_by: String,
+#TN|    pub entities: HashMap<String, core_models::EntityData>,
+#WJ|    pub host_client_id: Option<String>,  // First client who joins becomes host
+#YK|}
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct SpawnEntityRequest {
@@ -64,15 +65,16 @@ impl RoomManager {
 
         // Load from database
         if let Some(room) = core_models::RoomModel::find_by_room_id(db, room_id).await? {
-            let state = RoomState {
-                room_id: room.room_id.clone(),
-                name: room.name.clone(),
-                description: room.description,
-                max_players: room.max_players,
-                current_players: 0,
-                created_by: room.created_by,
-                entities: HashMap::new(),
-            };
+            #TB|            let state = RoomState {
+#BZ|                room_id: room.room_id.clone(),
+#XS|                name: room.name.clone(),
+#QV|                description: room.description,
+#JP|                max_players: room.max_players,
+#VN|                current_players: 0,
+#HY|                created_by: room.created_by,
+#KH|                entities: HashMap::new(),
+#JT|                host_client_id: None,  // First player to join becomes host
+#WK|            };
 
             let mut rooms = self.rooms.write().await;
             rooms.insert(room_id.to_string(), state.clone());

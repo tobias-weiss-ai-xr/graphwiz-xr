@@ -364,11 +364,6 @@ pub async fn websocket_handler(
     let ws_manager_clone = ws_manager.clone();
     let client_id_for_broadcast = client_id.clone();
 
-    // TODO: Integrate with SessionManager for proper host assignment
-    // For now, first client joining a room becomes the host
-    // Host ID should be fetched from SessionManager in production
-    let host_client_id = client_id_for_broadcast.clone(); // First client is host
-
     // Broadcast PRESENCE_JOIN event to room with host information
     if let Some(existing_client_id) = &client_id_for_broadcast {
         if let Ok(presence_bytes) = create_presence_join_message(
@@ -382,15 +377,6 @@ pub async fn websocket_handler(
             ws_manager.broadcast_to_room(&room_id_clone, &presence_bytes, None).await;
         }
     }
-
-    // Register connection and get channel for sending
-    let mut rx = ws_manager.add_connection(conn_id.clone(), Some(room_id.clone()), user_id, client_id).await;
-
-    let conn_id_clone = conn_id.clone();
-    let room_id_clone = room_id.clone();
-    let ws_manager_clone = ws_manager.clone();
-
-    // Spawn task to handle WebSocket messages
     actix_web::rt::spawn(async move {
         loop {
             tokio::select! {
@@ -606,35 +592,6 @@ pub async fn get_metrics(ws_manager: web::Data<WebSocketManager>) -> HttpRespons
         latency_samples.iter().sum::<u64>() / latency_samples.len() as u64
     };
 
-/// Create PRESENCE_JOIN event message with host information
-fn create_presence_join_message(
-    client_id: &str,
-    room_id: &str,
-    host_client_id: &str,
-) -> Result<Vec<u8>> {
-    // TODO: Use proper protobuf serialization instead of JSON
-    // For now, returning simple JSON to verify functionality
-    let payload = serde_json::json!({
-        "client_id": client_id,
-        "event_type": 0,  // PRESENCE_JOIN / JOIN
-        "data": {
-            "host_client_id": host_client_id,
-            "event_type": 0  // PRESENCE_JOIN / JOIN
-        }
-    });
-    
-    // Prefix with message type for PRESENCE_UPDATE (42) - using existing type for now
-    // TODO: This should use proper Message wrapper with PRESENCE_JOIN (40)
-    let message = serde_json::json!({
-        "type": 42, // PRESENCE_UPDATE (should be 40 for PRESENCE_JOIN)
-        timestamp: chrono::Utc::now().timestamp(),
-        payload
-    });
-    
-    serde_json::to_vec(&message).map_err(|e| {
-        reticulum_core::Error::internal(format!("Failed to serialize presence join message: {}", e))
-    })
-}
 /// Create PRESENCE_JOIN event message with host information
 fn create_presence_join_message(
     client_id: &str,

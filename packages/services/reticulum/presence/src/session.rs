@@ -21,6 +21,7 @@ pub struct ClientSession {
 pub struct SessionManager {
     sessions: Arc<RwLock<HashMap<String, ClientSession>>>,
     room_sessions: Arc<RwLock<HashMap<String, Vec<String>>>>, // room_id -> session_ids
+    room_hosts: Arc<RwLock<HashMap<String, Option<String>>>>, // room_id -> host_client_id
     pending_messages: Arc<RwLock<HashMap<String, Vec<serde_json::Value>>>>, // session_id -> pending messages
     locked_rooms: Arc<RwLock<HashMap<String, bool>>>, // room_id -> is_locked
     flush_tracker: Arc<RwLock<FlushTracker>>, // Track flush times per session
@@ -106,6 +107,8 @@ impl SessionManager {
         Self {
             sessions: Arc::new(RwLock::new(HashMap::new())),
             room_sessions: Arc::new(RwLock::new(HashMap::new())),
+            room_hosts: Arc::new(RwLock::new(HashMap::new())),
+
             pending_messages: Arc::new(RwLock::new(HashMap::new())),
             locked_rooms: Arc::new(RwLock::new(HashMap::new())),
             flush_tracker: Arc::new(RwLock::new(FlushTracker::new())),
@@ -129,6 +132,8 @@ impl SessionManager {
         Self {
             sessions: Arc::new(RwLock::new(HashMap::new())),
             room_sessions: Arc::new(RwLock::new(HashMap::new())),
+            room_hosts: Arc::new(RwLock::new(HashMap::new())),
+
             pending_messages: Arc::new(RwLock::new(HashMap::new())),
             locked_rooms: Arc::new(RwLock::new(HashMap::new())),
             flush_tracker: Arc::new(RwLock::new(FlushTracker::new())),
@@ -154,8 +159,10 @@ impl SessionManager {
             room_sessions.entry(room_id.clone())
                 .or_insert_with(Vec::new)
                 .push(session_id.clone());
+            self.assign_host_if_needed(&room_id, &session.client_id).await;
         }
 
+        // Initialize pending messages
         // Initialize pending messages for this session
         let mut pending = self.pending_messages.write().await;
         pending.insert(session_id.clone(), Vec::new());
@@ -171,12 +178,6 @@ impl SessionManager {
         Ok(())
     }
 
-        // Initialize pending messages for this session
-        let mut pending = self.pending_messages.write().await;
-        pending.insert(session_id.clone(), Vec::new());
-
-        Ok(())
-    }
 
     /// Unregister a session
     pub async fn unregister_session(&self, session_id: &str) -> Result<Option<ClientSession>> {
@@ -370,7 +371,23 @@ impl SessionManager {
         Ok(())
     }
 
+    /// Assign host to room if not already assigned (first joiner becomes host)
+    async fn assign_host_if_needed(&self, room_id: &str, client_id: &str) {
+        let mut room_hosts = self.room_hosts.write().await;
+        let existing = room_hosts.entry(room_id.to_string()).or_insert(None);
+        if existing.is_none() {
+            *existing = Some(client_id.to_string());
+            log::info!("Client {} is now the host of room {}", client_id, room_id);
+        }
+    }
 
+    /// Get the host client ID for a room
+    pub async fn get_room_host(&self, room_id: &str) -> Option<String> {
+        let room_hosts = self.room_hosts.read().await;
+        room_hosts.get(room_id).cloned().flatten()
+    }
+
+    /// Flush all pending messages (called periodically)
     /// Flush all pending messages (called periodically)
     pub async fn flush_all(&self) {
         let pending = self.pending_messages.read().await;

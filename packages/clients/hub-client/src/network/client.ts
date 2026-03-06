@@ -23,6 +23,7 @@ export type MessageHandler = (message: Message) => void;
 export class NetworkClient {
   private wsClient: WebSocketClient;
   public config: NetworkConfig;
+  private networkSystem?: any; // NetworkSystem instance
 
   constructor(config: NetworkConfig) {
     this.config = config;
@@ -33,6 +34,18 @@ export class NetworkClient {
       displayName: config.displayName,
       authToken: config.authToken,
     });
+  }
+
+  // Set NetworkSystem reference (called after initialization)
+  setNetworkSystem(system: any): void {
+    this.networkSystem = system;
+  }
+
+  /**
+   * Get host clientId
+   */
+  getHostClientId(): string | null {
+    return this.networkSystem?.getHostClientId() ?? null;
   }
 
   /**

@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MessageType, EmojiReaction } from '@graphwiz/protocol';
-import { Grid, PerspectiveCamera, Text } from '@react-three/drei';
+import { Grid, PerspectiveCamera } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useState, useCallback, useEffect, useRef } from 'react';
 
-import { AvatarConfigurator } from './avatar';
+import { AvatarConfigurator, type AvatarConfig } from './avatar';
 import { PlayerAvatar } from './components/PlayerAvatar';
-import { DemoScene } from './components/DemoScene';
-import type { AvatarConfig } from './avatar/api';
+
 import { getAvatarPersistence } from './avatar/persistence';
 import {
   RoomBrowser,

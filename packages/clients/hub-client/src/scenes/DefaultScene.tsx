@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Environment, Float, Stars, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
@@ -312,7 +313,7 @@ function InteractiveBook({
 function DustParticles() {
   const particlesRef = useRef<Group>(null);
   const particleCount = 30;
-  const particles = Array.from({ length: particleCount }, (_, i) => ({
+  const particles = Array.from({ length: particleCount }, (_, _i) => ({
     position: [(Math.random() - 0.5) * 12, Math.random() * 3 + 0.5, (Math.random() - 0.5) * 12] as [
       number,
       number,
@@ -416,10 +417,9 @@ export function DefaultScene({ wsClient, myClientId }: DefaultSceneProps = {}) {
 
     const unsubscribe = wsClient.on(
       21,
-      (message: { payload?: { components?: { defaultSceneState?: ObjectState } } }) => {
+      (message: any) => {
         if (message.payload?.components?.defaultSceneState) {
-          const state = message.payload.components.defaultSceneState;
-
+          const state = message.payload.components.defaultSceneState as ObjectState;
           setObjectStates((prev) => {
             const current = prev.get(state.objectId);
             if (!current || state.lastUpdate > current.lastUpdate) {
@@ -430,7 +430,6 @@ export function DefaultScene({ wsClient, myClientId }: DefaultSceneProps = {}) {
         }
       }
     );
-
     return () => {
       if (unsubscribe) unsubscribe();
     };

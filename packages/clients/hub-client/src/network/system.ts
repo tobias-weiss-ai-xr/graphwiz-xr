@@ -22,6 +22,30 @@ export class NetworkSystem extends System {
   private networkToEntityMap = new Map<string, string>();
   // Map local entity IDs to network IDs
   private entityToNetworkMap = new Map<string, string>();
+  private hostClientId: string | null = null;
+
+  // Getter
+  getHostClientId(): string | null {
+    return this.hostClientId;
+  }
+
+  // Setter
+  setHostClientId(hostId: string | null): void {
+    this.hostClientId = hostId;
+  }
+  private presenceHandlers: Array<(event: any) => void> = [];
+
+  // Add presence join handler
+  addPresenceJoinHandler(handler: (event: any) => void): () => void {
+    this.presenceHandlers.push(handler);
+    // Return unsubscribe function
+    return () => {
+      const index = this.presenceHandlers.indexOf(handler);
+      if (index > -1) {
+        this.presenceHandlers.splice(index, 1);
+      }
+    };
+  }
 
   constructor(networkClient: NetworkClient) {
     super();
@@ -242,6 +266,15 @@ export class NetworkSystem extends System {
   private handlePresenceJoin(message: Message): void {
     const event = message.payload as any;
     console.log('[NetworkSystem] User joined:', event.clientId);
+    
+    // Check if payload contains host_client_id (from backend)
+    if (event.host_client_id) {
+      this.hostClientId = event.host_client_id;
+      console.log('[NetworkSystem] Host assigned:', this.hostClientId);
+    }
+    
+    // Notify presence handlers if they want to know about joins
+    this.presenceHandlers.forEach((handler) => handler(event));
   }
 
   /**

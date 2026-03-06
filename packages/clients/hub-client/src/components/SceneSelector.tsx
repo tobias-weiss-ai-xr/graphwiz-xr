@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 export type SceneType =
   | 'default'
+  | 'demo'
   | 'interactive'
   | 'media'
   | 'grab'
@@ -20,6 +21,12 @@ const SCENES: { id: SceneType; name: string; icon: string; description: string }
     name: 'Default',
     icon: '🏠',
     description: 'Interactive room with lamp toggle'
+  },
+  {
+    id: 'demo',
+    name: 'Demo',
+    icon: '🎨',
+    description: 'Showcases player avatar with interactive elements'
   },
   {
     id: 'interactive',

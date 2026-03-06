@@ -26,20 +26,21 @@ test.describe('Networked Avatar Sync - Production', () => {
 
         // Listen for console logs about WebSocket connection
         const logs: string[] = [];
-          logs.push(args.join(' '));
+        const originalLog = console.log;
+        console.log = ((...args) => {
+          logs.push(args.join(" "));
           originalLog.apply(console, args);
+        });
 
-          // Check for connection success
-          if (
-            logs.some(
-              (log) =>
-                log.includes('Connected to server') || log.includes('wss://xr.graphwiz.ai/ws')
-            )
-          ) {
-            clearTimeout(timeout);
-            resolve(true);
-          }
-        };
+        // Check for connection success
+        if (logs.some(
+          (log) =>
+            log.includes("Connected to server") || log.includes("wss://xr.graphwiz.ai/ws")
+        )) {
+          clearTimeout(timeout);
+          resolve(true);
+        }
+
 
         // Also check if we're already connected
         setTimeout(() => {
@@ -369,13 +370,14 @@ test.describe('Networked Avatar Sync - Security', () => {
     const usesWSS = await page.evaluate(() => {
       // Check for WebSocket connection attempts
       let foundWSS = false;
-
+      const originalLog = console.log;
+      console.log = ((...args) => {
         const message = args.join(' ');
         if (message.includes('wss://xr.graphwiz.ai/ws')) {
           foundWSS = true;
         }
         originalLog.apply(console, args);
-      };
+      });
 
       // Restore after delay
       setTimeout(() => {
