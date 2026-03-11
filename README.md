@@ -7,6 +7,7 @@
 ![Three.js](https://img.shields.io/badge/Three.js-160-black.svg)
 ![Vite](https://img.shields.io/badge/Vite-6.0-purple.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Tests](https://img.shields.io/badge/tests-138_passing-brightgreen.svg)
 
 Modern VR/Social platform - A complete rewrite of the Hubs ecosystem using TypeScript + Rust.
 
@@ -497,7 +498,28 @@ MPL-2.0 - See LICENSE file for details
   - Real-time presence integration
 
 
-**Last Updated**: 2026-01-07
+**Last Updated**: 2026-03-11
+
+**Overall Progress**: ~80% Complete
+
+---
+
+### 🟢 Recent Major Milestones (March 2026)
+
+- ✅ **ModerationPanel Integration** - Full moderation controls in main VR client (2026-03-02)
+  - ModerationPanel component with kick/mute/room lock features
+  - Toggle button for host-only access
+  - Player list management
+  - Real-time presence integration
+- ✅ **Admin Dashboard Frontend Complete** - Fully functional admin client (2026-01-07)
+  - Dashboard with real-time service health monitoring
+  - User management (list, ban/unban, role assignment)
+  - Room management (list, edit, close, delete)
+  - Room persistence (save/load room state)
+  - Historical metrics with time range selection and graphs
+  - System logs viewer with filtering and export
+  - Service controls (restart, shutdown)
+  - Tab-based navigation for all admin functions
 
 **Overall Progress**: ~74% Complete
 
@@ -600,15 +622,15 @@ MPL-2.0 - See LICENSE file for details
 - Hub client UI (core complete, most interactions done, gesture recognition pending)
 - Testing infrastructure (138 tests passing, more coverage needed)
 - Documentation (READMEs complete, API docs pending)
-- Admin dashboard (frontend complete, moderation tools pending)
 
 ### 🔴 Not Started (0%)
 
-- Admin dashboard
-- Spoke editor
-- Advanced social features
-- Production deployment
-
+- Spoke editor (scene editor)
+- Advanced social features (friends, groups, content marketplace)
+- Full E2E test suite expansion
+- S3 backend integration for storage service
+- Load testing for SFU under production conditions
+- Kubernetes deployment and production monitoring
 ### Test Metrics
 
 - **Total Tests**: 138 passing (100% pass rate)
