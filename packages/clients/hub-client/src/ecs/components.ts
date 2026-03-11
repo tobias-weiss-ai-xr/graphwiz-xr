@@ -6,6 +6,9 @@
 
 import { Vector3, Euler, Color } from 'three';
 
+import { createLogger } from '@graphwiz/types';
+const logger = createLogger('ModelComponent');
+
 /**
  * Transform component - position, rotation, scale
  */
@@ -382,7 +385,7 @@ export class ModelComponent {
         this.isLoaded = true;
         this.isLoading = false;
 
-        console.log(`[ModelComponent] Loaded model: ${this.url}`);
+        logger.info('[ModelComponent] Loaded model:', { url: this.url });
         return this.gltf;
       } catch (error) {
         console.error(`[ModelComponent] Failed to load model: ${this.url}`, error);
