@@ -4,6 +4,8 @@
  * Simulates the WebRTC SFU service for development/testing.
  */
 
+import { createLogger } from '@graphwiz/types/logger';
+
 import http from 'http';
 
 const PORT = 8014;
@@ -38,7 +40,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const data = JSON.parse(body);
-        console.log('[SFU] Received signal:', data.type);
+        logger.info('[SFU] Received signal:', data.type);
 
         // Mock SDP response
         if (data.type === 'offer') {
@@ -83,18 +85,18 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Mock SFU Server running on http://localhost:${PORT}`);
-  console.log('Endpoints:');
-  console.log('  GET  /health          - Health check');
-  console.log('  POST /signal          - WebRTC signaling');
-  console.log('  GET  /participants    - List participants');
+  logger.info(`Mock SFU Server running on http://localhost:${PORT}`);
+  logger.info('Endpoints:');
+    logger.info('  GET  /health          - Health check');
+    logger.info('  POST /signal          - WebRTC signaling');
+    logger.info('  GET  /participants    - List participants');
 });
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-  console.log('\nShutting down mock SFU server...');
+    logger.info('Shutting down mock SFU server...');
   server.close(() => {
-    console.log('Server closed');
+      logger.info('Server closed');
     process.exit(0);
   });
 });

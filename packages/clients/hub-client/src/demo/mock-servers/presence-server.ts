@@ -4,6 +4,8 @@
  * Simulates the WebSocket presence service for development/testing.
  */
 
+import { createLogger } from '@graphwiz/types/logger';
+
 import { randomUUID } from 'crypto';
 
 import { WebSocketServer, WebSocket } from 'ws';
@@ -22,7 +24,7 @@ interface ServerMessage {
 
 const wss = new WebSocketServer({ port: PORT });
 
-console.log(`Mock Presence Server running on ws://localhost:${PORT}`);
+  logger.info(`Mock Presence Server running on ws://localhost:${PORT}`);
 
 const clients = new Map<any, string>();
 
@@ -35,7 +37,7 @@ wss.on('connection', (ws, req) => {
   const roomId = url.searchParams.get('room') || 'demo-room';
   const userId = url.searchParams.get('userId') || 'unknown';
 
-  console.log(`Client connected: ${clientId} (User: ${userId}, Room: ${roomId})`);
+    logger.info(`Client connected: ${clientId} (User: ${userId}, Room: ${roomId})`);
 
   // Send connection success message
   const connectMsg: ServerMessage = {
@@ -61,7 +63,7 @@ wss.on('connection', (ws, req) => {
 
       switch (message.type) {
         case 10: // JOIN_ROOM
-          console.log(`[${clientId}] User ${userId} joined room ${roomId}`);
+          logger.info(`[${clientId}] User ${userId} joined room ${roomId}`);
           // Broadcast to other clients
           broadcast({
             type: 40, // USER_JOINED
@@ -89,15 +91,15 @@ wss.on('connection', (ws, req) => {
           break;
 
         default:
-          console.log(`[${clientId}] Unknown message type: ${message.type}`);
+            logger.info(`[${clientId}] Unknown message type: ${message.type}`);
       }
     } catch (error) {
-      console.error(`[${clientId}] Error parsing message:`, error);
+            logger.error(`[${clientId}] Error parsing message:`, error);
     }
   });
 
   ws.on('close', () => {
-    console.log(`Client disconnected: ${clientId}`);
+      logger.info(`Client disconnected: ${clientId}`);
     clients.delete(ws);
 
     // Notify other clients
@@ -108,7 +110,7 @@ wss.on('connection', (ws, req) => {
   });
 
   ws.on('error', (error) => {
-    console.error(`[${clientId}] WebSocket error:`, error);
+      logger.error(`[${clientId}] WebSocket error:`, error);
   });
 });
 
@@ -123,9 +125,9 @@ function broadcast(message: ServerMessage, excludeWs?: WebSocket) {
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-  console.log('\nShutting down mock presence server...');
+    logger.info('\nShutting down mock presence server...');
   wss.close(() => {
-    console.log('Server closed');
+      logger.info('Server closed');
     process.exit(0);
   });
 });
