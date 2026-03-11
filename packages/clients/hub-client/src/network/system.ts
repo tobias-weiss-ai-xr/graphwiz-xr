@@ -4,6 +4,10 @@
  * ECS system that handles network synchronization of entities.
  */
 
+import { createLogger } from '@graphwiz/types';
+
+const logger = createLogger('NetworkSystem');
+
 import type { Message, MessageType } from '@graphwiz/protocol';
 
 import type { Entity } from '../ecs/entity';
@@ -142,7 +146,7 @@ export class NetworkSystem extends System {
     if (!this.world) return;
 
     const spawn = message.payload as any;
-    console.log('[NetworkSystem] Spawning entity:', spawn.entityId);
+    logger.info('[NetworkSystem] Spawning entity:', { entityId: spawn.entityId });
 
     // Check if entity already exists
     if (this.networkToEntityMap.has(spawn.entityId)) {
@@ -203,7 +207,7 @@ export class NetworkSystem extends System {
 
     if (!entityId || !this.world) return;
 
-    console.log('[NetworkSystem] Despawning entity:', despawn.entityId);
+    logger.info('[NetworkSystem] Despawning entity:', { entityId: despawn.entityId });
 
     // Remove entity from world
     this.world.removeEntity(entityId);
@@ -250,7 +254,7 @@ export class NetworkSystem extends System {
    */
   private handleServerHello(message: Message): void {
     const hello = message.payload as any;
-    console.log('[NetworkSystem] Received server hello:', hello);
+    logger.info('[NetworkSystem] Received server hello:', { hello });
 
     // Spawn initial entities from world state
     if (hello.initialState && hello.initialState.entities) {
@@ -265,12 +269,12 @@ export class NetworkSystem extends System {
    */
   private handlePresenceJoin(message: Message): void {
     const event = message.payload as any;
-    console.log('[NetworkSystem] User joined:', event.clientId);
+    logger.info('[NetworkSystem] User joined:', { clientId: event.clientId });
     
     // Check if payload contains host_client_id (from backend)
     if (event.host_client_id) {
       this.hostClientId = event.host_client_id;
-      console.log('[NetworkSystem] Host assigned:', this.hostClientId);
+      logger.info('[NetworkSystem] Host assigned:', { hostClientId: this.hostClientId });
     }
     
     // Notify presence handlers if they want to know about joins
@@ -282,7 +286,7 @@ export class NetworkSystem extends System {
    */
   private handlePresenceLeave(message: Message): void {
     const event = message.payload as any;
-    console.log('[NetworkSystem] User left:', event.clientId);
+    logger.info('[NetworkSystem] User left:', { clientId: event.clientId });
   }
 
   /**
@@ -291,7 +295,7 @@ export class NetworkSystem extends System {
   private spawnEntityFromSnapshot(snapshot: any): void {
     if (!this.world) return;
 
-    console.log('[NetworkSystem] Spawning entity from snapshot:', snapshot.id);
+    logger.info('[NetworkSystem] Spawning entity from snapshot:', { id: snapshot.id });
 
     // Create new entity
     const entity = this.world.createEntity();
@@ -333,7 +337,7 @@ export class NetworkSystem extends System {
     // Parse and apply components based on their type
     // This is a simplified implementation
     for (const [key, value] of Object.entries(components)) {
-      console.log('[NetworkSystem] Applying component:', key, value);
+      logger.info('[NetworkSystem] Applying component:', { key, value });
     }
   }
 
@@ -343,7 +347,7 @@ export class NetworkSystem extends System {
   private applyComponentUpdates(_entity: Entity, components: Record<string, unknown>): void {
     // Deserialize and apply component updates
     for (const [key, data] of Object.entries(components)) {
-      console.log('[NetworkSystem] Updating component:', key, data);
+      logger.info('[NetworkSystem] Updating component:', { key, data });
     }
   }
 
@@ -389,7 +393,7 @@ export class NetworkSystem extends System {
       components,
     });
 
-    console.log('[NetworkSystem] Creating networked entity:', networkId);
+    logger.info('[NetworkSystem] Creating networked entity:', { networkId });
 
     return entity;
   }
