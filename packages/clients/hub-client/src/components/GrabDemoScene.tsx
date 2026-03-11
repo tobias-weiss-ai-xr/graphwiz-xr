@@ -10,6 +10,7 @@
  */
 
 import { Text } from '@react-three/drei';
+import { createLogger } from '@graphwiz/types/logger';
 import { useFrame } from '@react-three/fiber';
 import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { Vector3, Mesh } from 'three';
@@ -176,15 +177,15 @@ export function GrabDemoScene({
 
   // Network sync handlers
   const handleGrab = useCallback((target: any) => {
-    console.log('[GrabDemo] Grabbed:', target.entityId);
+    const logger = createLogger('[GrabDemo]');
+    logger.info('Grabbed:', target.entityId);
     setGrabbedId(target.entityId);
   }, []);
-
   const handleRelease = useCallback((target: any, velocity: Vector3) => {
-    console.log('[GrabDemo] Released:', target?.entityId, 'velocity:', velocity);
+    const logger = createLogger('[GrabDemo]');
+    logger.info('Released:', target?.entityId, 'velocity:', velocity);
     setGrabbedId(null);
   }, []);
-
   const handleHover = useCallback((target: any) => {
     setHoveredId(target?.entityId || null);
   }, []);
