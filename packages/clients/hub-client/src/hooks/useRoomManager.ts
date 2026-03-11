@@ -1,4 +1,7 @@
 import { useState, useCallback } from 'react';
+import { createLogger } from '@graphwiz/types';
+
+const logger = createLogger('useRoomManager');
 
 import type { WebSocketClient } from '../network/websocket-client';
 
@@ -75,12 +78,12 @@ export function useRoomManager(client: WebSocketClient | null) {
   }, [client]);
 
   const handleKickParticipant = useCallback((participantId: string) => {
-    console.log('Kick participant:', participantId);
+    logger.info('Kick participant:', { participantId });
     setParticipants((prev) => prev.filter((p) => p.id !== participantId));
   }, []);
 
   const handleMuteParticipant = useCallback((participantId: string) => {
-    console.log('Mute participant:', participantId);
+    logger.info('Mute participant:', { participantId });
     setParticipants((prev) =>
       prev.map((p) => (p.id === participantId ? { ...p, isMuted: !p.isMuted } : p))
     );
@@ -88,7 +91,7 @@ export function useRoomManager(client: WebSocketClient | null) {
 
   const handleToggleHost = useCallback(
     (participantId: string) => {
-      console.log('Toggle host:', participantId);
+      logger.info('Toggle host:', { participantId });
       if (roomSettings) {
         setRoomSettings({ ...roomSettings, hostId: participantId });
         setParticipants((prev) =>
