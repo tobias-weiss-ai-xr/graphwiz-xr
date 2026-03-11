@@ -1,4 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber';
+import { createLogger } from '@graphwiz/types/logger';
 import { useEffect, useRef, useState } from 'react';
 import { Mesh } from 'three';
 import * as THREE from 'three';
@@ -51,7 +52,8 @@ export function MediaPlayer({
   height = 2.25,
   isHovered = false,
   onHover
-}: MediaPlayerProps) {
+: MediaPlayerProps) {
+  const logger = createLogger('MediaPlayer');
   const meshRef = useRef<Mesh>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -108,7 +110,8 @@ export function MediaPlayer({
       textureRef.current = texture;
 
       setIsInitialized(true);
-      console.log('[MediaPlayer] Video initialized:', mediaState.url);
+      setIsInitialized(true);
+      logger.info('Video initialized', { url: mediaState.url });
     } else if (mediaState.type === 'audio') {
       // Create audio element
       const audio = document.createElement('audio');
@@ -144,7 +147,7 @@ export function MediaPlayer({
 
       audioRef.current = audio;
       setIsInitialized(true);
-      console.log('[MediaPlayer] Audio initialized:', mediaState.url);
+      logger.info('Audio initialized', { url: mediaState.url });
     }
 
     return () => {

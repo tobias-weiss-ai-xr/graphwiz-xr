@@ -1,4 +1,5 @@
 import { Text, Grid } from '@react-three/drei';
+import { createLogger } from '@graphwiz/types/logger';
 import { Float, MeshDistortMaterial, Stars, Environment } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useThree } from '@react-three/fiber';
@@ -323,7 +324,8 @@ interface InteractiveDemoSceneProps {
   wsClient: any;
   myClientId: string;
 }
-
+export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSceneProps) {
+  const logger = createLogger('InteractiveDemoScene');
 export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSceneProps) {
   const [objectStates, setObjectStates] = useState<Map<string, DemoObjectState>>(new Map());
   const [hoveredObjects, setHoveredObjects] = useState<Set<string>>(new Set());
@@ -363,7 +365,7 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
 
     // Broadcast to other players
     if (wsClient && wsClient.connected()) {
-      console.log('[DemoScene] Broadcasting interaction:', objectId, newState);
+      logger.info('Broadcasting interaction', { objectId, state: newState });
       // Send via ENTITY_UPDATE
       wsClient.sendEntityUpdate({
         entityId: objectId,
@@ -408,7 +410,7 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
 
     // Broadcast to other players
     if (wsClient && wsClient.connected()) {
-      console.log('[DemoScene] Broadcasting gem collection:', gemId);
+      logger.info('Broadcasting gem collection', { gemId });
       wsClient.sendEntityUpdate({
         entityId: gemId,
         components: {
@@ -438,7 +440,7 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
     const unsubscribe = wsClient.on(21, (message: any) => { // ENTITY_UPDATE = 21
       if (message.payload && message.payload.components?.demoObjectState) {
         const state: DemoObjectState = message.payload.components.demoObjectState;
-        console.log('[DemoScene] Received interaction:', state);
+        logger.info('Received interaction', { state });
 
         setObjectStates(prev => {
           // Only update if remote update is newer
