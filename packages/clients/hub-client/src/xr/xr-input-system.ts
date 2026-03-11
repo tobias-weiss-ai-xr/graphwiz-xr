@@ -9,6 +9,9 @@ import { EventEmitter } from 'events';
 import * as THREE from 'three';
 
 import { TransformComponent, PhysicsComponent } from '../ecs/entity';
+import { createLogger } from '@graphwiz/types';
+
+const logger = createLogger('[XRInputSystem]');
 import { System } from '../ecs/system';
 
 import { XRInputManager, ControllerState } from './xr-input-manager';
@@ -508,27 +511,27 @@ export class XRInputSystem extends System {
    */
    
   private async loadControllerModel(entityId: string, handedness: 'left' | 'right'): Promise<void> {
-    console.log(
-      `[XRInputSystem] Loading ${handedness} controller model (simple geometry) for entity ${entityId}`
-    );
+    logger.info(
+      `Loading ${handedness} controller model (simple geometry) for entity ${entityId}`
+);
 
     try {
       // Get or create the grip entity
       if (!this.world) {
-        console.error('[XRInputSystem] World not initialized');
+        logger.error('World not initialized');
         return;
       }
       const gripEntity = this.world.getEntity(entityId);
       if (!gripEntity) {
-        console.error(`[XRInputSystem] Entity ${entityId} not found`);
+        logger.error(`Entity ${entityId} not found`);
         return;
       }
 
-      console.log(
-        `[XRInputSystem] Successfully marked ${handedness} controller model loaded for entity ${entityId}`
-      );
+      logger.info(
+        `Successfully marked ${handedness} controller model loaded for entity ${entityId}`
+);
     } catch (error) {
-      console.error(`[XRInputSystem] Failed to mark controller model for ${handedness}:`, error);
+      logger.error(`Failed to mark controller model for ${handedness}:`, error);
     }
   }
 

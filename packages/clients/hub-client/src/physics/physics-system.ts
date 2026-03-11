@@ -8,6 +8,9 @@
 import * as CANNON from 'cannon-es';
 import { Vector3 } from 'three';
 
+import { createLogger } from '@graphwiz/types';
+
+const logger = createLogger('[CannonPhysicsSystem]');
 import { System } from '../ecs';
 import { TransformComponent } from '../ecs';
 
@@ -50,7 +53,7 @@ export class CannonPhysicsSystem extends System {
     // Setup default materials
     this.setupDefaultMaterials();
 
-    console.log('[CannonPhysicsSystem] Initialized', config);
+    logger.initilized(config);
   }
 
   /**
@@ -127,7 +130,7 @@ export class CannonPhysicsSystem extends System {
     if (!this.world) return;
     const entity = this.world.getEntity(entityId);
     if (!entity) {
-      console.error(`[CannonPhysicsSystem] Entity not found: ${entityId}`);
+      logger.error(`Entity not found: ${entityId}`);
       return;
     }
 
@@ -147,7 +150,7 @@ export class CannonPhysicsSystem extends System {
     // Track entity
     this.bodyEntities.set(physicsBody.body.id, { body: physicsBody.body, entityId });
 
-    console.log(`[CannonPhysicsSystem] Added physics body to entity: ${entityId}`);
+    logger.info(`Added physics body to entity: ${entityId}`);
   }
 
   /**
@@ -170,7 +173,7 @@ export class CannonPhysicsSystem extends System {
     // Remove component from entity
     entity.removeComponent(PhysicsBodyComponent);
 
-    console.log(`[CannonPhysicsSystem] Removed physics body from entity: ${entityId}`);
+    logger.info(`Removed physics body from entity: ${entityId}`);
   }
 
   /**
@@ -340,6 +343,6 @@ export class CannonPhysicsSystem extends System {
     // Clear tracking
     this.bodyEntities.clear();
 
-    console.log('[CannonPhysicsSystem] Disposed');
+    logger.info('Disposed');
   }
 }

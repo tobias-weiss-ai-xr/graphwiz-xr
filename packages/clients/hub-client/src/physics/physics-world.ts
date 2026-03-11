@@ -4,6 +4,9 @@
  * Manages the Cannon.js physics world for realistic physics simulation.
  */
 
+import { createLogger } from '@graphwiz/types';
+
+const logger = createLogger('[PhysicsWorld]');
 import * as CANNON from 'cannon-es';
 
 export interface PhysicsWorldConfig {
@@ -42,12 +45,12 @@ export class PhysicsWorld {
     // Default material
     this.createMaterial('default', 0.3, 0.3);
 
-    console.log('[PhysicsWorld] Initialized', {
-      gravity,
-      solverIterations: (this.world.solver as any).iterations,
-      broadphase: config.broadphase || 'Naive',
-      allowSleep: this.world.allowSleep,
-    });
+    logger.initilized({
+  gravity,
+  solverIterations: (this.world.solver as any).iterations,
+  broadphase: config.broadphase || 'Naive',
+  allowSleep: this.world.allowSleep,
+});
   }
 
   /**
@@ -71,7 +74,7 @@ export class PhysicsWorld {
     material.restitution = restitution;
     this.materials.set(name, material);
 
-    console.log(`[PhysicsWorld] Created material: ${name}`, { friction, restitution });
+    logger.info(`Created material: ${name}`, { friction, restitution });
 
     return material;
   }
@@ -89,7 +92,7 @@ export class PhysicsWorld {
     const mat2 = this.materials.get(material2Name);
 
     if (!mat1 || !mat2) {
-      console.error(`[PhysicsWorld] Materials not found: ${material1Name}, ${material2Name}`);
+      logger.error(`Materials not found: ${material1Name}, ${material2Name}`);
       throw new Error(`Materials not found: ${material1Name}, ${material2Name}`);
     }
 
@@ -103,10 +106,10 @@ export class PhysicsWorld {
     this.contactMaterials.push(contactMaterial);
     this.world.addContactMaterial(contactMaterial);
 
-    console.log(`[PhysicsWorld] Created contact material: ${material1Name} + ${material2Name}`, {
-      friction,
-      restitution,
-    });
+    logger.info(`Created contact material: ${material1Name} + ${material2Name}`, {
+  friction,
+  restitution,
+});
 
     return contactMaterial;
   }
@@ -192,7 +195,7 @@ export class PhysicsWorld {
     this.materials.clear();
     this.contactMaterials = [];
 
-    console.log('[PhysicsWorld] Disposed');
+    logger.info('Disposed');
   }
 
   /**

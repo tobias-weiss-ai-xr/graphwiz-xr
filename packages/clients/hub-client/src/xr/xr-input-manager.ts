@@ -4,6 +4,9 @@
  * Manages VR controller input, tracking, and interaction.
  */
 
+import { createLogger } from '@graphwiz/types';
+
+const logger = createLogger('[XRInputManager]');
 import { EventEmitter } from 'events';
 
 import * as THREE from 'three';
@@ -70,7 +73,7 @@ export class XRInputManager extends EventEmitter {
 
     // XRSession doesn't have a mode property, we can check if it's immersive
     const isImmersive = session.enabledFeatures?.includes('immersive-vr') || session.enabledFeatures?.includes('immersive-ar');
-    console.log('[XRInputManager] Initialized with immersive session:', isImmersive);
+    logger.info(`Initialized with immersive session: ${isImmersive}`);
 
     this.emit('initialized');
   }
@@ -193,7 +196,7 @@ export class XRInputManager extends EventEmitter {
   private addInputSource(inputSource: XRInputSource): void {
     const id = this.getControllerId(inputSource);
 
-    console.log('[XRInputManager] Controller connected:', id, inputSource.handedness);
+    logger.info(`Controller connected: ${id} ${inputSource.handedness}`);
 
     this.inputSources.set(id, inputSource);
 
@@ -224,7 +227,7 @@ export class XRInputManager extends EventEmitter {
   private removeInputSource(inputSource: XRInputSource): void {
     const id = this.getControllerId(inputSource);
 
-    console.log('[XRInputManager] Controller disconnected:', id);
+    logger.info(`Controller disconnected: ${id}`);
 
     const state = this.controllerStates.get(id);
     if (state) {
@@ -338,7 +341,7 @@ export class XRInputManager extends EventEmitter {
   ): void {
     const inputSource = this.inputSources.get(controllerId);
     if (!inputSource || !inputSource.gamepad || !this.session) {
-      console.warn('[XRInputManager] Cannot trigger haptic: controller not found');
+      logger.warn('Cannot trigger haptic: controller not found');
       return;
     }
 
@@ -351,9 +354,8 @@ export class XRInputManager extends EventEmitter {
     if (gamepad.hapticActuators && gamepad.hapticActuators.length > 0) {
       gamepad.hapticActuators[0].pulse(value, duration).then((success) => {
         if (success) {
-          console.log(`[XRInputManager] Haptic feedback: ${controllerId}, value=${value}, duration=${duration}ms`);
-        } else {
-          console.warn('[XRInputManager] Haptic feedback failed');
+          logger.info(`Haptic feedback: ${controllerId}, value=${value}, duration=${duration}ms`);
+logger.warn('Haptic feedback failed');
         }
       });
     }
