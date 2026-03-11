@@ -352,7 +352,7 @@ export class WebSocketClient {
           const parsed = JSON.parse(data);
           if (parsed.type === 'SERVER_HELLO') {
             // Handle server hello text message
-            console.log('[WebSocketClient] Received server hello (text):', parsed);
+            logger.info('[WebSocketClient] Received server hello (text):', parsed);
             this.handleServerHelloText(parsed);
             return;
           } else if (parsed.type === 255) {
@@ -372,7 +372,7 @@ export class WebSocketClient {
       // Only log important message types (not position updates which are received at 20Hz)
       if (message.type !== 10) {
         // 10 = POSITION_UPDATE
-        console.log('[WebSocketClient] Received message type:', message.type);
+        logger.info('[WebSocketClient] Received message type:', message.type);
       }
 
       // Call registered handlers
@@ -437,7 +437,9 @@ export class WebSocketClient {
     this.reconnectAttempts++;
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
 
-    console.log(
+    logger.info(
+      `[WebSocketClient] Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+    );
       `[WebSocketClient] Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
     );
 
