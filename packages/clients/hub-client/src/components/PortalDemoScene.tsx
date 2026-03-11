@@ -1,3 +1,4 @@
+import { createLogger } from '@graphwiz/types/logger';
 import { Text } from '@react-three/drei';
 import { useState } from 'react';
 import * as THREE from 'three';
@@ -14,6 +15,8 @@ interface PortalLocation {
   position: [number, number, number];
   color: string;
 }
+
+const logger = createLogger('PortalDemoScene');
 
 const PORTAL_LOCATIONS: PortalLocation[] = [
   {
@@ -46,7 +49,7 @@ export function PortalDemoScene({}: PortalDemoSceneProps) {
   const [currentLocation, setCurrentLocation] = useState<string>('lobby');
 
   const handleTeleport = (roomId: string, position: [number, number, number]) => {
-    console.log(`[PortalDemo] Teleporting to: ${roomId}`);
+    logger.info(`[PortalDemo] Teleporting to: ${roomId}`);
     setCurrentLocation(roomId);
 
     // Teleport player by updating their position

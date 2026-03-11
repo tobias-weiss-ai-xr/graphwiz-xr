@@ -1,3 +1,4 @@
+import { createLogger } from '@graphwiz/types/logger';
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef, useState } from 'react';
@@ -24,6 +25,8 @@ export function Portal({
   label,
   onTeleport
 }: PortalProps) {
+  const logger = createLogger('Portal');
+
   const portalRef = useRef<THREE.Group>(null);
   const innerRingRef = useRef<THREE.Mesh>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -68,7 +71,7 @@ export function Portal({
 
       // Trigger teleport after a short delay
       setTimeout(() => {
-        console.log(`[Portal] Teleporting to room: ${targetRoomId}`);
+        logger.info(`[Portal] Teleporting to room: ${targetRoomId}`);
         onTeleport(targetRoomId, targetPosition);
         setIsHovered(false);
       }, 500);
