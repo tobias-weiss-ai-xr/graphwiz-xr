@@ -17,6 +17,10 @@ import { AvatarRenderer } from './avatar-renderer';
 
 
 
+
+import { createLogger } from '@graphwiz/types';
+const logger = createLogger('AvatarSystem');
+
 export interface AvatarSystemConfig {
   updateRate?: number; // Position update rate in Hz
   enableInterpolation?: boolean;
@@ -55,7 +59,7 @@ export class AvatarSystem extends System {
       ...config,
     };
 
-    console.log('[AvatarSystem] Initialized', this.config);
+    logger.info('[AvatarSystem] Initialized', { config: this.config });
   }
 
   /**
@@ -107,7 +111,7 @@ export class AvatarSystem extends System {
 
     this.localAvatarId = entity.id;
 
-    console.log(`[AvatarSystem] Created local avatar: ${displayName}`);
+    logger.info('[AvatarSystem] Created local avatar:', { displayName });
     return entity.id;
   }
 
@@ -147,7 +151,7 @@ export class AvatarSystem extends System {
       });
     }
 
-    console.log(`[AvatarSystem] Created remote avatar: ${data.displayName}`);
+    logger.info('[AvatarSystem] Created remote avatar:', { displayName: data.displayName });
     return entity.id;
   }
 
@@ -172,7 +176,7 @@ export class AvatarSystem extends System {
       this.localAvatarId = undefined;
     }
 
-    console.log(`[AvatarSystem] Removed avatar: ${entityId}`);
+    logger.info('[AvatarSystem] Removed avatar:', { entityId });
   }
 
   /**
@@ -234,7 +238,7 @@ export class AvatarSystem extends System {
    * Handle remote user joined
    */
   private handleRemoteUserJoined(data: any): void {
-    console.log('[AvatarSystem] Remote user joined:', data);
+    logger.info('[AvatarSystem] Remote user joined:', data);
 
     this.createRemoteAvatar({
       userId: data.userId,
@@ -247,7 +251,7 @@ export class AvatarSystem extends System {
    * Handle remote user left
    */
   private handleRemoteUserLeft(data: any): void {
-    console.log('[AvatarSystem] Remote user left:', data);
+    logger.info('[AvatarSystem] Remote user left:', data);
 
     // Find avatar by userId
     for (const [entityId, renderer] of this.renderers) {
@@ -405,6 +409,6 @@ export class AvatarSystem extends System {
     this.renderers.clear();
     this.remoteAvatarStates.clear();
 
-    console.log('[AvatarSystem] Disposed');
+    logger.info('[AvatarSystem] Disposed');
   }
 }

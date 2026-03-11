@@ -4,6 +4,11 @@
  * Manages WebRTC audio streaming for voice chat via SFU service.
  */
 
+
+import { createLogger } from '@graphwiz/types';
+const logger = createLogger('VoiceChat');
+
+
 import { EventEmitter } from 'events';
 
 export interface VoiceChatConfig {
@@ -70,7 +75,7 @@ export class VoiceChatClient extends EventEmitter {
    */
   async connect(): Promise<void> {
     try {
-      console.log('[VoiceChat] Connecting to SFU:', this.config.sfuUrl);
+      logger.info('[VoiceChat] Connecting to SFU:', { sfuUrl: this.config.sfuUrl });
 
       // Get user media
       this.localStream = await navigator.mediaDevices.getUserMedia({
@@ -117,7 +122,7 @@ export class VoiceChatClient extends EventEmitter {
 
       // Set up data channel event handlers
       this.dataChannel.onopen = () => {
-        console.log('[VoiceChat] Data channel opened');
+        logger.info('[VoiceChat] Data channel opened');
         this.emit('dataChannelOpen');
       };
 
@@ -186,9 +191,9 @@ export class VoiceChatClient extends EventEmitter {
       // Start voice activity detection
       this.startVoiceActivityDetection();
 
-      console.log('[VoiceChat] Connected successfully');
+      logger.info('[VoiceChat] Connected successfully');
     } catch (error) {
-      console.error('[VoiceChat] Connection failed:', error);
+      logger.error('[VoiceChat] Connection failed:', error);
       this.emit('error', error);
       throw error;
     }
@@ -198,7 +203,7 @@ export class VoiceChatClient extends EventEmitter {
    * Disconnect from voice chat
    */
   async disconnect(): Promise<void> {
-    console.log('[VoiceChat] Disconnecting');
+    logger.info('[VoiceChat] Disconnecting');
 
     // Stop all remote audio
     for (const [_userId, source] of this.remoteSources) {
@@ -285,7 +290,7 @@ export class VoiceChatClient extends EventEmitter {
     const stream = event.streams[0];
     if (!stream) return;
 
-    console.log('[VoiceChat] Received remote stream');
+    logger.info('[VoiceChat] Received remote stream');
 
     // Create audio source
     const source = this.audioContext!.createMediaStreamSource(stream);
@@ -403,7 +408,7 @@ export class VoiceChatClient extends EventEmitter {
         this.handleRemoteCandidate(message);
         break;
       default:
-        console.warn('[VoiceChat] Unknown signaling message:', message.type);
+        logger.warn('[VoiceChat] Unknown signaling message:', { messageType: message.type });
     }
   }
 

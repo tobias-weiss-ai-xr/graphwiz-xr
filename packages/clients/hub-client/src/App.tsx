@@ -59,6 +59,8 @@ interface FloatingEmojiData {
 // PlayerAvatar is imported from './components/PlayerAvatar' and used in the render.
 // The inline component has been replaced to allow the imported version to be used.
 
+import { createLogger } from '@graphwiz/types';
+const logger = createLogger('App');
 /**
  * InterpolationUpdater Component
  * Updates interpolated positions for smooth player movement using useFrame
@@ -200,7 +202,7 @@ function App() {
   useEffect(() => {
     // Use environment variable or default to 8003 presence service port
     const presenceUrl = import.meta.env.VITE_PRESENCE_WS_URL || 'ws://localhost:8003';
-    console.log('[App] Connecting to presence service at:', presenceUrl);
+    logger.info('[App] Connecting to presence service at:', { presenceUrl });
 
     // Create WebSocketClient only if it doesn't exist
     if (!wsClient.current) {
@@ -221,16 +223,16 @@ function App() {
           setConnected(true);
           setConnecting(false);
           const clientId = wsClient.current?.getClientId();
-          console.log('[App] Connected to presence server');
-          console.log('[App] Client ID:', clientId);
+          logger.info('[App] Connected to presence server');
+          logger.info('[App] Client ID:', { clientId });
           if (clientId) {
             setMyClientId(clientId);
           } else {
-            console.error('[App] Client ID is null after connection!');
+            logger.error('[App] Client ID is null after connection!');
           }
         })
         .catch((err) => {
-          console.error('[App] Failed to connect:', err);
+          logger.error('[App] Failed to connect:', err);
           setError(err instanceof Error ? err.message : String(err));
           setConnecting(false);
         });
@@ -293,72 +295,72 @@ function App() {
     const unsubscribePresenceUpdate = wsClient.current.on(
       MessageType.PRESENCE_UPDATE,
       (message: any) => {
-        console.log('[App] ========== PRESENCE_UPDATE RECEIVED ==========');
-        console.log('[App] Presence update message:', message);
+        logger.info('[App] ========== PRESENCE_UPDATE RECEIVED ==========');
+        logger.info('[App] Presence update message:', message);
 
         if (message.payload) {
-          console.log('[App] Presence update for client:', message.payload.clientId);
+          logger.info('[App] Presence update for client:', { clientId: message.payload.clientId });
 
           setPresenceEvents((prev) => {
             const existing = prev.find((e) => e.clientId === message.payload.clientId);
             if (existing) {
-              console.log('[App] Updating existing presence for', message.payload.clientId);
+              logger.info('[App] Updating existing presence for', { clientId: message.payload.clientId });
               // Update existing presence
               return prev.map((e) =>
                 e.clientId === message.payload.clientId ? { ...e, data: message.payload } : e
               );
             } else {
-              console.log('[App] Adding new presence for', message.payload.clientId);
+              logger.info('[App] Adding new presence for', { clientId: message.payload.clientId });
               // Add new presence
               return [...prev, { clientId: message.payload.clientId, data: message.payload }];
             }
           });
         } else {
-          console.log('[App] PRESENCE_UPDATE missing payload');
+          logger.info('[App] PRESENCE_UPDATE missing payload');
         }
       }
     );
 
     // Handle entity spawn (create 3D avatars for other players)
     const unsubscribeEntitySpawn = wsClient.current.on(MessageType.ENTITY_SPAWN, (message: any) => {
-      console.log('[App] ========== ENTITY_SPAWN RECEIVED ==========');
-      console.log('[App] Full message:', JSON.stringify(message, null, 2));
-      console.log('[App] Message payload:', message.payload);
+      logger.info('[App] ========== ENTITY_SPAWN RECEIVED ==========');
+      logger.info('[App] Full message:', { message });
+      logger.info('[App] Message payload:', { payload: message.payload });
 
       const myId = getMyClientId();
-      console.log('[App] My client ID:', myId);
+      logger.info('[App] My client ID:', { myId });
 
       if (message.payload && message.payload.entityId) {
         const ownerId = message.payload.ownerId || message.payload.clientId;
-        console.log('[App] Entity owner ID:', ownerId);
+        logger.info('[App] Entity owner ID:', { ownerId });
 
         // Skip if it's the local player (already rendered)
         if (ownerId === myId) {
-          console.log('[App] Skipping local player entity spawn (ownerId match)');
+          logger.info('[App] Skipping local player entity spawn (ownerId match)');
           return;
         }
 
         // Also skip if the entityId matches our client ID
         if (message.payload.entityId === myId) {
-          console.log('[App] Skipping local player entity spawn (entityId match)');
+          logger.info('[App] Skipping local player entity spawn (entityId match)');
           return;
         }
 
-        console.log('[App] Spawning remote player entity:', ownerId);
+        logger.info('[App] Spawning remote player entity:', { ownerId });
 
         // Add to presence events so it gets rendered
         const avatarConfig = message.payload.components?.avatarConfig || {};
         const position = message.payload.components?.position || { x: 0, y: 0, z: 0 };
         const entityId = message.payload.entityId;
 
-        console.log('[App] Avatar config from spawn:', avatarConfig);
-        console.log('[App] Position from spawn:', position);
+        logger.info('[App] Avatar config from spawn:', { avatarConfig });
+        logger.info('[App] Position from spawn:', { position });
 
         setPresenceEvents((prev) => {
-          console.log('[App] Current presence events count:', prev.length);
+          logger.info('[App] Current presence events count:', { count: prev.length });
           // Check if presence already exists (use entityId as the key)
           if (prev.find((e) => e.clientId === entityId)) {
-            console.log('[App] Player already in presence list, skipping');
+            logger.info('[App] Player already in presence list, skipping');
             return prev;
           }
 
@@ -371,13 +373,13 @@ function App() {
             }
           };
 
-          console.log('[App] Adding new presence event:', newPresence);
+          logger.info('[App] Adding new presence event:', newPresence);
           const updated = [...prev, newPresence];
-          console.log('[App] New presence events count:', updated.length);
+          logger.info('[App] New presence events count:', { count: updated.length });
           return updated;
         });
       } else {
-        console.log('[App] ENTITY_SPAWN message missing payload or entityId');
+        logger.info('[App] ENTITY_SPAWN message missing payload or entityId');
       }
     });
 
@@ -426,7 +428,7 @@ function App() {
             // Log every 60 updates (~3 seconds)
             positionUpdateCount++;
             if (positionUpdateCount % 60 === 0) {
-              console.log(`[App] Received ${positionUpdateCount} position updates for ${entityId}`);
+              logger.info(`[App] Received ${positionUpdateCount} position updates for ${entityId}`);
             }
           }
         }
@@ -435,10 +437,10 @@ function App() {
 
     // Handle OBJECT_GRAB messages
     const unsubscribeObjectGrab = wsClient.current.on(MessageType.OBJECT_GRAB, (message: any) => {
-      console.log('[App] ========== OBJECT_GRAB RECEIVED ==========');
+      logger.info('[App] ========== OBJECT_GRAB RECEIVED ==========');
       if (message.payload) {
         const { entityId, clientId } = message.payload;
-        console.log('[App] Entity', entityId, 'grabbed by', clientId);
+        logger.info('[App] Entity grabbed by', { entityId, clientId });
 
         // Update grab state for rendering
         if (clientId !== myClientId) {
@@ -451,17 +453,10 @@ function App() {
     const unsubscribeObjectRelease = wsClient.current.on(
       MessageType.OBJECT_RELEASE,
       (message: any) => {
-        console.log('[App] ========== OBJECT_RELEASE RECEIVED ==========');
+        logger.info('[App] ========== OBJECT_RELEASE RECEIVED ==========');
         if (message.payload) {
           const { entityId, clientId, velocity } = message.payload;
-          console.log(
-            '[App] Entity',
-            entityId,
-            'released by',
-            clientId,
-            'with velocity:',
-            velocity
-          );
+          logger.info('[App] Entity released by', { entityId, clientId, velocity });
 
           // Clear grab state
           if (grabbedEntityId.current === entityId) {
@@ -490,12 +485,12 @@ function App() {
     if (!myClientId) return;
 
     const persistence = getAvatarPersistence();
-    console.log('[App] Loading avatar for user:', myClientId);
+    logger.info('[App] Loading avatar for user:', { myClientId });
 
     persistence
       .loadAvatar(myClientId)
       .then((config) => {
-        console.log('[App] Avatar loaded:', config);
+        logger.info('[App] Avatar loaded:', config);
         setLocalAvatarConfig(config);
 
         // Send avatar update to network after connection is established
@@ -507,11 +502,11 @@ function App() {
             height: config.height,
             customModelUrl: config.custom_model_id || ''
           });
-          console.log('[App] Avatar config sent to network');
+          logger.info('[App] Avatar config sent to network');
         }
       })
       .catch((error) => {
-        console.error('[App] Failed to load avatar:', error);
+        logger.error('[App] Failed to load avatar:', error);
         // Use default avatar on error
         setLocalAvatarConfig({
           user_id: myClientId,
@@ -527,21 +522,21 @@ function App() {
   // Send avatar to network when connected
   useEffect(() => {
     if (!connected || !client) {
-      console.log('[App] Avatar spawn: not ready - connected:', connected, 'client:', !!client);
+      logger.info('[App] Avatar spawn: not ready - connected:', { connected, hasClient: !!client });
       return;
     }
 
     if (!localAvatarConfig) {
-      console.log('[App] Avatar spawn: localAvatarConfig is null, skipping spawn');
+      logger.info('[App] Avatar spawn: localAvatarConfig is null, skipping spawn');
       return;
     }
 
     if (!myClientId) {
-      console.log('[App] Avatar spawn: myClientId is null, skipping spawn');
+      logger.info('[App] Avatar spawn: myClientId is null, skipping spawn');
       return;
     }
 
-    console.log('[App] Sending avatar config to network...');
+    logger.info('[App] Sending avatar config to network...');
     client.sendAvatarUpdate({
       bodyType: localAvatarConfig.body_type,
       primaryColor: localAvatarConfig.primary_color,
@@ -551,7 +546,7 @@ function App() {
     });
 
     // Also send ENTITY_SPAWN so other clients render our avatar
-    console.log('[App] Sending ENTITY_SPAWN for local player...', myClientId);
+    logger.info('[App] Sending ENTITY_SPAWN for local player...', { myClientId });
     client.sendEntitySpawn({
       entityId: myClientId,
       templateId: 'player',
@@ -565,7 +560,7 @@ function App() {
         }
       }
     });
-    console.log('[App] Avatar update sent to network');
+    logger.info('[App] Avatar update sent to network');
   }, [connected, client, localAvatarConfig, myClientId]);
 
   // Keyboard event handlers for movement
@@ -590,11 +585,11 @@ function App() {
   // Movement update loop
   useEffect(() => {
     if (!connected || !client) {
-      console.log('[App] Movement loop not started: connected=', connected, 'client=', !!client);
+      logger.info('[App] Movement loop not started: connected=', { connected, hasClient: !!client });
       return;
     }
 
-    console.log('[App] Starting movement loop...');
+    logger.info('[App] Starting movement loop...');
     let updateCount = 0;
 
     const movementInterval = setInterval(() => {
@@ -654,7 +649,7 @@ function App() {
           updateCount++;
           if (updateCount % 60 === 0) {
             // Log every 60 updates (~1 second)
-            console.log('[App] Player moved to:', newPos, 'Total updates:', updateCount);
+            logger.info('[App] Player moved to:', { newPos, totalUpdates: updateCount });
           }
           client.sendPositionUpdate(
             myClientId || 'local',
@@ -1340,7 +1335,7 @@ function App() {
           userId={myClientId}
           onClose={() => setAvatarConfiguratorVisible(false)}
           onSave={(config) => {
-            console.log('[App] Avatar saved:', config);
+            logger.info('[App] Avatar saved:', config);
 
             // Update local state
             setLocalAvatarConfig(config);
@@ -1354,7 +1349,7 @@ function App() {
                 height: config.height,
                 customModelUrl: config.custom_model_id || ''
               });
-              console.log('[App] Avatar update sent to network');
+              logger.info('[App] Avatar update sent to network');
             }
 
             // Update local player entity with new avatar
@@ -1440,7 +1435,7 @@ function App() {
           <GestureRecognition
             enabled={true}
             onGestureDetected={(gesture, controllerId) => {
-              console.log(`[Gesture] ${controllerId} controller: ${gesture}`);
+              logger.info(`[Gesture] ${controllerId} controller: ${gesture}`);
             }}
           />
         )}
@@ -1451,7 +1446,7 @@ function App() {
               width={1024}
               height={1024}
               settings={drawingSettings}
-              onClear={() => console.log('Canvas cleared')}
+              onClear={() => logger.info('Canvas cleared')}
               onExport={(dataUrl) => {
                 const link = document.createElement('a');
                 link.href = dataUrl;
@@ -1462,8 +1457,8 @@ function App() {
             <DrawingTools
               settings={drawingSettings}
               onSettingsChange={setDrawingSettings}
-              onClear={() => console.log('Clear canvas')}
-              onUndo={() => console.log('Undo')}
+              onClear={() => logger.info('Clear canvas')}
+              onUndo={() => logger.info('Undo')}
               onExport={() => {
                 const canvas = document.querySelector('canvas');
                 if (canvas) {
