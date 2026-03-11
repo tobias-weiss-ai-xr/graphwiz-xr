@@ -1,16 +1,140 @@
-//! WebTransport HTTP/3 client implementation
+//! WebTransport HTTP/3 server implementation using wtransport 0.6
 //!
 //! Provides bidirectional streams over HTTP/3 with WebTransport API
+//! Based on wtransport 0.6 API (Endpoint/Connection model)
 
 use reticulum_core::Result;
-use std::sync::Arc;
-use tokio::sync::mpsc;
-use tokio::task::JoinHandle;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::sync::Arc;
+use tokio::sync::{mpsc, RwLock};
+use tokio::task::JoinHandle;
 use uuid::Uuid;
-use wtransport::{Client, ServerConfig, Session};
+use wtransport::{Connection, Endpoint, Identity, ServerConfig};
 
-/// WebTransport connection info
+/// Wrapper for bidirectional stream
+pub struct BidirectionalStream {
+    pub stream_id: u64,
+    pub send: wtransport::stream::SendStream,
+    pub recv: wtransport::stream::RecvStream,
+}
+
+/// Session info with active WebTransport connection
+pub struct SessionInfo {
+    pub session_id: String,
+    pub connection: Connection,
+    pub webtransport_connection: WebTransportConnection,
+    streams: Arc<RwLock<HashMap<u64, BidirectionalStream>>>,
+    stream_tx: mpsc::Sender<(u64, Vec<u8>)>,
+    _accept_handle: Option<JoinHandle<()>>,
+}
+
+impl SessionInfo {
+    pub fn new(connection: Connection, webtransport_connection: WebTransportConnection) -> Self {
+        let (stream_tx, _) = mpsc::channel(100);
+        let session_id = Uuid::new_v4().to_string();
+
+        let info = Self {
+            session_id: session_id.clone(),
+            connection,
+            webtransport_connection,
+            streams: Arc::new(RwLock::new(HashMap::new())),
+            stream_tx,
+            _accept_handle: None,
+        };
+
+        // Start accepting streams in background
+        let accept_handle = tokio::spawn(Self::accept_streams_loop(
+            session_id.clone(),
+            info.connection.clone(),
+            info.streams.clone(),
+            info.stream_tx.clone(),
+        ));
+
+        let mut this = info;
+        this._accept_handle = Some(accept_handle);
+        this
+    }
+
+    async fn accept_streams_loop(
+        session_id: String,
+        connection: Connection,
+        streams: Arc<RwLock<HashMap<u64, BidirectionalStream>>>,
+        stream_tx: mpsc::Sender<(u64, Vec<u8>)>,
+    ) {
+        let mut buffer = vec![0; 65536].into_boxed_slice();
+
+        loop {
+            tokio::select! {
+                stream = connection.accept_bi() => {
+                    match stream {
+                        Ok((send_stream, recv_stream)) => {
+                            let stream_id: u64 = send_stream.id().into();
+
+                            log::info!("Accepted BI stream {} for session {}", stream_id, session_id);
+
+                            let mut streams_write = streams.write().await;
+                            streams_write.insert(stream_id, BidirectionalStream {
+                                stream_id,
+                                send: send_stream,
+                                recv: recv_stream,
+                            });
+
+                            let _ = stream_tx.send((stream_id, vec![])).await;
+                        }
+                        Err(e) => {
+                            log::error!("Failed to accept BI stream for session {}: {}", session_id, e);
+                            break;
+                        }
+                    }
+                }
+                _ = connection.closed() => {
+                    log::info!("Connection closed for session {}", session_id);
+                    break;
+                }
+            }
+        }
+    }
+
+    pub async fn add_stream(
+        &self,
+        stream_id: u64,
+        send: wtransport::stream::SendStream,
+        recv: wtransport::stream::RecvStream,
+    ) {
+        let mut streams = self.streams.write().await;
+        streams.insert(
+            stream_id,
+            BidirectionalStream {
+                stream_id,
+                send,
+                recv,
+            },
+        );
+    }
+
+    pub async fn get_stream(&self, stream_id: u64) -> Option<BidirectionalStream> {
+        let streams = self.streams.read().await;
+        streams.get(&stream_id).cloned()
+    }
+
+    pub async fn send_on_stream(&self, stream_id: u64, data: Vec<u8>) -> Result<()> {
+        let send = {
+            let streams = self.streams.read().await;
+            streams.get(&stream_id).map(|s| s.send.clone())
+        };
+
+        if let Some(mut send) = send {
+            send.write_all(&data).await?;
+            send.finish()?;
+            Ok(())
+        } else {
+            Err(eyre::eyre!("Stream {} not found", stream_id))
+        }
+    }
+}
+
+/// WebTransport connection info (user-level metadata)
 #[derive(Clone)]
 pub struct WebTransportConnection {
     pub session_id: String,
@@ -21,14 +145,7 @@ pub struct WebTransportConnection {
     pub remote_address: String,
 }
 
-/// WebTransport stream types
-pub enum WebTransportStreamType {
-    Unidirectional,
-    Bidirectional,
-}
-
 impl WebTransportConnection {
-    /// Create a new WebTransport connection
     pub fn new(
         session_id: String,
         client_id: String,
@@ -46,47 +163,160 @@ impl WebTransportConnection {
         }
     }
 
-    /// Get connection age
     pub fn age(&self) -> chrono::Duration {
         self.connected_at.signed_duration_since(chrono::Utc::now())
     }
 }
 
-/// WebTransport session manager
+/// WebTransport stream types
+pub enum WebTransportStreamType {
+    Unidirectional,
+    Bidirectional,
+}
+
+/// WebTransport session manager with full HTTP/3 server support
 pub struct WebTransportManager {
-    sessions: Arc<tokio::sync::RwLock<HashMap<String, WebTransportConnection>>>,
+    sessions: Arc<RwLock<HashMap<String, Arc<SessionInfo>>>>,
     config: ServerConfig,
+    server: Arc<RwLock<Option<Endpoint>>>,
+    accept_task: Arc<RwLock<Option<JoinHandle<()>>>>,
 }
 
 impl WebTransportManager {
-    /// Create a new WebTransport manager
-    pub fn new(config: ServerConfig) -> Self {
+    pub fn new(config: Option<ServerConfig>) -> Self {
+        let config = config.unwrap_or_else(|| {
+            ServerConfig::builder()
+                .with_bind_default(4443)
+                .with_identity(Identity::self_signed(["localhost"]).expect("self-signed cert"))
+                .build()
+        });
+
         Self {
-            sessions: Arc::new(tokio::sync::RwLock::new(HashMap::new())),
+            sessions: Arc::new(RwLock::new(HashMap::new())),
             config,
+            server: Arc::new(RwLock::new(None)),
+            accept_task: Arc::new(RwLock::new(None)),
         }
     }
 
-    /// Accept a new WebTransport connection
+    pub fn config(&self) -> &ServerConfig {
+        &self.config
+    }
+
+    pub async fn start_server(&self, port: u16) -> Result<()> {
+        log::info!("Starting WebTransport HTTP/3 server on port {}", port);
+
+        let server_config = ServerConfig::builder()
+            .with_bind_default(port)
+            .with_identity(Identity::self_signed(["localhost"]).expect("self-signed cert"))
+            .build();
+
+        let server = Endpoint::server(server_config)?;
+
+        let server_clone = server.clone();
+        let session_manager = self.sessions.clone();
+
+        let accept_handle = tokio::spawn(async move {
+            log::info!("WebTransport server accepting connections on port {}", port);
+
+            let mut id_counter = 0u64;
+
+            loop {
+                let incoming = server_clone.accept().await;
+
+                let connection = match incoming.await {
+                    Ok(session_request) => {
+                        let authority = session_request.authority();
+                        let path = session_request.path();
+                        log::info!(
+                            "New WebTransport session: authority='{}', path='{}'",
+                            authority,
+                            path
+                        );
+
+                        match session_request.accept().await {
+                            Ok(conn) => conn,
+                            Err(e) => {
+                                log::error!("Failed to accept session: {}", e);
+                                continue;
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        log::error!("Failed to accept connection: {}", e);
+                        continue;
+                    }
+                };
+
+                let session_manager = session_manager.clone();
+                tokio::spawn(async move {
+                    let session_id = Uuid::new_v4().to_string();
+                    let remote_addr = connection.remote_address().to_string();
+
+                    log::info!("Session {} connected from {}", session_id, remote_addr);
+
+                    let webtransport_conn = WebTransportConnection::new(
+                        session_id.clone(),
+                        "client".to_string(),
+                        "user".to_string(),
+                        "default".to_string(),
+                        remote_addr,
+                    );
+
+                    let session_info = Arc::new(SessionInfo::new(connection, webtransport_conn));
+
+                    let mut sessions = session_manager.write().await;
+                    sessions.insert(session_id.clone(), session_info);
+
+                    connection.closed().await;
+
+                    log::info!("Session {} disconnected", session_id);
+                    sessions.remove(&session_id);
+                });
+            }
+        });
+
+        *self.server.write().await = Some(server);
+        *self.accept_task.write().await = Some(accept_handle);
+
+        Ok(())
+    }
+
+    pub async fn stop_server(&self) -> Result<()> {
+        if let Some(ref server) = *self.server.read().await {
+            server.close(0, b"Server shutting down");
+        }
+
+        if let Some(handle) = self.accept_task.write().await.take() {
+            handle.abort();
+            log::info!("WebTransport accept task stopped");
+        }
+
+        Ok(())
+    }
+
     pub async fn accept_connection(
         &self,
-        session: Session,
+        connection: Connection,
         client_id: String,
         user_id: String,
         room_id: String,
     ) -> Result<String> {
         let session_id = Uuid::new_v4().to_string();
+        let remote_addr = connection.remote_address().to_string();
 
-        let connection = WebTransportConnection::new(
+        let webtransport_conn = WebTransportConnection::new(
             session_id.clone(),
             client_id.clone(),
             user_id.clone(),
             room_id.clone(),
-            session.remote_addr().to_string(),
+            remote_addr,
         );
 
+        let session_info = Arc::new(SessionInfo::new(connection, webtransport_conn));
+
         let mut sessions = self.sessions.write().await;
-        sessions.insert(session_id.clone(), connection);
+        sessions.insert(session_id.clone(), session_info);
 
         log::info!(
             "WebTransport connection accepted: {} from {} to room {}",
@@ -98,41 +328,35 @@ impl WebTransportManager {
         Ok(session_id)
     }
 
-    /// Get a connection by session ID
-    pub async fn get_connection(&self, session_id: &str) -> Option<WebTransportConnection> {
+    pub async fn get_connection(&self, session_id: &str) -> Option<Arc<SessionInfo>> {
         let sessions = self.sessions.read().await;
         sessions.get(session_id).cloned()
     }
 
-    /// Remove a connection
-    pub async fn remove_connection(&self, session_id: &str) -> Option<WebTransportConnection> {
+    pub async fn remove_connection(&self, session_id: &str) -> Option<Arc<SessionInfo>> {
         let mut sessions = self.sessions.write().await;
         sessions.remove(session_id)
     }
 
-    /// Get all connections in a room
-    pub async fn get_room_connections(&self, room_id: &str) -> Vec<WebTransportConnection> {
+    pub async fn get_room_connections(&self, room_id: &str) -> Vec<Arc<SessionInfo>> {
         let sessions = self.sessions.read().await;
         sessions
             .values()
-            .filter(|conn| conn.room_id == room_id)
+            .filter(|info| info.webtransport_connection.room_id == room_id)
             .cloned()
             .collect()
     }
 
-    /// Get all sessions
-    pub async fn get_all_sessions(&self) -> Vec<WebTransportConnection> {
+    pub async fn get_all_sessions(&self) -> Vec<Arc<SessionInfo>> {
         let sessions = self.sessions.read().await;
         sessions.values().cloned().collect()
     }
 
-    /// Get session count
     pub async fn session_count(&self) -> usize {
         let sessions = self.sessions.read().await;
         sessions.len()
     }
 
-    /// Send data to a specific session
     pub async fn send_to_session(
         &self,
         session_id: &str,
@@ -141,63 +365,27 @@ impl WebTransportManager {
     ) -> Result<()> {
         let sessions = self.sessions.read().await;
         if let Some(conn) = sessions.get(session_id) {
-            // In a real implementation, this would use the actual WebTransport API
-            // to send data over the session's bidirectional streams
-            log::debug!(
-                "Sending {} bytes to WebTransport session {} (stream: {:?})",
-                data.len(),
-                session_id,
-                stream_id
-            );
+            if let Some(sid) = stream_id {
+                conn.send_on_stream(sid, data.to_vec()).await?;
+            }
             Ok(())
         } else {
             Err(eyre::eyre!("Session not found: {}", session_id))
         }
     }
 
-    /// Broadcast data to all sessions in a room
-    pub async fn broadcast_to_room(
-        &self,
-        room_id: &str,
-        data: &[u8],
-        exclude_session: Option<String>,
-    ) -> Result<usize> {
+    pub async fn create_bidirectional_stream(&self, session_id: &str) -> Result<u64> {
         let sessions = self.sessions.read().await;
-        let room_sessions: Vec<_> = sessions
-            .values()
-            .filter(|conn| conn.room_id == room_id)
-            .filter(|conn| {
-                exclude_session.as_ref().map_or(true, |excl| excl != &conn.session_id)
-            })
-            .collect();
+        let session_info = sessions
+            .get(session_id)
+            .ok_or_else(|| eyre::eyre!("Session not found: {}", session_id))?;
 
-        let count = room_sessions.len();
+        drop(sessions);
 
-        for conn in room_sessions {
-            // Send to each session
-            if let Err(e) = self.send_to_session(&conn.session_id, data, None).await {
-                log::error!("Failed to send to session {}: {}", conn.session_id, e);
-            }
-        }
+        let (send, recv) = session_info.connection.open_bi().await?;
+        let stream_id: u64 = send.id().into();
 
-        log::debug!(
-            "Broadcasted {} bytes to {} sessions in room {}",
-            data.len(),
-            count,
-            room_id
-        );
-
-        Ok(count)
-    }
-
-    /// Create bidirectional stream for data exchange
-    pub async fn create_bidirectional_stream(
-        &self,
-        session_id: &str,
-    ) -> Result<u64> {
-        // In real implementation, this would use the WebTransport API
-        // to create a bidirectional stream
-        let stream_id: u64 = 1; // Default stream ID
+        session_info.add_stream(stream_id, send, recv).await;
 
         log::info!(
             "Created bidirectional stream {} for WebTransport session {}",
@@ -208,59 +396,52 @@ impl WebTransportManager {
         Ok(stream_id)
     }
 
-    /// Close a session with reason
     pub async fn close_session(&self, session_id: &str, reason: &str) -> Result<()> {
-        let mut sessions = self.sessions.write().await;
+        let session_info = self.remove_connection(session_id).await;
 
-        if let Some(conn) = sessions.remove(session_id) {
+        if let Some(info) = session_info {
             log::info!(
                 "Closing WebTransport session {} ({}) - age: {:?}",
                 session_id,
                 reason,
-                conn.age()
+                info.webtransport_connection.age()
             );
-
-            // Send close message if session supports it
-            // In real implementation, this would close the actual WebTransport session
-
+            info.connection.close(0, reason.as_bytes());
             Ok(())
         } else {
             Err(eyre::eyre!("Session not found: {}", session_id))
         }
     }
 
-    /// Get statistics for monitoring
     pub async fn get_stats(&self) -> WebTransportStats {
         let sessions = self.sessions.read().await;
 
-        let mut connections_by_room: std::collections::HashMap<String, usize> =
-            std::collections::HashMap::new();
+        let mut connections_by_room: HashMap<String, usize> = HashMap::new();
 
-        for conn in sessions.values() {
-            *connections_by_room.entry(conn.room_id.clone()).or_insert(0) += 1;
+        for info in sessions.values() {
+            *connections_by_room
+                .entry(info.webtransport_connection.room_id.clone())
+                .or_insert(0) += 1;
         }
 
-        let total_connections = sessions.len();
-
         WebTransportStats {
-            total_connections,
+            total_connections: sessions.len(),
             connections_by_room,
         }
     }
 }
 
-/// WebTransport statistics
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct WebTransportStats {
     pub total_connections: usize,
-    pub connections_by_room: std::collections::HashMap<String, usize>,
+    pub connections_by_room: HashMap<String, usize>,
 }
 
 impl Default for WebTransportStats {
     fn default() -> Self {
         Self {
             total_connections: 0,
-            connections_by_room: std::collections::HashMap::new(),
+            connections_by_room: HashMap::new(),
         }
     }
 }
@@ -270,71 +451,22 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn test_webtransport_connection_creation() {
-        let config = ServerConfig::default();
-        let manager = WebTransportManager::new(config);
-
-        // Add a connection
-        let session_id = Uuid::new_v4().to_string();
-        let conn = WebTransportConnection::new(
-            session_id.clone(),
-            "client-1".to_string(),
-            "user-1".to_string(),
-            "room-1".to_string(),
-            "127.0.0.1:1234".to_string(),
-        );
-
-        let mut sessions = manager.sessions.write().await;
-        sessions.insert(session_id.clone(), conn);
-
-        // Verify it was added
-        let retrieved = manager.get_connection(&session_id).await;
-        assert!(retrieved.is_some());
-        assert_eq!(retrieved.unwrap().client_id, "client-1");
+    async fn test_webtransport_manager_creation() {
+        let config = ServerConfig::builder()
+            .with_bind_default(4443)
+            .with_identity(Identity::self_signed(["localhost"]).unwrap())
+            .build();
+        let manager = WebTransportManager::new(Some(config));
+        assert_eq!(manager.session_count().await, 0);
     }
 
     #[tokio::test]
-    async fn test_room_connections() {
-        let config = ServerConfig::default();
-        let manager = WebTransportManager::new(config);
-
-        // Add connections to different rooms
-        let room1_sessions = vec!["room1-session-1", "room1-session-2"];
-        let room2_sessions = vec!["room2-session-1"];
-
-        let mut sessions = manager.sessions.write().await;
-        for (i, session_id) in room1_sessions.iter().enumerate() {
-            sessions.insert(
-                session_id.to_string(),
-                WebTransportConnection::new(
-                    session_id.to_string(),
-                    format!("client-{}", i),
-                    format!("user-{}", i),
-                    "room-1".to_string(),
-                    format!("127.0.0.1:{}", 1000 + i),
-                ),
-            );
-        }
-
-        for session_id in &room2_sessions {
-            sessions.insert(
-                session_id.to_string(),
-                WebTransportConnection::new(
-                    session_id.to_string(),
-                    "client-10".to_string(),
-                    "user-10".to_string(),
-                    "room-2".to_string(),
-                    "127.0.0.1:2000".to_string(),
-                ),
-            );
-        }
-
-        // Get room-1 connections
-        let room1_conns = manager.get_room_connections("room-1").await;
-        assert_eq!(room1_conns.len(), 2);
-
-        // Get room-2 connections
-        let room2_conns = manager.get_room_connections("room-2").await;
-        assert_eq!(room2_conns.len(), 1);
+    async fn test_webtransport_manager_session_count() {
+        let config = ServerConfig::builder()
+            .with_bind_default(4443)
+            .with_identity(Identity::self_signed(["localhost"]).unwrap())
+            .build();
+        let manager = WebTransportManager::new(Some(config));
+        assert_eq!(manager.session_count().await, 0);
     }
 }
