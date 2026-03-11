@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { InstancedMesh } from 'three';
 import * as THREE from 'three';
 
+import { createLogger } from '@graphwiz/types/logger';
+
 /**
  * Audio Visualizer Component
  *
@@ -26,7 +28,7 @@ export function AudioVisualizer({
   barRadius = 2,
   barHeight = 2,
   color = '#6366f1',
-}: AudioVisualizerProps) {
+  const logger = createLogger('AudioVisualizer');
   const meshRef = useRef<InstancedMesh>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -58,11 +60,7 @@ export function AudioVisualizer({
       dataArrayRef.current = dataArray;
       setIsInitialized(true);
 
-      console.log('[AudioVisualizer] Initialized with', barCount, 'bars');
-    } catch (error) {
-      console.error('[AudioVisualizer] Failed to initialize:', error);
-    }
-
+      logger.info({ message: '[AudioVisualizer] Initialized with {} bars', params: [barCount] });
     return () => {
       if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
         audioContextRef.current.close();
@@ -194,10 +192,9 @@ export function WaveformVisualizer({
       dataArrayRef.current = dataArray;
       setIsInitialized(true);
 
-      console.log('[WaveformVisualizer] Initialized with', length, 'bars');
+      logger.info({ message: '[WaveformVisualizer] Initialized with {} bars', params: [length] });
     } catch (error) {
-      console.error('[WaveformVisualizer] Failed to initialize:', error);
-    }
+      logger.error({ message: '[WaveformVisualizer] Failed to initialize', error });
 
     return () => {
       if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
