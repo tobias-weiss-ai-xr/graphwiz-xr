@@ -4,13 +4,21 @@
  * ECS system that handles network synchronization of entities.
  */
 
+import type {
+  Message,
+  MessageType,
+  PositionUpdate,
+  EntitySpawn,
+  EntityUpdate,
+  EntityDespawn,
+  ServerHello,
+  PresenceEvent
+} from '@graphwiz/protocol';
 import { createLogger } from '@graphwiz/types';
 
 const logger = createLogger('NetworkSystem');
 
-import type { Message, MessageType } from '@graphwiz/protocol';
-
-import type { Entity } from '../ecs/entity';
+import { Entity } from '../ecs/entity';
 import { TransformComponent } from '../ecs/entity';
 import { System } from '../ecs/system';
 
@@ -37,10 +45,10 @@ export class NetworkSystem extends System {
   setHostClientId(hostId: string | null): void {
     this.hostClientId = hostId;
   }
-  private presenceHandlers: Array<(event: any) => void> = [];
+  private presenceHandlers: Array<(event: PresenceEvent) => void> = [];
 
   // Add presence join handler
-  addPresenceJoinHandler(handler: (event: any) => void): () => void {
+  addPresenceJoinHandler(handler: (event: PresenceEvent) => void): () => void {
     this.presenceHandlers.push(handler);
     // Return unsubscribe function
     return () => {
@@ -81,20 +89,23 @@ export class NetworkSystem extends System {
       const transform = entity.getComponent(TransformComponent);
       const networkSync = entity.getComponent(NetworkSyncComponent);
 
-      if (transform && networkSync && (networkSync as any).isOwner) {
-        // Send position update if it's time
-        if ((networkSync as any).shouldSync(currentTime)) {
-          this.networkClient.sendPositionUpdate(
-            (networkSync as any).networkId,
-            { x: transform.position.x, y: transform.position.y, z: transform.position.z },
-            {
-              x: transform.rotation.x,
-              y: transform.rotation.y,
-              z: transform.rotation.z,
-              w: 0, // Quaternion w - not using quaternions yet
-            }
-          );
-          (networkSync as any).updateLastSyncTime(currentTime);
+      if (transform && networkSync) {
+        const networkSyncComponent = networkSync as NetworkSyncComponent;
+        if (networkSyncComponent.isOwner) {
+          // Send position update if it's time
+          if (networkSyncComponent.shouldSync(currentTime)) {
+            this.networkClient.sendPositionUpdate(
+              networkSyncComponent.networkId,
+              { x: transform.position.x, y: transform.position.y, z: transform.position.z },
+              {
+                x: transform.rotation.x,
+                y: transform.rotation.y,
+                z: transform.rotation.z,
+                w: 0 // Quaternion w - not using quaternions yet
+              }
+            );
+            networkSyncComponent.updateLastSyncTime(currentTime);
+          }
         }
       }
     }
@@ -105,36 +116,43 @@ export class NetworkSystem extends System {
    */
   private setupMessageHandlers(): void {
     // Handle entity spawn
-    this.networkClient.on(20 as MessageType, (message) => { // ENTITY_SPAWN = 20
+    this.networkClient.on(20 as MessageType, (message) => {
+      // ENTITY_SPAWN = 20
       this.handleEntitySpawn(message);
     });
 
     // Handle entity update
-    this.networkClient.on(21 as MessageType, (message) => { // ENTITY_UPDATE = 21
+    this.networkClient.on(21 as MessageType, (message) => {
+      // ENTITY_UPDATE = 21
       this.handleEntityUpdate(message);
     });
 
     // Handle entity despawn
-    this.networkClient.on(22 as MessageType, (message) => { // ENTITY_DESPAWN = 22
+    this.networkClient.on(22 as MessageType, (message) => {
+      // ENTITY_DESPAWN = 22
       this.handleEntityDespawn(message);
     });
 
     // Handle position updates
-    this.networkClient.on(10 as MessageType, (message) => { // POSITION_UPDATE = 10
+    this.networkClient.on(10 as MessageType, (message) => {
+      // POSITION_UPDATE = 10
       this.handlePositionUpdate(message);
     });
 
     // Handle server hello (initial state)
-    this.networkClient.on(2 as MessageType, (message) => { // SERVER_HELLO = 2
+    this.networkClient.on(2 as MessageType, (message) => {
+      // SERVER_HELLO = 2
       this.handleServerHello(message);
     });
 
     // Handle presence events
-    this.networkClient.on(40 as MessageType, (message) => { // PRESENCE_JOIN = 40
+    this.networkClient.on(40 as MessageType, (message) => {
+      // PRESENCE_JOIN = 40
       this.handlePresenceJoin(message);
     });
 
-    this.networkClient.on(41 as MessageType, (message) => { // PRESENCE_LEAVE = 41
+    this.networkClient.on(41 as MessageType, (message) => {
+      // PRESENCE_LEAVE = 41
       this.handlePresenceLeave(message);
     });
   }
@@ -145,7 +163,7 @@ export class NetworkSystem extends System {
   private handleEntitySpawn(message: Message): void {
     if (!this.world) return;
 
-    const spawn = message.payload as any;
+    const spawn = message.payload as EntitySpawn;
     logger.info('[NetworkSystem] Spawning entity:', { entityId: spawn.entityId });
 
     // Check if entity already exists
@@ -163,10 +181,10 @@ export class NetworkSystem extends System {
     // Add network sync component
     const networkSync = new NetworkSyncComponent({
       networkId: spawn.entityId,
-      isOwner: spawn.ownerId === (this.networkClient as any).config.userId,
+      isOwner: spawn.ownerId === this.networkClient.config.userId,
       syncRate: 30,
       interpolate: true,
-      extrapolate: false,
+      extrapolate: false
     });
     entity.addComponent(NetworkSyncComponent, networkSync);
 
@@ -184,7 +202,7 @@ export class NetworkSystem extends System {
    * Handle entity update message
    */
   private handleEntityUpdate(message: Message): void {
-    const update = message.payload as any;
+    const update = message.payload as EntityUpdate;
     const entityId = this.networkToEntityMap.get(update.entityId);
 
     if (!entityId || !this.world) return;
@@ -202,7 +220,7 @@ export class NetworkSystem extends System {
    * Handle entity despawn message
    */
   private handleEntityDespawn(message: Message): void {
-    const despawn = message.payload as any;
+    const despawn = message.payload as EntityDespawn;
     const entityId = this.networkToEntityMap.get(despawn.entityId);
 
     if (!entityId || !this.world) return;
@@ -221,7 +239,7 @@ export class NetworkSystem extends System {
    * Handle position update message
    */
   private handlePositionUpdate(message: Message): void {
-    const update = message.payload as any;
+    const update = message.payload as PositionUpdate;
     const entityId = this.networkToEntityMap.get(update.entityId);
 
     if (!entityId || !this.world) return;
@@ -232,19 +250,22 @@ export class NetworkSystem extends System {
     const transform = entity.getComponent(TransformComponent);
     const networkSync = entity.getComponent(NetworkSyncComponent);
 
-    if (transform && networkSync && !(networkSync as any).isOwner) {
-      // Add to interpolation buffer
-      (networkSync as any).addStateUpdate(
-        { x: update.position?.x ?? 0, y: update.position?.y ?? 0, z: update.position?.z ?? 0 },
-        { x: update.rotation?.x ?? 0, y: update.rotation?.y ?? 0, z: update.rotation?.z ?? 0 },
-        update.timestamp ?? Date.now()
-      );
+    if (transform && networkSync) {
+      const networkSyncComponent = networkSync as NetworkSyncComponent;
+      if (!networkSyncComponent.isOwner) {
+        // Add to interpolation buffer
+        networkSyncComponent.addStateUpdate(
+          { x: update.position.x ?? 0, y: update.position.y ?? 0, z: update.position.z ?? 0 },
+          { x: update.rotation.x ?? 0, y: update.rotation.y ?? 0, z: update.rotation.z ?? 0 },
+          update.timestamp ?? Date.now()
+        );
 
-      // Apply interpolated state
-      const interpolatedState = (networkSync as any).getInterpolatedState(Date.now());
-      if (interpolatedState) {
-        transform.position.copy(interpolatedState.position);
-        transform.rotation.copy(interpolatedState.rotation);
+        // Apply interpolated state
+        const interpolatedState = networkSyncComponent.getInterpolatedState(Date.now());
+        if (interpolatedState) {
+          transform.position.copy(interpolatedState.position);
+          transform.rotation.copy(interpolatedState.rotation);
+        }
       }
     }
   }
@@ -253,8 +274,8 @@ export class NetworkSystem extends System {
    * Handle server hello message
    */
   private handleServerHello(message: Message): void {
-    const hello = message.payload as any;
-    logger.info('[NetworkSystem] Received server hello:', { hello });
+    const hello = message.payload as ServerHello;
+    logger.info('[NetworkSystem] Received server hello:', hello);
 
     // Spawn initial entities from world state
     if (hello.initialState && hello.initialState.entities) {
@@ -268,15 +289,15 @@ export class NetworkSystem extends System {
    * Handle presence join message
    */
   private handlePresenceJoin(message: Message): void {
-    const event = message.payload as any;
+    const event = message.payload as unknown as PresenceEvent & { host_client_id?: string };
     logger.info('[NetworkSystem] User joined:', { clientId: event.clientId });
-    
+
     // Check if payload contains host_client_id (from backend)
-    if (event.host_client_id) {
+    if ('host_client_id' in event && event.host_client_id) {
       this.hostClientId = event.host_client_id;
       logger.info('[NetworkSystem] Host assigned:', { hostClientId: this.hostClientId });
     }
-    
+
     // Notify presence handlers if they want to know about joins
     this.presenceHandlers.forEach((handler) => handler(event));
   }
@@ -285,14 +306,19 @@ export class NetworkSystem extends System {
    * Handle presence leave message
    */
   private handlePresenceLeave(message: Message): void {
-    const event = message.payload as any;
+    const event = message.payload as unknown as PresenceEvent;
     logger.info('[NetworkSystem] User left:', { clientId: event.clientId });
   }
 
   /**
    * Spawn entity from snapshot
    */
-  private spawnEntityFromSnapshot(snapshot: any): void {
+  private spawnEntityFromSnapshot(snapshot: {
+    id: string;
+    position?: { x: number; y: number; z: number };
+    rotation?: { x: number; y: number; z: number };
+    components?: Record<string, unknown>;
+  }): void {
     if (!this.world) return;
 
     logger.info('[NetworkSystem] Spawning entity from snapshot:', { id: snapshot.id });
@@ -303,10 +329,18 @@ export class NetworkSystem extends System {
     // Add transform component
     const transform = new TransformComponent();
     if (snapshot.position) {
-      transform.position.set(snapshot.position.x ?? 0, snapshot.position.y ?? 0, snapshot.position.z ?? 0);
+      transform.position.set(
+        snapshot.position.x ?? 0,
+        snapshot.position.y ?? 0,
+        snapshot.position.z ?? 0
+      );
     }
     if (snapshot.rotation) {
-      transform.rotation.set(snapshot.rotation.x ?? 0, snapshot.rotation.y ?? 0, snapshot.rotation.z ?? 0);
+      transform.rotation.set(
+        snapshot.rotation.x ?? 0,
+        snapshot.rotation.y ?? 0,
+        snapshot.rotation.z ?? 0
+      );
     }
     entity.addComponent(TransformComponent, transform);
 
@@ -316,7 +350,7 @@ export class NetworkSystem extends System {
       isOwner: false,
       syncRate: 30,
       interpolate: true,
-      extrapolate: false,
+      extrapolate: false
     });
     entity.addComponent(NetworkSyncComponent, networkSync);
 
@@ -378,7 +412,7 @@ export class NetworkSystem extends System {
       isOwner: true,
       syncRate: 30,
       interpolate: false,
-      extrapolate: false,
+      extrapolate: false
     });
     entity.addComponent(NetworkSyncComponent, networkSync);
 
@@ -390,7 +424,7 @@ export class NetworkSystem extends System {
     this.networkClient.sendEntitySpawn({
       entityId: networkId,
       templateId,
-      components,
+      components
     });
 
     logger.info('[NetworkSystem] Creating networked entity:', { networkId });

@@ -7,6 +7,7 @@
 
 import type { Message, MessageType } from '@graphwiz/protocol';
 
+import type { NetworkSystem } from './system';
 import { WebSocketClient } from './websocket-client';
 
 export interface NetworkConfig {
@@ -23,7 +24,7 @@ export type MessageHandler = (message: Message) => void;
 export class NetworkClient {
   private wsClient: WebSocketClient;
   public config: NetworkConfig;
-  private networkSystem?: any; // NetworkSystem instance
+  private networkSystem?: NetworkSystem;
 
   constructor(config: NetworkConfig) {
     this.config = config;
@@ -32,12 +33,12 @@ export class NetworkClient {
       roomId: config.roomId,
       userId: config.userId,
       displayName: config.displayName,
-      authToken: config.authToken,
+      authToken: config.authToken
     });
   }
 
   // Set NetworkSystem reference (called after initialization)
-  setNetworkSystem(system: any): void {
+  setNetworkSystem(system: NetworkSystem): void {
     this.networkSystem = system;
   }
 

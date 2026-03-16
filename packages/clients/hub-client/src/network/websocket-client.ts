@@ -323,18 +323,19 @@ export class WebSocketClient {
       }
     };
 
-    // Create message with proper wrapper
-    const message: any = {
+    // Create message with presence update payload
+    const msg = {
       messageId: uuidv4(),
       timestamp: Date.now(),
-      type: 42, // PRESENCE_UPDATE
+      type: 42 as MessageType, // PRESENCE_UPDATE
       payload: {
         clientId: this.clientId!,
         ...presenceData
       }
     };
 
-    this.send(message);
+    const serialized = MessageParser.serialize(msg as unknown as Message);
+    this.ws?.send(serialized);
 
     logger.debug('[WebSocketClient] Sent avatar update:', avatarConfig);
   }
@@ -400,7 +401,29 @@ export class WebSocketClient {
   /**
    * Handle server hello in text format (initial connection)
    */
-  private handleServerHelloText(data: any): void {
+  private handleServerHelloText(data: {
+    client_id?: string;
+    timestamp?: number;
+    server_version?: string;
+    room_id?: string;
+    initial_state?: {
+      entities: Array<{
+        id: string;
+        templateId: string;
+        position: { x: number; y: number; z: number };
+        rotation: { x: number; y: number; z: number; w: number };
+        components: Record<string, unknown>;
+      }>;
+      players: Array<{
+        clientId: string;
+        displayName: string;
+        avatarUrl: string;
+        position: { x: number; y: number; z: number };
+        rotation: { x: number; y: number; z: number; w: number };
+      }>;
+      lastUpdate: number;
+    };
+  }): void {
     // Store assigned client ID if different
     if (data.client_id && data.client_id !== this.clientId) {
       this.clientId = data.client_id;
@@ -416,7 +439,7 @@ export class WebSocketClient {
         assignedClientId: data.client_id || this.clientId!,
         roomId: data.room_id || this.config.roomId,
         initialState: data.initial_state
-      } as any
+      } as unknown as Message['payload']
     };
 
     const handlers = this.messageHandlers.get(2 as MessageType); // SERVER_HELLO
@@ -438,8 +461,6 @@ export class WebSocketClient {
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
 
     logger.info(
-      `[WebSocketClient] Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
-    );
       `[WebSocketClient] Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
     );
 
