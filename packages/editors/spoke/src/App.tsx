@@ -1,5 +1,9 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import { useState } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
+import { OrbitControls, Grid } from '@react-three/drei';
+import { useState, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 
 interface Entity {
   id: string;
@@ -9,17 +13,72 @@ interface Entity {
   scale: { x: number; y: number; z: number };
 }
 
+// Scene component that exposes the THREE.Scene via ref
+interface SceneContentProps {
+  entities: Entity[];
+  selectedEntity: string | null;
+}
+
+export interface SceneRef {
+  getScene: () => THREE.Scene | null;
+}
+
+const SceneContent = forwardRef<SceneRef, SceneContentProps>(
+  ({ entities, selectedEntity }, ref) => {
+    const { scene } = useThree();
+
+    useImperativeHandle(ref, () => ({
+      getScene: () => scene
+    }));
+
+    return (
+      <>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1} />
+        <Grid
+          args={[20, 20]}
+          cellSize={1}
+          cellThickness={0.5}
+          cellColor="#444"
+          sectionSize={5}
+          sectionThickness={1}
+          sectionColor="#666"
+          fadeDistance={30}
+          infiniteGrid
+        />
+        {entities.map((entity) => (
+          <mesh
+            key={entity.id}
+            position={[entity.position.x, entity.position.y, entity.position.z]}
+            rotation={[entity.rotation.x, entity.rotation.y, entity.rotation.z]}
+            scale={[entity.scale.x, entity.scale.y, entity.scale.z]}
+          >
+            <boxGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial color={selectedEntity === entity.id ? '#3b82f6' : '#888'} />
+          </mesh>
+        ))}
+        <OrbitControls makeDefault />
+      </>
+    );
+  }
+);
+
+SceneContent.displayName = 'SceneContent';
+
 export default function App() {
   const [entities] = useState<Entity[]>([
     {
       id: '1',
       name: 'Cube',
-      position: { x: 0, y: 0, z: 0 },
+      position: { x: 0, y: 0.5, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
-      scale: { x: 1, y: 1, z: 1 },
-    },
+      scale: { x: 1, y: 1, z: 1 }
+    }
   ]);
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
+  const sceneRef = useRef<SceneRef>(null);
 
   const handleSaveScene = async () => {
     try {
@@ -30,14 +89,55 @@ export default function App() {
     }
   };
 
-  const handleExportScene = async () => {
+  const downloadBlob = useCallback((data: ArrayBuffer, filename: string) => {
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, []);
+
+  const handleExportScene = useCallback(async () => {
+    const scene = sceneRef.current?.getScene();
+    if (!scene) {
+      console.error('No scene available for export');
+      return;
+    }
+
+    setExporting(true);
+    setExportProgress(10);
+
     try {
-      await invoke('export_scene', { sceneData: entities });
-      console.log('Scene exported!');
+      const exporter = new GLTFExporter();
+      setExportProgress(30);
+
+      const data = await exporter.parseAsync(scene, {
+        binary: true,
+        onlyVisible: true
+      });
+      setExportProgress(80);
+
+      if (data instanceof ArrayBuffer) {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        downloadBlob(data, `scene-${timestamp}.glb`);
+        setExportProgress(100);
+        console.log('Scene exported successfully!');
+      } else {
+        console.error('Expected binary data but got JSON');
+      }
     } catch (error) {
       console.error('Failed to export scene:', error);
+    } finally {
+      setTimeout(() => {
+        setExporting(false);
+        setExportProgress(0);
+      }, 500);
     }
-  };
+  }, [downloadBlob]);
 
   const selectedEntityData = entities.find((e) => e.id === selectedEntity);
 
@@ -97,12 +197,24 @@ export default function App() {
             </button>
           </div>
         </div>
-        <div className="flex-1 bg-black flex items-center justify-center">
-          <div className="text-gray-500 text-center">
-            <p className="text-6xl mb-4">🎨</p>
-            <p>3D Viewport</p>
-            <p className="text-sm mt-2">React Three Fiber renderer</p>
-          </div>
+        <div className="flex-1 relative">
+          <Canvas camera={{ position: [5, 5, 5], fov: 50 }} className="bg-gray-900">
+            <SceneContent ref={sceneRef} entities={entities} selectedEntity={selectedEntity} />
+          </Canvas>
+          {exporting && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+              <div className="bg-gray-800 rounded-lg p-6 flex flex-col items-center gap-4">
+                <div className="text-white text-lg font-medium">Exporting...</div>
+                <div className="w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-purple-500 transition-all duration-200"
+                    style={{ width: `${exportProgress}%` }}
+                  />
+                </div>
+                <div className="text-gray-400 text-sm">{exportProgress}%</div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -127,7 +239,9 @@ export default function App() {
                 <div className="grid grid-cols-3 gap-2">
                   {['x', 'y', 'z'].map((axis) => (
                     <div key={axis}>
-                      <label className="block text-xs text-gray-500 mb-1">{axis.toUpperCase()}</label>
+                      <label className="block text-xs text-gray-500 mb-1">
+                        {axis.toUpperCase()}
+                      </label>
                       <input
                         type="number"
                         value={selectedEntityData.position[axis as 'x' | 'y' | 'z']}
@@ -142,7 +256,9 @@ export default function App() {
                 <div className="grid grid-cols-3 gap-2">
                   {['x', 'y', 'z'].map((axis) => (
                     <div key={axis}>
-                      <label className="block text-xs text-gray-500 mb-1">{axis.toUpperCase()}</label>
+                      <label className="block text-xs text-gray-500 mb-1">
+                        {axis.toUpperCase()}
+                      </label>
                       <input
                         type="number"
                         value={selectedEntityData.rotation[axis as 'x' | 'y' | 'z']}
@@ -157,7 +273,9 @@ export default function App() {
                 <div className="grid grid-cols-3 gap-2">
                   {['x', 'y', 'z'].map((axis) => (
                     <div key={axis}>
-                      <label className="block text-xs text-gray-500 mb-1">{axis.toUpperCase()}</label>
+                      <label className="block text-xs text-gray-500 mb-1">
+                        {axis.toUpperCase()}
+                      </label>
                       <input
                         type="number"
                         value={selectedEntityData.scale[axis as 'x' | 'y' | 'z']}
