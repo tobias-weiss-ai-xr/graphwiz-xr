@@ -1,0 +1,600 @@
+/**
+ * WebTransport Client for GraphWiz-XR
+ *
+ * Handles real-time communication with the presence service using WebTransport HTTP/3
+ */
+
+import type {
+  Message,
+  EntitySpawn,
+  EntityDespawn,
+  EntityUpdate,
+  ChatMessage,
+  PresenceEvent
+} from '@graphwiz/protocol';
+import { MessageBuilder, MessageType as MT, MessageParser } from '@graphwiz/protocol';
+import { createLogger } from '@graphwiz/types';
+import { v4 as uuidv4 } from 'uuid';
+
+const logger = createLogger('WebTransport');
+
+export interface WebTransportClientConfig {
+  serverUrl: string;
+  roomId: string;
+  authToken?: string;
+  clientId?: string;
+  displayName?: string;
+}
+
+export type MessageHandler = (message: Message) => void;
+export type PresenceHandler = (event: PresenceEvent) => void;
+export type EntitySpawnHandler = (spawn: EntitySpawn) => void;
+export type EntityDespawnHandler = (despawn: EntityDespawn) => void;
+export type EntityUpdateHandler = (update: EntityUpdate) => void;
+export type ChatHandler = (chat: ChatMessage) => void;
+export type DisconnectHandler = () => void;
+
+export class WebTransportClient {
+  private config: WebTransportClientConfig;
+  private transport: WebTransport | null = null;
+  private sendStream: WritableStream<Uint8Array> | null = null;
+  private receiveReader: ReadableStreamDefaultReader<Uint8Array> | null = null;
+  private isConnected = false;
+  private isConnecting = false;
+
+  // Message handlers
+  private messageHandlers = new Map<number, Set<MessageHandler>>();
+  private presenceHandlers = new Set<PresenceHandler>();
+  private entitySpawnHandlers = new Set<EntitySpawnHandler>();
+  private entityDespawnHandlers = new Set<EntityDespawnHandler>();
+  private entityUpdateHandlers = new Set<EntityUpdateHandler>();
+  private chatHandlers = new Set<ChatHandler>();
+  private disconnectHandlers = new Set<DisconnectHandler>();
+
+  // Sequence numbers
+  private positionSequence = 0;
+
+  // My assigned client ID from server
+  public myClientId: string | null = null;
+
+  // Reconnection settings
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectDelay = 1000;
+
+  constructor(config: WebTransportClientConfig) {
+    this.config = config;
+    this.myClientId = config.clientId || null;
+  }
+
+  /**
+   * Connect to the server
+   */
+  async connect(): Promise<void> {
+    if (this.isConnected || this.isConnecting) {
+      return;
+    }
+
+    this.isConnecting = true;
+
+    try {
+      // Check if WebTransport is available
+      if (!('WebTransport' in window)) {
+        throw new Error('WebTransport is not supported in this browser');
+      }
+
+      // Create WebTransport connection
+      const url = new URL(this.config.serverUrl);
+      url.searchParams.set('room_id', this.config.roomId);
+      if (this.config.authToken) {
+        url.searchParams.set('auth_token', this.config.authToken);
+      }
+
+      this.transport = new WebTransport(url);
+
+      // Wait for connection to be ready
+      await this.transport.ready;
+      this.isConnected = true;
+      this.isConnecting = false;
+
+      // Create bidirectional streams
+      const biDirectional = await this.transport.createBidirectionalStream();
+      this.sendStream = biDirectional.writable;
+      this.receiveReader = biDirectional.readable.getReader();
+
+      // Send ClientHello
+      await this.sendClientHello();
+
+      // Start receiving messages
+      this.receiveLoop();
+
+      logger.info('[WebTransport] Connected to', { serverUrl: this.config.serverUrl });
+    } catch (error) {
+      this.isConnecting = false;
+      this.isConnected = false;
+      this.disconnectHandlers.forEach((handler) => handler());
+      throw error;
+    }
+  }
+
+  /**
+   * Disconnect from the server
+   */
+  async disconnect(): Promise<void> {
+    if (!this.isConnected) {
+      return;
+    }
+
+    this.isConnected = false;
+
+    // Close streams
+    if (this.receiveReader) {
+      await this.receiveReader.cancel();
+      this.receiveReader = null;
+    }
+
+    if (this.sendStream) {
+      await this.sendStream.close();
+      this.sendStream = null;
+    }
+
+    // Close transport
+    if (this.transport) {
+      await this.transport.close();
+      this.transport = null;
+    }
+
+    // Notify disconnect handlers
+    this.disconnectHandlers.forEach((handler) => handler());
+
+    logger.info('[WebTransport] Disconnected');
+  }
+
+  /**
+   * Send a ClientHello message
+   */
+  private async sendClientHello(): Promise<void> {
+    const hello = {
+      clientId: this.config.clientId || '',
+      displayName: this.config.displayName || 'Unknown',
+      authToken: this.config.authToken || '',
+      requestedRoom: this.config.roomId
+    };
+
+    const message = MessageBuilder.create(MT.CLIENT_HELLO as MT, hello);
+    const serialized = MessageParser.serialize(message);
+    await this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Send binary message
+   */
+  private async sendBinary(data: Uint8Array): Promise<void> {
+    if (!this.sendStream || !this.isConnected) {
+      throw new Error('Not connected or stream closed');
+    }
+
+    const writer = this.sendStream.getWriter();
+    try {
+      await writer.write(data);
+      writer.releaseLock();
+    } catch (error) {
+      logger.error('[WebTransport] Failed to send message', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Receive loop - reads messages from server
+   */
+  private async receiveLoop(): Promise<void> {
+    if (!this.receiveReader) {
+      return;
+    }
+
+    try {
+      while (this.isConnected) {
+        const { value, done } = await this.receiveReader.read();
+
+        if (done) {
+          logger.info('[WebTransport] Stream closed by server');
+          break;
+        }
+
+        if (value) {
+          this.handleMessage(value);
+        }
+      }
+    } catch (error) {
+      logger.error('[WebTransport] Receive loop error', error);
+      this.handleDisconnect();
+    }
+  }
+
+  /**
+   * Handle incoming message
+   */
+  private handleMessage(data: Uint8Array): void {
+    try {
+      const message = MessageParser.parse(data.buffer as ArrayBuffer);
+      this.dispatchMessage(message);
+    } catch (error) {
+      logger.error('[WebTransport] Failed to parse message', error);
+    }
+  }
+
+  /**
+   * Dispatch message to handlers
+   */
+  private dispatchMessage(message: Message): void {
+    // Handle based on message type
+    switch (message.type) {
+      case MT.POSITION_UPDATE:
+      case MT.CLIENT_HELLO:
+      case MT.SERVER_HELLO:
+        this.messageHandlers.get(message.type)?.forEach((handler) => handler(message));
+        break;
+
+      case MT.PRESENCE_JOIN:
+      case MT.PRESENCE_LEAVE:
+      case MT.PRESENCE_UPDATE:
+        this.presenceHandlers.forEach((handler) => handler(message.payload as PresenceEvent));
+        break;
+
+      case MT.ENTITY_SPAWN:
+        this.entitySpawnHandlers.forEach((handler) => handler(message.payload as EntitySpawn));
+        break;
+
+      case MT.ENTITY_DESPAWN:
+        this.entityDespawnHandlers.forEach((handler) => handler(message.payload as EntityDespawn));
+        break;
+
+      case MT.ENTITY_UPDATE:
+        this.entityUpdateHandlers.forEach((handler) => handler(message.payload as EntityUpdate));
+        break;
+
+      case MT.CHAT_MESSAGE:
+        this.chatHandlers.forEach((handler) => handler(message.payload as ChatMessage));
+        break;
+
+      default:
+        // Dispatch any other message type to the general message handler
+        this.messageHandlers.get(message.type)?.forEach((handler) => handler(message));
+    }
+  }
+
+  /**
+   * Handle disconnect
+   */
+  private handleDisconnect(): void {
+    const wasConnected = this.isConnected;
+    this.isConnected = false;
+    this.isConnecting = false;
+    this.disconnectHandlers.forEach((handler) => handler());
+
+    // Attempt reconnect if we were previously connected
+    if (wasConnected) {
+      this.attemptReconnect();
+    }
+  }
+
+  /**
+   * Subscribe to message type
+   */
+  on(messageType: MT, handler: MessageHandler): () => void {
+    if (!this.messageHandlers.has(messageType)) {
+      this.messageHandlers.set(messageType, new Set());
+    }
+    this.messageHandlers.get(messageType)!.add(handler);
+
+    // Return unsubscribe function
+    return () => {
+      const handlers = this.messageHandlers.get(messageType);
+      if (handlers) {
+        handlers.delete(handler);
+      }
+    };
+  }
+
+  /**
+   * Send position update
+   */
+  sendPositionUpdate(
+    entityId: string,
+    position: { x: number; y: number; z: number },
+    rotation: { x: number; y: number; z: number; w: number }
+  ): void {
+    const update = {
+      entityId,
+      position: { ...position },
+      rotation: { ...rotation },
+      sequenceNumber: this.positionSequence++,
+      timestamp: Date.now()
+    };
+
+    const message = MessageBuilder.createPositionUpdate(update);
+    const serialized = MessageParser.serialize(message);
+    this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Send entity spawn
+   */
+  sendEntitySpawn(data: {
+    entityId: string;
+    templateId: string;
+    components: Record<string, unknown>;
+  }): void {
+    const spawn = {
+      ...data,
+      ownerId: this.config.clientId || ''
+    };
+
+    const message = MessageBuilder.createEntitySpawn(spawn);
+    const serialized = MessageParser.serialize(message);
+    this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Send entity despawn
+   */
+  sendEntityDespawn(entityId: string): void {
+    const message = MessageBuilder.createEntityDespawn(entityId);
+    const serialized = MessageParser.serialize(message);
+    this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Send chat message
+   */
+  sendChatMessage(messageText: string): void {
+    const chat = {
+      fromClientId: this.config.clientId || '',
+      message: messageText,
+      type: 0 // NORMAL
+    };
+
+    const message = MessageBuilder.createChatMessage(chat);
+    const serialized = MessageParser.serialize(message);
+    this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Send entity update
+   */
+  sendEntityUpdate(data: { entityId: string; components: Record<string, unknown> }): void {
+    const message = MessageBuilder.createEntityUpdate(data);
+    const serialized = MessageParser.serialize(message);
+    this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Check if connected
+   */
+  connected(): boolean {
+    return this.isConnected;
+  }
+
+  /**
+   * Get my client ID
+   */
+  getMyClientId(): string | null {
+    return this.myClientId;
+  }
+
+  /**
+   * Callback for when disconnect happens
+   */
+  onDisconnect(handler: DisconnectHandler): () => void {
+    this.disconnectHandlers.add(handler);
+    return () => {
+      this.disconnectHandlers.delete(handler);
+    };
+  }
+
+  /**
+   * Callback for state updates
+   */
+  onState(
+    _handler: (state: { entities: unknown[]; players: unknown[]; lastUpdate: number }) => void
+  ): () => void {
+    // State updates could be dispatched here when we implement full world state sync
+    // For now, just a placeholder
+    return () => {};
+  }
+
+  /**
+   * Callback for presence events
+   */
+  onPresence(handler: PresenceHandler): () => void {
+    this.presenceHandlers.add(handler);
+    return () => {
+      this.presenceHandlers.delete(handler);
+    };
+  }
+
+  /**
+   * Callback for chat messages
+   */
+  onChat(handler: ChatHandler): () => void {
+    this.chatHandlers.add(handler);
+    return () => {
+      this.chatHandlers.delete(handler);
+    };
+  }
+
+  /**
+   * Callback for entity spawn
+   */
+  onEntitySpawn(handler: EntitySpawnHandler): () => void {
+    this.entitySpawnHandlers.add(handler);
+    return () => {
+      this.entitySpawnHandlers.delete(handler);
+    };
+  }
+
+  /**
+   * Callback for entity despawn
+   */
+  onEntityDespawn(handler: EntityDespawnHandler): () => void {
+    this.entityDespawnHandlers.add(handler);
+    return () => {
+      this.entityDespawnHandlers.delete(handler);
+    };
+  }
+
+  /**
+   * Callback for entity updates
+   */
+  onEntityUpdate(handler: EntityUpdateHandler): () => void {
+    this.entityUpdateHandlers.add(handler);
+    return () => {
+      this.entityUpdateHandlers.delete(handler);
+    };
+  }
+
+  /**
+   * Spawn a local entity (not sent to server)
+   */
+  spawnEntity(_entityId: string, _templateId: string, _components: any): void {
+    // This is for local entity creation that will be sent via sendEntitySpawn
+    logger.debug('[WebTransport] Local entity spawned', {
+      entityId: _entityId,
+      templateId: _templateId
+    });
+  }
+
+  /**
+   * Despawn a local entity (not sent to server)
+   */
+  despawnEntity(entityId: string): void {
+    // This is for local entity removal that will be sent via sendEntityDespawn
+    logger.debug('[WebTransport] Local entity despawned', { entityId });
+  }
+
+  /**
+   * Send emoji reaction
+   */
+  sendEmojiReaction(emoji: string, position: { x: number; y: number; z: number }): void {
+    const reaction = {
+      fromClientId: this.myClientId || '',
+      emoji,
+      position: { ...position },
+      timestamp: Date.now(),
+      reactionId: uuidv4()
+    };
+
+    const message = MessageBuilder.create(31 as MT, reaction); // EMOJI_REACTION = 31
+    const serialized = MessageParser.serialize(message);
+    this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Send object grab message
+   */
+  sendGrabMessage(entityId: string, position: { x: number; y: number; z: number }): void {
+    const grab = {
+      entityId,
+      clientId: this.myClientId || '',
+      position: { ...position },
+      timestamp: Date.now()
+    };
+
+    const message = MessageBuilder.create(32 as MT, grab); // OBJECT_GRAB = 32
+    const serialized = MessageParser.serialize(message);
+    this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Send object release message
+   */
+  sendReleaseMessage(
+    entityId: string,
+    position: { x: number; y: number; z: number },
+    velocity: { x: number; y: number; z: number }
+  ): void {
+    const release = {
+      entityId,
+      clientId: this.myClientId || '',
+      position: { ...position },
+      velocity: { ...velocity },
+      timestamp: Date.now()
+    };
+
+    const message = MessageBuilder.create(33 as MT, release); // OBJECT_RELEASE = 33
+    const serialized = MessageParser.serialize(message);
+    this.sendBinary(new Uint8Array(serialized));
+  }
+
+  /**
+   * Send avatar update to sync with other players
+   */
+  sendAvatarUpdate(avatarConfig: {
+    bodyType: string;
+    primaryColor: string;
+    secondaryColor: string;
+    height: number;
+    customModelUrl?: string;
+  }): void {
+    const presenceData = {
+      displayName: this.config.displayName || 'Unknown',
+      avatarUrl: '',
+      position: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0, w: 1 },
+      avatarConfig: {
+        bodyType: avatarConfig.bodyType,
+        primaryColor: avatarConfig.primaryColor,
+        secondaryColor: avatarConfig.secondaryColor,
+        height: avatarConfig.height,
+        customModelUrl: avatarConfig.customModelUrl || ''
+      }
+    };
+
+    const msg = {
+      messageId: uuidv4(),
+      timestamp: Date.now(),
+      type: 42 as MT, // PRESENCE_UPDATE
+      payload: {
+        clientId: this.myClientId || '',
+        ...presenceData
+      }
+    };
+
+    const serialized = MessageParser.serialize(msg as unknown as Message);
+    this.sendBinary(new Uint8Array(serialized));
+
+    logger.debug('[WebTransport] Sent avatar update:', avatarConfig);
+  }
+
+  /**
+   * Attempt to reconnect to the server
+   */
+  private async attemptReconnect(): Promise<void> {
+    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      logger.error('[WebTransport] Max reconnect attempts reached');
+      return;
+    }
+
+    this.reconnectAttempts++;
+    const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
+
+    logger.info(
+      `[WebTransport] Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, delay));
+
+    try {
+      await this.connect();
+    } catch (error) {
+      logger.error('[WebTransport] Reconnect failed:', error);
+    }
+  }
+
+  /**
+   * Check if WebTransport is supported
+   */
+  static isSupported(): boolean {
+    return 'WebTransport' in window;
+  }
+}

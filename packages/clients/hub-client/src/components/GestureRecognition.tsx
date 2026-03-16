@@ -1,7 +1,13 @@
+import { createLogger } from '@graphwiz/types';
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef, useState, useEffect } from 'react';
 import * as THREE from 'three';
+
+import { ControllerState, XRInputManager } from '../xr/xr-input-manager';
+import { XRHandTracking, type HandData, JOINT_INDICES } from '../xr/xr-hand-tracking';
+
+const logger = createLogger('GestureRecognition');
 
 export type GestureType =
   | 'none'
@@ -15,13 +21,8 @@ export type GestureType =
 export interface GestureRecognitionProps {
   onGestureDetected?: (gesture: GestureType, controllerId: 'left' | 'right') => void;
   enabled?: boolean;
-}
-
-interface ControllerState {
-  position: THREE.Vector3;
-  rotation: THREE.Quaternion;
-  velocity: THREE.Vector3;
-  previousPosition: THREE.Vector3;
+  xrInputManager?: XRInputManager;
+  xrHandTracking?: XRHandTracking; // Optional hand tracking for more precise gesture detection
 }
 
 const GESTURE_THRESHOLDS = {
@@ -45,114 +46,151 @@ const GESTURE_THRESHOLDS = {
   gestureWindow: 1000, // ms
 
   // Minimum gesture duration
-  minGestureDuration: 200 // ms
+  minGestureDuration: 200, // ms
+
+  // Performance: detection rate (skip frames to reduce CPU)
+  detectionInterval: 66 // ~15fps (1000ms / 15 = 66ms)
 };
 
-export function GestureRecognition({ onGestureDetected, enabled = true }: GestureRecognitionProps) {
+export interface GestureAction {
+  type: 'grab' | 'release' | 'point' | 'wave' | 'thumbsUp' | 'thumbsDown' | 'openHand' | 'fist';
+  controllerId: 'left' | 'right';
+  timestamp: number;
+}
+
+export function GestureRecognition({
+  onGestureDetected,
+  enabled = true,
+  xrInputManager: injectedManager,
+  xrHandTracking
+}: GestureRecognitionProps) {
   const [currentGesture, setCurrentGesture] = useState<GestureType>('none');
-  const leftControllerRef = useRef<ControllerState | null>(null);
-  const rightControllerRef = useRef<ControllerState | null>(null);
+  const xrInputManagerRef = useRef<XRInputManager | null>(injectedManager || null);
+  const xrHandTrackingRef = useRef<XRHandTracking | null>(xrHandTracking || null);
 
   const gestureStartTimeRef = useRef<Map<'left' | 'right', number>>(new Map());
   const lastGestureRef = useRef<Map<'left' | 'right', GestureType>>(new Map());
 
-  // Initialize controller states
+  // Initialize controller states with actual XR data
   useEffect(() => {
-    leftControllerRef.current = {
-      position: new THREE.Vector3(),
-      rotation: new THREE.Quaternion(),
-      velocity: new THREE.Vector3(),
-      previousPosition: new THREE.Vector3()
+    if (!xrInputManagerRef.current) {
+      // No XR manager - create placeholders
+      return;
+    }
+
+    // Setup XR input integration
+    const manager = xrInputManagerRef.current;
+
+    // Listen for connection events
+    const onConnect = (id: string, _state: ControllerState) => {
+      logger.debug(`Controller connected: ${id}`);
     };
 
-    rightControllerRef.current = {
-      position: new THREE.Vector3(),
-      rotation: new THREE.Quaternion(),
-      velocity: new THREE.Vector3(),
-      previousPosition: new THREE.Vector3()
+    const onDisconnect = (id: string) => {
+      logger.warn(`Controller disconnected: ${id}`);
+      gestureStartTimeRef.current.delete(id as 'left' | 'right');
+      lastGestureRef.current.set(id as 'left' | 'right', 'none');
     };
-  }, []);
 
-  // Track controller positions and detect gestures
+    manager.on('controllerConnected', onConnect);
+    manager.on('controllerDisconnected', onDisconnect);
+
+    return () => {
+      manager.off('controllerConnected', onConnect);
+      manager.off('controllerDisconnected', onDisconnect);
+    };
+  }, [xrInputManagerRef.current]);
+
+  // Check VR controller positions every frame
   useFrame(() => {
     if (!enabled) return;
 
-    // Check VR controller positions
-    const leftPosition = getControllerPosition('left');
-    const rightPosition = getControllerPosition('right');
+    const leftController = getActualController('left');
+    const rightController = getActualController('right');
 
-    if (leftPosition) {
-      updateControllerState('left', leftPosition);
-      detectGesture('left');
+    if (leftController) {
+      detectGesture('left', leftController);
     }
 
-    if (rightPosition) {
-      updateControllerState('right', rightPosition);
-      detectGesture('right');
+    if (rightController) {
+      detectGesture('right', rightController);
     }
   });
 
-  const getControllerPosition = (controllerId: 'left' | 'right'): THREE.Vector3 | null => {
-    // In a real implementation, this would get actual VR controller position
-    // For now, we'll return null if no VR controller is detected
-    // This component would be integrated with actual XR input system
+  const getActualController = (controllerId: 'left' | 'right'): ControllerState | null => {
+    // First try hand tracking for more precise gesture detection
+    if (xrHandTrackingRef.current) {
+      const handData =
+        controllerId === 'left'
+          ? xrHandTrackingRef.current.getLeftHand()
+          : xrHandTrackingRef.current.getRightHand();
 
-    // Simulate controller position for testing
-    const simulatedPosition = new THREE.Vector3(controllerId === 'left' ? -0.5 : 0.5, 0.2, -0.5);
+      if (handData && handData.isTracking) {
+        // Convert hand data to controller-like state
+        return {
+          gripPosition: handData.palmPosition,
+          gripRotation: handData.wristRotation,
+          gripMatrix: new THREE.Matrix4(),
+          aimPosition:
+            handData.joints[JOINT_INDICES['index-finger-tip']]?.position || new THREE.Vector3(),
+          aimRotation: handData.wristRotation,
+          aimMatrix: new THREE.Matrix4(),
+          buttons: new Map(),
+          axes: { x: 0, y: 0 },
+          selection: false,
+          squeeze: false,
+          handedness: controllerId,
+          connected: true
+        } as ControllerState;
+      }
+    }
 
-    // Only return simulated position if enabled for testing
-    // In production, this would use actual XR input
-    return enabled ? simulatedPosition : null;
+    // Fall back to controller input
+    if (!xrInputManagerRef.current) {
+      // Fallback for testing without actual VR
+      const simulatedPosition = new THREE.Vector3(controllerId === 'left' ? -0.5 : 0.5, 0.2, -0.5);
+      return {
+        gripPosition: simulatedPosition,
+        gripRotation: new THREE.Quaternion(),
+        gripMatrix: new THREE.Matrix4(),
+        aimPosition: new THREE.Vector3(),
+        aimRotation: new THREE.Quaternion(),
+        aimMatrix: new THREE.Matrix4(),
+        buttons: new Map(),
+        axes: { x: 0, y: 0 },
+        selection: false,
+        squeeze: false,
+        handedness: controllerId,
+        connected: true
+      } as ControllerState;
+    }
+
+    if (controllerId === 'left') {
+      return xrInputManagerRef.current.getLeftController() || null;
+    } else {
+      return xrInputManagerRef.current.getRightController() || null;
+    }
   };
 
-  const updateControllerState = (controllerId: 'left' | 'right', position: THREE.Vector3) => {
-    const controller =
-      controllerId === 'left' ? leftControllerRef.current : rightControllerRef.current;
-    if (!controller) return;
-
-    // Store previous position
-    controller.previousPosition.copy(controller.position);
-
-    // Update current position
-    controller.position.copy(position);
-
-    // Calculate velocity
-    const velocity = new THREE.Vector3()
-      .subVectors(controller.position, controller.previousPosition)
-      .multiplyScalar(60); // 60 FPS
-
-    controller.velocity.copy(velocity);
-
-    // Update rotation (simplified - in real implementation would get actual controller rotation)
-    // controller.rotation.copy(rotation);
-  };
-
-  const detectGesture = (controllerId: 'left' | 'right') => {
-    const controller =
-      controllerId === 'left' ? leftControllerRef.current : rightControllerRef.current;
-    if (!controller) return;
-
+  const detectGesture = (controllerId: 'left' | 'right', controller: ControllerState): void => {
     const gesture = recognizeGesture(controller, controllerId);
 
-    // Debounce gestures - only report if sustained for minimum duration
+    // Debounce gestures
     if (gesture !== 'none') {
       const now = Date.now();
       const startTime = gestureStartTimeRef.current.get(controllerId) || 0;
       const lastGesture = lastGestureRef.current.get(controllerId) || 'none';
 
       if (gesture !== lastGesture) {
-        // New gesture detected
         gestureStartTimeRef.current.set(controllerId, now);
         lastGestureRef.current.set(controllerId, gesture);
+      }
 
-        // Check if gesture has been held long enough
-        if (now - startTime >= GESTURE_THRESHOLDS.minGestureDuration) {
-          setCurrentGesture(gesture);
-          onGestureDetected?.(gesture, controllerId);
-        }
+      if (now - startTime >= GESTURE_THRESHOLDS.minGestureDuration) {
+        setCurrentGesture(gesture);
+        onGestureDetected?.(gesture, controllerId);
       }
     } else {
-      // No gesture - reset
       gestureStartTimeRef.current.delete(controllerId);
       lastGestureRef.current.set(controllerId, 'none');
       if (currentGesture !== 'none') {
@@ -165,37 +203,41 @@ export function GestureRecognition({ onGestureDetected, enabled = true }: Gestur
     controller: ControllerState,
     _controllerId: 'left' | 'right'
   ): GestureType => {
-    const { position, velocity } = controller;
-    const speed = velocity.length();
+    const { gripPosition, axes, buttons, squeeze, selection } = controller;
+    const speed = gripPosition.length() * 0.5;
 
-    // Detect Wave: Fast side-to-side movement
-    if (speed > GESTURE_THRESHOLDS.waveSpeed) {
-      const horizontalSpeed = Math.abs(velocity.x);
-      const verticalSpeed = Math.abs(velocity.y);
-
-      if (horizontalSpeed > verticalSpeed * 2) {
-        return 'wave';
-      }
+    // Detect Wave: Fast thumbstick movement
+    const axesMagnitude = Math.sqrt(axes.x ** 2 + axes.y ** 2);
+    if (axesMagnitude > GESTURE_THRESHOLDS.waveSpeed) {
+      return 'wave';
     }
 
-    // Detect Thumbs Up/Down based on controller tilt (simplified)
-    // In real implementation, would check thumb position relative to hand
-    // For now, we'll use rotation-based approximation
+    // Detect Thumbs Up: Squeeze/grip button
+    if (squeeze) {
+      return 'thumbsUp';
+    }
 
     // Detect Point: Hand extended forward
-    if (position.z < -0.3 && speed < 0.1) {
+    if (gripPosition.z < -0.3 && speed < 0.1) {
       return 'point';
     }
 
-    // Detect Fist: Hand small and still (simplified - real implementation would check finger spread)
-    if (speed < 0.1) {
-      // In real VR, would check finger tracking data
-      // For now, assume if hand is closed and still
+    // Detect Fist: A button, B button, or trigger pressed
+    const aButton = buttons.get('a-button');
+    const bButton = buttons.get('b-button');
+    if (aButton?.pressed || bButton?.pressed || selection) {
       return 'fist';
     }
 
-    // Detect Open Hand: Hand still and not fist
-    if (speed < 0.1 && position.z > -0.1) {
+    // Detect Open Hand: Relaxed state
+    if (
+      speed < 0.1 &&
+      !squeeze &&
+      !selection &&
+      aButton?.value === 0 &&
+      bButton?.value === 0 &&
+      axesMagnitude < 0.2
+    ) {
       return 'openHand';
     }
 
@@ -206,38 +248,42 @@ export function GestureRecognition({ onGestureDetected, enabled = true }: Gestur
     <group>
       {/* Visual feedback for current gesture */}
       {currentGesture !== 'none' && (
-        <mesh position={[0, 2, -0.5]}>
-          <sphereGeometry args={[0.3, 16, 16]} />
-          <meshBasicMaterial color={getGestureColor(currentGesture)} transparent opacity={0.8} />
-        </mesh>
-      )}
+        <>
+          <mesh position={[0, 2, -0.5]}>
+            <sphereGeometry args={[0.3, 16, 16]} />
+            <meshBasicMaterial color={getGestureColor(currentGesture)} transparent opacity={0.8} />
+          </mesh>
 
-      {/* Gesture indicator text */}
-      {currentGesture !== 'none' && (
-        <Text
-          position={[0, 2.5, -0.5]}
-          fontSize={0.2}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-          outlineWidth={0.02}
-          outlineColor="#000000"
-        >
-          {getGestureName(currentGesture)}
-        </Text>
+          {/* Gesture indicator text */}
+          <Text
+            position={[0, 2.5, -0.5]}
+            fontSize={0.2}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="#000000"
+          >
+            {getGestureName(currentGesture)}
+          </Text>
+        </>
       )}
 
       {/* Controller position indicators (for debugging) */}
-      {enabled && (
+      {enabled && xrInputManagerRef.current && (
         <>
-          <mesh position={leftControllerRef.current?.position || [0, 0, 0]}>
-            <sphereGeometry args={[0.1, 8, 8]} />
-            <meshBasicMaterial color="#ff0000" />
-          </mesh>
-          <mesh position={rightControllerRef.current?.position || [0, 0, 0]}>
-            <sphereGeometry args={[0.1, 8, 8]} />
-            <meshBasicMaterial color="#0000ff" />
-          </mesh>
+          {xrInputManagerRef.current.getLeftController() && (
+            <mesh position={xrInputManagerRef.current.getLeftController()!.gripPosition}>
+              <sphereGeometry args={[0.1, 8, 8]} />
+              <meshBasicMaterial color="#ff0000" />
+            </mesh>
+          )}
+          {xrInputManagerRef.current.getRightController() && (
+            <mesh position={xrInputManagerRef.current.getRightController()!.gripPosition}>
+              <sphereGeometry args={[0.1, 8, 8]} />
+              <meshBasicMaterial color="#0000ff" />
+            </mesh>
+          )}
         </>
       )}
     </group>
