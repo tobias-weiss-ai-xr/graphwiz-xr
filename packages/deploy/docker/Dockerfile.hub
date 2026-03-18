@@ -17,6 +17,8 @@ WORKDIR /build
 COPY Cargo.toml Cargo.lock ./
 COPY packages/shared/protocol packages/shared/protocol
 COPY packages/services/reticulum/core packages/services/reticulum/core
+COPY packages/services/reticulum/core/migrations packages/services/reticulum/core/migrations
+COPY packages/services/reticulum/auth packages/services/reticulum/auth
 COPY packages/services/reticulum/hub packages/services/reticulum/hub
 
 # Build the hub service binary
