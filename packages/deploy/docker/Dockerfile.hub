@@ -20,6 +20,10 @@ COPY packages/services/reticulum/core packages/services/reticulum/core
 COPY packages/services/reticulum/core/migrations packages/services/reticulum/core/migrations
 COPY packages/services/reticulum/auth packages/services/reticulum/auth
 COPY packages/services/reticulum/hub packages/services/reticulum/hub
+COPY packages/services/reticulum/presence packages/services/reticulum/presence
+COPY packages/services/reticulum/storage packages/services/reticulum/storage
+COPY packages/services/reticulum/sfu packages/services/reticulum/sfu
+COPY packages/services/reticulum/avatar packages/services/reticulum/avatar
 
 # Build the hub service binary
 RUN cargo build --release -p reticulum-hub
