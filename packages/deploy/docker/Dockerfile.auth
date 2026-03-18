@@ -8,7 +8,7 @@ FROM rust:1.88-alpine AS builder
 RUN apk add --no-cache \
     musl-dev \
     postgresql-client \
-    pkgconf \
+    pkgconfig \
     openssl-dev
 
 WORKDIR /build
@@ -17,10 +17,13 @@ WORKDIR /build
 COPY Cargo.toml Cargo.lock ./
 COPY packages/shared/protocol packages/shared/protocol
 COPY packages/services/reticulum/core packages/services/reticulum/core
+COPY packages/services/reticulum/core/migrations packages/services/reticulum/core/migrations
 COPY packages/services/reticulum/auth packages/services/reticulum/auth
 COPY packages/services/reticulum/hub packages/services/reticulum/hub
 COPY packages/services/reticulum/presence packages/services/reticulum/presence
 COPY packages/services/reticulum/sfu packages/services/reticulum/sfu
+COPY packages/services/reticulum/storage packages/services/reticulum/storage
+COPY packages/services/reticulum/avatar packages/services/reticulum/avatar
 
 # Build the auth service binary
 RUN cargo build --release -p reticulum-auth
