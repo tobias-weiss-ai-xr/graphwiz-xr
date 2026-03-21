@@ -1,4 +1,4 @@
-# Stage 1: Build dependencies first
+# Stage 1: Install dependencies
 FROM node:20-alpine AS deps
 WORKDIR /app
 
@@ -14,11 +14,11 @@ COPY packages/clients/admin-client/package.json ./packages/clients/admin-client/
 RUN pnpm install --frozen-lockfile
 
 # Stage 2: Build ui-kit and types
-FROM node:20-alpine AS ui-kit-builder
+FROM node:20-alpine AS shared-builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
+COPY --from=deps /usr/local/bin/pnpm /usr/local/bin/pnpm
 COPY pnpm-workspace.yaml ./
 COPY package.json ./
 COPY packages/shared/types ./packages/shared/types
@@ -35,7 +35,7 @@ FROM node:20-alpine AS admin-client-builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
+COPY --from=deps /usr/local/bin/pnpm /usr/local/bin/pnpm
 COPY pnpm-workspace.yaml ./
 COPY package.json ./
 COPY packages/shared/types ./packages/shared/types
