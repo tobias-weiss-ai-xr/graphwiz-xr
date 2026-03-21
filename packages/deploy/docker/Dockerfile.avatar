@@ -1,15 +1,14 @@
-FROM debian:bookworm-slim AS builder
+# Use stable Rust 1.88-alpine like other services for consistency
+FROM rust:1.88-alpine AS builder
 
-RUN apt-get update && apt-get install -y     pkg-config     libssl-dev     protobuf-compiler     curl     ca-certificates     build-essential     && rm -rf /var/lib/apt/lists/*
-
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
-
-ENV PATH="/root/.cargo/bin:${PATH}"
+# Install protoc (protobuf compiler) for avatar service
+RUN apk add --no-cache protoc
 
 WORKDIR /build
 
-COPY Cargo.toml ./
-COPY packages/shared/protocol packages/shared/protocol
+COPY Cargo.toml Cargo.lock ./
+
+# Copy ALL workspace members (required for cargo workspace resolution)
 COPY packages/services/reticulum/core packages/services/reticulum/core
 COPY packages/services/reticulum/auth packages/services/reticulum/auth
 COPY packages/services/reticulum/hub packages/services/reticulum/hub
@@ -17,9 +16,9 @@ COPY packages/services/reticulum/presence packages/services/reticulum/presence
 COPY packages/services/reticulum/storage packages/services/reticulum/storage
 COPY packages/services/reticulum/sfu packages/services/reticulum/sfu
 COPY packages/services/reticulum/avatar packages/services/reticulum/avatar
+COPY packages/shared/protocol packages/shared/protocol
 
-RUN which protoc && ls -la $(which protoc) && echo /root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-RUN echo "Building with PROTOC=/usr/bin/protoc" &&     protoc --version &&     DATABASE_URL=\"postgresql://postgres:postgres@localhost/postgres\" cargo build --release -p reticulum-avatar
+RUN echo "Building with PROTOC=/usr/bin/protoc" &&     protoc --version && DATABASE_URL=\"postgresql://postgres:postgres@localhost/postgres\" cargo build --release -p reticulum-avatar
 
 FROM alpine:3.19
 
