@@ -18,8 +18,8 @@ pub struct StorageConfig {
 impl StorageConfig {
     /// Create default storage configuration
     pub fn new() -> Self {
-        let base_path = std::env::var("STORAGE_BASE_PATH")
-            .unwrap_or_else(|_| "./storage".to_string());
+        let base_path =
+            std::env::var("STORAGE_BASE_PATH").unwrap_or_else(|_| "./storage".to_string());
 
         Self { base_path }
     }
@@ -88,13 +88,9 @@ pub trait StorageBackend: Send + Sync {
     ) -> StorageResult<String>;
 
     /// Merge all chunks for a session into a final file
-    async fn merge_chunks(
-        &self,
-        owner_id: &str,
-        session_id: &str,
-    ) -> StorageResult<MergedFile>;
+    async fn merge_chunks(&self, owner_id: &str, session_id: &str) -> StorageResult<MergedFile>;
 
-/// Clean up all chunks for a session
+    /// Clean up all chunks for a session
     async fn cleanup_chunks(&self, owner_id: &str, session_id: &str) -> StorageResult<()>;
 }
 
@@ -134,7 +130,7 @@ pub struct LocalStorageBackend {
     base_path: String,
 }
 
-    impl LocalStorageBackend {
+impl LocalStorageBackend {
     pub fn new(base_path: String) -> Self {
         Self { base_path }
     }
@@ -155,7 +151,7 @@ pub struct LocalStorageBackend {
             }
             "image/png" => data.len() >= 8 && &data[0..8] == b"\x89PNG\r\n\x1a\n",
             "image/jpeg" => data.len() >= 2 && data[0..2] == [0xFF, 0xD8],
-            "image/gif" => data.len() >= 6 && (data[0..6] == b"GIF87a" || data[0..6] == b"GIF89a"),
+            "image/gif" => data.len() >= 6 && (&data[..6] == b"GIF87a" || &data[..6] == b"GIF89a"),
             "image/webp" => data.len() >= 12 && &data[0..4] == b"RIFF" && &data[8..12] == b"WEBP",
             "audio/mpeg" => data.len() >= 3 && &data[0..3] == b"ID3",
             "audio/ogg" => data.len() >= 4 && &data[0..4] == b"OggS",
@@ -175,9 +171,7 @@ impl StorageBackend for LocalStorageBackend {
         asset_id: &str,
         file_name: &str,
     ) -> Option<String> {
-        let temp_dir = Path::new(&self.base_path)
-            .join(owner_id)
-            .join("temp");
+        let temp_dir = Path::new(&self.base_path).join(owner_id).join("temp");
 
         // Create temp directory if needed
         if let Err(e) = tokio::fs::create_dir_all(&temp_dir).await {
@@ -202,13 +196,18 @@ impl StorageBackend for LocalStorageBackend {
         let one_hour_ago = now - std::time::Duration::from_secs(3600);
 
         match tokio::fs::read_dir(&temp_dir).await {
-            Ok(entries) => {
-                for entry in entries {
-                    if let Ok(metadata) = tokio::fs::metadata(&entry.path()).await {
+            Ok(mut entries) => {
+                while let Ok(Some(entry)) = entries.next_entry().await {
+                    let entry_path = entry.path();
+                    if let Ok(metadata) = tokio::fs::metadata(&entry_path).await {
                         if let Ok(modified) = metadata.modified() {
                             if modified < one_hour_ago {
-                                if let Err(e) = tokio::fs::remove_file(&entry.path()).await {
-                                    log::warn!("Failed to delete temp file: {} - {}", entry.path.display(), e);
+                                if let Err(e) = tokio::fs::remove_file(&entry_path).await {
+                                    log::warn!(
+                                        "Failed to delete temp file: {} - {}",
+                                        entry_path.display(),
+                                        e
+                                    );
                                 }
                             }
                         }
@@ -231,7 +230,10 @@ impl StorageBackend for LocalStorageBackend {
         // Validate file size
         let size = data.len() as u64;
         if size > max_size {
-            return Err(StorageError::FileTooLarge { size, max: max_size });
+            return Err(StorageError::FileTooLarge {
+                size,
+                max: max_size,
+            });
         }
 
         // Validate magic bytes for security
@@ -314,11 +316,7 @@ impl StorageBackend for LocalStorageBackend {
         Ok(chunk_path.to_string_lossy().to_string())
     }
 
-    async fn merge_chunks(
-        &self,
-        owner_id: &str,
-        session_id: &str,
-    ) -> StorageResult<MergedFile> {
+    async fn merge_chunks(&self, owner_id: &str, session_id: &str) -> StorageResult<MergedFile> {
         use std::io::Write;
 
         let chunks_dir = Path::new(&self.base_path)
@@ -340,7 +338,12 @@ impl StorageBackend for LocalStorageBackend {
                 .file_name()
                 .to_string_lossy()
                 .parse::<i32>()
-                .map_err(|_| StorageError::Storage(format!("Invalid chunk filename: {:?}", chunk_entry.file_name())))?;
+                .map_err(|_| {
+                    StorageError::Storage(format!(
+                        "Invalid chunk filename: {:?}",
+                        chunk_entry.file_name()
+                    ))
+                })?;
 
             chunks.push((chunk_number, chunk_entry.path()));
         }
@@ -401,4 +404,3 @@ impl StorageBackend for LocalStorageBackend {
         Ok(())
     }
 }
-

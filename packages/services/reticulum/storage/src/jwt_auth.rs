@@ -2,15 +2,14 @@
 //!
 //! This middleware validates JWT tokens and extracts user ID for authorization.
 
+use actix_web::dev::Service;
 use actix_web::{
     dev::{ServiceRequest, ServiceResponse, Transform},
-    error::{ErrorUnauthorized, Error},
-    FromRequest, HttpMessage, HttpResponse,
+    error::{Error, ErrorUnauthorized},
+    HttpMessage,
 };
-use actix_web::dev::Service;
 use futures_util::future::{ok, Ready};
-use jsonwebtoken::{decode, Validation, DecodingKey};
-use std::future::ready;
+use jsonwebtoken::{decode, DecodingKey, Validation};
 use std::sync::Arc;
 use std::task::{Context, Poll};
 use uuid::Uuid;
@@ -20,10 +19,10 @@ use reticulum_core::Config;
 /// Claims extracted from JWT token
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 struct JwtClaims {
-    sub: String,       // User ID
+    sub: String, // User ID
     email: String,
-    exp: usize,       // Expiration time
-    iat: usize,       // Issued at time
+    exp: usize, // Expiration time
+    iat: usize, // Issued at time
 }
 
 /// JWT authentication middleware
@@ -76,10 +75,7 @@ where
         Box<dyn std::future::Future<Output = Result<Self::Response, Self::Error>> + 'static>,
     >;
 
-    fn poll_ready(
-        &self,
-        cx: &mut Context<'_>,
-    ) -> Poll<Result<(), Self::Error>> {
+    fn poll_ready(&self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.service.poll_ready(cx)
     }
 
@@ -114,38 +110,30 @@ where
                             }
                             Err(e) => {
                                 log::error!("Invalid user_id in JWT: {}", e);
-                                let unauthorized_response = HttpResponse::Unauthorized().json(serde_json::json!({
-                                    "error": "invalid_token",
-                                    "message": "Invalid user ID in token"
-                                }));
-                                Box::pin(async move { Ok(actix_web::dev::ServiceResponse::new(unauthorized_response)) })
+                                Box::pin(async move {
+                                    Err(ErrorUnauthorized("Invalid user ID in token"))
+                                })
                             }
                         }
                     }
                     Err(e) => {
                         log::warn!("JWT validation failed: {}", e);
-                        let unauthorized_response = HttpResponse::Unauthorized().json(serde_json::json!({
-                            "error": "invalid_token",
-                            "message": "Invalid or expired JWT token"
-                        }));
-                        Box::pin(async move { Ok(unauthorized_response.into_response::<B>()) })
+                        Box::pin(
+                            async move { Err(ErrorUnauthorized("Invalid or expired JWT token")) },
+                        )
                     }
                 }
             } else {
                 log::warn!("Invalid authorization header format");
-                let unauthorized_response = HttpResponse::Unauthorized().json(serde_json::json!({
-                    "error": "invalid_auth_format",
-                    "message": "Authorization header must be 'Bearer <token>'"
-                }));
-                Box::pin(async move { Ok(unauthorized_response.into_response::<B>()) })
+                Box::pin(async move {
+                    Err(ErrorUnauthorized(
+                        "Authorization header must be 'Bearer <token>'",
+                    ))
+                })
             }
         } else {
             log::warn!("Missing authorization header");
-            let unauthorized_response = HttpResponse::Unauthorized().json(serde_json::json!({
-                "error": "missing_auth",
-                "message": "Authorization header required"
-            }));
-            Box::pin(async move { Ok(unauthorized_response.into_response::<B>()) })
+            Box::pin(async move { Err(ErrorUnauthorized("Authorization header required")) })
         }
     }
 }

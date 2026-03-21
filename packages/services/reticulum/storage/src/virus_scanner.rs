@@ -46,7 +46,7 @@ pub async fn scan_file_for_viruses(file_path: &Path) -> Result<(), Error> {
 
     // Try ClamAV scan if available
     match clamav_scan(file_path).await {
-        Ok(clean) if clean => {
+        Ok(true) => {
             log::info!("ClamAV scan passed for: {}", file_name);
             Ok(())
         }
@@ -76,12 +76,15 @@ fn is_suspicious_file_type(file_path: &Path) -> bool {
 
     // List of suspicious extensions
     let suspicious_extensions = [
-        "exe", "bat", "cmd", "com", "pif", "scr", "vbs", "js",
-        "jar", "sh", "ps1", "msi", "dll", "so", "dylib",
+        "exe", "bat", "cmd", "com", "pif", "scr", "vbs", "js", "jar", "sh", "ps1", "msi", "dll",
+        "so", "dylib",
     ];
 
     if let Some(ext) = file_name.rsplit('.').next() {
-        if suspicious_extensions.iter().any(|s| *s == ext.to_lowercase()) {
+        if suspicious_extensions
+            .iter()
+            .any(|s| *s == ext.to_lowercase())
+        {
             return true;
         }
     }
@@ -132,7 +135,10 @@ async fn clamav_scan(file_path: &Path) -> Result<bool, String> {
                 log::debug!("ClamAV scan result unclear, assuming clean");
                 Ok(true)
             } else {
-                Err(format!("ClamAV scan failed with exit code: {:?}", output.status.code()))
+                Err(format!(
+                    "ClamAV scan failed with exit code: {:?}",
+                    output.status.code()
+                ))
             }
         }
         Err(e) => Err(format!("Failed to run ClamAV: {}", e)),
@@ -203,10 +209,7 @@ fn validate_magic_bytes(file_path: &Path) -> Result<(), Error> {
         }
         Err(e) => {
             log::error!("Failed to read file for magic byte validation: {}", e);
-            Err(Error::internal(format!(
-                "Failed to validate file: {}",
-                e
-            )))
+            Err(Error::internal(format!("Failed to validate file: {}", e)))
         }
     }
 }

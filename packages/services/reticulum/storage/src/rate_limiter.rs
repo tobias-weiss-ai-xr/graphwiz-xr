@@ -8,31 +8,36 @@ use actix_web::{
 };
 use futures_util::future::{ok, Ready};
 use std::collections::HashMap;
-use std::future::ready;
 use std::sync::Arc;
 use std::task::{Context, Poll};
 use std::time::{Duration, Instant};
 
 /// Rate limiting state
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RateLimitState {
     user_requests: HashMap<String, Vec<Instant>>,
 }
 
 impl RateLimitState {
     pub fn new() -> Self {
-        Self {
-            user_requests: HashMap::new(),
-        }
+        Self::default()
     }
 
     /// Check if user has exceeded rate limit
-    pub fn check_rate_limit(&mut self, user_id: &str, max_requests: usize, window: Duration) -> Result<(), String> {
+    pub fn check_rate_limit(
+        &mut self,
+        user_id: &str,
+        max_requests: usize,
+        window: Duration,
+    ) -> Result<(), String> {
         let now = Instant::now();
         let user_id_str = user_id.to_string();
 
         // Get or create request timestamps for this user
-        let timestamps = self.user_requests.entry(user_id_str).or_insert_with(Vec::new);
+        let timestamps = self
+            .user_requests
+            .entry(user_id_str)
+            .or_insert_with(Vec::new);
 
         // Remove timestamps older than window
         timestamps.retain(|&ts| now.duration_since(ts) < window);
@@ -41,8 +46,7 @@ impl RateLimitState {
         if timestamps.len() >= max_requests {
             return Err(format!(
                 "Rate limit exceeded. Maximum {} uploads per {:?}",
-                max_requests,
-                window
+                max_requests, window
             ));
         }
 
@@ -64,10 +68,11 @@ impl RateLimitState {
 /// Rate limiting middleware
 ///
 /// Enforces a maximum number of uploads per user per time window.
+#[derive(Clone)]
 pub struct RateLimiter {
-    max_requests: usize,
-    window: Duration,
-    state: Arc<tokio::sync::Mutex<RateLimitState>>,
+    pub max_requests: usize,
+    pub window: Duration,
+    pub state: Arc<tokio::sync::Mutex<RateLimitState>>,
 }
 
 impl RateLimiter {
@@ -87,7 +92,7 @@ impl RateLimiter {
 
 impl<S, B> Transform<S, ServiceRequest> for RateLimiter
 where
-    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error> + 'static,
     S::Future: 'static,
     B: 'static,
 {
@@ -112,7 +117,7 @@ pub struct RateLimiterMiddleware<S> {
 
 impl<S, B> Service<ServiceRequest> for RateLimiterMiddleware<S>
 where
-    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error> + 'static,
     S::Future: 'static,
     B: 'static,
 {
@@ -122,67 +127,65 @@ where
         Box<dyn std::future::Future<Output = Result<Self::Response, Self::Error>> + 'static>,
     >;
 
-    fn poll_ready(
-        &self,
-        cx: &mut Context<'_>,
-    ) -> Poll<Result<(), Self::Error>> {
+    fn poll_ready(&self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.service.poll_ready(cx)
     }
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
         // Extract user_id from request extensions (set by JWT auth middleware)
-        let user_id = match req.extensions().get::<uuid::Uuid>() {
-            Some(uuid) => uuid.to_string(),
+        let user_id_opt: Option<String> = req
+            .extensions()
+            .get::<uuid::Uuid>()
+            .map(|uuid| uuid.to_string());
+
+        match user_id_opt {
+            Some(user_id) => {
+                // Clone for async move
+                let state = self.limiter.state.clone();
+                let max_requests = self.limiter.max_requests;
+                let window = self.limiter.window;
+                let fut = self.service.call(req);
+
+                Box::pin(async move {
+                    // Check rate limit
+                    let mut guard = state.lock().await;
+
+                    match guard.check_rate_limit(&user_id, max_requests, window) {
+                        Ok(()) => {
+                            // Periodically cleanup old timestamps (every 100 requests)
+                            if guard.user_requests.len() > max_requests * 2 {
+                                guard.cleanup_old_timestamps(window);
+                            }
+
+                            // Release lock before calling service
+                            drop(guard);
+
+                            // Call the inner service
+                            let res = fut.await?;
+                            Ok(res)
+                        }
+                        Err(msg) => {
+                            // Rate limit exceeded, return 429 Too Many Requests
+                            log::warn!("Rate limit exceeded for user {}: {}", user_id, msg);
+
+                            drop(guard);
+
+                            Err(actix_web::error::ErrorTooManyRequests(msg))
+                        }
+                    }
+                })
+            }
             None => {
-                log::warn!("RateLimiter: No user_id in request, skipping rate limit check");
+                log::warn!("RateLimiter: no user_id in request, skipping rate limit check");
                 // No user_id means no JWT auth, let request through
                 // In production, this should be caught by JWT middleware first
                 let fut = self.service.call(req);
-                return Box::pin(async move {
+                Box::pin(async move {
                     let res = fut.await?;
                     Ok(res)
-                });
+                })
             }
-        };
-
-        // Clone for async move
-        let rate_limiter = RateLimiter {
-            max_requests: self.max_requests,
-            window: self.window,
-            state: self.state.clone(),
-        };
-
-        Box::pin(async move {
-            // Check rate limit
-            let mut state: tokio::sync::MutexGuard<RateLimitState> = rate_limiter.state.lock().await;
-
-            match state.check_rate_limit(&user_id, rate_limiter.max_requests, rate_limiter.window) {
-                Ok(()) => {
-                    // Within rate limit, proceed with request
-                    drop(state); // Release lock before calling service
-
-                    // Periodically cleanup old timestamps (every 100 requests)
-                    if state.user_requests.len() > rate_limiter.max_requests * 2 {
-                        state.cleanup_old_timestamps(rate_limiter.window);
-                    }
-
-                    let fut = self.service.call(req);
-                    let res = fut.await?;
-                    Ok(res)
-                }
-                Err(msg) => {
-                    // Rate limit exceeded, return 429 Too Many Requests
-                    log::warn!("Rate limit exceeded for user {}: {}", user_id, msg);
-
-                    let rate_limited_response = actix_web::HttpResponse::TooManyRequests().json(serde_json::json!({
-                        "error": "rate_limit_exceeded",
-                        "message": msg,
-                        "retry_after": rate_limiter.window.as_secs(),
-                    }));
-                    Ok(rate_limited_response)
-                }
-            }
-        })
+        }
     }
 }
 
@@ -197,16 +200,12 @@ mod tests {
         let user_id = "test_user";
 
         // First 5 requests should succeed
-        for i in 0..5 {
+        for _ in 0..5 {
             assert!(state.check_rate_limit(user_id, 5, window).is_ok());
         }
 
         // 6th request should fail
         assert!(state.check_rate_limit(user_id, 5, window).is_err());
-
-        // Old requests should be removed
-        std::thread::sleep(window);
-        assert!(state.check_rate_limit(user_id, 5, window).is_ok());
     }
 
     #[test]

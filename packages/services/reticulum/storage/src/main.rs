@@ -25,16 +25,16 @@ async fn main() -> std::io::Result<()> {
         .unwrap_or_else(|_| "postgresql://postgres:postgres@localhost/graphwiz".to_string());
 
     // Get JWT config from environment
-    let jwt_secret = env::var("JWT_SECRET")
-        .unwrap_or_else(|_| "dev-secret-change-in-production".to_string());
+    let jwt_secret =
+        env::var("JWT_SECRET").unwrap_or_else(|_| "dev-secret-change-in-production".to_string());
     let jwt_expiration = env::var("JWT_EXPIRATION")
         .ok()
         .and_then(|e| e.parse::<u64>().ok())
         .unwrap_or(86400);
 
     // Get storage base path from environment
-    let storage_base_path = env::var("STORAGE_BASE_PATH")
-        .unwrap_or_else(|_| "./storage".to_string());
+    let storage_base_path =
+        env::var("STORAGE_BASE_PATH").unwrap_or_else(|_| "./storage".to_string());
 
     // Create configuration
     let config = Config {
@@ -66,8 +66,7 @@ async fn main() -> std::io::Result<()> {
     log::info!("  Port: {}", config.server.port);
     log::info!("  Storage path: {}", storage_base_path);
 
-    // Create storage service with Arc config for JwtAuth
-    let config_arc = Arc::new(config);
+    // Create storage service
     let service = StorageService::new(config, storage_base_path);
 
     // Run the service

@@ -1,15 +1,15 @@
 //! HTTP handlers for storage service
 
-use actix_web::{web, FromRequest, HttpMessage, HttpRequest, HttpResponse};
 use actix_multipart::Multipart;
-use futures_util::TryStreamExt;
-use reticulum_core::{db, models as core_models, Config};
-use reticulum_core::models::assets::{etModel, AssetType};
-use std::fmt::Display;
-use std::sync::Arc;
-use std::path::Path;
-use uuid::Uuid;
+use actix_web::{web, FromRequest, HttpMessage, HttpRequest, HttpResponse};
 use chrono::Utc;
+use futures_util::TryStreamExt;
+use reticulum_core::models::assets::{AssetModel, AssetType};
+use reticulum_core::{db, models as core_models, Config};
+use std::fmt::Display;
+use std::path::Path;
+use std::sync::Arc;
+use uuid::Uuid;
 
 use crate::storage_backend::{StorageBackend, StorageConfig, StoredFile};
 use crate::virus_scanner::scan_file_for_viruses;
@@ -189,7 +189,10 @@ pub async fn upload_asset(
     let asset_id = uuid::Uuid::new_v4().to_string();
 
     // Scan for viruses before storing
-    let temp_file_path = match storage_backend.get_temp_path(&user_id, &asset_id, &file_name).await {
+    let temp_file_path = match storage_backend
+        .get_temp_path(&user_id, &asset_id, &file_name)
+        .await
+    {
         Some(path) => path,
         None => {
             log::error!("Failed to get temp file path for virus scan");
@@ -201,56 +204,52 @@ pub async fn upload_asset(
     };
 
     // Write file to temp location for scanning
-            if let Err(e) = tokio::fs::write(&temp_file_path, &file_data).await {
-                log::error!("Failed to write temp file for virus scan: {}", e);
-                return HttpResponse::InternalServerError().json(serde_json::json!({
-                    "error": "scan_error",
-                    "message": "Failed to prepare file for scanning"
-                }));
+    if let Err(e) = tokio::fs::write(&temp_file_path, &file_data).await {
+        log::error!("Failed to write temp file for virus scan: {}", e);
+        return HttpResponse::InternalServerError().json(serde_json::json!({
+            "error": "scan_error",
+            "message": "Failed to prepare file for scanning"
+        }));
     }
 
-    // Write file to temp location for scanning
-            if let Err(e) = tokio::fs::write(&temp_file_path, &file_data).await {
-                log::error!("Failed to write temp file for virus scan: {}", e);
-                return HttpResponse::InternalServerError().json(serde_json::json!({
-                    "error": "scan_error",
-                    "message": "Failed to prepare file for scanning"
-                }));
-            }
-
-            // Perform virus scan
-            if let Err(e) = scan_file_for_viruses(&temp_file_path).await {
-                log::error!("Virus scan failed: {}", e);
-                // Clean up temp file
-                let _ = tokio::fs::remove_file(&temp_file_path).await;
-                return HttpResponse::InternalServerError().json(serde_json::json!({
-                    "error": "scan_error",
-                    "message": "Virus scan failed"
-                }));
-            }
-
-            // Clean up temp file
-            let _ = tokio::fs::remove_file(&temp_file_path).await;
+    // Perform virus scan
+    if let Err(e) = scan_file_for_viruses(std::path::Path::new(&temp_file_path)).await {
+        log::error!("Virus scan failed: {}", e);
+        // Clean up temp file
+        let _ = tokio::fs::remove_file(&temp_file_path).await;
+        return HttpResponse::InternalServerError().json(serde_json::json!({
+            "error": "scan_error",
+            "message": "Virus scan failed"
+        }));
     }
+
+    // Clean up temp file
+    let _ = tokio::fs::remove_file(&temp_file_path).await;
 
     // Store file
     let stored_file = match storage_backend
-        .store_file(&user_id, &asset_id, &file_name, file_data, &mime_type, max_size)
+        .store_file(
+            &user_id, &asset_id, &file_name, file_data, &mime_type, max_size,
+        )
         .await
     {
-        Ok(file) => file.path,
-            Err(e) => {
-                log::error!("Failed to store file: {}", e);
-                // Clean up temp file
-                if let Err(cleanup_err) = tokio::fs::remove_file(&temp_file_path).await {
-                    log::warn!("Failed to clean up temp file {}: {}", format!("{}", temp_file_path), cleanup_err);
-                }
-                return HttpResponse::InternalServerError().json(serde_json::json!({
-                    "error": "storage_error",
-                    "message": "Failed to store file"
-                }));
+        Ok(file) => file, // Keep the struct
+        Err(e) => {
+            log::error!("Failed to store file: {}", e);
+            // Clean up temp file
+            if let Err(cleanup_err) = tokio::fs::remove_file(&temp_file_path).await {
+                log::warn!(
+                    "Failed to clean up temp file {}: {}",
+                    format!("{}", temp_file_path),
+                    cleanup_err
+                );
             }
-        };
+            return HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": "storage_error",
+                "message": "Failed to store file"
+            }));
+        }
+    };
 
     // Create database record
     match AssetModel::create(
@@ -293,7 +292,7 @@ pub async fn get_asset(
     config: web::Data<Config>,
     asset_id: web::Path<String>,
 ) -> HttpResponse {
-    let user_id = match req.extensions().get::<Uuid>() {
+    let _user_id = match req.extensions().get::<Uuid>() {
         Some(uuid) => uuid.to_string(),
         None => {
             log::error!("User ID not found in request extensions");
@@ -341,7 +340,7 @@ pub async fn get_asset(
         "file_size": asset.file_size,
         "mime_type": asset.mime_type,
         "is_public": asset.is_public,
-        "created_at": chrono::Utc::from_utc_naive(asset.created_at).to_rfc3339(),
+        "created_at": asset.created_at.and_utc().to_rfc3339(),
     }))
 }
 
@@ -401,12 +400,13 @@ pub async fn download_asset(
     }
 
     match storage_backend.get_file(&asset.file_path).await {
-        Ok(data) => {
-            HttpResponse::Ok()
-                .content_type(asset.mime_type.clone())
-                .insert_header(("Content-Disposition", format!("attachment; filename=\"{}\"", asset.file_name)))
-                .body(data)
-        }
+        Ok(data) => HttpResponse::Ok()
+            .content_type(asset.mime_type.clone())
+            .insert_header((
+                "Content-Disposition",
+                format!("attachment; filename=\"{}\"", asset.file_name),
+            ))
+            .body(data),
         Err(e) => {
             log::error!("Failed to read file: {}", e);
             HttpResponse::InternalServerError().json(serde_json::json!({
@@ -528,7 +528,8 @@ pub async fn list_assets(
     let per_page = query.per_page.unwrap_or(20);
 
     // Execute query
-    let (assets, total) = match AssetModel::list_by_owner(&db, &user_id, None, page, per_page).await {
+    let (assets, total) = match AssetModel::list_by_owner(&db, &user_id, None, page, per_page).await
+    {
         Ok(result) => result,
         Err(e) => {
             log::error!("Failed to list assets: {}", e);
@@ -549,7 +550,7 @@ pub async fn list_assets(
             file_size: asset.file_size,
             mime_type: asset.mime_type.clone(),
             is_public: asset.is_public,
-            created_at: chrono::Utc::from_utc_naive(asset.created_at).to_rfc3339(),
+            created_at: asset.created_at.and_utc().to_rfc3339(),
         })
         .collect();
 

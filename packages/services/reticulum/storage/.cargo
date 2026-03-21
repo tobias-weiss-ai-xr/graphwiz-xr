@@ -1,0 +1,4 @@
+# Windows MSVC toolchain configuration for use MSVC target
+
+[build]
+target = "x86_64-pc-windows-msvc"

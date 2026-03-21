@@ -1,7 +1,7 @@
 //! Route configuration for storage service
 
-use actix_web::web;
 use crate::handlers;
+use actix_web::web;
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg
@@ -21,4 +21,3 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route("/assets/{asset_id}", web::delete().to(handlers::delete_asset))
         .route("/assets/{asset_id}/download", web::get().to(handlers::download_asset));
 }
-
