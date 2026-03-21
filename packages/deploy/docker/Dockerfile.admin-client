@@ -1,57 +1,34 @@
-# Stage 1: Install dependencies
-FROM node:20-alpine AS deps
+# Single stage - build everything from scratch
+FROM node:20-alpine AS build
 WORKDIR /app
 
 RUN npm install -g pnpm@8
 
+# Copy everything for proper workspace resolution
 COPY pnpm-workspace.yaml ./
 COPY pnpm-lock.yaml ./
 COPY turbo.json ./
 COPY package.json ./
-COPY packages/shared/types/package.json ./packages/shared/types/
-COPY packages/clients/ui-kit/package.json ./packages/clients/ui-kit/
-COPY packages/clients/admin-client/package.json ./packages/clients/admin-client/
+COPY tsconfig.json ./
 
-RUN pnpm install --frozen-lockfile
-
-# Stage 2: Build ui-kit with turbo
-FROM node:20-alpine AS ui-kit-builder
-WORKDIR /app
-
-RUN npm install -g pnpm@8
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
-COPY pnpm-workspace.yaml ./
-COPY turbo.json ./
-COPY package.json ./
+# Copy ALL workspace packages
+COPY packages/shared/protocol ./packages/shared/protocol
 COPY packages/shared/types ./packages/shared/types
 COPY packages/clients/ui-kit ./packages/clients/ui-kit
-
-RUN pnpm build --filter=@graphwiz/ui-kit
-
-# Stage 3: Build admin-client
-FROM node:20-alpine AS admin-client-builder
-WORKDIR /app
-
-RUN npm install -g pnpm@8
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
-COPY --from=ui-kit-builder /app/packages/clients/ui-kit/dist ./packages/clients/ui-kit/dist
-COPY turbo.json ./
-COPY pnpm-workspace.yaml ./
-COPY package.json ./
 COPY packages/clients/admin-client ./packages/clients/admin-client
 
-WORKDIR /app/packages/clients/admin-client
-RUN pnpm build
+# Install all workspace dependencies
+RUN pnpm install --frozen-lockfile
 
-# Stage 4: Production
+# Build ui-kit and admin-client in order
+RUN pnpm build --filter=@graphwiz/ui-kit...
+RUN pnpm build --filter=@graphwiz/admin-client
+
+# Production
 FROM alpine:3.19 AS production
 RUN apk add --no-cache nginx
 
-COPY --from=admin-client-builder /app/packages/clients/admin-client/dist /usr/share/nginx/html
+COPY --from=build /app/packages/clients/admin-client/dist /usr/share/nginx/html
 COPY packages/deploy/docker/nginx-client.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
