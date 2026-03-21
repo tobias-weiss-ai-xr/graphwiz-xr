@@ -1,27 +1,31 @@
-# Stage 1: Single stage build without multi-stage complexity
+# Stage 1: Build
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Install pnpm globally fresh
+# Install pnpm
 RUN npm install -g pnpm@8
 
-# Copy all necessary files
+# Copy all dependencies
 COPY pnpm-workspace.yaml ./
 COPY pnpm-lock.yaml ./
 COPY package.json ./
 COPY packages/clients/admin-client/package.json ./packages/clients/admin-client/
+COPY packages/shared/types/package.json ./packages/shared/types/
+COPY packages/clients/ui-kit/package.json ./packages/clients/ui-kit/
 
-# Install dependencies
+# Install dependencies first
 RUN pnpm install --frozen-lockfile
 
 # Copy source
+COPY packages/shared/types ./packages/shared/types
+COPY packages/clients/ui-kit ./packages/clients/ui-kit
 COPY packages/clients/admin-client ./packages/clients/admin-client
 
 # Build
 WORKDIR /app/packages/clients/admin-client
 RUN pnpm build
 
-# Stage 2: Production with nginx
+# Stage 2: Production
 FROM alpine:3.19 AS production
 RUN apk add --no-cache nginx
 
