@@ -6,6 +6,7 @@ RUN npm install -g pnpm@8
 
 COPY pnpm-workspace.yaml ./
 COPY pnpm-lock.yaml ./
+COPY turbo.json ./
 COPY package.json ./
 COPY packages/shared/types/package.json ./packages/shared/types/
 COPY packages/clients/ui-kit/package.json ./packages/clients/ui-kit/
@@ -22,6 +23,7 @@ RUN npm install -g pnpm@8
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
 COPY pnpm-workspace.yaml ./
+COPY turbo.json ./
 COPY package.json ./
 COPY packages/shared/types ./packages/shared/types
 COPY packages/clients/ui-kit ./packages/clients/ui-kit
@@ -37,6 +39,7 @@ RUN npm install -g pnpm@8
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
 COPY --from=ui-kit-builder /app/packages/clients/ui-kit/dist ./packages/clients/ui-kit/dist
+COPY turbo.json ./
 COPY pnpm-workspace.yaml ./
 COPY package.json ./
 COPY packages/clients/admin-client ./packages/clients/admin-client
