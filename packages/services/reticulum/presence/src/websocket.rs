@@ -577,20 +577,47 @@ pub async fn get_metrics(ws_manager: web::Data<WebSocketManager>) -> HttpRespons
     // Get latency metrics (average heartbeat round-trip time)
     let latency_samples: Vec<u64> = sessions.iter()
         .flat_map(|s| {
-            s.get_sessions().iter()
-                .filter_map(|sess| {
-                    sess.last_heartbeat.map(|lh| {
-                        sess.last_heartbeat.as_ref().map(|rh| lh.saturating_sub(rh, lh).unwrap_or(0))
-                    })
+            let sessions: Vec<_> = s.get_sessions().iter().collect();
+            sessions.iter().filter_map(|sess| {
+                sess.last_heartbeat.map(|lh| {
+                    lh.saturating_sub(lh, lh).unwrap_or(0)
                 })
-                .flatten()
-                .collect();
+            })
+        })
+        .collect();
     
     let avg_latency = if latency_samples.is_empty() {
         0
     } else {
         latency_samples.iter().sum::<u64>() / latency_samples.len() as u64
     };
+
+    let current_time = chrono::Utc::now();
+
+    HttpResponse::Ok().json(serde_json::json!({
+        "service": "reticulum-presence",
+        "timestamp": current_time.to_rfc3339(),
+        "metrics": {
+            "connections": {
+                "total": total_connections,
+                "active": active_connections,
+            },
+            "performance": {
+                "total_messages_sent": total_messages_sent,
+                "avg_latency_ms": avg_latency,
+            },
+            "uptime_seconds": sessions.iter()
+                .filter(|s| s.is_active())
+                .map(|s| {
+                    s.connected_at.as_ref()
+                        .map(|ca| {
+                            ca.saturating_sub(current_time, ca).unwrap_or(0).num_seconds().unwrap_or(0)
+                        })
+                        .sum::<u64>()
+                })
+        }
+    }))
+}
 
 /// Create PRESENCE_JOIN event message with host information
 fn create_presence_join_message(
