@@ -1,0 +1,102 @@
+# Hub Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hub
+  namespace: graphwiz-xr
+  labels:
+    app: hub
+    app.kubernetes.io/name: hub
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hub
+  template:
+    metadata:
+      labels:
+        app: hub
+    spec:
+      containers:
+        - name: hub
+          image: graphwiz-xr/hub:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8002
+              name: http
+          envFrom:
+            - configMapRef:
+                name: graphwiz-config
+            - secretRef:
+                name: graphwiz-secrets
+          env:
+            - name: PORT
+              value: '8002'
+          resources:
+            requests:
+              memory: '128Mi'
+              cpu: '100m'
+            limits:
+              memory: '256Mi'
+              cpu: '500m'
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8002
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8002
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hub
+  namespace: graphwiz-xr
+  labels:
+    app: hub
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8002
+      targetPort: 8002
+      protocol: TCP
+      name: http
+  selector:
+    app: hub
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hub-hpa
+  namespace: graphwiz-xr
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hub
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80

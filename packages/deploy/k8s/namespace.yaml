@@ -1,0 +1,17 @@
+# GraphWiz-XR Kubernetes Deployment
+#
+# Usage:
+#   kubectl apply -f namespace.yaml
+#   kubectl apply -f secrets.yaml
+#   kubectl apply -f configmap.yaml
+#   kubectl apply -f postgres.yaml
+#   kubectl apply -f redis.yaml
+#   kubectl apply -f services/
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: graphwiz-xr
+  labels:
+    app.kubernetes.io/name: graphwiz-xr
+    app.kubernetes.io/managed-by: kubectl

@@ -1,0 +1,37 @@
+# GraphWiz-XR ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graphwiz-config
+  namespace: graphwiz-xr
+data:
+  # Server Configuration
+  SERVER_HOST: '0.0.0.0'
+  SERVER_WORKERS: '2'
+
+  # Logging
+  RUST_LOG: info
+
+  # Service URLs (internal cluster DNS)
+  AUTH_SERVICE_URL: http://auth:8001
+  HUB_SERVICE_URL: http://hub:8002
+  PRESENCE_SERVICE_URL: http://presence:8003
+  SFU_SERVICE_URL: http://sfu:8004
+  STORAGE_SERVICE_URL: http://storage:8005
+  AVATAR_SERVICE_URL: http://avatar:8006
+
+  # Frontend URLs
+  VITE_API_BASE_URL: http://auth:8001
+  VITE_HUB_API_URL: http://hub:8002
+  VITE_PRESENCE_WS_URL: ws://presence:8003
+  VITE_SFU_URL: http://sfu:8004
+
+  # SFU Configuration
+  SFU_MAX_ROOMS: '100'
+  SFU_MAX_PEERS_PER_ROOM: '50'
+  SFU_ENABLE_SIMULCAST: 'true'
+  SFU_MAX_VIDEO_BITRATE: '3000000'
+  SFU_MIN_VIDEO_BITRATE: '300000'
+  SFU_AUDIO_BITRATE: '64000'
+  SFU_RTP_PORT_START: '10000'
+  SFU_RTP_PORT_END: '20000'

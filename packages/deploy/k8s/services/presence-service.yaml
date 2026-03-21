@@ -1,0 +1,111 @@
+# Presence Service Deployment (WebSocket + WebTransport)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: presence
+  namespace: graphwiz-xr
+  labels:
+    app: presence
+    app.kubernetes.io/name: presence
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: presence
+  template:
+    metadata:
+      labels:
+        app: presence
+    spec:
+      containers:
+        - name: presence
+          image: graphwiz-xr/presence:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8003
+              name: http
+            - containerPort: 4443
+              name: webtransport
+              protocol: UDP
+          envFrom:
+            - configMapRef:
+                name: graphwiz-config
+            - secretRef:
+                name: graphwiz-secrets
+          env:
+            - name: PORT
+              value: '8003'
+            - name: WEBTRANSPORT_PORT
+              value: '4443'
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '200m'
+            limits:
+              memory: '512Mi'
+              cpu: '1000m'
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8003
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8003
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: presence
+  namespace: graphwiz-xr
+  labels:
+    app: presence
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8003
+      targetPort: 8003
+      protocol: TCP
+      name: http
+    - port: 4443
+      targetPort: 4443
+      protocol: UDP
+      name: webtransport
+  selector:
+    app: presence
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: presence-hpa
+  namespace: graphwiz-xr
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: presence
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70

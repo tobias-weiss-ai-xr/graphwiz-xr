@@ -1,0 +1,123 @@
+# SFU (Selective Forwarding Unit) Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sfu
+  namespace: graphwiz-xr
+  labels:
+    app: sfu
+    app.kubernetes.io/name: sfu
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sfu
+  template:
+    metadata:
+      labels:
+        app: sfu
+    spec:
+      containers:
+        - name: sfu
+          image: graphwiz-xr/sfu:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8004
+              name: http
+            - containerPort: 10000
+              name: rtp
+              protocol: UDP
+            - containerPort: 10001
+              name: rtp-1
+              protocol: UDP
+            - containerPort: 10002
+              name: rtp-2
+              protocol: UDP
+          envFrom:
+            - configMapRef:
+                name: graphwiz-config
+            - secretRef:
+                name: graphwiz-secrets
+          env:
+            - name: PORT
+              value: '8004'
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '500m'
+            limits:
+              memory: '1Gi'
+              cpu: '2000m'
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8004
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8004
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sfu
+  namespace: graphwiz-xr
+  labels:
+    app: sfu
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8004
+      targetPort: 8004
+      protocol: TCP
+      name: http
+    - port: 10000
+      targetPort: 10000
+      protocol: UDP
+      name: rtp
+    - port: 10001
+      targetPort: 10001
+      protocol: UDP
+      name: rtp-1
+    - port: 10002
+      targetPort: 10002
+      protocol: UDP
+      name: rtp-2
+  selector:
+    app: sfu
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sfu-hpa
+  namespace: graphwiz-xr
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sfu
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70

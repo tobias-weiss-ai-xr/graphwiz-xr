@@ -1,0 +1,242 @@
+/**
+ * Spoke Scene Editor Styles
+ */
+.spoke-container {
+  display: flex;
+  height: 100vh;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 250px;
+  background: #16161e;
+  border-right: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.hierarchy-panel {
+  border-right: none;
+}
+
+.properties-panel {
+  border-left: 1px solid #333;
+}
+
+.panel-header {
+  padding: 16px;
+  border-bottom: 1px solid #333;
+  background: #1e1a2e;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.panel-content {
+  padding: 16px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.scene-name {
+  margin-bottom: 16px;
+}
+
+.scene-name input {
+  width: 100%;
+  padding: 8px 12px;
+  background: #2a2a3a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.object-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.object-list li {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #333;
+  transition: background 0.2s;
+}
+
+.object-list li:hover {
+  background: #2a2a3a;
+}
+
+.object-list li.selected {
+  background: #3d5a8e;
+}
+
+.object-list li .icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.object-list li .name {
+  flex: 1;
+  font-size: 13px;
+}
+
+.viewport {
+  flex: 1;
+  position: relative;
+}
+
+.toolbar {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%, 0);
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(26, 26, 46, 0.95);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.tool-group {
+  display: flex;
+  gap: 4px;
+}
+
+.tool-group .label {
+  color: #888;
+  font-size: 11px;
+  margin-right: 4px;
+  align-self: center;
+}
+
+.tool-btn {
+  padding: 8px 16px;
+  background: #3d5a8e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.tool-btn:hover {
+  background: #4a7ac8;
+}
+
+.tool-btn.active {
+  background: #005a9e;
+}
+
+.tool-btn.danger {
+  background: #a33;
+}
+
+.tool-btn.danger:hover {
+  background: #c44;
+}
+
+.tool-btn.success {
+  background: #2a8a44;
+}
+
+.tool-btn.success:hover {
+  background: #3a9a54;
+}
+
+.info-overlay {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  padding: 12px 16px;
+  background: rgba(26, 26, 46, 0.95);
+  border-radius: 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+.info-overlay p {
+  margin: 0;
+}
+
+/* Properties Panel */
+.property-group {
+  margin-bottom: 16px;
+}
+
+.property-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: #888;
+}
+
+.property-group .value {
+  color: #fff;
+  font-size: 13px;
+}
+
+.property-group input[type='text'] {
+  width: 100%;
+  padding: 8px;
+  background: #2a2a3a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.property-group input[type='color'] {
+  width: 100%;
+  height: 32px;
+  padding: 4px;
+  background: #2a2a3a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.vector-input {
+  display: flex;
+  gap: 8px;
+}
+
+.vector-input input {
+  flex: 1;
+  padding: 6px;
+  background: #2a2a3a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+}
+
+.vector-input input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 13px;
+  padding: 32px;
+}

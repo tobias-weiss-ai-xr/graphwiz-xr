@@ -1,0 +1,126 @@
+# Storage Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage
+  namespace: graphwiz-xr
+  labels:
+    app: storage
+    app.kubernetes.io/name: storage
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: storage
+  template:
+    metadata:
+      labels:
+        app: storage
+    spec:
+      containers:
+        - name: storage
+          image: graphwiz-xr/storage:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8005
+              name: http
+          envFrom:
+            - configMapRef:
+                name: graphwiz-config
+            - secretRef:
+                name: graphwiz-secrets
+          env:
+            - name: PORT
+              value: '8005'
+            - name: UPLOAD_DIR
+              value: /uploads
+            - name: MAX_UPLOAD_SIZE
+              value: '104857600' # 100MB
+          volumeMounts:
+            - name: uploads
+              mountPath: /uploads
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '200m'
+            limits:
+              memory: '512Mi'
+              cpu: '1000m'
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8005
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8005
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: storage-pvc
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-pvc
+  namespace: graphwiz-xr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: standard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage
+  namespace: graphwiz-xr
+  labels:
+    app: storage
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8005
+      targetPort: 8005
+      protocol: TCP
+      name: http
+  selector:
+    app: storage
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: storage-hpa
+  namespace: graphwiz-xr
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: storage
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
