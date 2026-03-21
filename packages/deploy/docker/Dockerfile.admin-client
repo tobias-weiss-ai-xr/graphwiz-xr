@@ -2,6 +2,7 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
+# Fresh pnpm install in each stage
 RUN npm install -g pnpm@8
 
 COPY pnpm-workspace.yaml ./
@@ -13,12 +14,15 @@ COPY packages/clients/admin-client/package.json ./packages/clients/admin-client/
 
 RUN pnpm install --frozen-lockfile
 
-# Stage 2: Build ui-kit and types
+# Stage 2: Build ui-kit and types  
 FROM node:20-alpine AS shared-builder
 WORKDIR /app
 
+# Fresh pnpm install
+RUN npm install -g pnpm@8
+
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /usr/local/bin/pnpm /usr/local/bin/pnpm
+COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
 COPY pnpm-workspace.yaml ./
 COPY package.json ./
 COPY packages/shared/types ./packages/shared/types
@@ -27,19 +31,22 @@ COPY packages/clients/ui-kit ./packages/clients/ui-kit
 WORKDIR /app/packages/shared/types
 RUN pnpm build
 
-WORKDIR /app/packages/clients/ui-kit
+WORKDIR /app/packages/clients/ui-kit  
 RUN pnpm build
 
 # Stage 3: Build admin-client
 FROM node:20-alpine AS admin-client-builder
 WORKDIR /app
 
+# Fresh pnpm install
+RUN npm install -g pnpm@8
+
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /usr/local/bin/pnpm /usr/local/bin/pnpm
+COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
+COPY --from=shared-builder /app/packages/shared/types/dist ./packages/shared/types/dist
+COPY --from=shared-builder /app/packages/clients/ui-kit/dist ./packages/clients/ui-kit/dist
 COPY pnpm-workspace.yaml ./
 COPY package.json ./
-COPY packages/shared/types ./packages/shared/types
-COPY packages/clients/ui-kit ./packages/clients/ui-kit
 COPY packages/clients/admin-client ./packages/clients/admin-client
 
 WORKDIR /app/packages/clients/admin-client
