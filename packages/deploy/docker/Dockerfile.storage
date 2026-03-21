@@ -1,0 +1,42 @@
+# Storage Service - Production Dockerfile
+#
+# Single-stage Dockerfile for reticulum-storage Rust binary
+# Uses Rust 1.88-alpine with PostgreSQL client for production
+
+FROM rust:1.88-alpine AS build
+
+# Install build dependencies
+RUN apk add --no-cache musl-dev postgresql-client pkgconf openssl-dev protoc
+
+WORKDIR /build
+
+# Copy workspace configuration and lock files
+COPY Cargo.toml Cargo.lock ./
+
+# Copy ALL workspace members (required for cargo workspace resolution)
+COPY packages/services/reticulum/core packages/services/reticulum/core
+COPY packages/services/reticulum/auth packages/services/reticulum/auth
+COPY packages/services/reticulum/hub packages/services/reticulum/hub
+COPY packages/services/reticulum/presence packages/services/reticulum/presence
+COPY packages/services/reticulum/storage packages/services/reticulum/storage
+COPY packages/services/reticulum/sfu packages/services/reticulum/sfu
+COPY packages/services/reticulum/avatar packages/services/reticulum/avatar
+COPY packages/shared/protocol packages/shared/protocol
+
+# Build release binary
+RUN DATABASE_URL="postgresql://postgres:postgres@localhost/postgres" cargo build --release -p reticulum-storage
+
+# Production runtime image
+FROM alpine:3.19
+
+# Install runtime dependencies (PostgreSQL client for migrations)
+RUN apk add --no-cache ca-certificates postgresql-client
+
+WORKDIR /app
+
+# Copy built binary
+COPY --from=build /build/target/release/reticulum-storage /usr/local/bin/reticulum-storage
+
+EXPOSE 8005
+
+CMD ["/usr/local/bin/reticulum-storage"]
