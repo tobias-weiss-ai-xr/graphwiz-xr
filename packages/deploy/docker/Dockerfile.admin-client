@@ -1,9 +1,9 @@
-# Dockerfile for Admin Client (TypeScript + Vite)
-# Multi-stage build with production target
-
-# Stage 1: Dependencies
-FROM node:20-alpine AS dependencies
+# Stage 1: Dependencies and Build
+FROM node:20-alpine AS build
 WORKDIR /app
+
+# Install pnpm globally
+RUN npm install -g pnpm@8
 
 # Copy workspace files
 COPY pnpm-workspace.yaml ./
@@ -11,33 +11,18 @@ COPY pnpm-lock.yaml ./
 COPY package.json ./
 COPY packages/clients/admin-client/package.json ./packages/clients/admin-client/
 
-# Install pnpm globally
-RUN npm install -g pnpm@8
-
-# Install dependencies using pnpm
+# Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Stage 2: Build - copy just what we need
-FROM node:20-alpine AS build
-WORKDIR /app
-
-# Copy pnpm binary
-COPY --from=dependencies /usr/local/bin/pnpm /usr/local/bin/pnpm
-
-# Copy node_modules from staging
-COPY --from=dependencies /app/node_modules ./node_modules
-
-# Copy package-lock files
-COPY pnpm-workspace.yaml ./
-COPY package.json ./
-
-# Copy admin client source and build
+# Copy source
 COPY packages/clients/admin-client ./packages/clients/admin-client
 
+# Build inside the package directory
 WORKDIR /app/packages/clients/admin-client
-RUN pnpm build
+RUN npm install
+RUN npm run build
 
-# Stage 3: Production
+# Stage 2: Production
 FROM alpine:3.19 AS production
 RUN apk add --no-cache nginx
 
