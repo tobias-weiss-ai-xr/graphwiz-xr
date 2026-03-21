@@ -212,7 +212,7 @@ services:
       DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
       REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev}@redis:6379
       SERVER_HOST: 0.0.0.0
-      SERVER_PORT: 8005
+      SERVER_PORT: 8006
     depends_on:
       postgres:
         condition: service_healthy
@@ -223,12 +223,47 @@ services:
       - graphwiz-internal
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.services.avatar.loadbalancer.server.port=8005'
+      - 'traefik.http.services.avatar.loadbalancer.server.port=8006'
       - 'traefik.http.routers.avatar.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/avatar`)'
       - 'traefik.http.routers.avatar.entrypoints=websecure'
       - 'traefik.http.routers.avatar.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.avatar.middlewares=security-headers,cors,avatar-strip'
       - 'traefik.http.middlewares.avatar-strip.stripprefix.prefixes=/api/avatar'
+
+  # ============================================================================
+  # STORAGE SERVICE (File Upload/Download)
+  # ============================================================================
+  storage:
+    build:
+      context: .
+      dockerfile: packages/deploy/docker/Dockerfile.storage
+    container_name: graphwiz-storage
+    restart: unless-stopped
+    environment:
+      RUST_LOG: ${RUST_LOG:-info}
+      DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev}@redis:6379
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8005
+      STORAGE_BASE_PATH: /storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - traefik-public
+      - graphwiz-internal
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.storage.loadbalancer.server.port=8005'
+      - 'traefik.http.routers.storage.rule=Host(\`xr.graphwiz.ai\`) && PathPrefix(\`/api/storage\`)'
+      - 'traefik.http.routers.storage.entrypoints=websecure'
+      - 'traefik.http.routers.storage.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.storage.middlewares=security-headers,cors,api-strip'
+      - 'traefik.http.middlewares.api-strip.stripprefix.prefixes=/api/v1'
+    volumes:
+      - storage_data:/storage:cached
 
   # SFU SERVICE (WebRTC Media Forwarding)
   # ============================================================================
@@ -243,7 +278,7 @@ services:
       DATABASE_URL: postgresql://${DATABASE_USER:-graphwiz}:${DATABASE_PASSWORD:-graphwiz_dev}@postgres:5432/${DATABASE_NAME:-graphwiz}
       REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev}@redis:6379
       SERVER_HOST: 0.0.0.0
-      SERVER_PORT: 8004
+      SERVER_PORT: 8003
       SFU_MAX_ROOMS: ${SFU_MAX_ROOMS:-100}
       SFU_MAX_PEERS_PER_ROOM: ${SFU_MAX_PEERS_PER_ROOM:-50}
       SFU_RTP_PORT_START: ${SFU_RTP_PORT_START:-10000}
@@ -262,7 +297,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.sfu.rule=Host(`xr.graphwiz.ai`) && PathPrefix(`/api/sfu`)'
       - 'traefik.http.routers.sfu.entrypoints=websecure'
-      - 'traefik.http.services.sfu.loadbalancer.server.port=8004'
+      - 'traefik.http.services.sfu.loadbalancer.server.port=8003'
       - 'traefik.http.routers.sfu.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.sfu.middlewares=security-headers,cors,api-strip'
     ports:
@@ -339,6 +374,8 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  storage_data:
     driver: local
   traefik-letsencrypt:
     driver: local

@@ -6,8 +6,8 @@ use validator::Validate;
 
 use crate::db::AvatarRepository;
 use crate::models::{
-    AvatarConfig, BodyType, CustomAvatarRequest, DefaultAvatarResponse,
-    UpdateAvatarRequest, UserAvatarResponse,
+    AvatarConfig, BodyType, CustomAvatarRequest, DefaultAvatarResponse, UpdateAvatarRequest,
+    UserAvatarResponse,
 };
 
 /// Health check
@@ -19,7 +19,7 @@ pub async fn health() -> HttpResponse {
 }
 
 /// Get default avatar configuration
-pub async fn get_default_avatar(config: web::Data<Config>) -> HttpResponse {
+pub async fn get_default_avatar(_config: web::Data<Config>) -> HttpResponse {
     let default_config = AvatarConfig::default();
 
     let available_body_types = vec![
@@ -53,85 +53,7 @@ pub async fn get_default_avatar(config: web::Data<Config>) -> HttpResponse {
 }
 
 /// Get user's avatar configuration
-pub async fn get_user_avatar(
-    config: web::Data<Config>,
-    path: web::Path<String>,
-) -> HttpResponse {
-    let user_id = match uuid::Uuid::parse_str(&path.into_inner()) {
-        Ok(id) => id,
-        Err(e) => {
-            log::error!("Invalid user ID format: {}", e);
-            return HttpResponse::BadRequest().json(serde_json::json!({
-                "error": "invalid_user_id",
-                "message": "User ID must be a valid UUID"
-            }));
-        }
-    };
-
-    let repo = match AvatarRepository::from_config(&config).await {
-        Ok(repo) => repo,
-        Err(e) => {
-            log::error!("Database connection failed: {}", e);
-            return HttpResponse::InternalServerError().json(serde_json::json!({
-                "error": "database_error",
-                "message": "Failed to connect to database"
-            }));
-        }
-    };
-
-    match repo.get_avatar(user_id).await {
-        Ok(Some(record)) => {
-            let avatar_config = AvatarConfig {
-                user_id: record.user_id,
-                body_type: record.body_type,
-                primary_color: record.primary_color,
-                secondary_color: record.secondary_color,
-                height: record.height,
-                custom_model_id: record.custom_model_id,
-                metadata: record.metadata,
-            };
-
-            let response = UserAvatarResponse {
-                user_id: record.user_id,
-                config: avatar_config,
-                created_at: record.created_at,
-                updated_at: record.updated_at,
-            };
-
-            HttpResponse::Ok().json(response)
-        }
-        Ok(None) => {
-            // Return default avatar if not found
-            let default_config = AvatarConfig {
-                user_id,
-                ..Default::default()
-            };
-
-            let response = UserAvatarResponse {
-                user_id,
-                config: default_config,
-                created_at: chrono::Utc::now(),
-                updated_at: chrono::Utc::now(),
-            };
-
-            HttpResponse::Ok().json(response)
-        }
-        Err(e) => {
-            log::error!("Failed to get avatar: {}", e);
-            HttpResponse::InternalServerError().json(serde_json::json!({
-                "error": "internal_error",
-                "message": "Failed to retrieve avatar configuration"
-            }))
-        }
-    }
-}
-
-/// Update user's avatar configuration
-pub async fn update_user_avatar(
-    config: web::Data<Config>,
-    path: web::Path<String>,
-    req: web::Json<UpdateAvatarRequest>,
-) -> HttpResponse {
+pub async fn get_user_avatar(_config: web::Data<Config>, path: web::Path<String>) -> HttpResponse {
     let user_id = match uuid::Uuid::parse_str(&path.into_inner()) {
         Ok(id) => id,
         Err(e) => {
@@ -192,8 +114,14 @@ pub async fn update_user_avatar(
     let updated_avatar = AvatarConfig {
         user_id,
         body_type: req.body_type.unwrap_or(existing_avatar.body_type),
-        primary_color: req.primary_color.clone().unwrap_or(existing_avatar.primary_color),
-        secondary_color: req.secondary_color.clone().unwrap_or(existing_avatar.secondary_color),
+        primary_color: req
+            .primary_color
+            .clone()
+            .unwrap_or(existing_avatar.primary_color),
+        secondary_color: req
+            .secondary_color
+            .clone()
+            .unwrap_or(existing_avatar.secondary_color),
         height: req.height.unwrap_or(existing_avatar.height),
         custom_model_id: req.custom_model_id.or(existing_avatar.custom_model_id),
         metadata: req.metadata.clone().unwrap_or(existing_avatar.metadata),
@@ -245,7 +173,7 @@ pub async fn update_user_avatar(
 
 /// Register custom avatar model
 pub async fn register_custom_avatar(
-    config: web::Data<Config>,
+    _config: web::Data<Config>,
     req: web::Json<CustomAvatarRequest>,
     user_id: web::ReqData<String>,
 ) -> HttpResponse {
