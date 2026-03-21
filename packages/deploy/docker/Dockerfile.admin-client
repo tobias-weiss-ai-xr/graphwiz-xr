@@ -5,17 +5,13 @@
 FROM node:20-alpine AS dependencies
 WORKDIR /app
 
-# Install pnpm first
+# Copy package files
+COPY packages/clients/admin-client/package.json packages/clients/admin-client/pnpm-lock.yaml ./
+
+# Install pnpm
 RUN npm install -g pnpm@8
 
-# Copy root package files for monorepo
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-# Copy package.json files for the admin-client and its dependencies
-COPY packages/clients/admin-client/package.json ./packages/clients/admin-client/
-COPY packages/shared/types/package.json ./packages/shared/types/
-
-# Install dependencies (will use root lockfile)
+# Install dependencies
 RUN pnpm install --frozen-lockfile
 
 # Stage 2: Development
