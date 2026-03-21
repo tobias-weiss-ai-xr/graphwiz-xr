@@ -1,35 +1,55 @@
-# Stage 1: Build
-FROM node:20-alpine AS build
+# Stage 1: Build dependencies first
+FROM node:20-alpine AS deps
 WORKDIR /app
 
-# Install pnpm
 RUN npm install -g pnpm@8
 
-# Copy all dependencies
 COPY pnpm-workspace.yaml ./
 COPY pnpm-lock.yaml ./
 COPY package.json ./
-COPY packages/clients/admin-client/package.json ./packages/clients/admin-client/
 COPY packages/shared/types/package.json ./packages/shared/types/
 COPY packages/clients/ui-kit/package.json ./packages/clients/ui-kit/
+COPY packages/clients/admin-client/package.json ./packages/clients/admin-client/
 
-# Install dependencies first
 RUN pnpm install --frozen-lockfile
 
-# Copy source
+# Stage 2: Build ui-kit and types
+FROM node:20-alpine AS ui-kit-builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+COPY packages/shared/types ./packages/shared/types
+COPY packages/clients/ui-kit ./packages/clients/ui-kit
+
+WORKDIR /app/packages/shared/types
+RUN pnpm build
+
+WORKDIR /app/packages/clients/ui-kit
+RUN pnpm build
+
+# Stage 3: Build admin-client
+FROM node:20-alpine AS admin-client-builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/node_modules/.pnpm ./node_modules/.pnpm
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
 COPY packages/shared/types ./packages/shared/types
 COPY packages/clients/ui-kit ./packages/clients/ui-kit
 COPY packages/clients/admin-client ./packages/clients/admin-client
 
-# Build
 WORKDIR /app/packages/clients/admin-client
 RUN pnpm build
 
-# Stage 2: Production
+# Stage 4: Production
 FROM alpine:3.19 AS production
 RUN apk add --no-cache nginx
 
-COPY --from=build /app/packages/clients/admin-client/dist /usr/share/nginx/html
+COPY --from=admin-client-builder /app/packages/clients/admin-client/dist /usr/share/nginx/html
 COPY packages/deploy/docker/nginx-client.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
