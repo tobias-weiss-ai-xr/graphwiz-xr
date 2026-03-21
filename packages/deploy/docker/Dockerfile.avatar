@@ -1,8 +1,8 @@
 # Use stable Rust 1.88-alpine like other services for consistency
 FROM rust:1.88-alpine AS builder
 
-# Install protoc (protobuf compiler) for avatar service
-RUN apk add --no-cache protoc
+# Install protoc and build tools (required for Rust proc macro compilation)
+RUN apk add --no-cache protoc build-base
 
 WORKDIR /build
 
