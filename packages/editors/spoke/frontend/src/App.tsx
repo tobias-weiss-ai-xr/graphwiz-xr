@@ -1,27 +1,34 @@
-import { useState, useEffect, useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Grid, Environment, TransformControls, Box, Sphere } from '@react-three/drei'
-import { invoke } from '@tauri-apps/api/core'
-import { listen } from '@tauri-apps/api/event'
-import * as THREE from 'three'
+import { useState, useEffect, useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import {
+  OrbitControls,
+  Grid,
+  Environment,
+  TransformControls,
+  Box,
+  Sphere
+} from '@react-three/drei';
+import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
+import * as THREE from 'three';
 
 interface SceneObject {
-  id: string
-  type: 'box' | 'sphere'
-  name: string
-  position: [number, number, number]
-  rotation: [number, number, number]
-  scale: [number, number, number]
-  color: string
+  id: string;
+  type: 'box' | 'sphere';
+  name: string;
+  position: [number, number, number];
+  rotation: [number, number, number];
+  scale: [number, number, number];
+  color: string;
 }
 
 export default function App() {
-  const [objects, setObjects] = useState<SceneObject[]>([])
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [sceneName, setSceneName] = useState<string>('Untitled Scene')
-  const [isTransforming, setIsTransforming] = useState(false)
+  const [objects, setObjects] = useState<SceneObject[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [sceneName, setSceneName] = useState<string>('Untitled Scene');
+  const [isTransforming, setIsTransforming] = useState(false);
 
-  const transformControlsRef = useRef<any>(null)
+  const transformControlsRef = useRef<any>(null);
 
   // Create initial sample objects
   useEffect(() => {
@@ -33,7 +40,7 @@ export default function App() {
         position: [0, -1, 0],
         rotation: [0, 0, 0],
         scale: [10, 1, 10],
-        color: '#808080',
+        color: '#808080'
       },
       {
         id: 'box-2',
@@ -42,7 +49,7 @@ export default function App() {
         position: [0, 0.5, 0],
         rotation: [0, 0.0, 0],
         scale: [1, 1, 1],
-        color: '#4A90E2',
+        color: '#4A90E2'
       },
       {
         id: 'sphere-1',
@@ -51,25 +58,25 @@ export default function App() {
         position: [2, 0.5, 0],
         rotation: [0, 0, 0],
         scale: [0.5, 0.5, 0.5],
-        color: '#50C878',
-      },
-    ]
-    setObjects(initialObjects)
-  }, [])
+        color: '#50C878'
+      }
+    ];
+    setObjects(initialObjects);
+  }, []);
 
   const handleObjectSelect = (id: string) => {
-    setSelectedId(id)
-    setIsTransforming(true)
-  }
+    setSelectedId(id);
+    setIsTransforming(true);
+  };
 
   const handleAddBox = () => {
-    const newId = `box-${Date.now()}`
-    setObjectPosition(newId, [0, 1, 0])
-    setSceneName(`box-${Date.now()}`)
-  }
+    const newId = `box-${Date.now()}`;
+    setObjectPosition(newId, [0, 1, 0]);
+    setSceneName(`box-${Date.now()}`);
+  };
 
   const setObjectPosition = (object: { id: string }, pos: [number, number, number]) => {
-    if (objects.find(obj => obj.id === object.id)) {
+    if (objects.find((obj) => obj.id === object.id)) {
       var newObject: SceneObject = {
         id: object.id,
         type: 'box',
@@ -78,43 +85,44 @@ export default function App() {
         rotation: [0, 0, 0],
         scale: [1, 1, 1],
         color: randomColor()
-      }
-      setObjects([...objects, newObject])
+      };
+      setObjects([...objects, newObject]);
     } else {
-      setObjects([...objects, object])
+      setObjects([...objects, object]);
     }
-  }
+  };
 
   const randomColor = () => {
-    return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
-  }
+    return `#${Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, '0')}`;
+  };
 
   const handleExportScene = async () => {
     try {
-      const sceneData = JSON.stringify({ name: sceneName, objects }, null, 2)
-      await invoke('save_scene', { sceneData })
-      alert('Scene saved successfully!')
+      const sceneData = JSON.stringify({ name: sceneName, objects }, null, 2);
+      await invoke('save_scene', { sceneData });
+      alert('Scene saved successfully!');
     } catch (error) {
-      console.error('Failed to save scene:', error)
-      alert('Failed to save scene')
+      console.error('Failed to save scene:', error);
+      alert('Failed to save scene');
     }
-  }
+  };
 
   const importScene = async () => {
     try {
-      const sceneData = await invoke<string>('load_scene')
-      const parsed = JSON.parse(sceneData)
-      setSceneName(parsed.name)
-      setObjects(parsed.objects)
-      alert('Scene loaded successfully!')
+      const sceneData = await invoke<string>('load_scene');
+      const parsed = JSON.parse(sceneData);
+      setSceneName(parsed.name);
+      setObjects(parsed.objects);
+      alert('Scene loaded successfully!');
     } catch (error) {
-      console.error('Failed to load scene:', error)
-      alert('Failed to load scene')
+      console.error('Failed to load scene:', error);
+      alert('Failed to load scene');
     }
-  }
+  };
 
   return (
-
     <div className="container">
       <div className="sidebar">
         <div className="section">
@@ -146,10 +154,7 @@ export default function App() {
         <div className="section tools">
           <h3>Tools</h3>
           <button onClick={handleAddBox}>+ Box</button>
-          <button onClick={() => {}}>
-            {" "}
-            + Sphere{" "}
-          </button>
+          <button onClick={() => {}}> + Sphere </button>
           <button onClick={() => {}}>+ Light</button>
           <button onClick={() => {}}>+ Camera</button>
         </div>
@@ -160,17 +165,15 @@ export default function App() {
             Save Scene
           </button>
           <button onClick={importScene}>Load Scene</button>
-          <button onClick={() => alert('Feature coming soon: Export to GLTF')}>
-            Export GLTF
-          </button>
+          <button onClick={() => alert('Feature coming soon: Export to GLTF')}>Export GLTF</button>
         </div>
 
         {selectedId && (
           <div className="section">
             <h3>Properties</h3>
             {(() => {
-              const obj = objects.find((o) => o.id === selectedId)
-              if (!obj) return null
+              const obj = objects.find((o) => o.id === selectedId);
+              if (!obj) return null;
               return (
                 <>
                   <div className="property">
@@ -181,8 +184,8 @@ export default function App() {
                       onChange={(e) => {
                         const updated = objects.map((o) =>
                           o.id === selectedId ? { ...o, name: e.target.value } : o
-                        )
-                        setObjects(updated)
+                        );
+                        setObjects(updated);
                       }}
                     />
                   </div>
@@ -194,8 +197,8 @@ export default function App() {
                       onChange={(e) => {
                         const updated = objects.map((o) =>
                           o.id === selectedId ? { ...o, color: e.target.value } : o
-                        )
-                        setObjects(updated)
+                        );
+                        setObjects(updated);
                       }}
                     />
                   </div>
@@ -212,10 +215,11 @@ export default function App() {
                     </span>
                   </div>
                 </>
-              )
+              );
             })()}
-            <button className="danger" onClick={() => void}/>
-
+            <button className="danger" onClick={() => {}}>
+              Clear
+            </button>
           </div>
         )}
       </div>
@@ -225,8 +229,8 @@ export default function App() {
           camera={{ position: [5, 5, 5], fov: 75 }}
           shadows
           onClick={(e) => {
-            e.stopPropagation()
-            setSelectedId(null)
+            e.stopPropagation();
+            setSelectedId(null);
           }}
         >
           <color attach="background" args={['#1a1a2e']} />
@@ -236,9 +240,7 @@ export default function App() {
           <TransformControls
             ref={transformControlsRef}
             enabled={selectedId !== null && !isTransforming}
-            object={objects.find((o) => o.id === selectedId)
-              ? undefined
-              : null || undefined
+            object={(objects.find((o) => o.id === selectedId) as any) || null}
           />
           <Environment preset="apartment" />
 
@@ -255,29 +257,29 @@ export default function App() {
                   key={obj.id}
                   {...obj}
                   onClick={(e) => {
-                    e.stopPropagation()
-                    handleObjectSelect(obj.id)
+                    e.stopPropagation();
+                    handleObjectSelect(obj.id);
                   }}
                   castShadow
                   receiveShadow
                 />
-              )
+              );
             } else if (obj.type === 'sphere') {
               return (
                 <Sphere
-                    key={obj.id}
-                    {...obj}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleObjectSelect(obj.id)
-                    }}
-                    castShadow
-                    receiveShadow
-                    segments={16}
-                  />
-                )
-            } 
-            return null
+                  key={obj.id}
+                  {...obj}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleObjectSelect(obj.id);
+                  }}
+                  castShadow
+                  receiveShadow
+                  segments={16}
+                />
+              );
+            }
+            return null;
           })}
         </Canvas>
 
@@ -288,5 +290,5 @@ export default function App() {
         </div>
       </div>
     </div>
-  )
+  );
 }

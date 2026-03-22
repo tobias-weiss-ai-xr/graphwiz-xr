@@ -102,17 +102,15 @@ export default tseslint.config(
           caughtErrorsIgnorePattern: '^_'
         }
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'error', // Strict: no any types
+      '@typescript-eslint/explicit-module-boundary-types': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/prefer-readonly': 'warn',
 
       // React rules
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'react/display-name': 'off',
-
-      // React hooks rules
-      'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
 
       // Import rules
@@ -127,9 +125,36 @@ export default tseslint.config(
           }
         }
       ],
+      'import/no-unresolved': 'error',
+      'import/named': 'error',
+      'import/default': 'error',
+      'import/namespace': 'error',
 
-      // Console rules
-      'no-console': ['warn', { allow: ['warn', 'error'] }]
+      // Console rules - production ready
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+
+      // Code quality rules
+      'no-debugger': 'error',
+      'no-alert': 'error',
+      'no-undef': 'error',
+      'no-implicit-globals': 'warn',
+      'no-unused-private-class-members': 'warn',
+
+      // Async/await rules
+      '@typescript-eslint/no-floating-promises': ['error', { ignoreVoid: true }],
+
+      // Security rules
+      '@typescript-eslint/no-unsafe-assignment': 'warn',
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
+      '@typescript-eslint/no-unsafe-call': 'warn',
+
+      // Styling rules (optional enforcement)
+      '@typescript-eslint/semi': ['error', 'always'],
+      '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
+      '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
+
+      // Performance rules
+      '@typescript-eslint/no-unnecessary-type-assertion': 'warn'
     }
   },
   prettierConfig

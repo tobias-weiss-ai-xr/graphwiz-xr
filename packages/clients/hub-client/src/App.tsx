@@ -161,7 +161,7 @@ function App() {
   const [localAvatarConfig, setLocalAvatarConfig] = useState<AvatarConfig | null>(null);
 
   // Scene selector state
-  const [currentScene, setCurrentScene] = useState<SceneType>('default');
+  const [currentScene, setCurrentScene] = useState<SceneType>('interactive');
 
   // Drawing tools state
   const [drawingSettings, setDrawingSettings] = useState<DrawingSettings>({
@@ -227,6 +227,8 @@ function App() {
           logger.info('[App] Client ID:', { clientId });
           if (clientId) {
             setMyClientId(clientId);
+            // Load avatar immediately after getting client ID
+            loadAvatar(clientId);
           } else {
             logger.error('[App] Client ID is null after connection!');
           }
@@ -304,7 +306,9 @@ function App() {
           setPresenceEvents((prev) => {
             const existing = prev.find((e) => e.clientId === message.payload.clientId);
             if (existing) {
-              logger.info('[App] Updating existing presence for', { clientId: message.payload.clientId });
+              logger.info('[App] Updating existing presence for', {
+                clientId: message.payload.clientId
+              });
               // Update existing presence
               return prev.map((e) =>
                 e.clientId === message.payload.clientId ? { ...e, data: message.payload } : e
@@ -480,44 +484,34 @@ function App() {
     };
   }, []);
 
-  // Load avatar from persistence when client ID is available
+  // Load avatar from persistence
+  const loadAvatar = async (userId: string) => {
+    const persistence = getAvatarPersistence();
+    logger.info('[App] Loading avatar for user:', { userId });
+
+    try {
+      const config = await persistence.loadAvatar(userId);
+      logger.info('[App] Avatar loaded:', config);
+      setLocalAvatarConfig(config);
+    } catch (error) {
+      logger.error('[App] Failed to load avatar:', error);
+      // Use default avatar on error
+      setLocalAvatarConfig({
+        user_id: userId,
+        body_type: 'human',
+        primary_color: '#4CAF50',
+        secondary_color: '#2196F3',
+        height: 1.7,
+        metadata: {}
+      });
+    }
+  };
+
+  // Load avatar when client ID is available
   useEffect(() => {
     if (!myClientId) return;
-
-    const persistence = getAvatarPersistence();
-    logger.info('[App] Loading avatar for user:', { myClientId });
-
-    persistence
-      .loadAvatar(myClientId)
-      .then((config) => {
-        logger.info('[App] Avatar loaded:', config);
-        setLocalAvatarConfig(config);
-
-        // Send avatar update to network after connection is established
-        if (client && client.connected()) {
-          client.sendAvatarUpdate({
-            bodyType: config.body_type,
-            primaryColor: config.primary_color,
-            secondaryColor: config.secondary_color,
-            height: config.height,
-            customModelUrl: config.custom_model_id || ''
-          });
-          logger.info('[App] Avatar config sent to network');
-        }
-      })
-      .catch((error) => {
-        logger.error('[App] Failed to load avatar:', error);
-        // Use default avatar on error
-        setLocalAvatarConfig({
-          user_id: myClientId,
-          body_type: 'human',
-          primary_color: '#4CAF50',
-          secondary_color: '#2196F3',
-          height: 1.7,
-          metadata: {}
-        });
-      });
-  }, [myClientId, client]);
+    loadAvatar(myClientId);
+  }, [myClientId]);
 
   // Send avatar to network when connected
   useEffect(() => {
@@ -585,7 +579,10 @@ function App() {
   // Movement update loop
   useEffect(() => {
     if (!connected || !client) {
-      logger.info('[App] Movement loop not started: connected=', { connected, hasClient: !!client });
+      logger.info('[App] Movement loop not started: connected=', {
+        connected,
+        hasClient: !!client
+      });
       return;
     }
 

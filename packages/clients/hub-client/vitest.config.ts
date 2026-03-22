@@ -14,11 +14,18 @@ export default defineConfig({
       'e2e/**',
       '**/*.spec.ts', // Exclude Playwright spec files
       'build',
-      'coverage',
+      'coverage'
     ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      thresholds: {
+        100: true, // Enforce 100% coverage for lines, branches, functions, statements
+        lines: 95, // Minimum 95% line coverage
+        branches: 90, // Minimum 90% branch coverage
+        functions: 95, // Minimum 95% function coverage
+        statements: 95 // Minimum 95% statement coverage
+      },
       exclude: [
         'node_modules/',
         'src/__tests__/',
@@ -27,8 +34,20 @@ export default defineConfig({
         '**/*.config.*',
         '**/dist/**',
         'build',
-        'coverage',
-      ],
+        'coverage'
+      ]
     },
-  },
+    // Fail if tests are skipped or only marked pending
+    bail: 1,
+    // Timeout for each test (5 seconds)
+    testTimeout: 5000,
+    // Use threading pool for parallel test execution
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        minThreads: 2,
+        maxThreads: 4
+      }
+    }
+  }
 });

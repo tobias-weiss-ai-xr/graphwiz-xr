@@ -88,7 +88,7 @@ function InteractiveButton({
   });
 
   // Color interpolation
-  const displayColor = (localActive || isActive) ? '#00ff00' : (isHovered ? '#ffff00' : color);
+  const displayColor = localActive || isActive ? '#00ff00' : isHovered ? '#ffff00' : color;
 
   return (
     <group position={position}>
@@ -100,12 +100,7 @@ function InteractiveButton({
 
       {/* Button object */}
       <Float speed={1} rotationIntensity={0.2} floatIntensity={0.1}>
-        <mesh
-          ref={meshRef}
-          position={[0, 0, 0]}
-          castShadow
-          scale={isHovered ? 1.1 : 1}
-        >
+        <mesh ref={meshRef} position={[0, 0, 0]} castShadow scale={isHovered ? 1.1 : 1}>
           <boxGeometry args={[1, 1, 1]} />
           <MeshDistortMaterial
             color={displayColor}
@@ -326,7 +321,6 @@ interface InteractiveDemoSceneProps {
 }
 export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSceneProps) {
   const logger = createLogger('InteractiveDemoScene');
-export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSceneProps) {
   const [objectStates, setObjectStates] = useState<Map<string, DemoObjectState>>(new Map());
   const [hoveredObjects, setHoveredObjects] = useState<Set<string>>(new Set());
 
@@ -335,16 +329,52 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
     const initialStates = new Map<string, DemoObjectState>();
 
     // Create interactive buttons
-    initialStates.set('button-red', { objectId: 'button-red', type: 'button', active: false, lastUpdate: Date.now(), clientId: '' });
-    initialStates.set('button-blue', { objectId: 'button-blue', type: 'button', active: false, lastUpdate: Date.now(), clientId: '' });
-    initialStates.set('button-green', { objectId: 'button-green', type: 'button', active: false, lastUpdate: Date.now(), clientId: '' });
+    initialStates.set('button-red', {
+      objectId: 'button-red',
+      type: 'button',
+      active: false,
+      lastUpdate: Date.now(),
+      clientId: ''
+    });
+    initialStates.set('button-blue', {
+      objectId: 'button-blue',
+      type: 'button',
+      active: false,
+      lastUpdate: Date.now(),
+      clientId: ''
+    });
+    initialStates.set('button-green', {
+      objectId: 'button-green',
+      type: 'button',
+      active: false,
+      lastUpdate: Date.now(),
+      clientId: ''
+    });
 
     // Create collectible gems
-    initialStates.set('gem-1', { objectId: 'gem-1', type: 'gem', active: false, lastUpdate: Date.now(), clientId: '' });
-    initialStates.set('gem-2', { objectId: 'gem-2', type: 'gem', active: false, lastUpdate: Date.now(), clientId: '' });
+    initialStates.set('gem-1', {
+      objectId: 'gem-1',
+      type: 'gem',
+      active: false,
+      lastUpdate: Date.now(),
+      clientId: ''
+    });
+    initialStates.set('gem-2', {
+      objectId: 'gem-2',
+      type: 'gem',
+      active: false,
+      lastUpdate: Date.now(),
+      clientId: ''
+    });
 
     // Create light switches
-    initialStates.set('light-1', { objectId: 'light-1', type: 'light', active: true, lastUpdate: Date.now(), clientId: '' });
+    initialStates.set('light-1', {
+      objectId: 'light-1',
+      type: 'light',
+      active: true,
+      lastUpdate: Date.now(),
+      clientId: ''
+    });
 
     setObjectStates(initialStates);
   }, []);
@@ -361,7 +391,7 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
       clientId: myClientId
     };
 
-    setObjectStates(prev => new Map(prev).set(objectId, newState));
+    setObjectStates((prev) => new Map(prev).set(objectId, newState));
 
     // Broadcast to other players
     if (wsClient && wsClient.connected()) {
@@ -378,10 +408,15 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
     // If gem was collected, respawn after 5 seconds
     if (state.type === 'gem' && !state.active) {
       setTimeout(() => {
-        setObjectStates(prev => {
+        setObjectStates((prev) => {
           const s = prev.get(objectId);
           if (s) {
-            return new Map(prev).set(objectId, { ...s, active: false, lastUpdate: Date.now(), clientId: '' });
+            return new Map(prev).set(objectId, {
+              ...s,
+              active: false,
+              lastUpdate: Date.now(),
+              clientId: ''
+            });
           }
           return prev;
         });
@@ -406,7 +441,7 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
       clientId: myClientId
     };
 
-    setObjectStates(prev => new Map(prev).set(gemId, newState));
+    setObjectStates((prev) => new Map(prev).set(gemId, newState));
 
     // Broadcast to other players
     if (wsClient && wsClient.connected()) {
@@ -422,7 +457,7 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
 
   // Handle hover state
   const handleHover = (objectId: string, hovered: boolean) => {
-    setHoveredObjects(prev => {
+    setHoveredObjects((prev) => {
       const newSet = new Set(prev);
       if (hovered) {
         newSet.add(objectId);
@@ -437,12 +472,13 @@ export function InteractiveDemoScene({ wsClient, myClientId }: InteractiveDemoSc
   useEffect(() => {
     if (!wsClient) return;
 
-    const unsubscribe = wsClient.on(21, (message: any) => { // ENTITY_UPDATE = 21
+    const unsubscribe = wsClient.on(21, (message: any) => {
+      // ENTITY_UPDATE = 21
       if (message.payload && message.payload.components?.demoObjectState) {
         const state: DemoObjectState = message.payload.components.demoObjectState;
         logger.info('Received interaction', { state });
 
-        setObjectStates(prev => {
+        setObjectStates((prev) => {
           // Only update if remote update is newer
           const current = prev.get(state.objectId);
           if (!current || state.lastUpdate > current.lastUpdate) {
